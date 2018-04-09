@@ -1,0 +1,520 @@
+# Copyright (C) 2018 Keon Themes
+# This file is distributed under the GNU General Public License v3 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Bizplan 1.4\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/theme/style\n"
+"POT-Creation-Date: 2018-03-19 11:14:21+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: grunt-wp-i18n 0.5.4\n"
+
+#: comments.php:55
+msgid "Reply"
+msgstr ""
+
+#: comments.php:61
+msgid "Previous"
+msgstr ""
+
+#: comments.php:62 index.php:35 search.php:29
+msgid "Next"
+msgstr ""
+
+#: comments.php:70
+msgid "Comments are closed."
+msgstr ""
+
+#: functions.php:72
+msgid "hit enter for search."
+msgstr ""
+
+#: functions.php:110
+#. translators: 1: edit user link, 2: accessibility text, 3: user name, 4:
+#. logout URL
+msgid ""
+"<a href=\"%1$s\" aria-label=\"%2$s\">Logged in as %3$s</a> <a "
+"href=\"%4$s\">Log out?</a>"
+msgstr ""
+
+#: functions.php:113
+#. translators: %s: user name
+msgid "Logged in as %s. Edit your profile."
+msgstr ""
+
+#: functions.php:246
+msgid "Search Results for: "
+msgstr ""
+
+#: functions.php:250 modules/customizer/sections/sections.php:39
+msgid "Blog"
+msgstr ""
+
+#: functions.php:280
+msgid "By"
+msgstr ""
+
+#: header.php:23
+msgid "Skip to content"
+msgstr ""
+
+#: inc/back-compat.php:36 inc/back-compat.php:48 inc/back-compat.php:62
+msgid ""
+"Bizplan requires at least WordPress version 4.7. You are running version "
+"%s. Please upgrade and try again."
+msgstr ""
+
+#: inc/setup.php:41
+msgid "Primary Menu"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Right Sidebar"
+msgstr ""
+
+#: inc/setup.php:162 inc/setup.php:172
+msgid "Add widgets here."
+msgstr ""
+
+#: inc/setup.php:170 modules/customizer/sections/sections.php:49
+msgid "Footer"
+msgstr ""
+
+#: inc/template-tags.php:24
+msgid "EDIT<span class=\"screen-reader-text\"> \"%s\"</span>"
+msgstr ""
+
+#: inc/template-tags.php:73
+msgid "Tags"
+msgstr ""
+
+#: inc/template-tags.php:83
+msgid "Categories"
+msgstr ""
+
+#: inc/template-tags.php:182
+msgid "Posted on"
+msgstr ""
+
+#: index.php:35 search.php:29
+msgid "Next page"
+msgstr ""
+
+#: index.php:36 search.php:30
+msgid "Prev"
+msgstr ""
+
+#: index.php:36 search.php:30
+msgid "Previous page"
+msgstr ""
+
+#: index.php:37 search.php:31
+msgid "Page"
+msgstr ""
+
+#: modules/breadcrumbs/breadcrumbs.php:244
+msgid "Browse:"
+msgstr ""
+
+#: modules/breadcrumbs/breadcrumbs.php:246 modules/helpers/helpers.php:180
+msgid "Home"
+msgstr ""
+
+#: modules/breadcrumbs/breadcrumbs.php:247
+msgid "404 Not Found"
+msgstr ""
+
+#: modules/breadcrumbs/breadcrumbs.php:248
+msgid "Archives"
+msgstr ""
+
+#: modules/breadcrumbs/breadcrumbs.php:250
+#. Translators: %s is the search query. The HTML entities are opening and
+#. closing curly quotes.
+msgid "Search results for &#8220;%s&#8221;"
+msgstr ""
+
+#: modules/breadcrumbs/breadcrumbs.php:252
+#. Translators: %s is the page number.
+msgid "Page %s"
+msgstr ""
+
+#: modules/breadcrumbs/breadcrumbs.php:254
+#. Translators: Minute archive title. %s is the minute time format.
+msgid "Minute %s"
+msgstr ""
+
+#: modules/breadcrumbs/breadcrumbs.php:256
+#. Translators: Weekly archive title. %s is the week date format.
+msgid "Week %s"
+msgstr ""
+
+#. Theme Name of the plugin/theme
+msgid "Bizplan"
+msgstr ""
+
+#: modules/customizer/defaults/defaults.php:19
+msgid "Multipurpose WP Theme"
+msgstr ""
+
+#: modules/customizer/defaults/defaults.php:35
+msgid "LATEST NEWS"
+msgstr ""
+
+#: modules/customizer/defaults/defaults.php:55
+msgid "Copyright &copy; All Rights Reserved. Proudly powered by"
+msgstr ""
+
+#: modules/customizer/defaults/defaults.php:56
+msgid "WordPress"
+msgstr ""
+
+#: modules/customizer/defaults/defaults.php:58
+msgid "Bizplan Theme by"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Keon Themes"
+msgstr ""
+
+#: modules/customizer/framework/category-control.php:23
+msgid "&mdash; Select &mdash;"
+msgstr ""
+
+#: modules/customizer/framework/post-control.php:39
+msgid "Select"
+msgstr ""
+
+#: modules/customizer/loader.php:21
+msgid "Background"
+msgstr ""
+
+#: modules/customizer/loader.php:23
+msgid ""
+"This option will work when your homepage displays setting is your latest "
+"posts."
+msgstr ""
+
+#: modules/customizer/loader.php:24
+msgid "Site Title and Tagline will not show if you select logo."
+msgstr ""
+
+#: modules/customizer/panels/panels.php:13
+msgid "Front Page Options"
+msgstr ""
+
+#: modules/customizer/panels/panels.php:16
+msgid "Theme Options"
+msgstr ""
+
+#: modules/customizer/sections/sections.php:15
+msgid "Slider"
+msgstr ""
+
+#: modules/customizer/sections/sections.php:19
+msgid "About"
+msgstr ""
+
+#: modules/customizer/sections/sections.php:23
+msgid "Service"
+msgstr ""
+
+#: modules/customizer/sections/sections.php:27
+msgid "Portfolio"
+msgstr ""
+
+#: modules/customizer/sections/sections.php:31
+msgid "Callback"
+msgstr ""
+
+#: modules/customizer/sections/sections.php:35
+msgid "Testimonial"
+msgstr ""
+
+#: modules/customizer/sections/sections.php:45
+msgid "General"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:15
+msgid "Slider Page"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:18
+msgid ""
+"Input page id. Separate with comma. for eg. 2,9,23. Supports Maximum 3 "
+"sliders."
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:21
+msgid "Show Slider Control"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:27
+msgid "Slider Auto Play"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:32
+msgid "Slider Timeout ( in sec )"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:39
+msgid "Select Main Page for Services"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:44
+msgid "Service Page"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:47
+#: modules/customizer/settings/frontpage.php:72
+#: modules/customizer/settings/frontpage.php:107
+msgid "Input page id. Separate with comma. for eg. 2,9,23"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:50
+#: modules/customizer/settings/frontpage.php:75
+msgid "Disable Service Section"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:57
+msgid "Select About Page"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:64
+msgid "Select Main Page for Portfolio"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:69
+msgid "Portfolio Pages"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:82
+msgid "Select a Callback Page"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:87
+msgid "Select a Link Page"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:92
+msgid "Disable Callback Section"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:99
+msgid "Select a main page for Testimonial"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:104
+msgid "Testimonial Pages"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:110
+msgid "Disable Testimonial Section"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:117
+msgid "Select a main page for Blog"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:122
+msgid "Choose Blog Category"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:127
+msgid "Number of Posts"
+msgstr ""
+
+#: modules/customizer/settings/frontpage.php:136
+msgid "Disable Blog Section"
+msgstr ""
+
+#: modules/customizer/settings/general.php:14
+msgid "Site Title"
+msgstr ""
+
+#: modules/customizer/settings/general.php:20
+msgid "Site Tagline"
+msgstr ""
+
+#: modules/customizer/settings/general.php:26
+msgid "Primary"
+msgstr ""
+
+#: modules/customizer/settings/general.php:33
+msgid "Footer Text"
+msgstr ""
+
+#: modules/customizer/settings/general.php:38
+msgid "Disable Footer Widget"
+msgstr ""
+
+#: modules/customizer/settings/general.php:44
+msgid "Additional Space on top of Menu."
+msgstr ""
+
+#: modules/customizer/settings/general.php:50
+msgid "Enable Scroll top in mobile"
+msgstr ""
+
+#: pages/home.php:17
+msgid "Scroll Down"
+msgstr ""
+
+#: pages/home.php:67
+msgid "Learn More"
+msgstr ""
+
+#: pages/home.php:154
+msgid "Know More"
+msgstr ""
+
+#: pages/home.php:200
+msgid "Explore More"
+msgstr ""
+
+#: single.php:35
+msgid "Previous Post"
+msgstr ""
+
+#: single.php:36
+msgid "Next Post"
+msgstr ""
+
+#: template-parts/archive/content.php:74
+msgid "Read More"
+msgstr ""
+
+#: template-parts/page/content-none.php:17
+msgid "PAGE NOT FOUND"
+msgstr ""
+
+#: template-parts/page/content-none.php:20
+msgid "NOTHING FOUND"
+msgstr ""
+
+#: template-parts/page/content-none.php:28
+msgid "It looks like nothing was found. Want to try another by search?"
+msgstr ""
+
+#: template-parts/page/content-none.php:31
+msgid ""
+"It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps another "
+"searching can help."
+msgstr ""
+
+#: template-parts/page/content-none.php:43
+msgid "Add New Post"
+msgstr ""
+
+#: template-parts/single/content-author-detail.php:15
+msgid "Post Author:"
+msgstr ""
+
+#: template-parts/single/content.php:16
+msgid "Pages:"
+msgstr ""
+
+#: trt-customize-pro/example-1/class-customize.php:76
+msgid "Bizplan Pro"
+msgstr ""
+
+#: trt-customize-pro/example-1/class-customize.php:78
+msgid "Upgrade To Pro"
+msgstr ""
+
+#. Theme URI of the plugin/theme
+msgid "https://keonthemes.com/downloads/bizplan/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Bizplan is an enticing and visually stimulating, tender and polished, "
+"professional and responsive WordPress creative multipurpose theme based on "
+"Bootstrap framework. Bizplan is modern theme fit for creative individuals, "
+"agency, blog, business, company, corporate, and professional portfolio. The "
+"design is very elegant and modern, and also very easy to customize. Build "
+"your own website with our awesome Bizplan! For Demo: "
+"https://keonthemes.com/theme-demo/?id=NjM5fGJpenBsYW58Qml6cGxhbg= and more "
+"Detail: https://keonthemes.com/downloads/bizplan"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://keonthemes.com"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Compact"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Front Page"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Left Sidebar"
+msgstr ""
+
+#: comments.php:31
+#. translators: %s: post title
+msgctxt "comments title"
+msgid "One Reply to &ldquo;%s&rdquo;"
+msgstr ""
+
+#: comments.php:35
+#. translators: 1: number of comments, 2: post title
+msgctxt "comments title"
+msgid "%1$s Reply to &ldquo;%2$s&rdquo;"
+msgid_plural "%1$s Replies to &ldquo;%2$s&rdquo;"
+msgstr[0] ""
+msgstr[1] ""
+
+#: modules/breadcrumbs/breadcrumbs.php:245
+msgctxt "breadcrumbs aria label"
+msgid "Breadcrumbs"
+msgstr ""
+
+#: modules/breadcrumbs/breadcrumbs.php:708
+msgctxt "minute and hour archives time format"
+msgid "g:i a"
+msgstr ""
+
+#: modules/breadcrumbs/breadcrumbs.php:725
+msgctxt "minute archives time format"
+msgid "i"
+msgstr ""
+
+#: modules/breadcrumbs/breadcrumbs.php:742
+msgctxt "hour archives time format"
+msgid "g a"
+msgstr ""
+
+#: modules/breadcrumbs/breadcrumbs.php:758
+#: modules/breadcrumbs/breadcrumbs.php:787
+#: modules/breadcrumbs/breadcrumbs.php:814
+#: modules/breadcrumbs/breadcrumbs.php:841
+#: modules/breadcrumbs/breadcrumbs.php:1176
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr ""
+
+#: modules/breadcrumbs/breadcrumbs.php:759
+#: modules/breadcrumbs/breadcrumbs.php:815
+#: modules/breadcrumbs/breadcrumbs.php:1180
+msgctxt "monthly archives date format"
+msgid "F"
+msgstr ""
+
+#: modules/breadcrumbs/breadcrumbs.php:760
+#: modules/breadcrumbs/breadcrumbs.php:1184
+msgctxt "daily archives date format"
+msgid "j"
+msgstr ""
+
+#: modules/breadcrumbs/breadcrumbs.php:788
+msgctxt "weekly archives date format"
+msgid "W"
+msgstr ""

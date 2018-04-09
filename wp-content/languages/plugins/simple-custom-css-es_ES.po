@@ -1,0 +1,62 @@
+# Translation of Plugins - Simple Custom CSS - Development (trunk) in Spanish (Spain)
+# This file is distributed under the same license as the Plugins - Simple Custom CSS - Development (trunk) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2017-09-12 22:02:21+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/2.4.0-alpha\n"
+"Language: es\n"
+"Project-Id-Version: Plugins - Simple Custom CSS - Development (trunk)\n"
+
+#: includes/admin.php:98
+msgid "/* Enter Your Custom CSS Here */"
+msgstr "/* Escribe aquí tu código CSS */"
+
+#: includes/admin.php:21
+msgid "Add CSS"
+msgstr "Añadir CSS"
+
+#. Author URI of the plugin/theme
+msgid "http://johnregan3.me"
+msgstr "http://johnregan3.me"
+
+#. Author of the plugin/theme
+msgid "John Regan, Danny Van Kooten"
+msgstr "John Regan, Danny Van Kooten"
+
+#. Description of the plugin/theme
+msgid "The simple, solid way to add custom CSS to your WordPress website. Simple Custom CSS allows you to add your own styles or override the default CSS of a plugin or theme."
+msgstr "Una manaera sencilla y sólida de añadir código CSS personalizado a tu sitio web de WordPress. El plugin Simple Custom CSS te permite añadir tus propios estilos para sustituir el código CSS de un plugin o un tema. "
+
+#. Plugin URI of the plugin/theme
+msgid "http://johnregan3.github.io/simple-custom-css"
+msgstr "http://johnregan3.github.io/simple-custom-css"
+
+#: includes/admin.php:111 includes/admin.php:121
+msgid "Update Custom CSS"
+msgstr "Actualizar el CSS personalizado"
+
+#: includes/admin.php:110
+msgid "To use, enter your custom CSS, then click \"Update Custom CSS\".  It's that simple!"
+msgstr "Para utilizarlo, escribe tu código CSS, y luego haz clic en el botón \"Actualizar el CSS personalizado\". Es así de simple."
+
+#: includes/admin.php:109
+msgid "Simple Custom CSS allows you to add your own styles or override the default CSS of a plugin or theme."
+msgstr "El plugin Simple Custom CSS te permite añadir tus propios estilos para sustituir el código CSS de un plugin o un tema."
+
+#: includes/admin.php:101
+msgid "Custom CSS updated successfully."
+msgstr "El código CSS ha sido actualizado correctamente."
+
+#: includes/admin.php:74
+msgid "Custom CSS"
+msgstr "CSS personalizado"
+
+#. #-#-#-#-#  tmp-simple-custom-css.pot (Simple Custom CSS 3.3)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: includes/admin.php:74 includes/admin.php:104
+msgid "Simple Custom CSS"
+msgstr "Simple Custom CSS"

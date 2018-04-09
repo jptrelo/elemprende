@@ -1,0 +1,47 @@
+/*
+* This css file is intended for only admin notice after activating theme
+* @since @version 1.5.9
+*/
+
+#message.st-message {
+    background: #36c7a0;
+    color: #fff;
+}
+
+#message.st-message a {
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    margin-left: 5PX;
+}
+
+#message.st-message p {
+    width: 75%;
+    font-size: 15px;
+}
+
+.st-message {
+	overflow: hidden;
+	position: relative;
+	border-left-color: #2ea2cc !important;
+}
+.st-message a.button-primary,
+.st-message a.button-secondary {
+	text-decoration: none !important;
+}
+.st-message a.st-message-close {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 10px 15px 10px 21px;
+	font-size: 13px;
+	line-height: 1.23076923;
+	text-decoration: none;
+}
+.st-message a.st-message-close:before {
+	position: absolute;
+	top: 8px;
+	left: 0;
+	-webkit-transition: all .1s ease-in-out;
+	transition: all .1s ease-in-out;
+}

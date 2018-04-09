@@ -1,0 +1,260 @@
+/* Options Framework Admin Styles */
+
+.updated {
+	max-width:764px;
+	margin-bottom:0px !important;
+}
+#fasterthemes_framework {
+	position:relative;
+	z-index: 0;
+	max-width:780px;
+	background:#fff;
+}
+#fasterthemes_framework h3 {
+	cursor: default;
+}
+#fasterthemes_framework p {
+	margin-bottom:0;
+	padding-bottom:10px;
+	line-height: 1.4em;
+}
+#fasterthemes_framework .section {
+	padding:10px 10px 0;
+}
+#fasterthemes_framework .group {
+	padding-bottom:40px;
+}
+#fasterthemes_framework .section .heading {
+	padding:10px 0px;
+	margin:0 0 15px;
+	border-bottom: 1px solid #dfdfdf;
+}
+#fasterthemes_framework .section .controls {
+	float: left;
+	min-width:350px;
+	width: 54%;
+	padding-right:2%;
+}
+#fasterthemes_framework .section .explain {
+	max-width:38%;
+	float: left;
+	font-size: 12px;
+	line-height:16px;
+	color: #777;
+}
+#fasterthemes_framework .section-checkbox .controls {
+	width: 98%;
+}
+#fasterthemes_framework .section-checkbox .explain {
+	max-width:94%;
+}
+#fasterthemes_framework .of-input {
+	width:100%;
+}
+#fasterthemes_framework .controls select, #fasterthemes_framework .controls textarea {
+	margin-bottom:10px;
+	width:100%;
+}
+#fasterthemes_framework .section-radio label, #fasterthemes_framework .section-multicheck label {
+	float:left;
+	max-width:90%;
+	line-height: 16px;
+	margin-bottom: 5px;
+}
+#fasterthemes_framework input.checkbox, #fasterthemes_framework input.of-radio {
+	width: 30px;
+	margin-top:2px;
+	float:left;
+	clear:both;
+}
+#fasterthemes_framework .section-typography .controls {
+	float:none;
+	width:auto;
+}
+#fasterthemes_framework .section-typography .explain {
+	float:none;
+	width:auto;
+}
+#fasterthemes_framework .controls .of-typography-size {
+	width:80px;
+	float:left
+}
+#fasterthemes_framework .controls .of-typography-unit {
+	width:50px;
+	margin-left:5px;
+	float:left
+}
+#fasterthemes_framework .controls .of-typography-face {
+	width:100px;
+	margin-left:5px;
+	float:left
+}
+#fasterthemes_framework .controls .of-typography-style {
+	width:80px;
+	margin-left:5px;
+	margin-right:5px;
+	float:left
+}
+#fasterthemes_framework .of-background-properties {
+	clear:both;
+	margin-top: 18px;	
+}
+#fasterthemes_framework .controls .of-background-repeat {
+	width:125px;
+	margin-right:5px;
+	float:left
+}
+#fasterthemes_framework .controls .of-background-position {
+	width:125px;
+	margin-right:5px;
+	float:left
+}
+#fasterthemes_framework .controls .of-background-attachment {
+	width:125px;
+	margin-right:5px;
+	float:left
+}
+#fasterthemes_framework .section-background .wp-picker-container {
+	margin-bottom:10px;
+}
+#fasterthemes_framework .controls .of-radio-img-img {
+	border:3px solid #f9f9f9;
+	margin:0 5px 10px 0;
+	display:none;
+	cursor:pointer;
+	float:left;
+}
+#fasterthemes_framework .controls .of-radio-img-selected {
+	border:3px solid #ccc
+}
+#fasterthemes_framework .controls .of-radio-img-img:hover {
+	opacity:.8;
+}
+#fasterthemes_framework .controls .of-border-width {
+	width:80px;
+	float:left
+}
+#fasterthemes_framework .controls .of-border-style {
+	width:120px;
+	float:left
+}
+#fasterthemes_framework .hide {
+	display:none;
+}
+#fasterthemes_framework .of-option-image {
+	max-width:340px;
+	margin:3px 0 18px 0;
+}
+#fasterthemes_framework .mini .controls select, #fasterthemes_framework .section .mini .controls {
+	width: 140px;
+}
+#fasterthemes_framework .mini .controls input, #fasterthemes_framework .mini .controls {
+	min-width:70px;
+	/*width: 140px;*/
+}
+#fasterthemes_framework .mini .explain {
+	max-width:74%;
+}
+
+/* Editor */
+
+#fasterthemes_framework .section-editor .explain {
+	max-width: 98%;
+	float:none;
+	margin-bottom:5px;
+}
+
+/* Image Uploader */
+
+#fasterthemes_framework .controls input.upload {
+	width:80%;
+}
+#fasterthemes_framework .controls input.upload_button {
+	float:right;
+	border-color:#BBBBBB;
+	cursor:pointer;
+}
+#fasterthemes_framework .controls input.upload_button:hover {
+	border-color:#666666;
+	color:#000;
+}
+#fasterthemes_framework .screenshot {
+	float:left;
+	margin-left:1px;
+	position:relative;
+	width:344px;
+	margin-top:3px;
+}
+#fasterthemes_framework .screenshot img {
+	background:#FAFAFA;
+	border-color:#ccc #eee #eee #ccc;
+	border-style:solid;
+	border-width:1px;
+	float:left;
+	max-width:334px;
+	padding:4px;
+	margin-bottom:10px;
+}
+#fasterthemes_framework .screenshot .remove-image {
+	background:url("../images/ico-delete.png") no-repeat;
+	border:medium none;
+	bottom:4px;
+	display:block;
+	float:left;
+	height:16px;
+	padding:0;
+	position:absolute;
+	left:-4px;
+	text-indent:-9999px;
+	width:16px;
+}
+#fasterthemes_framework .screenshot .no_image .file_link {
+	margin-left: 20px;
+}
+#fasterthemes_framework .screenshot .no_image .remove-button {
+	bottom: 0px;
+}
+#fasterthemes_framework .reset-button {
+	float:left;
+	cursor:pointer;
+}
+
+/* Bottom Section */
+
+#fasterthemes_framework-submit {
+	padding: 7px 10px;
+	border-top: 1px solid #ECECEC;
+	background-color: #F1F1F1;
+    background-image: -moz-linear-gradient(center top , #F9F9F9, #ECECEC);
+}
+#fasterthemes_framework-submit span{
+	vertical-align:sub;
+}
+#fasterthemes_framework-submit span{
+	vertical-align:sub;
+}
+#fasterthemes_framework-submit span a{
+	text-decoration:none;	
+}
+#fasterthemes_framework-submit .fb{
+	margin-left:20%;
+}
+
+#fasterthemes_framework-submit span a{
+	text-decoration:none;	
+} 
+#fasterthemes_framework .button-primary {
+	float:right;
+}
+#fasterthemes_framework .section:after {
+	content: "";
+	display: table;
+}
+#fasterthemes_framework .section:after {
+	clear: both;
+}
+#fasterthemes_framework img
+{
+ margin-left:20px;
+ vertical-align:middle;
+}

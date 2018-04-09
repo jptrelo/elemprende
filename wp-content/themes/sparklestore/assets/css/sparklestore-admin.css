@@ -1,0 +1,435 @@
+#widget-list [id*='_sparklestore_'] .widget-top, 
+#widget-list [id*='_sparklestore_'] h3 {
+    background: #0074a2;
+    color: #fff;
+}
+
+.screenshot img {
+    width: 100%;
+    border-radius: 10px;
+    padding: 5px 0px;
+}
+.remove-image {
+    cursor: pointer;
+}
+.sparklestore-multiplecat {
+	height: 100px;
+	overflow: auto;
+	border: 1px solid #ccc;
+	padding: 0px 10px;
+	margin-top: 5px;
+}
+
+/* Customizer Page Layout Settings */
+.sparklestoreimage label{
+    position: relative;
+    margin: 0 3% 0% 0;
+    display: inline-block;
+    width: 46%;
+}
+.sparklestoreimage input{
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+.sparklestoreimage img{
+    display: block;
+    border:2px solid #F6F6F6;
+}
+.sparklestoreimage input:checked + img{
+    border:2px solid #CCC;
+}
+.customize-control select{
+  width: 98%;
+}
+.sparklestore-accordion-section-title{
+  color: #555;
+  border-bottom: 1px solid #eee;
+  border-top: 1px solid #eee;
+  padding: 10px 10px 11px 14px;
+  line-height: 21px;
+  background: #FFF;
+  margin: 0 -12px 0;
+}
+
+/*Additional Styles*/
+.sparklestore-repeater-field-control{
+  background: #FFF;
+  margin-bottom: 12px;
+  display: block;
+}
+.sparklestore-repeater-footer{
+  margin-top: 15px;
+  text-align: right;
+}
+.sparklestore-repeater-field-control:first-child .sparklestore-repeater-footer{
+  display: none;
+}
+.sparklestore-repeater-field-title{
+  padding: 13px 15px;
+  line-height: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 0;
+  font-size: 1em;
+  border: 1px solid #e5e5e5;
+  cursor: move;
+  position: relative;
+  border-bottom: 0;
+}
+#customize-theme-controls .sparklestore-repeater-field-title.accordion-section-title:after {
+  content: "\f142";
+  font: 400 20px/1 dashicons;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 1px 2px 1px 0;
+  margin-top: 10px;
+  margin-right: 10px;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.sparklestore-repeater-field-control.expanded .sparklestore-repeater-field-title:after{
+  content: "\f140";
+}
+.sparklestore-repeater-fields{
+  padding: 0 10px 25px;
+  border-top: none;
+  line-height: 16px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 1px 1px rgba(0,0,0,.04);
+  display: none;
+}
+.sparklestore-repeater-fields .customize-control-title{
+  margin-top: 10px;
+}
+.sparklestore-repeater-field-control.expanded .sparklestore-repeater-fields{
+  display: block;
+}
+.sparklestore-add-control-field {
+  float: right;
+}
+.sparklestore-add-control-field:before {
+    content: "\f132";
+    display: inline-block;
+    position: relative;
+    left: -2px;
+    top: -1px;
+    font: 400 18px/1 dashicons;
+    vertical-align: middle;
+}
+.sparklestore-fields textarea{
+  width: 100%;
+  min-height: 100px;
+}
+.sparklestore-fields select{
+  width: 100%;
+  min-width: none;
+}
+.sparklestore-type-checkbox{
+  margin-top: 10px;
+}
+.sparklestore-type-checkbox label{
+    line-height: 20px;
+    display: block;
+    margin-left: 24px;
+    padding-top: 6px;
+}
+.sparklestore-type-checkbox input[type=checkbox]{
+    margin-right: 8px;
+    margin-left: -24px;
+}
+.sparklestore-type-selector .selector-labels{
+  margin: 0 -5px;
+}
+.sparklestore-type-selector .selector-labels label{
+  display: inline-block;
+  padding: 10px 5px 0;
+  position: relative;
+  max-width: 50%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+.sparklestore-type-selector .selector-labels label img{
+  vertical-align: middle;
+}
+.sparklestore-type-selector .selector-labels label.selector-selected:after{
+  content: "";
+  height: 35px;
+  width: 35px;
+  right: 0;
+  top: 0;
+  position: absolute;
+  background: url(images/selected.png) no-repeat right top;
+}
+.sparklestore-type-radio .radio-labels label{
+  display: block;
+  padding: 5px 0;
+}
+.onoffswitch {
+    position: relative;
+    width: 100px;
+    margin-right: 15px;
+    overflow: hidden;
+    cursor: pointer;
+}
+.onoffswitch-inner {
+    width: 200%;
+    margin-left: -100%;
+    -moz-transition: margin .3s ease-in 0s;
+    -webkit-transition: margin .3s ease-in 0s;
+    -o-transition: margin .3s ease-in 0s;
+    transition: margin .3s ease-in 0s
+}
+.onoffswitch-inner > div {
+    float: left;
+    position: relative;
+    width: 50%;
+    height: 24px;
+    padding: 0;
+    line-height: 24px;
+    font-size: 12px;
+    color: #fff;
+    font-weight: 700;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box
+}
+.onoffswitch-inner .onoffswitch-active {
+    background-color: #d4d4d4;
+    color: #FFF
+}
+.onoffswitch-inner .onoffswitch-inactive {
+    background-color: #d4d4d4;
+    color: #FFF;
+    text-align: right
+}
+.onoffswitch-switch {
+    width: 50px;
+    margin: 0;
+    text-align: center;
+    border: 0 solid #999;
+    border-radius: 0;
+    position: absolute;
+    top: 0;
+    bottom: 0
+}
+.onoffswitch-active .onoffswitch-switch {
+    background: #0073aa;
+    left: 0
+}
+.onoffswitch-inactive .onoffswitch-switch {
+    background: #7D7D7D;
+    right: 0
+}
+.switch-on .onoffswitch-inner {
+    margin-left: 0
+}
+.pt-visual-selector{
+    margin-top: 10px;
+}
+.visual-selector a {
+    position: relative;
+    display: inline-block;
+    margin: 0 10px 0 0;
+    outline: 0 !important;
+    border: 1px solid #EEE;
+}
+.visual-selector a img{
+    vertical-align: middle;
+}
+.visual-selector a .selector-tick {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    display: block;
+    width: 35px;
+    height: 35px;
+    background: url(../../images/admin/pt-item-tick-selector.png) no-repeat
+}
+.sparklestore-range-slider .range-input{
+  height: 12px;
+  position: relative;
+  background: #EEE;
+  border-radius: 4px;
+  margin: 0 4px 18px;
+}
+.sparklestore-range-slider .range-input-selector{
+  width: 80px !important;
+  margin-right: 10px !important;
+  border-radius: 12px;
+  text-align: center;
+  height: 32px;
+}
+.sparklestore-range-slider .ui-slider .ui-slider-range {
+    position: absolute;
+    z-index: 1;
+    display: block;
+    background: #0073aa;
+}
+.sparklestore-range-slider .ui-slider-horizontal .ui-slider-range {
+    top: 0;
+    height: 100%;
+    left: 0;
+    border-radius: 4px;
+}
+.sparklestore-range-slider .ui-slider .ui-slider-handle {
+    position: absolute;
+    z-index: 2;
+    width: 18px;
+    height: 18px;
+    cursor: default;
+    -ms-touch-action: none;
+    touch-action: none;
+    background: #EEE;
+    border: 2px solid #0073aa;
+    border-radius: 50%;
+    margin-top: -3px;
+    margin-left: -9px;
+    cursor: pointer;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+.sparklestore-type-icon{
+  overflow: hidden;
+}
+.sparklestore-selected-icon{
+  background: #F6F6F6;
+  height: 45px;
+  line-height: 45px;
+  text-align: center;
+  border: 1px solid #EEE;
+  position: relative;
+  margin-right: 45px;
+  cursor: pointer;
+  font-size: 28px;
+}
+.sparklestore-selected-icon span{
+  position: absolute;
+  background: #F6F6F6;
+  right: -45px;
+  top: -1px;
+  height: 45px;
+  width: 45px;
+  border: 1px solid #EEE;
+  font-size: 20px;
+}
+.sparklestore-icon-list{
+  height: 215px;
+  overflow-y: scroll;
+  font-size: 18px;
+  border: 1px solid #EEE;
+  border-right: 0;
+  border-top: 0;
+  padding-bottom: 4%;
+  display: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+.sparklestore-icon-list li{
+  float: left;
+  margin: 4% 3% 0;
+  height: 40px;
+  width: 16%;
+  text-align: center;
+  line-height: 40px;
+  border: 1px solid #EEE;
+}
+.sparklestore-icon-list li:hover{
+  background: #333;
+  border: 1px solid #333;
+  color: #FFF;
+}
+.sparklestore-icon-list li.icon-active{
+  background: #0073aa;
+  border: 1px solid #0073aa;
+  color: #FFF;
+}
+
+
+/**
+ * Customizer Icon Settings Area
+*/
+.customize-pane-parent .control-section .accordion-section-title:before{
+    font-family: dashicons;
+    content: "\f103";
+    font-size: 20px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+#accordion-panel-sparklestore_general_settings .accordion-section-title:before{
+    content: "\f111";
+}
+
+#accordion-panel-nav_menus .accordion-section-title:before{
+    content: "\f333";
+}
+
+#accordion-panel-widgets .accordion-section-title:before{
+    content: "\f116";
+}
+
+#accordion-panel-widgets .accordion-section-title:before{
+    content: "\f116";
+}
+
+#accordion-section-custom_css .accordion-section-title:before{
+    content: "\f499";
+}
+#accordion-section-sparklestore_banner_slider .accordion-section-title:before{
+    content: "\f233";
+}
+
+
+/**
+ * Some important information link
+*/
+.implink{
+  background: #0073aa;
+  padding: 8px;
+  color: #FFF !important;
+  text-align: center;
+  display: block;
+  margin-top: 5px;
+  line-height: 1.2;
+  box-shadow: none;
+  font-style: normal;
+  text-decoration: none;
+}
+
+.implink:hover{
+  background: #000;
+}
+
+/**
+ * Pro Button Link
+*/
+#customize-controls .control-section-upsell .accordion-section-title:hover,
+#customize-controls .control-section-upsell .accordion-section-title:focus {
+  background-color: #fff;
+}
+
+.control-section-upsell .accordion-section-title .button {
+  margin-top: -2px;
+  font-weight: 700;
+  margin-left: 8px;
+  border-color: #ff0202;
+  background-color: #ff0202;
+  color: #fff;
+}
+
+.control-section-upsell .accordion-section-title .button:hover {
+  background-color: #033772;
+  border-color: #033772;
+}

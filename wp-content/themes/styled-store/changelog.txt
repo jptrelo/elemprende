@@ -1,0 +1,239 @@
+Keep a change log to describe all the changes made to program source files. The purpose of this is so that people investigating bugs in the future will know about the changes that might have introduced the bug. Often a new bug can be found by looking at what was recently changed. More importantly, change logs can help you eliminate conceptual inconsistencies between different parts of a program, by giving you a history of how the conflicting concepts arose and who they came from.
+
+Changelog Legend:
+
+----
+
+[+] = Added
+[*] = Changed
+[^] = Moved
+[=] = No Changes
+[x] = Deleted
+[!] = Bugs
+
+
+( Oct 12, 2017 ) Version 1.7.0 Styled Themes <www.styledthemes.com>
+	
+	[*] woocommerce template files updated
+
+-----
+
+
+( Aug 16, 2017 ) Version 1.6.0 Styled Themes <www.styledthemes.com>
+	
+	[+] po files updated
+
+-----
+
+
+( July 13, 2017 ) Version 1.5.9 Styled Themes <www.styledthemes.com>
+	
+	[x] Google fonts enqueue changed
+	[!] Template version Fixed
+	[+] Filter to add fonts from child theme added 
+	[+] Admin notice for styled store plugin importer Added 
+
+-----
+
+( May 02, 2017 ) Version 1.5.8 Styled Themes <www.styledthemes.com>
+	
+	[+] Made Theme compatible with latest WooCommerce version
+	[+] Dummpy image on category widgets Added
+	[+] Theme support for woocommerce zoom effect Added
+
+-----
+
+( April 17, 2017 ) Version 1.5.7 Styled Themes <www.styledthemes.com>
+	
+	[!] WooCommerce Featured Slider Bug Fixed
+	[!] Showcase widgets Minor Bug Fixed 
+
+-----
+
+( April 11, 2017 ) Version 1.5.6 Styled Themes <www.styledthemes.com>
+	
+	[+] WooCommerce tempalte Updated. 
+
+-----
+
+( February 22, 2017 ) Version 1.5.4 Styled Themes <www.styledthemes.com>
+	
+	[+] Image flipper functionality on shop page Added
+	[+] customizer options to hide or show the flipper functionality Added
+
+-----
+
+( February 17, 2017 ) Version 1.5.3 Styled Themes <www.styledthemes.com>
+	
+	[+] Customizer options to change number of woocommerce product on shop page Added.
+	[!] Minor design bug Fixed
+
+-----
+
+( January 13, 2017 ) Version 1.5.2 Styled Themes <www.styledthemes.com>
+	
+	[!] Text Domain bug Fixed
+
+-----
+
+( January 13, 2017 ) Version 1.5.1 Styled Themes <www.styledthemes.com>
+	
+	[!] Css conflict with WooCommerce and Theme Bug Fixed
+
+
+-----
+
+( November 29, 2016 ) Version 1.5.0 Styled Themes <www.styledthemes.com>
+	
+	[+] Major update new home template added
+	[+] showcase section added with widgets
+
+
+---
+
+( November 22, 2016 ) Version 1.1.10 Styled Themes <www.styledthemes.com>
+	
+	[+] Customize option to control cross sells product Added 
+
+----
+
+( November 11, 2016 ) Version 1.1.9 Styled Themes <www.styledthemes.com>
+	
+	[x] http support for google font Removed
+	[*] Theme description Changed
+
+----
+
+---
+
+( November 04, 2016 ) Version 1.1.8 Styled Themes <www.styledthemes.com>
+	
+	[!] Header text color bug Fixed
+
+----
+
+( October 24, 2016 ) Version 1.1.7 Styled Themes <www.styledthemes.com>
+	
+	[!] Text domain bug Fixed 
+	[!] Cart page quantity increased and decreased bug Fixed 
+
+----
+
+( October 19, 2016 ) Version 1.1.6 Styled Themes <www.styledthemes.com>
+	
+	[+] Customizer setting to show onsale on percentage or pricing format Added 
+	[!] Multiple rating display on detail product page Fixed
+
+----
+
+( October 17, 2016 ) Version 1.1.5 Styled Themes <www.styledthemes.com>
+	
+	[!] Minor design bug bug Fixed 
+	[!] security issue bug Fixed
+
+----
+
+( October 06, 2016 ) Version 1.1.4 Styled Themes <www.styledthemes.com>
+	
+	[!] Woocommerce product variation bug Fixed 
+	[!] Translation bug on single product Fixed 
+	[!] Minor design Bug Fixed
+	
+---
+
+( October 04, 2016 ) Version 1.1.3 Styled Themes <www.styledthemes.com>
+	
+	[*] WP standard handler for flexslider, matchheight, smartmenus Changed
+	[*] Slider Image License Added
+	[x] Deleted -css extension on wp_enqueue_style()
+	
+---
+
+( October 03, 2016 ) Version 1.1.2 Styled Themes <www.styledthemes.com>
+	
+	[*] Screenshot Changed 
+	
+---
+
+( September 28, 2016 ) Version 1.1.1 Styled Themes <www.styledthemes.com>
+	
+	[+] Mobile Menu Added
+	[+] Image size for extend recent post widgets thumbnail Added
+
+---
+
+( September 26, 2016 ) Version 1.1.0 Styled Themes <www.styledthemes.com>
+	
+	[+] Woocommerce Homepage Template Added
+	[+] Multiple widget areas Added
+	[+] Header Part Design Fixed
+	[+] Upsells Link Added
+
+---
+
+( September 23, 2016 ) Version 1.0.10 Styled Themes <www.styledthemes.com>
+
+	[x] Plugin territory on customizer.php file Deleted
+	[x] Removed jquery enqueue and provided dependency on all other script
+	[+] Prefixing Added on respond.min.js and html5shiv.min.js Added
+	[x] Deleted mo and po file and  Added .pot file
+	[x] Removed underscore text from readme.txt file. 
+
+
+----
+
+( September 22, 2016 ) Version 1.0.9 Styled Themes <www.styledthemes.com>
+
+	[x] Customizer featured to change readmore text, comment reply text, post navigation next, Deleted 
+
+----
+
+( September 22, 2016 ) Version 1.0.8 Styled Themes <www.styledthemes.com>
+
+	[+] Prefixed google font Added
+	[!] font weight bug Fixed 
+
+----
+
+( September 21, 2016 ) Version 1.0.7 Styled Themes <www.styledthemes.com>
+
+	[+] wp_link_pages() function added on content.php template 
+
+----
+
+( September 16, 2016 ) Version 1.0.6 Styled Themes <www.styledthemes.com>
+
+	[!] Footer menu bug Fixed
+	[x] Unused css and js file[sm-mint, sm-simple and navigation.js] deleted 
+
+----
+
+( September 09, 2016 ) Version 1.0.5 Styled Themes <www.styledthemes.com>
+
+	[x] widget_text hook deleted
+
+----
+
+( September 09, 2016 ) Version 1.0.4 Styled Themes <www.styledthemes.com>
+
+	[*] Image sanitization callback Changed 
+	[*]	Copyright text Changed
+
+----
+
+( September 09, 2016 ) Version 1.0.3 Styled Themes <www.styledthemes.com>
+
+	[*] Text domain changed from styled-estore to styled-store
+
+----
+
+(September 08, 2016 ) Version 1.0.2 Styled Themes <www.styledthemes.com>
+
+	[!] Sanitization, escaping and prefixing bug Fixed
+----
+
+(April 9, 2016 ) Version 1.0 Styled Themes <www.styledthemes.com>
+
+Initial Release
+
+----

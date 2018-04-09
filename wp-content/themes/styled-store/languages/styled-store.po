@@ -1,0 +1,922 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Styled Store\n"
+"POT-Creation-Date: 2017-08-16 12:14+0545\n"
+"PO-Revision-Date: 2017-08-16 12:14+0545\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.7.6\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: 404.php:21
+msgid "Oops! That page can&rsquo;t be found."
+msgstr ""
+
+#: 404.php:26
+msgid ""
+"It looks like nothing was found at this location. Maybe try one of the links "
+"below or a search?"
+msgstr ""
+
+#: comments.php:31
+#, php-format
+msgctxt "comments title"
+msgid "One thought on &ldquo;%2$s&rdquo;"
+msgid_plural "%1$s thoughts on &ldquo;%2$s&rdquo;"
+msgstr[0] ""
+msgstr[1] ""
+
+#: comments.php:40
+msgid "Comment navigation"
+msgstr ""
+
+#: comments.php:43
+msgid "Older Comments"
+msgstr ""
+
+#: comments.php:44
+msgid "Newer Comments"
+msgstr ""
+
+#: comments.php:66
+msgid "Comments are closed."
+msgstr ""
+
+#: footer.php:26
+msgid "Styled Store WordPress Theme by"
+msgstr ""
+
+#: footer.php:27
+msgid "StyledThemes"
+msgstr ""
+
+#: functions.php:48
+msgid "Primary"
+msgstr ""
+
+#: functions.php:49
+msgid "Footer"
+msgstr ""
+
+#: functions.php:50
+msgid "Mobile Menu"
+msgstr ""
+
+#: functions.php:124
+msgid "Blog Right Sidebar"
+msgstr ""
+
+#: functions.php:126
+msgid ""
+"This is blog right sidebar column which appears on blog not on othere pages."
+msgstr ""
+
+#: functions.php:135
+msgid "Blog Left Sidebar"
+msgstr ""
+
+#: functions.php:137
+msgid ""
+"This is blog left sidebar column which appears on blog not on othere pages."
+msgstr ""
+
+#: functions.php:146
+msgid "Page Right Sidebar"
+msgstr ""
+
+#: functions.php:148
+msgid "This is page right sidebar column which appears on right of page"
+msgstr ""
+
+#: functions.php:157
+msgid "Page left Sidebar"
+msgstr ""
+
+#: functions.php:159
+msgid "This is page left sidebar column which appears on left of the page"
+msgstr ""
+
+#: functions.php:168
+msgid "Banner"
+msgstr ""
+
+#: functions.php:170
+msgid "This is banner sidebar which appears just below the header "
+msgstr ""
+
+#: functions.php:179
+msgid "Homepage Featured Section"
+msgstr ""
+
+#: functions.php:181 functions.php:203 functions.php:214 functions.php:225
+#: functions.php:236
+msgid ""
+"This sidebar renders its content on page with Woocommerce Homepage template "
+"Selected"
+msgstr ""
+
+#: functions.php:190
+msgid "Homepage showcase Product"
+msgstr ""
+
+#: functions.php:192
+msgid "This sidebar renders two showcase products in Main homepage"
+msgstr ""
+
+#: functions.php:201
+msgid "Homepage Category Section"
+msgstr ""
+
+#: functions.php:212
+msgid "Homepage Service Section"
+msgstr ""
+
+#: functions.php:223
+msgid "Homepage Promo Section"
+msgstr ""
+
+#: functions.php:234
+msgid "Homepage Recent Post Section"
+msgstr ""
+
+#: functions.php:245
+msgid "Product Overview"
+msgstr ""
+
+#: functions.php:247
+msgid ""
+"Product Overview Section Like Best Sell, Top Rated Product, New Arraivels "
+"etc, contains upto 4 widget in a row"
+msgstr ""
+
+#: functions.php:255
+msgid "Shop Sidebar"
+msgstr ""
+
+#: functions.php:257
+msgid "Sidebar for shop page"
+msgstr ""
+
+#: functions.php:266
+msgid "Footer Top 1"
+msgstr ""
+
+#: functions.php:268
+msgid "This is footer top column which appears on top of footer"
+msgstr ""
+
+#: functions.php:277
+msgid "Footer Top 2"
+msgstr ""
+
+#: functions.php:279
+msgid "This is second footer top column which appears on top of footer"
+msgstr ""
+
+#: functions.php:288
+msgid "Footer Top 3"
+msgstr ""
+
+#: functions.php:290
+msgid "This is third footer top column which appears on top of footer"
+msgstr ""
+
+#: functions.php:299
+msgid "Footer Top 4"
+msgstr ""
+
+#: functions.php:301
+msgid "This is fourth footer top column which appears on top of footer"
+msgstr ""
+
+#: functions.php:310
+msgid "Footer Top 5"
+msgstr ""
+
+#: functions.php:312
+msgid "This is fifth footer top column which appears on top of footer"
+msgstr ""
+
+#: functions.php:333
+msgctxt "Roboto font: on or off"
+msgid "on"
+msgstr ""
+
+#: header.php:42
+msgid " Logout"
+msgstr ""
+
+#: header.php:46
+msgid "Login"
+msgstr ""
+
+#: header.php:51 woocommerce/wc-additional-function.php:275
+msgid "View your shopping cart"
+msgstr ""
+
+#: header.php:51
+msgid "cart /"
+msgstr ""
+
+#: header.php:52 woocommerce/wc-additional-function.php:276
+#, php-format
+msgid "%d"
+msgid_plural "%d"
+msgstr[0] ""
+msgstr[1] ""
+
+#: header.php:95
+msgid "custom header image"
+msgstr ""
+
+#: inc/category-dropdown.php:17
+msgid "&mdash; Choose Category &mdash;"
+msgstr ""
+
+#: inc/customizer.php:38
+msgid "Basic Settings"
+msgstr ""
+
+#: inc/customizer.php:49
+msgid "Blog Layout"
+msgstr ""
+
+#: inc/customizer.php:54
+msgid "Blog with Right Sidebar"
+msgstr ""
+
+#: inc/customizer.php:55
+msgid "Blog with Left Sidebar"
+msgstr ""
+
+#: inc/customizer.php:56
+msgid "Blog Full Width &amp; no Sidebars"
+msgstr ""
+
+#: inc/customizer.php:73
+msgid "Enable Move To Top"
+msgstr ""
+
+#: inc/customizer.php:87
+msgid "Hide Blog Taxonomy Section"
+msgstr ""
+
+#: inc/customizer.php:100
+msgid "Social Networking"
+msgstr ""
+
+#: inc/customizer.php:114
+msgid "Show Social Bar"
+msgstr ""
+
+#: inc/customizer.php:127
+msgid "Facebook"
+msgstr ""
+
+#: inc/customizer.php:139
+msgid "Skype"
+msgstr ""
+
+#: inc/customizer.php:151
+msgid "Twitter"
+msgstr ""
+
+#: inc/customizer.php:163
+msgid "RSS"
+msgstr ""
+
+#: inc/customizer.php:176
+msgid "Homepage Setting"
+msgstr ""
+
+#: inc/customizer.php:182
+msgid "Homepage Slider Setting"
+msgstr ""
+
+#: inc/customizer.php:193
+msgid "Choose Slider Category"
+msgstr ""
+
+#: inc/customizer.php:195
+msgid ""
+" Select Category to show posts in Slider section. This will pull featured "
+"image of product with their respective tags and product title. ) "
+msgstr ""
+
+#: inc/customizer.php:208
+msgid "Footer Setting"
+msgstr ""
+
+#: inc/customizer.php:213
+msgid "Payment Support"
+msgstr ""
+
+#: inc/customizer.php:224
+msgid "Image 1"
+msgstr ""
+
+#: inc/customizer.php:235
+msgid "Image 2"
+msgstr ""
+
+#: inc/customizer.php:246
+msgid "Image 3"
+msgstr ""
+
+#: inc/customizer.php:257
+msgid "Image 4"
+msgstr ""
+
+#: inc/customizer.php:267
+msgid "Image 5"
+msgstr ""
+
+#: inc/customizer.php:274
+msgid "Copyright Text"
+msgstr ""
+
+#: inc/customizer.php:288
+msgid "Hide Copyright Text"
+msgstr ""
+
+#: inc/customizer.php:301
+msgid "Woocommerce Setting"
+msgstr ""
+
+#: inc/customizer.php:306
+msgid "Basic Setting"
+msgstr ""
+
+#: inc/customizer.php:318
+msgid "Shop Page Layout"
+msgstr ""
+
+#: inc/customizer.php:323
+msgid "Shop with Right Sidebar"
+msgstr ""
+
+#: inc/customizer.php:324
+msgid "Shop with Left Sidebar"
+msgstr ""
+
+#: inc/customizer.php:325
+msgid "Shop Full Width &amp; no Sidebars"
+msgstr ""
+
+#: inc/customizer.php:336
+msgid "Disable Add to cart link from product"
+msgstr ""
+
+#: inc/customizer.php:337
+msgid "This remove the cart icon while hovering on product image"
+msgstr ""
+
+#: inc/customizer.php:350
+msgid "Excerpt Lenth"
+msgstr ""
+
+#: inc/customizer.php:351
+msgid "This trim the lenth of short description on shop page "
+msgstr ""
+
+#: inc/customizer.php:364
+msgid "Check this to show onsale on pricing format Eg: $10 OFF"
+msgstr ""
+
+#: inc/customizer.php:377
+msgid "Number of Cross Sells Product"
+msgstr ""
+
+#: inc/customizer.php:378
+msgid "This effects the total number of cross sells products on cartpage"
+msgstr ""
+
+#: inc/customizer.php:391
+msgid "Number of product to show on shop page"
+msgstr ""
+
+#: inc/customizer.php:404
+msgid "Disable flipper from shop page"
+msgstr ""
+
+#: inc/customizer.php:405
+msgid "This will remove flipping functionality on shop page"
+msgstr ""
+
+#: inc/styledstore-function.php:237 woocommerce/wc-additional-function.php:251
+msgid "Search for:"
+msgstr ""
+
+#: inc/styledstore-function.php:238 inc/styledstore-function.php:245
+#: searchform.php:13
+msgctxt "placeholder"
+msgid "search For"
+msgstr ""
+
+#: inc/styledstore-function.php:239 inc/styledstore-function.php:247
+#: searchform.php:15 woocommerce/wc-additional-function.php:253
+msgctxt "submit button"
+msgid "Search"
+msgstr ""
+
+#: inc/styledstore-function.php:272
+msgid "Post navigation"
+msgstr ""
+
+#: inc/styledstore-function.php:273
+msgid "<span class=\"meta-nav\">&larr;</span> Older posts"
+msgstr ""
+
+#: inc/styledstore-function.php:274
+msgid "Newer posts <span class=\"meta-nav\">&rarr;</span>"
+msgstr ""
+
+#: inc/styledstore-function.php:302
+#: woocommerce/widgets/styledstore-featured-products-none-slider.php:99
+#: woocommerce/widgets/styledstore-woocommerce-category.php:140
+#: woocommerce/widgets/styledstore-woocommerce-category.php:155
+msgid "Name"
+msgstr ""
+
+#: inc/styledstore-function.php:311
+msgid "Email"
+msgstr ""
+
+#: inc/styledstore-function.php:320
+msgid "Website"
+msgstr ""
+
+#: inc/styledstore-function.php:374
+msgid "Leave a Reply"
+msgstr ""
+
+#: inc/styledstore-function.php:376
+msgid "Your email address will not be published."
+msgstr ""
+
+#: inc/styledstore-function.php:377
+msgid "SUBMIT"
+msgstr ""
+
+#: inc/styledstore-function.php:414
+msgid "READ MORE"
+msgstr ""
+
+#: inc/styledstore-function.php:563
+msgid "Latest Article"
+msgstr ""
+
+#: inc/styledstore-function.php:583
+#, php-format
+msgid "%1$s %2$s"
+msgstr ""
+
+#: inc/styledstore-function.php:679
+msgid "Dismiss"
+msgstr ""
+
+#: inc/styledstore-function.php:680
+#, php-format
+msgid ""
+"Welcome to the Styled Store,We are delighted that you chose us.If you have "
+"any problem setting up this theme then please import demo data with our  "
+"%sStyled Store Theme Demo Importer Plugin %s "
+msgstr ""
+
+#: inc/styledstore-upsells/styled-store-pro-btn/class-customize.php:76
+#: styledstore-upsells/styled-store-pro-btn/class-customize.php:76
+msgid "Styled Store Pro"
+msgstr ""
+
+#: inc/styledstore-upsells/styled-store-pro-btn/class-customize.php:77
+#: styledstore-upsells/styled-store-pro-btn/class-customize.php:77
+msgid "Go Pro"
+msgstr ""
+
+#: inc/template-tags.php:37
+msgid "Posted by "
+msgstr ""
+
+#: inc/template-tags.php:56
+msgctxt "Used before post author name."
+msgid "Author"
+msgstr ""
+
+#: inc/template-tags.php:77 inc/template-tags.php:89
+msgid ", "
+msgstr ""
+
+#: inc/template-tags.php:83
+msgid "Posted In"
+msgstr ""
+
+#: inc/template-tags.php:84
+msgid "Categories"
+msgstr ""
+
+#: inc/template-tags.php:95
+msgid "Tagged"
+msgstr ""
+
+#: inc/template-tags.php:96
+msgid "Tags"
+msgstr ""
+
+#: inc/template-tags.php:102
+msgid "Leave a comment"
+msgstr ""
+
+#: inc/widgets/styledstore-slider-recent-post.php:18
+msgid "ST: Recent Posts Slider"
+msgstr ""
+
+#: inc/widgets/styledstore-slider-recent-post.php:21
+msgid "This is custom widgets that shows recent post with slider on full width"
+msgstr ""
+
+#: inc/widgets/styledstore-slider-recent-post.php:41
+#: inc/widgets/styledstoreextend-recent-post.php:41
+msgid "Recent Posts"
+msgstr ""
+
+#: inc/widgets/styledstore-slider-recent-post.php:65
+msgid "By"
+msgstr ""
+
+#: inc/widgets/styledstore-slider-recent-post.php:107
+#: inc/widgets/styledstoreextend-recent-post.php:169
+#: woocommerce/widgets/styledstore-featured-products-none-slider.php:69
+#: woocommerce/widgets/styledstore-show-child-category.php:115
+#: woocommerce/widgets/styledstore-woocommerce-category.php:114
+#: woocommerce/widgets/widgets-featuredproducts.php:181
+msgid "Title:"
+msgstr ""
+
+#: inc/widgets/styledstore-slider-recent-post.php:110
+#: inc/widgets/styledstoreextend-recent-post.php:172
+msgid "Number of posts to show:"
+msgstr ""
+
+#: inc/widgets/styledstoreextend-recent-post.php:18
+msgid "ST: Recent Posts"
+msgstr ""
+
+#: inc/widgets/styledstoreextend-recent-post.php:21
+msgid ""
+"This is custom widgets that shows recent post which includes featured image "
+"of particulat post"
+msgstr ""
+
+#: inc/widgets/styledstoreextend-recent-post.php:91
+msgctxt "Used before post author name."
+msgid "By &nbsp"
+msgstr ""
+
+#: inc/widgets/styledstoreextend-recent-post.php:110
+#, php-format
+msgctxt "Comments Title"
+msgid "%1$s comment"
+msgid_plural "%1$s comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/widgets/styledstoreextend-recent-post.php:176
+msgid "Display post date?"
+msgstr ""
+
+#: inc/widgets/styledstoreextend-recent-post.php:179
+msgid "Show featured Image?"
+msgstr ""
+
+#: search.php:18
+#, php-format
+msgid "Search Results for: %s"
+msgstr ""
+
+#: single.php:29
+msgid "Next post:"
+msgstr ""
+
+#: single.php:30
+msgid "Next"
+msgstr ""
+
+#: single.php:33
+msgid "Previous post:"
+msgstr ""
+
+#: single.php:35
+msgid "Previous"
+msgstr ""
+
+#: template-parts/content-archive.php:28 template-parts/content.php:29
+#, php-format
+msgid "Read More<span class=\"screen-reader-text\"> \"%s\"</span>"
+msgstr ""
+
+#: template-parts/content-none.php:14
+msgid "Nothing Found"
+msgstr ""
+
+#: template-parts/content-none.php:21
+#, php-format
+msgid ""
+"Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr ""
+
+#: template-parts/content-none.php:25
+msgid ""
+"Sorry, but nothing matched your search terms. Please try again with some "
+"different keywords."
+msgstr ""
+
+#: template-parts/content-none.php:33
+msgid ""
+"It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps "
+"searching can help."
+msgstr ""
+
+#: template-parts/content-page.php:24 template-parts/content-single.php:25
+#: template-parts/content.php:34
+msgid "Pages:"
+msgstr ""
+
+#: woocommerce/cart/cart.php:27 woocommerce/cart/cart.php:70
+msgid "Product"
+msgstr ""
+
+#: woocommerce/cart/cart.php:28 woocommerce/cart/cart.php:88
+msgid "Price"
+msgstr ""
+
+#: woocommerce/cart/cart.php:29 woocommerce/cart/cart.php:94
+msgid "Quantity"
+msgstr ""
+
+#: woocommerce/cart/cart.php:30 woocommerce/cart/cart.php:111
+msgid "Total"
+msgstr ""
+
+#: woocommerce/cart/cart.php:51
+msgid "Remove this item"
+msgstr ""
+
+#: woocommerce/cart/cart.php:83
+msgid "Available on backorder"
+msgstr ""
+
+#: woocommerce/cart/cart.php:129
+msgid "Coupon"
+msgstr ""
+
+#: woocommerce/cart/cart.php:129
+msgid "Coupon code"
+msgstr ""
+
+#: woocommerce/cart/cart.php:129
+msgid "Apply Coupon"
+msgstr ""
+
+#: woocommerce/cart/cart.php:135
+msgid "Update Cart"
+msgstr ""
+
+#: woocommerce/content-single-product.php:61
+msgid "Description"
+msgstr ""
+
+#: woocommerce/content-single-product.php:68
+msgid "Reviews"
+msgstr ""
+
+#: woocommerce/global/quantity-input.php:24
+msgctxt "Product quantity input tooltip"
+msgid "Qty"
+msgstr ""
+
+#: woocommerce/single-product/rating.php:35
+#, php-format
+msgid "Rated %s out of 5"
+msgstr ""
+
+#: woocommerce/single-product/rating.php:37
+#, php-format
+msgid "out of %s5%s"
+msgstr ""
+
+#: woocommerce/single-product/rating.php:38
+#, php-format
+msgid "based on %s customer rating"
+msgid_plural "based on %s customer ratings"
+msgstr[0] ""
+msgstr[1] ""
+
+#: woocommerce/single-product/review.php:44
+msgid "Your comment is awaiting approval"
+msgstr ""
+
+#: woocommerce/single-product/review.php:53
+msgid "verified owner"
+msgstr ""
+
+#: woocommerce/single-product/up-sells.php:27
+msgid "Upsells Products"
+msgstr ""
+
+#: woocommerce/wc-additional-function.php:228
+msgid "OFF"
+msgstr ""
+
+#: woocommerce/wc-additional-function.php:252
+msgid "Search Products"
+msgstr ""
+
+#: woocommerce/widgets/class-wc-widget-best-sale-product.php:24
+msgid "Display a list of your best sale products on your site."
+msgstr ""
+
+#: woocommerce/widgets/class-wc-widget-best-sale-product.php:26
+msgid "ST:Best Sale Products"
+msgstr ""
+
+#: woocommerce/widgets/class-wc-widget-best-sale-product.php:30
+msgid "Best Sale Products"
+msgstr ""
+
+#: woocommerce/widgets/class-wc-widget-best-sale-product.php:31
+#: woocommerce/widgets/class-wc-widget-new-arrival-product.php:31
+#: woocommerce/widgets/styledstore-featured-products-none-slider.php:89
+#: woocommerce/widgets/styledstore-woocommerce-category.php:127
+#: woocommerce/widgets/styledstore-woocommerce-category.php:128
+msgid "Title"
+msgstr ""
+
+#: woocommerce/widgets/class-wc-widget-best-sale-product.php:39
+#: woocommerce/widgets/class-wc-widget-new-arrival-product.php:39
+msgid "Number of products to show"
+msgstr ""
+
+#: woocommerce/widgets/class-wc-widget-new-arrival-product.php:24
+msgid "Display a list new arrival products on your site."
+msgstr ""
+
+#: woocommerce/widgets/class-wc-widget-new-arrival-product.php:26
+msgid "ST:New Arrival Products"
+msgstr ""
+
+#: woocommerce/widgets/class-wc-widget-new-arrival-product.php:30
+msgid "New Arrival Products"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-featured-products-none-slider.php:20
+msgid "ST:Featured Products"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-featured-products-none-slider.php:21
+msgid ""
+"This widgets displays all the woocommerce featured products with no slider. "
+"This mainly used on right and left sidebar"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-featured-products-none-slider.php:60
+#: woocommerce/widgets/widgets-featuredproducts.php:175
+msgid "FEATURED"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-featured-products-none-slider.php:74
+#: woocommerce/widgets/styledstore-woocommerce-category.php:119
+#: woocommerce/widgets/widgets-featuredproducts.php:186
+msgid "Products per page:"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-featured-products-none-slider.php:79
+msgid "Columns:"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-featured-products-none-slider.php:85
+#: woocommerce/widgets/styledstore-featured-products-none-slider.php:108
+#: woocommerce/widgets/styledstore-woocommerce-category.php:123
+msgid "Order By:"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-featured-products-none-slider.php:93
+#: woocommerce/widgets/styledstore-woocommerce-category.php:132
+msgid "Date"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-featured-products-none-slider.php:96
+#: woocommerce/widgets/styledstore-woocommerce-category.php:136
+msgid "Random"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-featured-products-none-slider.php:111
+#: woocommerce/widgets/styledstore-woocommerce-category.php:151
+msgid "desc"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-featured-products-none-slider.php:115
+msgid "asc"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-featured-products-none-slider.php:125
+#: woocommerce/widgets/styledstore-woocommerce-category.php:164
+#: woocommerce/widgets/widget-styledstore-showcase-product.php:54
+#: woocommerce/widgets/widget-styledstore-showcase-product.php:78
+#: woocommerce/widgets/widgets-featuredproducts.php:193
+msgid "Category:"
+msgid_plural "Categories:"
+msgstr[0] ""
+msgstr[1] ""
+
+#: woocommerce/widgets/styledstore-featured-products-none-slider.php:131
+#: woocommerce/widgets/widgets-featuredproducts.php:199
+msgid "All Category"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-show-child-category.php:24
+msgid "ST: Show child category"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-show-child-category.php:27
+msgid ""
+"This is woocommerce custom widgets that shows child category of parent "
+"category"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-show-child-category.php:119
+msgid "Select Parent Category:"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-show-child-category.php:135
+msgid "Number of Category to show:"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-show-child-category.php:139
+msgid "Display product count?"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-woocommerce-category.php:22
+msgid "ST:Category List"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-woocommerce-category.php:25
+msgid ""
+"This is woocommerce custom widgets that list all the category with its "
+"featured image"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-woocommerce-category.php:75
+msgid "Demo Image"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-woocommerce-category.php:106
+msgid "Browse our Categories"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-woocommerce-category.php:148
+msgid "Order:"
+msgstr ""
+
+#: woocommerce/widgets/styledstore-woocommerce-category.php:165
+msgid "You can select multiple categories pressing here"
+msgstr ""
+
+#: woocommerce/widgets/widget-styledstore-showcase-product.php:13
+msgid "ST: Showcase Product ID"
+msgstr ""
+
+#: woocommerce/widgets/widget-styledstore-showcase-product.php:14
+msgid "Enter Product ID here to display in showcase"
+msgstr ""
+
+#: woocommerce/widgets/widget-styledstore-showcase-product.php:66
+#: woocommerce/widgets/widget-styledstore-showcase-product.php:89
+msgid "Details"
+msgstr ""
+
+#: woocommerce/widgets/widget-styledstore-showcase-product.php:111
+msgid "Product ID one:"
+msgstr ""
+
+#: woocommerce/widgets/widget-styledstore-showcase-product.php:115
+msgid "Product ID two:"
+msgstr ""
+
+#: woocommerce/widgets/widgets-featuredproducts.php:20
+msgid "ST:Slider Featured Products"
+msgstr ""
+
+#: woocommerce/widgets/widgets-featuredproducts.php:21
+msgid "This widgets displays all the woocommerce featured products"
+msgstr ""

@@ -1,0 +1,11 @@
+Changelog
+
+2 Mar 2014 - 1.04
+--------------------------------------
+- compatibility with the new Page Builder by Site Origin;
+
+18 Dec 2014 - 1.03
+--------------------------------------
+- fix for iOS scrolling;
+- logo size option;
+- full width page template

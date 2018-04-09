@@ -1,0 +1,475 @@
+/**
+    * @description This css file is used for making template responsive
+    * @version  StyledStore 1.0
+    * @package StyledStore 
+*/
+@media (max-width: 1280px) {
+
+    .logo-container {
+        /*width: 100%;*/
+        padding: 0;
+    }
+}
+
+@media (min-width: 768px) {
+
+    .header {
+
+        padding-bottom: 0;
+
+    }
+
+    .header .logo {
+
+        position: relative;
+
+        top: -10px;
+
+    }
+
+    .logo .site-title {
+
+        font-size: 3rem;
+
+    }
+
+    .logo .site-desc {
+
+         font-size: 1.7rem;
+
+    }
+
+    .header-topbar .social-icons {
+
+        margin-right: 20px;
+
+    }
+
+    .header-topbar .acc-login {
+
+        margin-right: 0;
+
+        padding-right: 25px;
+
+    }
+
+    .lgn-ct .header-top-cart.mini-cart {
+
+          padding-left: 25px;
+    padding-top: 10px;
+    padding-bottom: 8px;
+
+    }
+
+    .lgn-ct .mini-cart a i {
+
+        padding-left: 8rem;
+
+        padding-right: 1rem;
+
+    }
+
+    .header .navigation-menu  {
+
+        display: inline-block;
+
+    }
+
+    .mobile-navigation {
+
+        display: none;
+
+    }
+
+    /* hide the button in desktop view */
+
+    .main-menu-btn {
+
+        position: absolute;
+
+        top: -99999px;
+
+    }
+
+    /* always show the menu in desktop view */
+
+    #main-menu-state:not(:checked) ~ .header-menu {
+
+        display: block;
+
+    }
+
+    .st-slider-slides .bx-prev {
+
+        left: 55px;
+
+    }
+
+    .st-slider-slides .bx-next {
+
+        right: 55px;
+
+    }
+
+    #st-woo-sidebar {
+
+        margin-top: 0;
+
+    }
+
+    .woocommerce div.product form.cart div.quantity {
+
+        margin: 0 0 0 10px;
+
+    }
+
+    .stwo-post-navigation.clearfix {
+
+        float: right;
+
+    }
+
+}
+
+
+
+@media (min-width: 768px) and (max-width: 1280px) {
+
+    .header .navigation-menu {
+
+        display: block;
+
+        width: 100%;
+
+    }
+
+    .header .navigation-menu:before {
+
+        display: block;
+
+        content: " ";
+
+        position: absolute;
+
+        width: 200%;
+
+        top: 0;
+
+        bottom: 0;
+
+        background: #fff;
+
+        left: -200%;
+
+    }
+
+}
+
+@media (min-width: 480px) and (max-width: 768px) {
+
+
+    
+
+    .woocommerce ul.products li.product,
+
+    .woocommerce-page ul.products li.product {
+
+        width: 47%;
+
+        /*margin-right: 0;*/
+
+    }
+
+    .woocommerce ul.products li.last,
+
+    .woocommerce-page ul.products li.last {
+
+        margin-right: 3%;
+
+    }
+
+    .stwo-post-navigation,
+
+    .stwo-post-navigation .nav-links {
+
+        width: 100%;
+
+        float: left;
+
+    }
+
+    .stwo-post-navigation .nav-next {
+
+        float: left;
+
+        margin-left: 0;
+
+    }
+
+    .stwo-post-navigation .nav-previous {
+
+        margin-left: 0;
+
+    }
+
+    .woocommerce div.product .product_title {
+
+        display: inline-block;
+
+    }
+
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+
+    .styledstore_recent_post ul {
+
+        overflow: hidden;
+
+    }
+
+    .woocommerce ul.product_list_widget li,
+
+    .styledstore_recent_post ul li {
+
+        width: 46%;
+
+        float: left;
+
+        margin-right: 2%;
+
+    }
+
+    #fist-half-footer-toop-widgets > div {
+
+        width: 33.33%;
+
+        float: left;
+
+    }
+
+    #second-half-footer-top-widgets > div {
+
+        width: 50%;
+
+        float: left;
+
+    }
+
+    .styledstore-singlepost .author-metainfo {
+
+        padding: 0;
+
+    }
+
+    .comment-form .comment-notes + .row > div {
+
+        padding: 0;
+
+    }
+
+    .footer-menu {
+
+        float: left;
+
+    }
+
+    .copyright {
+
+        float: left;
+
+        font-size: 1.2rem;
+
+        line-height: 2;
+
+    }
+
+    .footer-menu ul li {
+
+        font-size: 1.2rem;
+
+        line-height: 2;
+
+        float: left;
+
+    }
+
+    .footer-menu ul li a {
+
+        font-size: 1.2rem;
+
+    }
+
+}
+
+@media (max-width: 415px) {
+
+/*    .header-topbar .container {
+
+        padding: 0;
+
+    }*/
+
+
+
+    .header .logo {
+
+        top: 0;
+
+    }
+
+    .header-topbar .social-icons {
+
+        margin-right: 7px;
+
+    }
+
+    .header-topbar .social-icons .social-icon {
+
+        padding: 0 5px;
+
+    }
+
+    .header-topbar .social-icons {
+
+        width: 100%;
+
+        margin-top: 15px;
+
+        margin-right: 0;
+
+    }
+
+    .social-icon a {
+
+        line-height: 1.2;
+
+    }
+
+    .lgn-ct {
+
+        width: 100%;
+
+        padding-left: 0;
+
+        padding-right: 0;
+
+    }
+
+    .header-topbar .acc-login {
+
+        margin-right: 5px;
+
+        padding-right: 5px;
+
+    }
+
+    .lgn-ct > div a {
+
+        line-height: 1;
+
+    }
+
+    .woocommerce ul.products li.product,
+
+    .woocommerce-page ul.products li.product {
+
+        width: 100%;
+
+        margin-right: 0;
+
+    }
+
+    .styledstore-singlepost .author-metainfo {
+
+        padding: 0;
+
+    }
+
+    .comment-form .comment-notes + .row > div {
+
+        padding: 0;
+
+    }
+
+    #footer {
+
+        text-align: center;
+
+    }
+
+    .footer-menu {
+
+        float: left;
+
+    }
+
+    .copyright {
+
+        float: left;
+
+        font-size: 1.2rem;
+
+        line-height: 2;
+
+    }
+
+    .footer-menu ul li {
+
+        font-size: 1.2rem;
+
+        line-height: 2;
+
+        float: left;
+
+    }
+
+    .footer-menu ul li a {
+
+        font-size: 1.2rem;
+
+    }
+
+    .stwo-post-navigation,
+
+    .stwo-post-navigation .nav-links {
+
+        width: 100%;
+
+        float: left;
+
+    }
+
+    .stwo-post-navigation .nav-next {
+
+        float: left;
+
+        margin-left: 0;
+
+    }
+
+    .stwo-post-navigation .nav-previous {
+
+        margin-left: 0;
+
+    }
+
+    .woocommerce div.product .product_title {
+
+        display: inline-block;
+
+    }
+
+    .woocommerce form .form-row-first,
+
+    .woocommerce form .form-row-last,
+
+    .woocommerce-page form .form-row-first,
+
+    .woocommerce-page form .form-row-last {
+
+        width: 100%;
+
+    }
+
+}

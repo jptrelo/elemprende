@@ -1,0 +1,58 @@
+Version 0.1
+i)   Theme Submitted for approval
+ 
+Version 0.1.1
+i)   A few changes for comments and stylesheets.
+
+Version 0.2
+i)   Removed Custom post-content, Custom Post Types, Custom Taxonomies etc from the theme.
+
+Version 0.2.1
+i)	 A few changes for FT Options.
+ii)  changes in style.css 
+
+Version 0.3
+i) Replacing screenshot.png
+
+Version 0.3.1
+i)   Changed code in custom-header.php
+ii)  Changed slider code in index.php and a few changes in functions.php
+
+
+Version 0.3.2
+i) Image references added.
+
+Version 1.0
+i) Grammatical Error on home page. Added 's' in the 'latest post' heading and made it 'Latest Posts'.
+
+Version 1.01
+i) Removed blank spaces from theme description in style.css so that it display properly on theme page in WordPress.org.
+
+Version 1.02
+
+	i) Set TGM for pagination.
+	ii) Change copyright text condition.
+	iii) Change theme author uri in style.css.	
+	iv) Set FT Options condition in all pages.
+	v) Change FT Options logo and remove space in FasterThemes.  
+
+Version	1.03
+    i)  Set Sanitization in all input fields.
+	ii)	Define TGM license and link in  readme.txt
+	iii) Set copyright text in footer.
+
+Version	1.04
+    i)  Set WordPress link in footer.
+	ii)	Delete useless image.
+	iii) Set css for sidebar.	
+	iv) esc_url_raw replace with esc_url.
+	
+Version	1.05
+    i) Fixed JS error which was appearing in admin panel. 
+ 	ii) Removed screen_icon() found in the files class-tgm-plugin-activation.php and fasterthemes.php as it's deprecated.
+Version 1.06 (17 Dec 2014)
+    i) Made theme translation-ready!
+    ii) Fix css issue
+
+Version 2.0 (04 Jan 2017)
+    i) Made theme translation-ready!

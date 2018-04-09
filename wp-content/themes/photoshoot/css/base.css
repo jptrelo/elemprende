@@ -1,0 +1,11 @@
+.box {
+  width: 50%;
+}
+.article {
+  position: relative;
+}
+.masonry-container{
+	width:100%;
+       margin: 0px;
+        display: table;
+}

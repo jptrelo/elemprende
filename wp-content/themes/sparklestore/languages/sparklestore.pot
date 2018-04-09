@@ -1,0 +1,1417 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-02-13 17:23+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/"
+
+#: functions.php:72
+msgid "Primary"
+msgstr ""
+
+#: functions.php:73
+#: sparklethemes/sparkle-widgets/sparkle-category-collection.php:118
+#: sparklethemes/sparkle-widgets/sparkle-products-area.php:26
+msgid "Category"
+msgstr ""
+
+#: functions.php:74
+msgid "Top Menu"
+msgstr ""
+
+#: functions.php:75
+msgid "Footer Menu"
+msgstr ""
+
+#: functions.php:139
+msgid "Right Sidebar Widget Area"
+msgstr ""
+
+#: functions.php:149
+msgid "Left Sidebar Widget Area"
+msgstr ""
+
+#: functions.php:160
+#, php-format
+msgid ""
+"Displays widgets on home page main content area.%1$s Note : Please go to "
+"%2$s \"Static Front Page\"%3$s setting, Select \"A static page\" then "
+"\"Front page\" and \"Posts page\" to show added widgets"
+msgstr ""
+
+#: functions.php:163
+msgid ""
+"Displays widgets on Front/Home page. Note : First Create Page and Select "
+"\"Page Attributes Template\"( SpiderMag - FrontPage ) then Please go to "
+"Setting => Reading, Select \"A static page\" then \"Front page\" and add "
+"widgets to show on Home Page"
+msgstr ""
+
+#: functions.php:167 sparklethemes/customizer/customizer.php:365
+msgid "Sparkle: Main Widget Area"
+msgstr ""
+
+#: functions.php:177
+msgid "Footer Widget Area One"
+msgstr ""
+
+#: functions.php:186
+msgid "Footer Widget Area Two"
+msgstr ""
+
+#: functions.php:195
+msgid "Footer Widget Area Three"
+msgstr ""
+
+#: functions.php:204
+msgid "Footer Widget Area Four"
+msgstr ""
+
+#: functions.php:291 sparklethemes/sparkle-widgets/widgets-fields.php:264
+msgid "Upload"
+msgstr ""
+
+#: functions.php:292 sparklethemes/sparkle-widgets/widgets-fields.php:266
+#: sparklethemes/sparkle-widgets/widgets-fields.php:274
+msgid "Remove"
+msgstr ""
+
+#: 404.php:23 sparklethemes/functions.php:666
+msgid "404"
+msgstr ""
+
+#: 404.php:24
+msgid "Oops! The Page you requested was not found!"
+msgstr ""
+
+#: 404.php:25
+msgid "Back To Home"
+msgstr ""
+
+#: index.php:39 archive.php:38 search.php:38
+msgid "Prev"
+msgstr ""
+
+#: index.php:40 archive.php:39 search.php:39
+msgid "Next"
+msgstr ""
+
+#: comments.php:30
+msgid "Comments"
+msgstr ""
+
+#: comments.php:41 comments.php:53
+msgid "Comment navigation"
+msgstr ""
+
+#: comments.php:44 comments.php:56
+msgid "Older Comments"
+msgstr ""
+
+#: comments.php:45 comments.php:57
+msgid "Newer Comments"
+msgstr ""
+
+#: comments.php:70
+msgid "Comments are closed."
+msgstr ""
+
+#: comments.php:76
+msgid "ADD COMMENT"
+msgstr ""
+
+#: header.php:47 sparklethemes/hooks/woocommerce.php:147
+#: sparklethemes/hooks/woocommerce.php:155
+msgid "All Categories"
+msgstr ""
+
+#: header.php:57
+msgid "Menu"
+msgstr ""
+
+#. Name of the template
+msgid "FrontPage Template"
+msgstr ""
+
+#: sparklethemes/functions.php:82 sparklethemes/functions.php:91
+#: template-parts/content-single.php:44 template-parts/content.php:44
+#: template-parts/content-search.php:37
+#: sparklethemes/sparkle-widgets/sparkle-blogs-widget.php:148
+msgid "0 Comment"
+msgstr ""
+
+#: sparklethemes/functions.php:82 sparklethemes/functions.php:91
+#: template-parts/content-single.php:44 template-parts/content.php:44
+#: template-parts/content-search.php:37
+#: sparklethemes/sparkle-widgets/sparkle-blogs-widget.php:148
+#: sparklethemes/core/template-tags.php:64
+msgid "1 Comment"
+msgstr ""
+
+#: sparklethemes/functions.php:82 sparklethemes/functions.php:91
+#: template-parts/content-single.php:44 template-parts/content.php:44
+#: template-parts/content-search.php:37
+#: sparklethemes/sparkle-widgets/sparkle-blogs-widget.php:148
+#: sparklethemes/core/template-tags.php:64
+msgid "% Comments"
+msgstr ""
+
+#: sparklethemes/functions.php:82 sparklethemes/functions.php:91
+#: template-parts/content-single.php:44 template-parts/content.php:44
+#: template-parts/content-search.php:37
+#: sparklethemes/sparkle-widgets/sparkle-blogs-widget.php:148
+msgid "Comments are Closed"
+msgstr ""
+
+#: sparklethemes/functions.php:304
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: sparklethemes/functions.php:312
+#, php-format
+msgid "%1$s at %2$s"
+msgstr ""
+
+#: sparklethemes/functions.php:534
+msgid "Delete"
+msgstr ""
+
+#: sparklethemes/functions.php:535
+msgid "Close"
+msgstr ""
+
+#: sparklethemes/functions.php:554
+msgid "Display Layout Options"
+msgstr ""
+
+#: sparklethemes/functions.php:567
+msgid "Left Sidebar"
+msgstr ""
+
+#: sparklethemes/functions.php:572
+msgid "Right (Default)"
+msgstr ""
+
+#: sparklethemes/functions.php:577
+msgid "Full width"
+msgstr ""
+
+#: sparklethemes/functions.php:582
+msgid "Both Sidebar"
+msgstr ""
+
+#: sparklethemes/functions.php:664 sparklethemes/functions.php:694
+#, php-format
+msgid "Search Results for : %s"
+msgstr ""
+
+#: sparklethemes/functions.php:717
+msgid "Home"
+msgstr ""
+
+#: sparklethemes/functions.php:732
+msgid "Archive by category"
+msgstr ""
+
+#: sparklethemes/functions.php:734
+msgid "Search results for"
+msgstr ""
+
+#: sparklethemes/functions.php:800
+msgid "Posts tagged"
+msgstr ""
+
+#: sparklethemes/functions.php:804
+msgid "Articles posted by "
+msgstr ""
+
+#: sparklethemes/functions.php:806
+msgid "Error 404"
+msgstr ""
+
+#: sparklethemes/functions.php:812
+msgid "Page"
+msgstr ""
+
+#: sparklethemes/functions.php:875
+msgid "Install Required Plugins"
+msgstr ""
+
+#: sparklethemes/functions.php:876
+msgid "Install Plugins"
+msgstr ""
+
+#: sparklethemes/functions.php:877
+#, php-format
+msgid "Installing Plugin: %s"
+msgstr ""
+
+#: sparklethemes/functions.php:878
+msgid "Something went wrong with the plugin API."
+msgstr ""
+
+#: sparklethemes/functions.php:879
+#, php-format
+msgid "This theme requires the following plugin: %1$s."
+msgid_plural "This theme requires the following plugins: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: sparklethemes/functions.php:882
+#, php-format
+msgid "This theme recommends the following plugin: %1$s."
+msgid_plural "This theme recommends the following plugins: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: sparklethemes/functions.php:885
+#, php-format
+msgid ""
+"Sorry, but you do not have the correct permissions to install the %1$s "
+"plugin."
+msgid_plural ""
+"Sorry, but you do not have the correct permissions to install the %1$s "
+"plugins."
+msgstr[0] ""
+msgstr[1] ""
+
+#: sparklethemes/functions.php:888
+#, php-format
+msgid ""
+"The following plugin needs to be updated to its latest version to ensure "
+"maximum compatibility with this theme: %1$s."
+msgid_plural ""
+"The following plugins need to be updated to their latest version to ensure "
+"maximum compatibility with this theme: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: sparklethemes/functions.php:891
+#, php-format
+msgid "There is an update available for: %1$s."
+msgid_plural "There are updates available for the following plugins: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: sparklethemes/functions.php:894
+#, php-format
+msgid ""
+"Sorry, but you do not have the correct permissions to update the %1$s plugin."
+msgid_plural ""
+"Sorry, but you do not have the correct permissions to update the %1$s "
+"plugins."
+msgstr[0] ""
+msgstr[1] ""
+
+#: sparklethemes/functions.php:897
+#, php-format
+msgid "The following required plugin is currently inactive: %1$s."
+msgid_plural "The following required plugins are currently inactive: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: sparklethemes/functions.php:900
+#, php-format
+msgid "The following recommended plugin is currently inactive: %1$s."
+msgid_plural "The following recommended plugins are currently inactive: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: sparklethemes/functions.php:903
+#, php-format
+msgid ""
+"Sorry, but you do not have the correct permissions to activate the %1$s "
+"plugin."
+msgid_plural ""
+"Sorry, but you do not have the correct permissions to activate the %1$s "
+"plugins."
+msgstr[0] ""
+msgstr[1] ""
+
+#: sparklethemes/functions.php:906
+msgid "Begin installing plugin"
+msgid_plural "Begin installing plugins"
+msgstr[0] ""
+msgstr[1] ""
+
+#: sparklethemes/functions.php:909
+msgid "Begin updating plugin"
+msgid_plural "Begin updating plugins"
+msgstr[0] ""
+msgstr[1] ""
+
+#: sparklethemes/functions.php:912
+msgid "Begin activating plugin"
+msgid_plural "Begin activating plugins"
+msgstr[0] ""
+msgstr[1] ""
+
+#: sparklethemes/functions.php:915
+msgid "Return to Required Plugins Installer"
+msgstr ""
+
+#: sparklethemes/functions.php:916
+msgid "Plugin activated successfully."
+msgstr ""
+
+#: sparklethemes/functions.php:917
+msgid "The following plugin was activated successfully:"
+msgstr ""
+
+#: sparklethemes/functions.php:918
+#, php-format
+msgid "No action taken. Plugin %1$s was already active."
+msgstr ""
+
+#: sparklethemes/functions.php:919
+#, php-format
+msgid ""
+"Plugin not activated. A higher version of %s is needed for this theme. "
+"Please update the plugin."
+msgstr ""
+
+#: sparklethemes/functions.php:920
+#, php-format
+msgid "All plugins installed and activated successfully. %1$s"
+msgstr ""
+
+#: sparklethemes/functions.php:921
+msgid "Please contact the administrator of this site for help."
+msgstr ""
+
+#: template-parts/content-single.php:54 template-parts/content-page.php:18
+msgid "Pages:"
+msgstr ""
+
+#: template-parts/content-none.php:14
+msgid "Nothing Found"
+msgstr ""
+
+#: template-parts/content-none.php:21
+#, php-format
+msgid ""
+"Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr ""
+
+#: template-parts/content-none.php:25
+msgid ""
+"Sorry, but nothing matched your search terms. Please try again with some "
+"different keywords."
+msgstr ""
+
+#: template-parts/content-none.php:31
+msgid ""
+"It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps "
+"searching can help."
+msgstr ""
+
+#. translators: %s: Name of current post
+#. translators: %s: Name of current post
+#: template-parts/content-page.php:29 sparklethemes/core/template-tags.php:71
+#, php-format
+msgid "Edit %s"
+msgstr ""
+
+#: template-parts/content.php:53 template-parts/content-search.php:46
+msgid "Read More"
+msgstr ""
+
+#: woocommerce/global/quantity-input.php:36
+msgctxt "Product quantity input tooltip"
+msgid "Qty"
+msgstr ""
+
+#: woocommerce/global/quantity-input.php:36
+#, php-format
+msgid "%s quantity"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/contact-info.php:17
+msgid "SP: Quick Contact Info"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/contact-info.php:18
+msgid "A widget that shows quick contact information"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/contact-info.php:28
+#: sparklethemes/sparkle-widgets/sparkle-category-products.php:58
+#: sparklethemes/sparkle-widgets/sparkle-products-area.php:62
+msgid "Title"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/contact-info.php:33
+msgid "Contact Address"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/contact-info.php:39
+msgid "Contact Number"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/contact-info.php:44
+msgid "Contact Email Address"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-category-collection.php:17
+msgid "SP: Woo Category Collection"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-category-collection.php:18
+msgid "A widget that shows WooCommerce category"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-category-collection.php:53
+msgid "Main Title"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-category-collection.php:59
+msgid "Category Section Very Short Description"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-category-collection.php:66
+#: sparklethemes/sparkle-widgets/sparkle-products-area.php:79
+msgid "Select Category"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-category-collection.php:115
+#: sparklethemes/sparkle-widgets/sparkle-category-collection.php:119
+msgid "Products"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/widgets-fields.php:11
+msgid "Select Categories"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/widgets-fields.php:26
+msgid "Select Pages"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/widgets-fields.php:260
+msgid "No file chosen"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/widgets-fields.php:269
+msgid "Upgrade your version of WordPress for full media support."
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/widgets-fields.php:284
+msgid "View File"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-category-products.php:16
+msgid "SP: Woo Category With Product"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-category-products.php:17
+msgid ""
+"A widget that shows woocommerce category feature image with selected "
+"category products"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-category-products.php:24
+msgid "Right Align Category Image"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-category-products.php:25
+msgid "Left Align Category Image"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-category-products.php:48
+#: sparklethemes/sparkle-widgets/sparkle-category-products.php:75
+#: sparklethemes/sparkle-widgets/sparkle-products-area.php:53
+msgid "Select Product Category"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-category-products.php:63
+#: sparklethemes/sparkle-widgets/sparkle-products-area.php:67
+msgid "Very Short Description"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-category-products.php:69
+msgid "Select Display Style (Image Alignment)"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-category-products.php:81
+#: sparklethemes/sparkle-widgets/sparkle-products-area.php:85
+msgid "Enter Number of Products Show"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-category-products.php:86
+msgid "Checked to Display Category Info"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-category-products.php:154
+msgid "Shop Now"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-promo.php:15
+msgid "SP: Promo Widget Section"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-promo.php:16
+msgid "A widget that promote you busincess visual way"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-promo.php:27
+msgid "Promo Section One"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-promo.php:33
+#: sparklethemes/sparkle-widgets/sparkle-promo.php:58
+#: sparklethemes/sparkle-widgets/sparkle-promo.php:83
+#: sparklethemes/sparkle-widgets/sparkle-fullpromo.php:27
+msgid "Select Promo Page"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-promo.php:39
+msgid "Promo One Button Link"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-promo.php:52
+msgid "Promo Section Two"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-promo.php:64
+msgid "Promo Two Button Link"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-promo.php:77
+msgid "Promo Section Three"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-promo.php:89
+msgid "Promo Three Button Link"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-promo.php:100
+#: sparklethemes/sparkle-widgets/sparkle-fullpromo.php:45
+msgid "Check to Disable Promo Information"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-fullpromo.php:16
+msgid "SP: Full Promo Widget"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-fullpromo.php:17
+msgid "A widget that promote you busincess"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-fullpromo.php:33
+msgid "Promo Button Link"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-fullpromo.php:39
+msgid "Promo Button Text"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-tabs-category.php:17
+msgid "SP: Woo Category Tabs"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-tabs-category.php:18
+msgid ""
+"A widget that shows WooCommerce category in multiple tabs with category "
+"related products"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-tabs-category.php:51
+msgid "Select Category Tabs"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-tabs-category.php:58
+msgid "Enter the Number Products Display"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-blogs-widget.php:17
+msgid "SP: Blogs Widget Section"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-blogs-widget.php:18
+msgid "A widget that shows blogs posts"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-blogs-widget.php:42
+msgid "Blogs Main Title"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-blogs-widget.php:48
+msgid "Blogs Very Short Description"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-blogs-widget.php:55
+msgid "Select Blogs Category"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-blogs-widget.php:62
+msgid "Enter Display Numebr of Posts"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-products-area.php:16
+msgid "SP: Woo Product Area"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-products-area.php:17
+msgid ""
+"A widget that shows woocommerce all type product (Latest, Feature, On Sale, "
+"Up Sale) and selected category products"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-products-area.php:25
+#: sparklethemes/sparkle-widgets/sparkle-products-area.php:73
+msgid "Select Product Type"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-products-area.php:27
+msgid "Latest Product"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-products-area.php:28
+msgid "UpSell Product"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-products-area.php:29
+msgid "Feature Product"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-products-area.php:30
+msgid "On Sale Product"
+msgstr ""
+
+#: sparklethemes/sparkle-widgets/sparkle-products-area.php:121
+msgid "New"
+msgstr ""
+
+#: sparklethemes/core/template-tags.php:28
+#, php-format
+msgctxt "post date"
+msgid "Posted on %s"
+msgstr ""
+
+#: sparklethemes/core/template-tags.php:33
+#, php-format
+msgctxt "post author"
+msgid "by %s"
+msgstr ""
+
+#. translators: used between list items, there is a space after the comma
+#. translators: used between list items, there is a space after the comma
+#: sparklethemes/core/template-tags.php:50
+#: sparklethemes/core/template-tags.php:56
+msgid ", "
+msgstr ""
+
+#: sparklethemes/core/template-tags.php:52
+#, php-format
+msgid "Posted in %1$s"
+msgstr ""
+
+#: sparklethemes/core/template-tags.php:58
+#, php-format
+msgid "Tagged %1$s"
+msgstr ""
+
+#: sparklethemes/core/template-tags.php:64
+msgid "Leave a comment"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:23
+#: sparklethemes/customizer/customizer.php:295
+msgid "Select Slider Page"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:35
+msgid "SparkleStore Pro"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:36
+msgid "Buy Pro"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:46
+msgid "Important Links"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:57
+#: sparklethemes/admin/about-theme/sparklestore-about.php:186
+#: sparklethemes/admin/about-theme/sparklestore-about.php:188
+msgid "Documentation"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:57
+msgid "Live Demo"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:57
+msgid "Support Forum"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:57
+msgid "Like Us in Facebook"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:68
+#, php-format
+msgid "Please do rate our theme if you liked it %1$s"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:68
+msgid "Rate/Review"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:79
+msgid ""
+"<strong>Instruction - Setting up Home Page</strong><br/>\n"
+"        1. Create a new page (any title, like Home )<br/>\n"
+"        2. In right column: Page Attributes -> Template: Home Page<br/>\n"
+"        3. Click on Publish<br/>\n"
+"        4. Go to Appearance-> Customize -> Static Front Page<br/>\n"
+"        5. Select - A static page<br/>\n"
+"        6. In Front Page, select the page that you created in the step 1<br/>"
+"\n"
+"        7. Save changes"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:96
+msgid "Quick Contact Info"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:106
+#, php-format
+msgid "Use font awesome icon: Eg: %1$s. %2$sSee more here%3$s"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:107
+msgid "Enter Email Icon"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:119
+msgid "Email Address"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:132
+#: sparklethemes/customizer/customizer.php:157
+#: sparklethemes/customizer/customizer.php:183
+#: sparklethemes/customizer/customizer.php:421
+#: sparklethemes/customizer/customizer.php:462
+#: sparklethemes/customizer/customizer.php:503
+#: sparklethemes/customizer/customizer.php:544
+#, php-format
+msgid "Use font awesome icon: Eg: %1$s. %2$s See more here%3$s"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:133
+msgid "Phone Icon"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:145
+msgid "Phone Number"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:158
+msgid "Address Icon"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:170
+msgid "Address"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:184
+msgid "Start Time Icon"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:196
+msgid "Opening Time"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:207
+msgid "General Settings"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:216
+msgid "Themes Colors"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:227
+msgid "WebLayout Options"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:240
+msgid "Enable / Disable Top Header"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:244
+msgid "Boxed Layout"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:245
+msgid "Full Width Layout"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:253
+#: sparklethemes/customizer/customizer.php:289
+msgid "Slider Settings Options"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:265
+#: sparklethemes/customizer/customizer.php:385
+msgid "Enable/Disable Section"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:269
+#: sparklethemes/customizer/customizer.php:389
+#: sparklethemes/customizer/customizer.php:866
+msgid "Enable"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:270
+#: sparklethemes/customizer/customizer.php:390
+#: sparklethemes/customizer/customizer.php:867
+msgid "Disable"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:286
+msgid "Slider Settings Area"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:290
+msgid "Add New Slider"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:300
+msgid "Enter Button Text"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:305
+msgid "Enter Button Url"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:318
+msgid "Manage breadcrumbs settings here as you want"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:320
+msgid "Breadcrumbs Settings"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:325
+msgid "WooCommerce Breadcrumbs"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:336
+#: sparklethemes/customizer/customizer.php:354
+msgid "Upload Breadcrumbs Background Image"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:343
+msgid "Normal Post/Page & Archive Settings"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:373
+msgid "Services Area Settings"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:402
+msgid "Manage Services Area Location"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:405
+msgid ""
+"Options to Manage Service Area Below the Header or Abote the Footer Area"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:407
+msgid "Below the Header"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:408
+msgid "Abover the Footer"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:422
+msgid "Service Icon One"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:435
+msgid "Service One Title"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:448
+#: sparklethemes/customizer/customizer.php:489
+#: sparklethemes/customizer/customizer.php:530
+#: sparklethemes/customizer/customizer.php:571
+msgid "Service Area Description"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:463
+msgid "Service Icon Two"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:476
+msgid "Service Two Title"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:504
+msgid "Service Icon Three"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:517
+msgid "Service Three Title"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:545
+msgid "Service Icon Four"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:558
+msgid "Service Four Title"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:583
+msgid "Mange products and singel product page settings"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:585
+msgid "WooCommerce Settings"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:591
+msgid "Products Pages Settings"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:603
+msgid "Select Products pages Layout"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:621
+msgid "Select Products Pages Row"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:638
+msgid "Enter Products Display Per Page"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:648
+msgid "Single Products Page Settings"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:660
+msgid "Select Single Products Page Layout"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:676
+msgid "Footer Settings"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:682
+msgid "Social Media Options"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:694
+msgid "Check to activate social links area"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:702
+msgid "Facebook"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:707
+msgid "Twitter"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:712
+msgid "Google-Plus"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:717
+msgid "Pinterest"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:722
+msgid "Linkedin"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:727
+msgid "YouTube"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:754
+msgid "Check to show in new tab"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:765
+msgid "Payment Logo Images"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:777
+#: sparklethemes/customizer/customizer.php:788
+#: sparklethemes/customizer/customizer.php:799
+#: sparklethemes/customizer/customizer.php:810
+#: sparklethemes/customizer/customizer.php:821
+#: sparklethemes/customizer/customizer.php:832
+msgid "Upload Payment Logo Image"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:837
+msgid "Copyright Message Area"
+msgstr ""
+
+#: sparklethemes/customizer/customizer.php:850
+msgid "Copyright"
+msgstr ""
+
+#: sparklethemes/hooks/woocommerce.php:10
+msgid "My Cart"
+msgstr ""
+
+#: sparklethemes/hooks/woocommerce.php:46
+msgid "Add to Wishlist"
+msgstr ""
+
+#: sparklethemes/hooks/woocommerce.php:47
+msgid "Add Wishlist"
+msgstr ""
+
+#: sparklethemes/hooks/woocommerce.php:53
+msgid "View Wishlist"
+msgstr ""
+
+#: sparklethemes/hooks/woocommerce.php:57
+msgid "Browse Wishlist"
+msgstr ""
+
+#: sparklethemes/hooks/woocommerce.php:78
+msgid "Wishlist"
+msgstr ""
+
+#: sparklethemes/hooks/woocommerce.php:109
+msgid "Compare"
+msgstr ""
+
+#: sparklethemes/hooks/woocommerce.php:170
+msgid "Search entire store here..."
+msgstr ""
+
+#: sparklethemes/hooks/woocommerce.php:172
+msgid "Search"
+msgstr ""
+
+#: sparklethemes/hooks/woocommerce.php:257
+msgid "Sale!"
+msgstr ""
+
+#: sparklethemes/hooks/header.php:12
+msgid "Skip to content"
+msgstr ""
+
+#: sparklethemes/hooks/header.php:143
+msgid "Recently added item(s)"
+msgstr ""
+
+#: sparklethemes/hooks/footer.php:91
+#, php-format
+msgid "%1$s By %2$s"
+msgstr ""
+
+#: sparklethemes/hooks/footer.php:91
+msgid "Sparkle Themes"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:33
+#: sparklethemes/admin/about-theme/sparklestore-about.php:108
+msgid "About"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:67
+msgid "Action failed. Please refresh the page and retry."
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:71
+msgid "Cheatin&#8217; huh?"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:85
+msgid "Dismiss"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:86
+#, php-format
+msgid ""
+"Welcome! Thank you for choosing sparklestore! To fully take advantage of the "
+"best our theme can offer please make sure you visit our %1$swelcome page%2$s."
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:88
+msgid "Get started with sparklestore"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:123
+msgid "Theme Info"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:125
+msgid "View Demo"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:127
+#: sparklethemes/admin/about-theme/sparklestore-about.php:200
+msgid "View PRO version"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:129
+msgid "Rate this theme"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:138
+msgid "Free Vs Pro"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:142
+msgid "More Themes"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:146
+msgid "Changelog"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:180
+msgid "Theme Customizer"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:181
+msgid "All Theme Options are available via Customize screen."
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:182
+#: sparklethemes/admin/about-theme/sparklestore-about.php:277
+msgid "Customize"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:187
+msgid "Please view our documentation page to setup the theme."
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:192
+msgid "Got theme support question?"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:193
+msgid "Please put it in our dedicated support forum."
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:194
+msgid "Support"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:198
+msgid "Need more features?"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:199
+#: sparklethemes/admin/about-theme/sparklestore-about.php:439
+msgid "Upgrade to PRO version for more exciting features."
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:204
+msgid "Have you need customization?"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:205
+msgid "Please send message with your requirement."
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:206
+msgid "Customization"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:212
+#: sparklethemes/admin/about-theme/sparklestore-about.php:220
+msgid "Translate"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:216
+msgid "Click below to translate this theme into your own language."
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:232
+msgid "Return to Updates"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:232
+msgid "Return to Dashboard &rarr; Updates"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:235
+msgid "Go to Dashboard &rarr; Home"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:235
+msgid "Go to Dashboard"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:275
+msgid "Active"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:313
+msgid "Activate"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:322
+msgid "Install Now"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:325
+msgid "Live Preview"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:387
+msgid "View changelog below:"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:444
+msgid "Features"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:445
+msgid "sparklestore"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:446
+msgid "sparklestore Pro"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:451
+msgid "Price"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:452
+msgid "Free"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:453
+msgid "$59"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:456
+msgid "Import Demo Data"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:461
+msgid "Pre Loaders"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:466
+msgid "Header Layouts"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:467
+#: sparklethemes/admin/about-theme/sparklestore-about.php:495
+msgid "1"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:468
+msgid "3"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:472
+msgid "Google Fonts"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:474
+msgid "600+"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:477
+msgid "Typography Options"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:482
+msgid "No. of Widgets"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:483
+msgid "7"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:484
+msgid "19"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:488
+msgid "Unlimited Colors"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:494
+msgid "Blog Layouts"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:496
+msgid "4"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:500
+msgid "Team Member"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:506
+msgid "Testimonial"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:512
+msgid "Revolution Slider"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:518
+msgid "Footer Copyright"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:524
+msgid "Advance Breadcrumbs"
+msgstr ""
+
+#: sparklethemes/admin/about-theme/sparklestore-about.php:533
+msgid "View Pro"
+msgstr ""
+
+#. Name of the theme
+msgid "SparkleStore"
+msgstr ""
+
+#. Description of the theme
+msgid ""
+"Sparkle Store is a clean, beautiful and fully customizable responsive modern "
+"e-commerce/WooCommerce WordPress theme. It is esthetically minimalist, fresh-"
+"faced and bright, elegantly styled and well developed, readily responsive e-"
+"commerce WordPress store theme. It is a perfect theme for commercial "
+"endeavors of all kinds, from digital download shops to online commercial "
+"retail of all kinds. It integrates the industry standard WooCommerce, YITH "
+"WooCommerce Wishlist, YITH WooCommerce Quick View e-commerce plugin, a "
+"wonderful solution for all your online commerce needs, which allows your "
+"users to browse your product catalogs or store in easy but stylish grace, "
+"add items to their shopping carts intuitively, and proceed to checkout and "
+"make payments, all right off your website. Official Support Forum: http:"
+"//sparklewpthemes.com/support/ Full Demo: http://demo.sparklewpthemes."
+"com/sparklestore/demos/ and Docs: http://docs.sparklewpthemes."
+"com/sparklestore/"
+msgstr ""
+
+#. URI of the theme
+msgid "http://sparklewpthemes.com/wordpress-themes/sparklestore"
+msgstr ""
+
+#. Author of the theme
+msgid "sparklewpthemes"
+msgstr ""
+
+#. Author URI of the theme
+msgid "http://sparklewpthemes.com/"
+msgstr ""

@@ -1,0 +1,149 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+@font-face {
+    font-family: 'istok_webregular';
+    src: url('../fonts/istokweb-regular-webfont.eot');
+    src: url('../fonts/istokweb-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/istokweb-regular-webfont.woff') format('woff'),
+         url('../fonts/istokweb-regular-webfont.ttf') format('truetype'),
+         url('../fonts/istokweb-regular-webfont.svg#istok_webregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'latoregular';
+    src: url('../fonts/lato-regular-webfont.eot');
+    src: url('../fonts/lato-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/lato-regular-webfont.woff') format('woff'),
+         url('../fonts/lato-regular-webfont.ttf') format('truetype'),
+         url('../fonts/lato-regular-webfont.svg#latoregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+a{
+	color:#212121;
+	text-decoration:none;
+	transition:all 0.5s ease-in-out;
+	-webkit-transition:all 0.5s ease-in-out;
+}
+a:hover,
+a:focus{
+	color: #f45c06;
+	text-decoration:none;
+}
+img{
+	max-width:100%;
+}
+
+.photoshoot-container{
+	padding-left:0px;
+	padding-right:0px;	
+}
+.img-responsive-photoshoot{
+	display: inline-block;
+}
+.no-padding{
+	padding-left:0px;
+	padding-right:0px;
+}
+.text-bold{
+	font-weight:bold;
+}
+.btn-photoshoot{
+	text-transform:uppercase;
+	border-radius:4px;
+	padding:8px 10px;
+	background-color:transparent;
+	
+	transition:all 0.5s ease-in-out;
+	-webkit-transition:all 0.5s ease-in-out;
+}
+.btn-orang{
+	border:1px solid #343434;
+	color:#f45c06;
+	font-size:16px;
+	padding: 8px 20px;
+}
+.btn-orang:hover,
+.btn-orang:focus{
+	background-color:#f45c06;
+	color:#fff;
+}
+.btn-orang-default{
+	background-color:#f45c06;
+	border:1px solid #a9a9a9;
+	border-radius:3px;
+	color:#ffffff;
+	font-size:14px;
+	font-weight:bold;
+	padding: 7px 10px;
+	text-transform:uppercase;
+}
+.btn-orang-default:hover,
+.btn-orang-default:focus{
+	background-color:#f45c06;
+	color:#fff;
+}
+.btn-orang-default .caret{
+	margin-left:10px;
+}
+.btn-white{
+	border:1px solid #343434;
+	border-radius:2px;
+	color:#262626;
+	font-size:16px;
+	padding: 8px 25px;
+}
+.btn-white:hover,
+.btn-white:focus{
+	border-color:#f45c06;
+	color:#f45c06;
+}
+.btn-simple{
+	border: 1px solid #a9a9a9;
+    display: inline-block;
+    padding: 3px 10px;
+}
+
+.photoshoot-control{
+		position:relative;
+}
+.photoshoot-control label{
+	padding-left:30px;
+}
+.photoshoot-control input[type=radio],
+.photoshoot-control input[type=checkbox] {
+  display: none;
+}
+.photoshoot-control label:before {
+  font-weight: normal;
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  position: absolute;
+  left: 0;
+  top: 1px;
+  background-color: transparent;
+  background-image:url(../images/control.png); 
+  background-repeat:no-repeat;
+}
+.photoshoot-control input[type=radio] + label:before {
+	background-position:1px -61px;
+}
+.photoshoot-control input[type=radio]:checked + label:before {
+	background-position:1px -94px;
+}
+
+.photoshoot-control input[type=checkbox] + label:before {
+	background-position:2px -7px;
+}
+.photoshoot-control input[type=checkbox]:checked + label:before {
+  background-position:2px -37px;
+}
