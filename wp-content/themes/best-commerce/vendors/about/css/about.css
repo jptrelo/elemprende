@@ -1,0 +1,129 @@
+.at-wrap .wp-badge.about-logo {
+	background-color: #FFF;
+	background-position: center center;
+	background-size: 70%;
+	background-repeat: no-repeat;
+}
+
+.at-wrap h1 {
+	font-size: 2em;
+}
+
+.at-wrap h3 {
+	font-size: 1.1em;
+}
+
+.at-wrap .nav-tab {
+	font-size: 16px;
+}
+
+.at-wrap .dashicons {
+	margin-right: 15px;
+	position: relative;
+	top: 3px;
+}
+
+.at-wrap .nav-tab-wrapper .dashicons {
+	color: #D54E21;
+	margin-right: 3px;
+}
+
+.at-wrap .action-recommended ul {
+	list-style-type: disc;
+	list-style-position: inside;
+	font-size: 14px;
+}
+
+.at-wrap .action-recommended-box {
+	background: #FFF;
+	border-left: 4px solid #F8800C;
+	display: block;
+	margin-bottom: 15px;
+	padding: 10px 30px;
+	position: relative;
+	-webkit-box-shadow: 0 1px 1px 0 rgba(0 ,0, 0, .1);
+	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+}
+
+.at-wrap .action-recommended-box.complete {
+	border-left: 4px solid #46B450;
+}
+
+.at-wrap .action-recommended .action-recommended-box:last-of-type {
+	margin-bottom: 0;
+}
+
+.at-wrap .action-recommended-box h3 {
+	margin: 0 0 10px;
+}
+
+.at-wrap .action-recommended-box p {
+	display: block;
+	margin-top: 0;
+	width: 100%;
+	max-width: 100%;
+}
+
+.at-wrap .feature-section {
+	padding: 40px 0 0;
+}
+
+.at-wrap .feature-section .col {
+	margin-top: 0;
+	margin-bottom: 5%;
+}
+
+.at-wrap .feature-section .col:nth-child(3n + 1) {
+	clear:both;
+}
+
+.at-wrap .recommended-action-button {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	text-decoration: none;
+	color: #B4B9BE;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.at-wrap .recommended-action-button:hover:before {
+	color: #C00;
+}
+
+.at-wrap .three-col .plugin_box.col {
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
+	float: left;
+	width: 30%;
+}
+
+.at-wrap .useful-plugins,
+.at-wrap .demo-content {
+	padding-top: 60px;
+}
+
+.at-wrap .useful-plugins .button-wrap {
+	margin-top: 20px;
+}
+
+.at-wrap .useful-plugins .all-active {
+	font-weight: 800;
+	margin-bottom: 15px;
+}
+
+.at-wrap .useful-plugins ul {
+	list-style-type: disc;
+	list-style-position: inside;
+}
+
+.at-wrap .upgrade-to-pro {
+	height: auto;
+	overflow: hidden;
+	padding-top: 60px;
+}
+
+.at-wrap .upgrade-to-pro div,
+.at-wrap .upgrade-to-pro .button {
+	margin-bottom: 20px;
+}

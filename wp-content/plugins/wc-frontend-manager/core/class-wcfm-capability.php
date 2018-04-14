@@ -99,6 +99,10 @@ class WCFM_Capability {
 		// Custom Caps
 		add_filter( 'wcfm_is_allow_commission_manage', array( &$this, 'wcfmcap_is_allow_commission_manage' ), 500 );
 		add_filter( 'wcfm_allow_wp_admin_view', array( &$this, 'wcfmcap_is_allow_wp_admin_view' ), 500 );
+		
+		// Support Ticket
+		add_filter( 'wcfm_is_allow_support', array( &$this, 'wcfmcap_is_allow_support' ), 500 );
+		add_filter( 'wcfm_is_allow_manage_support', array( &$this, 'wcfmcap_is_allow_manage_support' ), 500 );
 	}
 	
 	// WCFM wcfmcap Menu
@@ -571,6 +575,20 @@ class WCFM_Capability {
   	if( $sm_wpadmin == 'yes' ) return false;
   	$ss_wpadmin = ( isset( $this->wcfm_capability_options['ss_wpadmin'] ) ) ? $this->wcfm_capability_options['ss_wpadmin'] : 'no';
   	if( $ss_wpadmin == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // Allow View / Manage Support Tickets
+  function wcfmcap_is_allow_support( $allow ) {
+  	$support_ticket = ( isset( $this->wcfm_capability_options['support_ticket'] ) ) ? $this->wcfm_capability_options['support_ticket'] : 'no';
+  	if( $support_ticket == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // Allow Support Ticket Reply
+  function wcfmcap_is_allow_manage_support( $allow ) {
+  	$support_ticket_manage = ( isset( $this->wcfm_capability_options['support_ticket_manage'] ) ) ? $this->wcfm_capability_options['support_ticket_manage'] : 'no';
+  	if( $support_ticket_manage == 'yes' ) return false;
   	return $allow;
   }
 }

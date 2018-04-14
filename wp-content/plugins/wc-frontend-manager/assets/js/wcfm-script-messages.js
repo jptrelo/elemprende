@@ -22,9 +22,7 @@ jQuery(document).ready( function($) {
 	}
 	
 	if( $("#direct_to").length > 0 ) {
-		$("#direct_to").select2({
-			placeholder: wcfm_dashboard_messages.choose_vendor_select2
-		});
+		$("#direct_to").select2( $wcfm_vendor_select_args );
 	}
 	
 	// Save Settings

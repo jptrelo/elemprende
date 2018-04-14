@@ -68,7 +68,7 @@ class WCFM_Settings_Dokan_Controller {
 		if( !isset( $wcfm_settings_form['show_email'] ) ) $wcfm_settings_form['show_email'] = 'no';
 		if( !isset( $wcfm_settings_form['show_more_ptab'] ) ) $wcfm_settings_form['show_more_ptab'] = 'no';
 		if( !isset( $wcfm_settings_form['enable_tnc'] ) ) $wcfm_settings_form['enable_tnc'] = 'no';
-		if( !isset( $wcfm_settings_form['dps_shipping_enable'] ) ) $wcfm_settings_form['dps_shipping_enable'] = 'no';
+		if( !isset( $wcfm_settings_form['_dps_shipping_enable'] ) ) $wcfm_settings_form['_dps_shipping_enable'] = 'no';
 		
 		// Vacation Settings
 		if( !isset( $wcfm_settings_form['wcfm_vacation_mode'] ) ) $wcfm_settings_form['wcfm_vacation_mode'] = 'no';

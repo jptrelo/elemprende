@@ -1254,7 +1254,7 @@ if ( !class_exists( 'PT_CV_Functions' ) ) {
 				$data_page	 = sprintf( 'data-page="%s"', absint( $this_page ) );
 			}
 
-			$html	 = sprintf( '<a %s href="%s">%s</a>', $data_page, get_pagenum_link( $this_page ), $label );
+			$html	 = sprintf( '<a %s href="%s">%s</a>', $data_page, cv_comp_get_pagenum_link( $this_page ), $label );
 			$class	 = $class ? sprintf( 'class="%s"', esc_attr( $class ) ) : '';
 
 			return sprintf( '<li %s>%s</li>', $class, $html );
@@ -1333,7 +1333,7 @@ if ( !class_exists( 'PT_CV_Functions' ) ) {
 				if ( !empty( $pargs[ 'page' ] ) ) {
 					$paged = absint( $pargs[ 'page' ] );
 				}
-				$pagenum = get_query_var( 'paged' );
+				$pagenum = cv_comp_get_page_number();
 				if ( !empty( $pagenum ) && PT_CV_Functions::setting_value( PT_CV_PREFIX . 'pagination-type' ) === 'normal' ) {
 					$paged = absint( $pagenum );
 				}

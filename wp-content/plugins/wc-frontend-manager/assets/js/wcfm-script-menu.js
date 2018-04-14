@@ -1,3 +1,74 @@
+var $wcfm_product_select_args = {
+			allowClear:  true,
+			placeholder: wcfm_dashboard_messages.search_product_select2,
+			minimumInputLength: '3',
+			escapeMarkup: function( m ) {
+				return m;
+			},
+			ajax: {
+				url:         wcfm_params.ajax_url,
+				dataType:    'json',
+				delay:       250,
+				data:        function( params ) {
+					return {
+						term:     params.term,
+						action:   'wcfm_json_search_products_and_variations',
+						exclude:  jQuery( this ).data( 'exclude' ),
+						include:  jQuery( this ).data( 'include' ),
+						limit:    jQuery( this ).data( 'limit' )
+					};
+				},
+				processResults: function( data ) {
+					var terms = [];
+					if ( data ) {
+						jQuery.each( data, function( id, text ) {
+							terms.push( { id: id, text: text } );
+						});
+					}
+					return {
+						results: terms
+					};
+				},
+				cache: true
+			}
+		};
+		
+var $wcfm_vendor_select_args = {
+			allowClear:  true,
+			placeholder: wcfm_dashboard_messages.choose_vendor_select2,
+			minimumInputLength: '3',
+			escapeMarkup: function( m ) {
+				return m;
+			},
+			ajax: {
+				url:         wcfm_params.ajax_url,
+				dataType:    'json',
+				delay:       250,
+				data:        function( params ) {
+					return {
+						term:     params.term,
+						action:   'wcfm_json_search_vendors',
+						exclude:  jQuery( this ).data( 'exclude' ),
+						include:  jQuery( this ).data( 'include' ),
+						limit:    jQuery( this ).data( 'limit' )
+					};
+				},
+				processResults: function( data ) {
+					var terms = [];
+					if ( data ) {
+						jQuery.each( data, function( id, text ) {
+							terms.push( { id: id, text: text } );
+						});
+					}
+					return {
+						results: terms
+					};
+				},
+				cache: true
+			}
+		};
+
+
 jQuery( document ).ready( function( $ ) {
 	// Removing loader slowly
 	/*if( wcfm_noloader == 'yes' ) {

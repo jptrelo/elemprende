@@ -56,7 +56,7 @@ $admin_fee_mode = apply_filters( 'wcfm_is_admin_fee_mode', false );
 				$is_marketplace = wcfm_is_marketplace();
 				if( $is_marketplace ) {
 					if( !wcfm_is_vendor() ) {
-						$vendor_arr = $WCFM->wcfm_vendor_support->wcfm_get_vendor_list();
+						$vendor_arr = array(); //$WCFM->wcfm_vendor_support->wcfm_get_vendor_list();
 						$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 																											"dropdown_vendor" => array( 'type' => 'select', 'options' => $vendor_arr, 'attributes' => array( 'style' => 'width: 150px;' ) )
 																											 ) );

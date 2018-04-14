@@ -392,48 +392,6 @@ class WCFM {
 	static function update_wcfm() {
 		global $WCFM, $WCFM_Query, $wpdb;
 
-		if( !get_option( 'wcfm_updated_3_2_8' ) ) {
-			
-			require_once ( $WCFM->plugin_path . 'helpers/class-wcfm-install.php' );
-			$WCFM_Install = new WCFM_Install();
-			
-			// Create Notice post for existing ones
-			$sql = 'SELECT * FROM ' . $wpdb->prefix . 'wcfm_messages AS wcfm_messages';
-			$sql .= ' WHERE 1=1';
-			$sql .= " AND `is_notice` = 1";
-			$wcfm_messages = $wpdb->get_results( $sql );
-			if ( !empty( $wcfm_messages ) ) {
-				register_post_type( 'wcfm_notice', array( 'public' => false ) );
-				foreach ( $wcfm_messages as $wcfm_message ) {
-					$new_notice = array(
-						'post_title'   => substr( wp_strip_all_tags( $wcfm_message->message, true ), 0, 100 ),
-						'post_status'  => 'publish',
-						'post_type'    => 'wcfm_notice',
-						'post_author'  => $wcfm_message->author_id,
-						'post_content' => htmlspecialchars_decode($wcfm_message->message)
-					);
-					$notice_id = wp_insert_post( $new_notice );
-					update_post_meta( $notice_id, 'allow_reply', 'no' );
-					
-					// Removing entry from wcfm_messages table
-					$wpdb->query( 'DELETE FROM ' . $wpdb->prefix . 'wcfm_messages WHERE ID = ' . $wcfm_message->ID );
-				}
-			}
-			
-			delete_option( 'wcfm_updated_3_2_7' );
-			update_option( 'wcfm_updated_3_2_8', 1 );
-		}
-		
-		if( !get_option( 'wcfm_updated_3_4_6' ) ) {
-			$wcfm_options = get_option( 'wcfm_options', array() );
-			$wcfm_module_options = isset( $wcfm_options['module_options'] ) ? $wcfm_options['module_options'] : array();
-			$wcfm_module_options['article'] = 'yes';
-			$wcfm_module_options['customer'] = 'yes';
-			$wcfm_options['module_options'] = $wcfm_module_options;
-			update_option( 'wcfm_options', $wcfm_options );
-			update_option( 'wcfm_updated_3_4_6', 1 );
-		}
-		
 		if( !get_option( 'wcfm_updated_4_0_3' ) ) {
 			require_once ( $WCFM->plugin_path . 'helpers/class-wcfm-install.php' );
 			$WCFM_Install = new WCFM_Install();

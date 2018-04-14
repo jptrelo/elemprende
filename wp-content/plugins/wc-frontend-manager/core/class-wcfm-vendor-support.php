@@ -939,8 +939,8 @@ class WCFM_Vendor_Support {
 			if( $order_id ) {
 				$sql .= " AND `commission.order_id` = {$order_id}";
 			} else {   
-				//$status = dokan_withdraw_get_active_order_status_in_comma();
-				//$sql .= " AND order_status IN({$status})";
+				$status = dokan_withdraw_get_active_order_status_in_comma();
+				$sql .= " AND commission.order_status IN ({$status})";
 				$sql = wcfm_query_time_range_filter( $sql, 'post_date', $interval, '', '', 'p' );
 			}
 			
@@ -1003,6 +1003,7 @@ class WCFM_Vendor_Support {
   		else
   		  $time = 'order_date';
 		} elseif( $marketplece == 'dokan' ) {
+			$order_status = apply_filters( 'wcfm_dokan_allowed_order_status', array( 'completed', 'processing', 'on-hold' ) );
 			$commission_table = 'dokan_orders'; 
   		$total_due = 'net_amount';
   		$time = 'post_date';
@@ -1027,6 +1028,7 @@ class WCFM_Vendor_Support {
 		}
   	
 		if( $marketplece == 'dokan' ) {
+			$order_status = apply_filters( 'wcfm_dokan_allowed_order_status', array( 'completed', 'processing', 'on-hold' ) );
 			$sql = "SELECT SUM( commission.{$total_due} ) AS total_due FROM {$wpdb->prefix}{$commission_table} AS commission LEFT JOIN {$wpdb->posts} p ON commission.order_id = p.ID";
 		} else {
 		  $sql = "SELECT SUM( commission.{$total_due} ) AS total_due, SUM( commission.{$total_shipping} ) AS total_shipping, SUM( commission.{$tax} ) AS tax, SUM( commission.{$shipping_tax} ) AS shipping_tax FROM {$wpdb->prefix}{$commission_table} AS commission";
@@ -1037,8 +1039,8 @@ class WCFM_Vendor_Support {
 		if( $is_paid ) $sql .= " AND commission.{$status} = 'paid'";
 		if( $marketplece == 'wcmarketplace' ) { $sql .= " AND commission.commission_id != 0 AND commission.commission_id != '' AND `is_trashed` != 1"; }
 		if( $marketplece == 'dokan' ) {
-			//$status = dokan_withdraw_get_active_order_status_in_comma();
-			//$sql .= " AND order_status IN({$status})";
+			$status = dokan_withdraw_get_active_order_status_in_comma();
+			$sql .= " AND commission.order_status IN ({$status})";
 		}
 		$sql = wcfm_query_time_range_filter( $sql, $time, $interval, '', '', $table_handler );
 		

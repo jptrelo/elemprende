@@ -41,7 +41,8 @@ $menu_active_dependent_list = apply_filters( 'wcfm_menu_dependancy_map', array(
 																																			'wcfm-reports-sales-by-product' => 'wcfm-reports',
 																																			'wcfm-reports-coupons-by-date'  => 'wcfm-reports',
 																																			'wcfm-reports-low-in-stock'     => 'wcfm-reports',
-																																			'wcfm-rental-quote-details'     => 'wcfm-rental-quote'
+																																			'wcfm-rental-quote-details'     => 'wcfm-rental-quote',
+																																			'wcfm-support-manage'           => 'wcfm-support'
 																																			) );
 
 $logo = ( get_option( 'wcfm_site_logo' ) ) ? get_option( 'wcfm_site_logo' ) : '';

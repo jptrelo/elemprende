@@ -166,8 +166,8 @@ $admin_fee_mode = apply_filters( 'wcfm_is_admin_fee_mode', false );
 					$is_marketplace = wcfm_is_marketplace();
 					if( $is_marketplace ) {
 						if( !wcfm_is_vendor() ) {
-							$vendor_arr = $WCFM->wcfm_vendor_support->wcfm_get_vendor_list( true );
-							if( isset( $vendor_arr[0] ) ) unset($vendor_arr[0]);
+							$vendor_arr = array(); //$WCFM->wcfm_vendor_support->wcfm_get_vendor_list( true );
+							if( $vendor_id ) $vendor_arr[$vendor_id] = $vendor_store;
 							$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 																												"dropdown_vendor" => array( 'type' => 'select', 'options' => $vendor_arr, 'attributes' => array( 'style' => 'width: 250px;' ), 'value' => $vendor_id )
 																												 ) );

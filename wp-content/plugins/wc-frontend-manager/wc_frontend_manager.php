@@ -4,7 +4,7 @@
  * Plugin URI: https://wclovers.com
  * Description: WooCommerce is really Easy and Beautiful. We are here to make your life much more Easier and Peaceful.
  * Author: WC Lovers
- * Version: 4.0.2
+ * Version: 4.0.4
  * Author URI: https://wclovers.com
  *
  * Text Domain: wc-frontend-manager

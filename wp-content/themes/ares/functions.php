@@ -145,71 +145,77 @@ require get_template_directory() . '/inc/ares/ares.php';
 
 function ares_get_options() {
     
-    return get_option( 'ares', array(
-        
-        'ares_headerbar_bool'           => 'yes',                          
-        'ares_facebook_url'             => '',
-        'ares_twitter_url'              => '',
-        'ares_linkedin_url'             => '',
-        'ares_gplus_url'                => '',
-        'ares_instagram_url'            => '',
-        'ares_youtube_url'              => '',
-        'ares_theme_color'              => 'aqua',                          
-        'ares_theme_background_pattern' => 'crossword',                     
-        'ares_font_size'                => 14,                              
-        'ares_font_family'              => 'Rajdhani, sans-serif',      
-        'ares_font_family_secondary'    => 'Roboto, sans-serif',      
-        'ares_frontpage_content_bool'   => 'yes',
-        
-        'ares_slider_bool'              => 'yes',
-        'ares_slide1_image'             => get_template_directory_uri() . '/inc/images/ares_demo.jpg',
-        'ares_slide1_text'              => __( 'Ares: Responsive Multi-purpose WordPress Theme', 'ares' ),
-        'ares_slide2_image'             => get_template_directory_uri() . '/inc/images/ares_demo.jpg',
-        'ares_slide2_text'              => __( 'Ares: Responsive Multi-purpose WordPress Theme', 'ares' ),
-        'ares_slide3_image'             => get_template_directory_uri() . '/inc/images/ares_demo.jpg',
-        'ares_slide3_text'              => __( 'Ares: Responsive Multi-purpose WordPress Theme', 'ares' ),
-        
-        'ares_cta_bool'                 => 'yes',
-        'ares_cta1_title'               => __( 'Theme Options', 'ares' ),
-        'ares_cta1_icon'                => 'fa fa-gears',
-        'ares_cta1_text'                => __( 'Change typography, colors, layouts...', 'ares' ),
-        'ares_cta1_url'                 => '',
-        'ares_cta1_button_text'         => __( 'Click Here', 'ares' ),
-        'ares_cta2_title'               => __( 'Responsive Layout', 'ares' ),
-        'ares_cta2_icon'                => 'fa fa-mobile',
-        'ares_cta2_text'                => __( 'Fully responsive and mobile-ready', 'ares' ),
-        'ares_cta2_url'                 => '',
-        'ares_cta2_button_text'         => __( 'Click Here', 'ares' ),
-        'ares_cta3_title'               => __( 'Elegant Design', 'ares' ),
-        'ares_cta3_icon'                => 'fa fa-leaf',
-        'ares_cta3_text'                => __( 'Beautiful design to give your site an elegant look', 'ares' ),
-        'ares_cta3_url'                 => '',
-        'ares_cta3_button_text'         => __( 'Click Here', 'ares' ),
-        
-        'ares_homepage_sidebar'         => 'sidebar-off',                     
-        'ares_blog_layout'              => 'col2r',                           
-        'ares_blog_featured'            => 'on',                              
-        'ares_single_layout'            => 'col2r',                         
-        'ares_single_featured'          => 'on',                            
-        'ares_single_date'              => 'on',                            
-        'ares_single_author'            => 'on',                            
-
-        'ares_footer_cta'               => 'on',                          
-        'ares_footer_cta_text'          => __( 'GET A NO RISK, FREE CONSULTATION TODAY', 'ares' ),
-        'ares_footer_button_text'       => __( 'CONTACT US', 'ares' ),
-        'ares_footer_button_url'        => '',
-        'ares_footer_columns'           => 'col-md-4',
-        'ares_footer_text'              => __( '© 2017 Your Company Name', 'ares' ),
+    $options = get_option( 'ares');
     
-        'ares_post_slider_cta_bool'     => 'yes',
-        'ares_cta_header_one'           => __( 'Modern design with a responsive layout', 'ares' ),
-        'ares_cta_header_two'           => __( 'User-friendly & Easily Customizable', 'ares' ),
-        'ares_branding_bar_height'      => 80,
+    if(!is_array($options)){
+        $options =  array(
         
-        'cart_icon_toggle'              => 'on',
-        'woo_products_per_row'          => 4,
+            'ares_headerbar_bool'           => 'yes',                          
+            'ares_facebook_url'             => '',
+            'ares_twitter_url'              => '',
+            'ares_linkedin_url'             => '',
+            'ares_gplus_url'                => '',
+            'ares_instagram_url'            => '',
+            'ares_youtube_url'              => '',
+            'ares_theme_color'              => 'aqua',                          
+            'ares_theme_background_pattern' => 'crossword',                     
+            'ares_font_size'                => 14,                              
+            'ares_font_family'              => 'Rajdhani, sans-serif',      
+            'ares_font_family_secondary'    => 'Roboto, sans-serif',      
+            'ares_frontpage_content_bool'   => 'yes',
+            
+            'ares_slider_bool'              => 'yes',
+            'ares_slide1_image'             => get_template_directory_uri() . '/inc/images/ares_demo.jpg',
+            'ares_slide1_text'              => __( 'Ares: Responsive Multi-purpose WordPress Theme', 'ares' ),
+            'ares_slide2_image'             => get_template_directory_uri() . '/inc/images/ares_demo.jpg',
+            'ares_slide2_text'              => __( 'Ares: Responsive Multi-purpose WordPress Theme', 'ares' ),
+            'ares_slide3_image'             => get_template_directory_uri() . '/inc/images/ares_demo.jpg',
+            'ares_slide3_text'              => __( 'Ares: Responsive Multi-purpose WordPress Theme', 'ares' ),
+            
+            'ares_cta_bool'                 => 'yes',
+            'ares_cta1_title'               => __( 'Theme Options', 'ares' ),
+            'ares_cta1_icon'                => 'fa fa-gears',
+            'ares_cta1_text'                => __( 'Change typography, colors, layouts...', 'ares' ),
+            'ares_cta1_url'                 => '',
+            'ares_cta1_button_text'         => __( 'Click Here', 'ares' ),
+            'ares_cta2_title'               => __( 'Responsive Layout', 'ares' ),
+            'ares_cta2_icon'                => 'fa fa-mobile',
+            'ares_cta2_text'                => __( 'Fully responsive and mobile-ready', 'ares' ),
+            'ares_cta2_url'                 => '',
+            'ares_cta2_button_text'         => __( 'Click Here', 'ares' ),
+            'ares_cta3_title'               => __( 'Elegant Design', 'ares' ),
+            'ares_cta3_icon'                => 'fa fa-leaf',
+            'ares_cta3_text'                => __( 'Beautiful design to give your site an elegant look', 'ares' ),
+            'ares_cta3_url'                 => '',
+            'ares_cta3_button_text'         => __( 'Click Here', 'ares' ),
+            
+            'ares_homepage_sidebar'         => 'sidebar-off',                     
+            'ares_blog_layout'              => 'col2r',                           
+            'ares_blog_featured'            => 'on',                              
+            'ares_single_layout'            => 'col2r',                         
+            'ares_single_featured'          => 'on',                            
+            'ares_single_date'              => 'on',                            
+            'ares_single_author'            => 'on',                            
+    
+            'ares_footer_cta'               => 'on',                          
+            'ares_footer_cta_text'          => __( 'GET A NO RISK, FREE CONSULTATION TODAY', 'ares' ),
+            'ares_footer_button_text'       => __( 'CONTACT US', 'ares' ),
+            'ares_footer_button_url'        => '',
+            'ares_footer_columns'           => 'col-md-4',
+            'ares_footer_text'              => __( '© 2017 Your Company Name', 'ares' ),
         
-    ) );
+            'ares_post_slider_cta_bool'     => 'yes',
+            'ares_cta_header_one'           => __( 'Modern design with a responsive layout', 'ares' ),
+            'ares_cta_header_two'           => __( 'User-friendly & Easily Customizable', 'ares' ),
+            'ares_branding_bar_height'      => 80,
+            
+            'cart_icon_toggle'              => 'on',
+            'woo_products_per_row'          => 4,
+            
+        );
+    }
+
+    return $options;
     
 }
 

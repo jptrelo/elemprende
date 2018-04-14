@@ -314,34 +314,19 @@ if ( ! empty( $tax_classes ) ) {
 	}
 }
 
-$args = array(
-	'posts_per_page'   => -1,
-	'offset'           => 0,
-	'category'         => '',
-	'category_name'    => '',
-	'orderby'          => 'date',
-	'order'            => 'DESC',
-	'include'          => '',
-	'exclude'          => '',
-	'meta_key'         => '',
-	'meta_value'       => '',
-	'post_type'        => 'product',
-	'post_mime_type'   => '',
-	'post_parent'      => '',
-	//'author'	   => get_current_user_id(),
-	'post_status'      => array('publish'),
-	'suppress_filters' => 0 
-);
-$args = apply_filters( 'wcfm_products_args', $args );
-
-$products_objs = get_posts( $args );
 $products_array = array();
-if( !empty($products_objs) ) {
-	foreach( $products_objs as $products_obj ) {
-		$product_data      = wc_get_product( $products_obj->ID );
-		$products_array[esc_attr( $products_obj->ID )] = (!empty($product_data)) ? wp_kses_post( $product_data->get_formatted_name() ) : $products_obj->ID;
+if( !empty( $upsell_ids ) ) {
+	foreach( $upsell_ids as $upsell_id ) {
+		$products_array[$upsell_id] = get_the_title( $upsell_id );
 	}
 }
+if( !empty( $crosssell_ids ) ) {
+	foreach( $crosssell_ids as $crosssell_id ) {
+		$products_array[$crosssell_id] = get_the_title( $crosssell_id );
+	}
+}
+
+
 $product_types = apply_filters( 'wcfm_product_types', array('simple' => __('Simple Product', 'wc-frontend-manager'), 'variable' => __('Variable Product', 'wc-frontend-manager'), 'grouped' => __('Grouped Product', 'wc-frontend-manager'), 'external' => __('External/Affiliate Product', 'wc-frontend-manager') ) );
 $product_categories   = get_terms( 'product_cat', 'orderby=name&hide_empty=0&parent=0' );
 
@@ -445,9 +430,9 @@ if( count( $product_types ) == 0 ) {
 						
 						<?php if( !$wcfm_is_category_checklist = apply_filters( 'wcfm_is_category_checklist', true ) ) { ?>
 						  <?php if( apply_filters( 'wcfm_is_allow_category', true ) ) { ?>
-						  	<?php if( apply_filters( 'wcfm_is_allow_product_category', true ) ) { $catlimit = apply_filters( 'wcfm_catlimit', -1 ); ?>
+						  	<?php if( apply_filters( 'wcfm_is_allow_product_category', true ) ) { $catlimit = apply_filters( 'wcfm_catlimit', -1 ); $pcat_custom_arrtibutes = apply_filters( 'wcfm_cat_select_custom_attributes', array() ); ?>
 									<p class="wcfm_title"><strong><?php _e( 'Categories', 'wc-frontend-manager' ); ?></strong></p><label class="screen-reader-text" for="product_cats"><?php _e( 'Categories', 'wc-frontend-manager' ); ?></label>
-									<select id="product_cats" name="product_cats[]" class="wcfm-select wcfm_ele simple variable external grouped booking" multiple="multiple" data-catlimit="<?php echo $catlimit; ?>" style="width: 100%; margin-bottom: 10px;">
+									<select id="product_cats" name="product_cats[]" class="wcfm-select wcfm_ele simple variable external grouped booking" multiple="multiple" data-catlimit="<?php echo $catlimit; ?>" <?php echo implode( ' ', $pcat_custom_arrtibutes ); ?> style="width: 100%; margin-bottom: 10px;">
 										<?php
 											if ( $product_categories ) {
 												$this->generateTaxonomyHTML( 'product_cat', $product_categories, $categories );
@@ -768,7 +753,7 @@ if( count( $product_types ) == 0 ) {
 																																																	"term_name" => array('type' => 'hidden'),
 																																																	"is_active" => array('label' => __('Active?', 'wc-frontend-manager'), 'type' => 'checkbox', 'value' => 'enable', 'class' => 'wcfm-checkbox wcfm_ele attribute_ele simple variable external grouped booking', 'label_class' => 'wcfm_title attribute_ele checkbox_title'),
 																																																	"name" => array('label' => __('Name', 'wc-frontend-manager'), 'type' => 'text', 'class' => 'wcfm-text wcfm_ele attribute_ele simple variable external grouped booking', 'label_class' => 'wcfm_title attribute_ele'),
-																																																	"value" => array('label' => __('Value(s):', 'wc-frontend-manager'), 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele simple variable external grouped booking', 'placeholder' => __('Enter some text, some attributes by "|" separating values.', 'wc-frontend-manager'), 'label_class' => 'wcfm_title'),
+																																																	"value" => array('label' => __('Value(s):', 'wc-frontend-manager'), 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele simple variable external grouped booking', 'placeholder' => sprintf( __('Enter some text, some attributes by "%s" separating values.', 'wc-frontend-manager'), WC_DELIMITER ), 'label_class' => 'wcfm_title'),
 																																																	"is_visible" => array('label' => __('Visible on the product page', 'wc-frontend-manager'), 'type' => 'checkbox', 'value' => 'enable', 'class' => 'wcfm-checkbox wcfm_ele simple variable external grouped booking', 'label_class' => 'wcfm_title checkbox_title'),
 																																																	"is_variation" => array('label' => __('Use as Variation', 'wc-frontend-manager'), 'type' => 'checkbox', 'value' => 'enable', 'class' => 'wcfm-checkbox wcfm_ele variable variable-subscription', 'label_class' => 'wcfm_title checkbox_title wcfm_ele variable variable-subscription'),
 																																																	"tax_name" => array('type' => 'hidden'),

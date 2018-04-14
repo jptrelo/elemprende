@@ -21,7 +21,7 @@ $wcfm_messages = '';
 $is_marketplace = wcfm_is_marketplace();
 $user_arr = array();
 if( $is_marketplace ) {
-	$user_arr = $WCFM->wcfm_vendor_support->wcfm_get_vendor_list(true);
+	$user_arr = array(); //$WCFM->wcfm_vendor_support->wcfm_get_vendor_list(true);
 }
 
 $message_status = 'unread';

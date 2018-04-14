@@ -17,33 +17,7 @@ if( !apply_filters( 'wcfm_is_pref_enquiry', true ) || !apply_filters( 'wcfm_is_a
 	return;
 }
 
-$args = array(
-					'posts_per_page'   => -1,
-					'offset'           => 0,
-					'category'         => '',
-					'category_name'    => '',
-					'orderby'          => 'date',
-					'order'            => 'DESC',
-					'include'          => '',
-					'exclude'          => '',
-					'meta_key'         => '',
-					'meta_value'       => '',
-					'post_type'        => 'product',
-					'post_mime_type'   => '',
-					'post_parent'      => '',
-					//'author'	   => get_current_user_id(),
-					'post_status'      => array('publish'),
-					'suppress_filters' => 0 
-				);
-$args = apply_filters( 'wcfm_products_args', $args );
-
-$products_objs = get_posts( $args );
-$products_array = array( '' => __( 'Filter by Product', 'wc-frontend-manager' ) . ' ...' );
-if( !empty($products_objs) ) {
-	foreach( $products_objs as $products_obj ) {
-		$products_array[esc_attr( $products_obj->ID )] = esc_html( $products_obj->post_title );
-	}
-}
+$products_array = array();
 
 $ranges = array(
 	'7day'         => __( 'Last 7 Days', 'wc-frontend-manager' ),
@@ -95,7 +69,7 @@ $ranges = array(
 				$is_marketplace = wcfm_is_marketplace();
 				if( $is_marketplace ) {
 					if( !wcfm_is_vendor() ) {
-						$vendor_arr = $WCFM->wcfm_vendor_support->wcfm_get_vendor_list();
+						$vendor_arr = array(); //$WCFM->wcfm_vendor_support->wcfm_get_vendor_list();
 						$WCFM->wcfm_fields->wcfm_generate_form_field( array(
 																											"dropdown_vendor" => array( 'type' => 'select', 'options' => $vendor_arr, 'attributes' => array( 'style' => 'width: 150px;' ) )
 																											 ) );

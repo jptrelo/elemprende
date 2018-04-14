@@ -134,8 +134,11 @@ class WCFM_Enquiry_Controller {
 						foreach( $vendor_terms as $vendor_term ) {
 							$vendor_name = $vendor_term->name;
 						}
+					} elseif( $WCFM->is_marketplace == 'wcvendors' ) {
+						$vendor_name = get_user_meta( $wcfm_enquirys_single->author_id, 'pv_shop_name', true );
 					} elseif( $WCFM->is_marketplace == 'dokan' ) {
-						$vendor_name = get_user_meta( $wcfm_enquirys_single->author_id, 'dokan_store_name', true );
+						$vendor_data = get_user_meta( $wcfm_enquirys_single->author_id, 'dokan_profile_settings', true );
+						$vendor_name = isset( $vendor_data['store_name'] ) ? esc_attr( $vendor_data['store_name'] ) : '&ndash';
 					}
 					$wcfm_enquirys_json_arr[$index][] =  $vendor_name;
 				}

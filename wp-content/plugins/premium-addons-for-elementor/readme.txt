@@ -98,6 +98,12 @@ Premium Addons for Elementor is light weight and we also gave you the control to
 
 == Changelog ==
 
+= 2.1.3 =
+
+- New: Added Version Control tab to plugin settings including Version Rollback option and an option to enable beta versions updates.
+- Tweak: Added Custom/Existing page link option for Premium Dual Heading Widget.
+- Tweak: Changed Addons icons hover color.
+
 = 2.1.2 =
 
 - Fix: Premium Fancy Text Slide up effect bug on Chrome and Opera.

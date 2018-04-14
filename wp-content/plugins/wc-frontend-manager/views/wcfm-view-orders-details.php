@@ -344,7 +344,7 @@ do_action( 'before_wcfm_orders_details' );
 							</tbody>
 						</table>
 					<?php } ?>
-					<?php do_action('woocommerce_order_details_after_order_table',  $order ); ?>
+					<?php //do_action('woocommerce_order_details_after_order_table',  $order ); ?>
 			</div>
 		</div>
 		<!-- end collapsible -->

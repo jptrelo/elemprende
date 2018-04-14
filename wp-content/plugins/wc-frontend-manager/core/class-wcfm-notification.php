@@ -308,6 +308,10 @@ class WCFM_Notification {
   			$message_type_class .= 'fa-question-circle fa-question-circle-o';
   		break;
   		
+  		case 'support':
+  			$message_type_class .= 'fa-life-ring';
+  		break;
+  		
   		case 'verification':
   			$message_type_class .= 'fa-angellist';
   		break;

@@ -62,6 +62,8 @@ $processing_count = 0;
 $sql = "SELECT commission.order_id, commission.order_status FROM {$wpdb->prefix}dokan_orders AS commission LEFT JOIN {$wpdb->posts} p ON commission.order_id = p.ID";
 $sql .= " WHERE 1=1";
 $sql .= " AND commission.seller_id = %d";
+$status = dokan_withdraw_get_active_order_status_in_comma();
+$sql .= " AND commission.order_status IN ({$status})";
 $sql .= " AND MONTH( p.post_date ) = MONTH( NOW() )";
 $sql .= " GROUP BY commission.order_id";
 

@@ -78,7 +78,7 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 		$this->report_data = new stdClass;
 		
 		//$order_status = dokan_withdraw_get_active_order_status();
-		$order_status = array( 'completed', 'processing', 'on-hold', 'refunded' );
+		$order_status = apply_filters( 'wcfm_dokan_allowed_order_status', array( 'completed', 'processing', 'on-hold', 'refunded' ) );
 
 		$this->report_data->order_counts = (array) $this->get_order_report_data( array(
 			'data' => array(
@@ -102,13 +102,13 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'            => $this->group_by_query,
-			'order_by'            => 'post_date ASC',
+			//'order_by'            => 'post_date ASC',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
 			'order_types'         => wc_get_order_types( 'order-count' ),
 			'order_status'        => $order_status,
 		) );
-
+		
 		$this->report_data->coupons = (array) $this->get_order_report_data( array(
 			'data' => array(
 				'order_item_name' => array(
@@ -141,7 +141,7 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'     => $this->group_by_query . ', order_item_name',
-			'order_by'     => 'post_date ASC',
+			//'order_by'     => 'post_date ASC',
 			'query_type'   => 'get_results',
 			'filter_range' => true,
 			'order_types'  => wc_get_order_types( 'order-count' ),
@@ -176,7 +176,7 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'            => $this->group_by_query,
-			'order_by'            => 'post_date ASC',
+			//'order_by'            => 'post_date ASC',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
 			'order_types'         => wc_get_order_types( 'order-count' ),
@@ -252,7 +252,7 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'            => $this->group_by_query,
-			'order_by'            => 'post_date ASC',
+			//'order_by'            => 'post_date ASC',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
 			'order_types'         => wc_get_order_types( 'sales-reports' ),
@@ -369,7 +369,7 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'            => 'refund_id',
-			'order_by'            => 'post_date ASC',
+			//'order_by'            => 'post_date ASC',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
 			'order_status'        => false,
@@ -440,7 +440,7 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'            => 'refund_id',
-			'order_by'            => 'post_date ASC',
+			//'order_by'            => 'post_date ASC',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
 			'order_status'        => false,
@@ -732,8 +732,8 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 		$sql .= " FROM {$wpdb->prefix}dokan_orders AS commission LEFT JOIN {$wpdb->posts} p ON commission.order_id = p.ID";
 		$sql .= " WHERE 1=1";
 		$sql .= " AND commission.seller_id = %d";
-		//$status = dokan_withdraw_get_active_order_status_in_comma();
-		//$sql .= " AND order_status IN({$status})";
+		$status = dokan_withdraw_get_active_order_status_in_comma();
+		$sql .= " AND commission.order_status IN ({$status})";
 		$sql = wcfm_query_time_range_filter( $sql, 'post_date', $this->current_range, '', '', 'p' );
 		$sql .= " GROUP BY DATE( p.post_date )";
 		$results = $wpdb->get_results( $wpdb->prepare( $sql, $this->vendor_id ) );

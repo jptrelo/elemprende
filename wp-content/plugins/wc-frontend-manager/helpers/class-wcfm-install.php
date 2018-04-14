@@ -30,10 +30,10 @@ class WCFM_Install {
 		}
 		
 		// Intialize Page View Analytices Tables - Version 2.2.5
-		if ( !get_option( 'wcfm_updated_3_2_8' ) ) {
+		if ( !get_option( 'wcfm_updated_4_0_3' ) ) {
 			$this->wcfm_create_tables();
 			update_option("wcfm_table_install", 1);
-			update_option( 'wcfm_updated_3_2_8', 1 );
+			update_option( 'wcfm_updated_4_0_3', 1 );
 		}
 		
 		// Intialize WCFM End points
@@ -208,6 +208,50 @@ class WCFM_Install {
 															PRIMARY KEY (`ID`)
 															) $collate;";
 															
+		$create_tables_query[] = "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "wcfm_support` (
+															`ID` bigint(20) NOT NULL AUTO_INCREMENT,
+															`order_id` bigint(20) NOT NULL default 0,
+															`item_id` bigint(20) NOT NULL default 0,
+															`product_id` bigint(20) NOT NULL default 0,
+															`author_id` bigint(20) NOT NULL default 0,
+															`vendor_id` bigint(20) NOT NULL default 0,
+															`customer_id` bigint(20) NOT NULL default 0,
+															`customer_name` VARCHAR(200) NOT NULL,
+															`customer_email` VARCHAR(200) NOT NULL,
+															`query` longtext NOT NULL,
+															`category` longtext NOT NULL,
+															`priority` VARCHAR(200) NOT NULL,
+															`status` VARCHAR(200) NOT NULL,
+															`posted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,	
+															PRIMARY KEY (`ID`)
+															) $collate;";
+															
+		$create_tables_query[] = "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "wcfm_support_response` (
+															`ID` bigint(20) NOT NULL AUTO_INCREMENT,
+															`support_id` bigint(20) NOT NULL default 0,
+															`order_id` bigint(20) NOT NULL default 0,
+															`item_id` bigint(20) NOT NULL default 0,
+															`product_id` bigint(20) NOT NULL default 0,
+															`vendor_id` bigint(20) NOT NULL default 0,
+															`customer_id` bigint(20) NOT NULL default 0,
+															`reply` longtext NOT NULL,
+															`reply_by` bigint(20) NOT NULL default 0,
+															`posted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,	
+															PRIMARY KEY (`ID`)
+															) $collate;";												
+		
+															
+		$create_tables_query[] = "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "wcfm_following_follower` (
+															`ID` bigint(20) NOT NULL AUTO_INCREMENT,
+															`user_id` bigint(20) NOT NULL default 0,
+															`user_name` VARCHAR(200) NOT NULL,
+															`user_email` VARCHAR(200) NOT NULL,
+															`follower_id` bigint(20) NOT NULL default 0,
+															`follower_name` VARCHAR(200) NOT NULL,
+															`follower_email` VARCHAR(200) NOT NULL,
+															`posted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,	
+															PRIMARY KEY (`ID`)
+															) $collate;";		
 
 		foreach ($create_tables_query as $create_table_query) {
 			$wpdb->query($create_table_query);

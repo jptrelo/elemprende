@@ -98,7 +98,7 @@ function cv_comp_plugin_cornerstone_core( $args, $fargs, $this_post ) {
 		$cache = $this_post->cv_comp_cornerstone_content;
 		if ( empty( $cache ) || $cache[ 'expires' ] < time() ) {
 			// Simulate the frontend, to get processed output by Cornerstone
-			file_get_contents( add_query_arg( 'cv_comp_cs_content', 1, get_permalink( $this_post->ID ) ) );
+			@file_get_contents( add_query_arg( 'cv_comp_cs_content', 1, get_permalink( $this_post->ID ) ) );
 			// Get the processed content
 			$cache = get_post_meta( $this_post->ID, 'cv_comp_cornerstone_content', true );
 		}
@@ -313,15 +313,25 @@ function cv_comp_plugin_saoe() {
 	remove_filter( 'get_post_metadata', 'jr_saoe_get_post_metadata', 10 );
 }
 
-/** Redirect old /?vpage= to /?paged=
+/** Redirect old /?vpage=
  * @since 2.0
  */
 add_action( 'init', 'cv_comp_common_redirect_vpage', 1 );
 function cv_comp_common_redirect_vpage() {
+	// The pagination variable name
+	if ( is_front_page() && !is_home() ) {
+		$pvar = 'paged';
+	} else if ( is_singular() ) {
+		$pvar = 'page';
+	} else {
+		$pvar = '_page';
+	}
+	$GLOBALS[ 'cv_page_var' ] = apply_filters( PT_CV_PREFIX_ . 'page_var', $pvar );
+
 	if ( !empty( $_GET[ 'vpage' ] ) && !headers_sent() ) {
 		$pagenum = absint( $_GET[ 'vpage' ] );
 		if ( $pagenum >= 1 ) {
-			$new_url = remove_query_arg( 'vpage', get_pagenum_link( $pagenum, false ) );
+			$new_url = cv_comp_get_pagenum_link( $pagenum );
 			wp_safe_redirect( $new_url, 301 );
 			exit;
 		}
@@ -333,8 +343,42 @@ function cv_comp_common_redirect_vpage() {
  */
 add_action( PT_CV_PREFIX_ . 'view_process_start', 'cv_comp_pro_timeline' );
 function cv_comp_pro_timeline() {
-	$pagenum = get_query_var( 'paged' );
+	$pagenum = cv_comp_get_page_number();
 	if ( !empty( $pagenum ) ) {
 		$_GET[ 'vpage' ] = 'notempty'; /* not empty value is enough for compatibility */
 	}
+}
+
+/** Generate page numeric link for Normal pagination
+ *
+ * @param int $pagenum
+ * @return string
+ */
+function cv_comp_get_pagenum_link( $pagenum ) {
+	$pvar = $GLOBALS[ 'cv_page_var' ];
+	if ( '' != get_option( 'permalink_structure' ) && in_array( $pvar, array( 'page', 'paged' ) ) && !is_preview() ) {
+		global $wp_rewrite;
+		$link	 = get_permalink();
+		$extra	 = ($pvar === 'paged') ? trailingslashit( $wp_rewrite->pagination_base ) : '';
+		$link	 = user_trailingslashit( trailingslashit( $link ) . $extra . $pagenum );
+	} else {
+		$link = add_query_arg( $pvar, $pagenum );
+	}
+
+	return remove_query_arg( 'vpage', $link );
+}
+
+/** Get the page number for Normal pagination
+ *
+ * @return type
+ */
+function cv_comp_get_page_number() {
+	$paged = @absint( $_GET[ '_page' ] );
+	if ( !$paged ) {
+		$paged = get_query_var( 'paged' );
+	}
+	if ( !$paged ) {
+		$paged = get_query_var( 'page' );
+	}
+	return $paged;
 }

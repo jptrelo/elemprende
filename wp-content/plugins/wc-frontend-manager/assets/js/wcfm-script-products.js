@@ -77,7 +77,7 @@ jQuery(document).ready(function($) {
 		$('#dropdown_vendor').on('change', function() {
 			$product_vendor = $('#dropdown_vendor').val();
 			$wcfm_products_table.ajax.reload();
-		}).select2();
+		}).select2( $wcfm_vendor_select_args );
 	}
 	
 	// Approve Product

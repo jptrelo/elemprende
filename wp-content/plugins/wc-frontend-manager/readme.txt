@@ -7,7 +7,7 @@ Tested up to: 4.9
 WC requires at least: 3.0
 WC tested up to: 3.2.0
 Requires PHP: 5.6
-Stable tag: 4.0.2
+Stable tag: 4.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -250,6 +250,25 @@ Fully compatible with all major multi-vendor marketplace plugins - <strong>WC Ma
 25. WCFM Dashboard - Mobile view
 
 == Changelog ==
+
+= 4.0.4 =
+* Feature - WCfM Support Ticket module added - [Documentation](https://wclovers.com/knowledgebase/wcfm-support-ticket-system/)
+* Enhance - WC attribute delimiter change compatibillity added
+* Enhance - WCfM Dashboard load perfermence improved
+* Fixed   - WC Reports calculation order count issue resolved
+* Fixed   - Dokan vendor report sales calculaton cancelled order exclusion issue resolved 
+* Fixed   - WCfM enquiry form freezing issue resolved
+* Fixed   - WC Appointment calendar broken issue resolved
+* Fixed   - Dokan disable shiping checkbox save issue resolved
+
+= 4.0.3 =
+* Feature - WCfM Support Ticket module added - [Documentation](https://wclovers.com/knowledgebase/wcfm-support-ticket-system/)
+* Enhance - WC attribute delimiter change compatibillity added
+* Fixed   - WC Reports calculation order count issue resolved
+* Fixed   - Dokan vendor report sales calculaton cancelled order exclusion issue resolved 
+* Fixed   - WCfM enquiry form freezing issue resolved
+* Fixed   - WC Appointment calendar broken issue resolved
+* Fixed   - Dokan disable shiping checkbox save issue resolved
 
 = 4.0.2 =
 * Feature - Dokan Pro Reviews module compatibility added
@@ -1018,10 +1037,12 @@ Fully compatible with all major multi-vendor marketplace plugins - <strong>WC Ma
 
 == Upgrade Notice ==
 
-= 4.0.2 =
-* Feature - Dokan Pro Reviews compatibility added
-* Feature - Marketica theme vendor account nav-menu compatibility added
-* Enhance - WCfM emails are now wrap with WC email format 
-* Enhance - WCfM custom attributes rendering change to support attribute specific controllers
-* Enhance - Variaton Per product shipping multiple rules support added
-* Fixed   - Dokan setting checkbox save issue resolved
+= 4.0.4 =
+* Feature - WCfM Support Ticket module added - [Documentation](https://wclovers.com/knowledgebase/wcfm-support-ticket-system/)
+* Enhance - WC attribute delimiter change compatibillity added
+* Enhance - WCfM Dashboard load perfermence improved
+* Fixed   - WC Reports calculation order count issue resolved
+* Fixed   - Dokan vendor report sales calculaton cancelled order exclusion issue resolved 
+* Fixed   - WCfM enquiry form freezing issue resolved
+* Fixed   - WC Appointment calendar broken issue resolved
+* Fixed   - Dokan disable shiping checkbox save issue resolved

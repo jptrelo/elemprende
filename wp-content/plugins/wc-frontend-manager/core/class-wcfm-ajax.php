@@ -52,6 +52,13 @@ class WCFM_Ajax {
 		
 		// Vendor Manager Change Vendor
 		add_action( 'wp_ajax_wcfm_menu_toggler', array( $this, 'wcfm_menu_toggler' ) );
+		
+		// WCfM Ajax Product Search
+		add_action( 'wp_ajax_wcfm_json_search_products_and_variations', array( $this, 'wcfm_json_search_products_and_variations' ) );
+		
+		// WCfM Ajax Vendor Search
+		add_action( 'wp_ajax_wcfm_json_search_vendors', array( $this, 'wcfm_json_search_vendors' ) );
+		
   }
   
   public function wcfm_ajax_controller() {
@@ -272,7 +279,7 @@ class WCFM_Ajax {
 						if($attributes['is_taxonomy']) {
 							$pro_attributes .= '"' . sanitize_title( $attributes['tax_name'] ) . '": {';
 							if( !is_array($attributes['value']) ) {
-								$att_values = explode("|", $attributes['value']);
+								$att_values = explode( WC_DELIMITER , $attributes['value']);
 								$is_first = true;
 								foreach($att_values as $att_value) {
 									if(!$is_first) $pro_attributes .= ',';
@@ -296,7 +303,7 @@ class WCFM_Ajax {
 							$pro_attributes .= '}';
 						} else {
 							$pro_attributes .= '"' . sanitize_title( $attributes['name'] ) . '": {';
-							$att_values = explode("|", $attributes['value']);
+							$att_values = explode( WC_DELIMITER, $attributes['value']);
 							$is_first = true;
 							foreach($att_values as $att_value) {
 								if(!$is_first) $pro_attributes .= ',';
@@ -488,5 +495,65 @@ class WCFM_Ajax {
   	
   	echo "success";
   	die;
+  }
+  
+  /**
+   * WCfM ajax product search
+   */
+  function wcfm_json_search_products_and_variations() {
+  	global $WCFM, $_POST, $_GET;
+  	
+  	$term = wc_clean( empty( $term ) ? stripslashes( $_GET['term'] ) : $term );
+
+		if ( empty( $term ) ) {
+			wp_die();
+		}
+		
+		$args = array(
+			'posts_per_page'   => 25,
+			'offset'           => 0,
+			'category'         => '',
+			'category_name'    => '',
+			'orderby'          => 'date',
+			'order'            => 'DESC',
+			'include'          => '',
+			'exclude'          => '',
+			'meta_key'         => '',
+			'meta_value'       => '',
+			'post_type'        => 'product',
+			'post_mime_type'   => '',
+			'post_parent'      => '',
+			//'author'	   => get_current_user_id(),
+			'post_status'      => array('publish'),
+			'suppress_filters' => 0 
+		);
+		$args = apply_filters( 'wcfm_products_args', $args );
+		$args['s'] = $term;
+		
+		$products_objs = get_posts( $args );
+		$products_array = array();
+		if( !empty($products_objs) ) {
+			foreach( $products_objs as $products_obj ) {
+				$product_data      = wc_get_product( $products_obj->ID );
+				$products_array[esc_attr( $products_obj->ID )] = (!empty($product_data)) ? wp_kses_post( $product_data->get_formatted_name() ) : $products_obj->ID;
+			}
+		}
+		
+		wp_send_json( apply_filters( 'wcfm_json_search_products_and_variations', $products_array ) );
+  }
+  
+  /**
+   * WCfM ajax vendor search
+   */
+  function wcfm_json_search_vendors() {
+  	global $WCFM, $_POST, $_GET;
+  	
+  	$term = wc_clean( empty( $term ) ? stripslashes( $_GET['term'] ) : $term );
+
+		if ( empty( $term ) ) {
+			wp_die();
+		}
+		$vendor_arr = $WCFM->wcfm_vendor_support->wcfm_get_vendor_list( false, 0, 25, $term );
+		wp_send_json( apply_filters( 'wcfm_json_search_vendors', $vendor_arr ) );
   }
 }
