@@ -77,8 +77,8 @@ define('FTP_PASS', 'HarryPotter929292');
 // define('LOGGED_IN_SALT', '-s5s^-:8k[|T;Ygih.hx:vlTq`zQ;{C13Q*+<|eP~DwV^B{9,mpm?&;w(9fm<M4d');
 // define('NONCE_SALT', 'h;W6WEtm(oQN^;FbcT:nUF0tW;M(&j=CKJC&gr~r1qxDXqzQyW;MzyjaB.:}9t7A');
 
-define('WP_HOME','https://elemprende.herokuapp.com');
-define('WP_SITEURL','https://elemprende.herokuapp.com');
+// define('WP_HOME','https://elemprende.herokuapp.com');
+// define('WP_SITEURL','https://elemprende.herokuapp.com');
 define('AUTH_KEY',         getenv('AUTH_KEY'));
 define('SECURE_AUTH_KEY',  getenv('SECURE_AUTH_KEY'));
 define('LOGGED_IN_KEY',    getenv('LOGGED_IN_KEY'));
