@@ -2,8 +2,5 @@
     "name": "elemprende",
     "description": "App para emprendedores",
     "version": "0.1.0",
-    "minimum-stability": "dev",
-    "require": {
-        "hhvm":"~3.3"
-    }
+    "minimum-stability": "dev"
 }
