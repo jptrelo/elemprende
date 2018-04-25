@@ -1,4 +1,7 @@
 { 
+    "provide": { 
+        "hhvm": "3.2.0"
+    },
     "require": {
         "php": "^5.4"
     }
