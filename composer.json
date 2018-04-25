@@ -1,8 +1,9 @@
 { 
-    "provide": { 
-        "hhvm": "3.2.0"
-    },
+    "name": "elemprende",
+    "description": "App para emprendedores",
+    "version": "0.1.0",
+    "minimum-stability": "dev",
     "require": {
-        "php": "^5.4"
+        "hhvm":"~3.3"
     }
 }
