@@ -110,9 +110,6 @@ define('WP_DEBUG', false);
 
 /* ¡Eso es todo, deja de editar! Feliz blogging */
 
-define('WP_HOME','https://elemprende.herokuapp.com');
-define('WP_SITEURL','https://elemprende.herokuapp.com');
-
 /** WordPress absolute path to the Wordpress directory. */
 if ( !defined('ABSPATH') )
 	define('ABSPATH', dirname(__FILE__) . '/');
