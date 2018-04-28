@@ -5,6 +5,6 @@
     "minimum-stability": "dev",
     "require": { 
         "php": "^5.6.0",
-        "hhvm": "^3.2.0" 
+        "hhvm": "^4" 
     }
 }
