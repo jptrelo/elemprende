@@ -1,0 +1,30 @@
+/*
+* scss file for Limit Posts plugin
+*
+* Author: Colin Beeby
+*/
+
+#add-edit-limit-form{
+	ul{
+		li{
+			margin-bottom:12px;
+			label{
+				vertical-align:top;
+			}
+			input[type="radio"]{
+				float:left;
+				margin-top:0.5em;
+			}
+			.narrative{
+				float:left;
+			}
+			input[type="number"]{
+				width:75px;
+			}
+			#period_denominator{
+				position:relative;
+				top:-2px;
+			}
+		}
+	}
+}

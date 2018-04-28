@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": ";;;;;AAQE,0BAAE;EACD,aAAa,EAAC,IAAI;EAClB,gCAAK;IACJ,cAAc,EAAC,GAAG;EAEnB,8CAAmB;IAClB,KAAK,EAAC,IAAI;IACV,UAAU,EAAC,KAAK;EAEjB,qCAAU;IACT,KAAK,EAAC,IAAI;EAEX,+CAAoB;IACnB,KAAK,EAAC,IAAI;EAEX,8CAAmB;IAClB,QAAQ,EAAC,QAAQ;IACjB,GAAG,EAAC,IAAI",
+"sources": ["../sass/limitposts.scss"],
+"names": [],
+"file": "limitposts.css"
+}
