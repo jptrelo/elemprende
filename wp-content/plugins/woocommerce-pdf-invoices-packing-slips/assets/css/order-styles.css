@@ -1,0 +1,58 @@
+/* Order list buttons: */
+.type-shop_order .column-wc_actions a.button.wpo_wcpdf {
+	padding: 2px !important;
+}
+
+.type-shop_order .column-wc_actions a.button.wpo_wcpdf img,
+.type-shop_order .column-order_actions a.button.wpo_wcpdf img {
+	width: 16px;
+}
+
+.widefat .column-pdf_invoice_number {
+	width: 110px;
+}
+
+@media screen and (max-width: 782px) {
+	.wp-list-table .column-pdf_invoice_number, .wp-list-table tr:not(.inline-edit-row):not(.no-items) td.column-pdf_invoice_number:not(.check-column) {
+		display: none;
+	}
+	.wp-list-table tr:not(.inline-edit-row):not(.no-items) td.column-pdf_invoice_number {
+		padding: 3px 8px 3px 35%
+	}
+}
+
+#wpo_wcpdf-data-input-box h4 {
+	font-size: 14px;
+	line-height: 1.4;
+	margin: 1.5em 0 0 0;
+}
+
+#wpo_wcpdf-data-input-box p {
+	margin: 0.5em 0;
+}
+
+#wpo_wcpdf-data-input-box .form-field input {
+	width: auto;
+}
+
+.wcpdf-data-fields .read-only {
+	height:auto;
+	display:block;
+}
+
+.wcpdf-data-fields .editable {
+	height:auto;
+	display:none;
+}
+
+/* Edit buttons Invoice, Proforma and Credit */
+
+.wpo-wcpdf-edit-date-number {
+	margin-left:20px!important;
+	opacity:0.5;
+}
+
+.wpo-wcpdf-edit-date-number:hover {
+	opacity:1;
+	cursor:pointer;
+}

@@ -34,25 +34,25 @@
 // define('DB_COLLATE', '');
 
 // ** MySQL settings - You can get this info from your web host ** //
-$url = parse_url(getenv('DATABASE_URL') ? getenv('DATABASE_URL') : getenv('CLEARDB_DATABASE_URL'));
+// $url = parse_url(getenv('DATABASE_URL') ? getenv('DATABASE_URL') : getenv('CLEARDB_DATABASE_URL'));
 
-/** The name of the database for WordPress */
-define('DB_NAME', trim($url['path'], '/'));
+// /** The name of the database for WordPress */
+// define('DB_NAME', trim($url['path'], '/'));
 
-/** MySQL database username */
-define('DB_USER', $url['user']);
+// /** MySQL database username */
+// define('DB_USER', $url['user']);
 
-/** MySQL database password */
-define('DB_PASSWORD', $url['pass']);
+// /** MySQL database password */
+// define('DB_PASSWORD', $url['pass']);
 
-/** MySQL hostname */
-define('DB_HOST', $url['host']);
+// /** MySQL hostname */
+// define('DB_HOST', $url['host']);
 
-/** Database Charset to use in creating database tables. */
-define('DB_CHARSET', 'utf8');
+// /** Database Charset to use in creating database tables. */
+// define('DB_CHARSET', 'utf8');
 
-/** The Database Collate type. Don't change this if in doubt. */
-define('DB_COLLATE', '');
+// /** The Database Collate type. Don't change this if in doubt. */
+// define('DB_COLLATE', '');
 
 // ** FTP CONFIGURACIÓN PARA AUTO-FTP ** //
 define('FTP_HOST', 'localhost');

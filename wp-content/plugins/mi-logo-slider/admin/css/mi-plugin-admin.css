@@ -1,0 +1,460 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+.hide{
+    display: none;
+}
+.column-category .select2-general {
+    width: 85%;
+}
+.mi-logo-settings-form .form-table th{
+    padding: 15px 10px 15px 0;
+}
+.custom-margin {
+    margin: 40px 0 10px -12px;
+}
+
+.mt-40{
+    margin-top:40px;
+}
+
+#mi-plugin-add-more-slide {display: inline-block;margin-top: 20px;}
+#upload_image_button {
+    margin-top: 20px;
+}
+
+.mi-innner-shortcode {
+    margin: 15px 0px 0px;
+    background: white;
+    padding: 15px 25px;
+}
+.mi-innner-shortcode span {
+    margin-right: 10px;
+}
+/*==========row table css ============*/
+
+.column-image {
+    width: 7%;
+}
+
+.column-action,.column-delete{
+    width: 10%;
+}
+.column-action a,
+.column-action button,.danger-button {
+    text-align: center;
+    display: inline-block;
+    font-size: 10px;
+    font-weight: bold;
+    margin-top: 5px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #fff;
+    -webkit-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.25);
+    border: none;
+    padding: 0px;
+    outline: none !important;
+    cursor: pointer;
+}
+
+.column-action .dashicons,
+.column-action .dashicons-before:before {
+    width: 22px;
+    height: 22px;
+    line-height: 23px;
+    font-size: 16px;
+}
+
+.mi-logo-color-danger,
+.mi-logo-color-danger:focus,
+.mi-logo-color-danger:active {
+    color: #f95050;
+}
+
+.mi-logo-color-danger:hover {
+    color: #f97575;
+}
+
+
+.column-image img{
+    width:100%;
+}
+
+#mi-logo-slide-setting table.form-table tbody tr:last-child {
+    display: none !important;
+}
+
+.mi-logo-no-item-hide {
+    display: none !important;
+}
+
+/**
+** Mi Logo Sliders Table
+**/
+.mi-logo-slider-table {
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+.mi-logo-slider-table .column-title {
+    width: 25%;
+    text-align: left;
+}
+.mi-logo-slider-table .column-shortcode {
+    width: 65%;
+    text-align: left;
+}
+.mi-logo-slider-table .column-action {
+    width: 100px;
+    text-align: left;
+}
+
+/**
+** Mi Logo Slider Logos Table
+**/
+
+.mi-logo-slider-logos-table {
+
+}
+.mi-logo-slider-logos-table .column-thumb {
+    width: 25%;
+    text-align: left;
+}
+.mi-logo-slider-logos-table .column-title {
+    width: 30%;
+    text-align: left;
+}
+.mi-logo-slider-logos-table .column-link {
+    width: 65%;
+    text-align: left;
+}
+.mi-logo-slider-logos-table .column-link input {
+    min-width: 70%;
+}
+.mi-logo-slider-logos-table .column-action {
+    width: 100px;
+    text-align: left;
+}
+
+
+
+
+.mi-logo-slider-shortcode {
+    width: 100% !important;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0px !important;
+}
+
+
+
+
+
+
+
+.mi-logo-slider-logos-table {
+    border: none !important;
+    margin: 0px;
+    margin-bottom: 25px;
+}
+
+.mi-logo-slider-logos-table thead td,
+.mi-logo-slider-logos-table thead th {
+    border: none;
+}
+
+
+
+
+
+/* ============= Tab Core =========== */
+.mi-tab {
+    position: relative;
+    overflow: hidden;
+    margin: 20px auto;
+    width: 100%;
+}
+
+.mi-tab .mi-logo-slider-tabs-control {
+    position: relative;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+    display: table;
+    width: 100%;
+    line-height: 0;
+}
+
+.mi-tab .mi-logo-slider-tabs-control li {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    margin: 0;
+}
+
+.mi-tab .mi-logo-slider-tabs-control a {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 2.5;
+}
+
+.mi-tab .mi-logo-slider-tabs-control a {
+    vertical-align: middle;
+}
+
+.mi-tab .mi-logo-slider-tabs-control li.tab-current a {
+    color: #74777b;
+}
+
+.mi-tab .mi-logo-slider-tabs-control a:focus {
+    outline: none;
+}
+
+/* Content */
+.mi-logo-slider-tabs-content {
+    position: relative;
+}
+
+.mi-logo-slider-tabs-content section {
+    display: none;
+    margin: 0 auto;
+    padding: 25px;
+}
+
+.mi-logo-slider-tabs-content section.content-current {
+    display: block;
+}
+
+@media screen and (max-width: 58em) {
+    .mi-tab .mi-logo-slider-tabs-control a.icon span {
+        display: none;
+    }
+    .mi-tab .mi-logo-slider-tabs-control a:before {
+        margin-right: 0;
+    }
+}
+
+/* ============= Tab Style Topline =========== */
+
+.tabs-style-topline {
+    max-width: 1200px;
+}
+
+.tabs-style-topline .mi-logo-slider-tabs-control li {
+    border: 1px solid rgba(40,44,42,0.1);
+    border-bottom: none;
+}
+
+.tabs-style-topline .mi-logo-slider-tabs-control li:not(:last-child) {
+    border-right: none;
+}
+
+.tabs-style-topline .mi-logo-slider-tabs-control li.tab-current {
+    border-top-color: #2CC185;
+}
+
+.tabs-style-topline .mi-logo-slider-tabs-control a {
+    padding: 18px 50px 15px;
+    background: rgba(40,44,42,0.05);
+    color: #74777b;
+    line-height: 1;
+    -webkit-transition: color 0.2s;
+    transition: color 0.2s;
+    outline: none !important;
+    box-shadow: none !important;
+    text-decoration: none !important;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.tabs-style-topline .mi-logo-slider-tabs-control a:hover,
+.tabs-style-topline .mi-logo-slider-tabs-control a:focus {
+    color: #2CC185;
+}
+
+.tabs-style-topline .mi-logo-slider-tabs-control li.tab-current a {
+    background: none;
+    color: #2CC185;
+}
+
+.tabs-style-topline .icon::before {
+    display: block;
+    margin: 0;
+}
+.tabs-style-topline .mi-logo-slider-tabs-control li a::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #2CC185;
+    content: '';
+    -webkit-transition: -webkit-transform 0.3s;
+    transition: transform 0.3s;
+    -webkit-transform: translate3d(0,-150%,0);
+    transform: translate3d(0,-150%,0);
+}
+
+.tabs-style-topline .mi-logo-slider-tabs-control li.tab-current:after {
+    content: "";
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    background: #f1f1f1;
+    top: 100%;
+    left: 0;
+}
+
+.tabs-style-topline .mi-logo-slider-tabs-control li.tab-current a::after {
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+}
+
+
+
+.tabs-style-flip {
+    max-width: 100%;
+}
+
+.tabs-style-flip .mi-logo-slider-tabs-control a {
+    padding: 5px 25px 5px;
+    text-decoration: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-transition: color 0.3s;
+    transition: color 0.3s;
+    font-size: 15px;
+    font-weight: bold;
+    color: #909090;
+}
+
+.tabs-style-flip .mi-logo-slider-tabs-control a:hover,
+.tabs-style-flip .mi-logo-slider-tabs-control a:focus,
+.tabs-style-flip .mi-logo-slider-tabs-control li.tab-current a {
+    color: #333;
+}
+
+.tabs-style-flip .mi-logo-slider-tabs-control a::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0;
+    content: '';
+    -webkit-transition: -webkit-transform 0.3s, background-color 0.3s;
+    transition: transform 0.3s, background-color 0.3s;
+    -webkit-transform: perspective(900px) rotate3d(1,0,0,90deg);
+    transform: perspective(900px) rotate3d(1,0,0,90deg);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    -webkit-perspective-origin: 50% 100%;
+    perspective-origin: 50% 100%;
+}
+
+.tabs-style-flip .mi-logo-slider-tabs-control li.tab-current a::after {
+    background-color: #fff;
+    -webkit-transform: perspective(900px) rotate3d(1,0,0,0deg);
+    transform: perspective(900px) rotate3d(1,0,0,0deg);
+}
+
+.tabs-style-flip .mi-logo-slider-tabs-content {
+    background: #fff;
+}
+
+.mi-logo-margin-top-20 {
+    margin-top: 20px !important;
+}
+
+.mi-promo {
+    background: #23282d;
+    padding: 20px;
+    font-size: 15px;
+    line-height: 2;
+    color: #eee;
+    margin-top: 30px;
+}
+.mi-promo a {
+    border: none !important;
+    margin-left: 18px !important;
+    outline: none !important;
+}
+
+/*================== Mi Other Page =================*/
+
+.mi-other-products-wrapper {
+    overflow: hidden;
+}
+
+.mi-other-products-wrapper-inner {
+    margin-left: -20px;
+    margin-right: -20px;
+}
+
+.mi-other-products-wrapper:before,
+.mi-other-products-wrapper:after {
+    display: table;
+    content: "";
+}
+.mi-other-products-wrapper:after {
+    clear: both;
+}
+.mi-other-single-wrapper {
+    float: left;
+    width: 25%;
+    padding: 25px;
+    box-sizing: border-box;
+}
+.mi-other-single {
+    width: 100%;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 3px 12px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+}
+.mi-other-single img {
+    width: 100%;
+}
+.mi-other-content {
+    padding: 40px;
+    padding-top: 20px;
+}
+.mi-otehr-des {
+    margin-bottom: 20px;
+}
+.mi-other-content ul {
+    margin-bottom: 20px;
+}
+
+.mi-premium-wrapper .mi-other-single-wrapper {
+    width: 790px !important;
+    max-width: 100% !important;
+}
+
+
+
+@media (max-width: 1600px) {
+    .mi-other-single-wrapper {
+        width: 33.3333%;
+    }
+}
+
+@media (max-width: 1200px) {
+    .mi-other-single-wrapper {
+        width: 50%;
+    }
+}
+
+@media (max-width: 650px) {
+    .mi-other-single-wrapper {
+        width: 100%;
+    }
+}
