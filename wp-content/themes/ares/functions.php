@@ -13,6 +13,15 @@ if ( ! function_exists( 'ares_setup' ) ) :
         define( 'ARES_VERSION', '2.0.3' );
     endif;
 
+    if (!empty($_SERVER['HTTPS'])) {
+        function add_hsts_header($headers) {
+          $headers['strict-transport-security'] = 'max-age=31536000; includeSubDomains';
+          return $headers;
+        }
+      
+      add_filter('wp_headers', 'add_hsts_header');
+    }
+
     /**
      * Sets up theme defaults and registers support for various WordPress features.
      *
