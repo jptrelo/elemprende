@@ -1,3 +1,4 @@
+SetEnvIf X-Forwarded-Proto https HTTPS
 #Force SSL 
 
 #Normal way (in case you need to deploy to NON-heroku)
