@@ -1,6 +1,6 @@
 SetEnvIf X-Forwarded-Proto https HTTPS
 #Force SSL 
-
+php_value max_execution_time 300
 #Normal way (in case you need to deploy to NON-heroku)
 RewriteCond %{HTTPS} !=on
 
