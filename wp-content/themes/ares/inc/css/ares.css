@@ -3,6 +3,7 @@
     Created on : Oct. 24, 2017
     Author     : Bilal
 */
+@import url("custom.css");
 
 body * {
     outline: none !important;
