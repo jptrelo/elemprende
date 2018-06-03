@@ -6,38 +6,38 @@ body img{
 }
 
 h2{
-    color: #201863;
+    color: #1B1464;
 }
 
 div input[type="submit"]{
     border-radius: 3px;
-    box-shadow: 0px 1px 1px 0px cyan;
-    -moz-box-shadow: 0px 1px 1px 0px cyan;
-    -webkit-box-shadow: 0px 1px 1px 0px cyan;
+    box-shadow: 0px 1px 1px 0px #63ffff;
+    -moz-box-shadow: 0px 1px 1px 0px #63ffff;
+    -webkit-box-shadow: 0px 1px 1px 0px #63ffff;
     font-weight: 600;
     background-color: white;
     color: #0fe5ff;
-    border: 1px solid darkblue;
+    border: 1px solid #1B1464;
     height: 29px;
 }
 
 div input[type="submit"]:hover{
     border-radius: 3px;
-    box-shadow: 0px 1px 1px 0px darkorange;
-    -moz-box-shadow: 0px 1px 1px 0px darkorange;
-    -webkit-box-shadow: 0px 1px 1px 0px darkorange;
+    box-shadow: 0px 1px 1px 0px #F15A24;
+    -moz-box-shadow: 0px 1px 1px 0px #F15A24;
+    -webkit-box-shadow: 0px 1px 1px 0px #F15A24;
     font-weight: 600;
     background-color: white;
-    color: darkorange;
-    border: 1px solid darkblue;
+    color: #F15A24;
+    border: 1px solid #1B1464;
 }
 
 /******* MENU **********/
 
 .site-header{
-    box-shadow: 0px -3px 10px 0px darkblue;
-    -moz-box-shadow: 0px -3px 10px 0px darkblue;
-    -webkit-box-shadow: 0px -3px 10px 0px darkblue;
+    box-shadow: 0px -3px 10px 0px #1B1464;
+    -moz-box-shadow: 0px -3px 10px 0px #1B1464;
+    -webkit-box-shadow: 0px -3px 10px 0px #1B1464;
 }
 
 div#site-toolbar .social-bar a{
@@ -48,34 +48,34 @@ div#site-toolbar .social-bar a{
 
 div#site-toolbar .social-bar a:hover{
     background: white !important;
-    color: darkorange;
-    border-color: darkorange;
+    color: #F15A24;
+    border-color: #F15A24;
 }
 
 .navigation #site-navigation.main-navigation li a{
-    color: darkblue;
+    color: #1B1464;
     font-weight: bold;
     padding: 0 10px 0 10px;
 }
 
 #site-navigation.main-navigation li a{
-    color: darkblue;
+    color: #1B1464;
     font-weight: bold;
     padding: 0 10px 0 10px;
 }
 
 #site-navigation.main-navigation li:hover{
-    box-shadow: 0px -5px 5px -5px darkorange;
-    -moz-box-shadow: 0px -5px 5px -5px darkorange;
-    -webkit-box-shadow: 0px -5px 5px -5px darkorange;
-    color: darkblue;
+    box-shadow: 0px -5px 5px -5px #F15A24;
+    -moz-box-shadow: 0px -5px 5px -5px #F15A24;
+    -webkit-box-shadow: 0px -5px 5px -5px #F15A24;
+    color: #1B1464;
 }
 
 .navigation #site-navigation.main-navigation li:hover{
-    box-shadow: 0px -5px 5px -5px darkorange;
-    -moz-box-shadow: 0px -5px 5px -5px darkorange;
-    -webkit-box-shadow: 0px -5px 5px -5px darkorange;
-    color: darkblue;
+    box-shadow: 0px -5px 5px -5px #F15A24;
+    -moz-box-shadow: 0px -5px 5px -5px #F15A24;
+    -webkit-box-shadow: 0px -5px 5px -5px #F15A24;
+    color: #1B1464;
 }
 
 #site-navigation.main-navigation li ul.sub-menu li:hover{
@@ -85,62 +85,220 @@ div#site-toolbar .social-bar a:hover{
 }
 
 #site-navigation.main-navigation li a:hover{
-    color: #0fe5ff;
+    color: #63ffff;
 }
 
 .navigation #site-navigation.main-navigation li a:hover{
-    color: #0fe5ff;
+    color: #63ffff;
+}
+
+#header-cart .fa{
+    color: #1B1464;
+}
+
+#header-cart .fa:hover{
+    color: #b72500;
 }
 
 /******* END MENU ******/
 
 /******* FOOT MAIN SLIDER ******/
 div#post-slider-cta{
-    background-color: #201863;
+    background-color: #1B1464;
+}
+
+div#post-slider-cta .main-heading{
+    color: #F15A24;
+}
+
+div#post-slider-cta h4.secondary-heading{
+    font-weight: 400;
+}
+
+div#site-cta-wrap{
+    z-index: 1;
+    position: relative;
+    border-bottom: none;
+    -webkit-box-shadow: 0px 10px 46px -6px #414154;
+    -moz-box-shadow: 0px 10px 46px -6px #414154;
+    box-shadow: 0px 10px 46px -6px #414154;
+    padding: 25px 0px 55px;
+}
+
+div#site-cta{
+    border-top: none;
 }
 
 #site-cta .site-cta i.fa{
-    border: 2px solid #0fe5ff;
-    color: #0fe5ff;
+    border: 2px solid #63ffff;
+    color: #63ffff;
 }
 
 #site-cta .site-cta i.fa:hover{
-    border: 2px solid darkorange;
-    color: darkorange;
+    border: 2px solid #F15A24;
+    color: #F15A24;
     background: white;
 }
 
 div.site-cta h3{
-    color: #201863;
+    color: #F15A24;
 }
 
 div.site-cta a{
-    color: #201863;
+    color: #1B1464;
 }
 
 div.site-cta a:hover{
-    color: #0fe5ff;
+    color: #63ffff;
+}
+
+p a{
+    transition: 0.2s;
 }
 
 /***** END FOOT MAIN SLIDER *****/
 
 /****** SECOND SLIDER **********/
+
+div#homepage-area-c{
+    padding: 0;
+}
+
+#homepage-area-c div.top-banner-text{
+    margin-bottom: 0px;
+}
+
 #homepage-area-c .top-banner-text h2{
-    font-weight: 500;
+    display: none;
+}
+
+#homepage-area-c aside.widget{
+    margin: 0px !important;
+}
+
+.ms-skin-light-6 .ms-bullets.ms-dir-h{
+    display: none;
 }
 /****** END SECOND SLIDER ********/
 
+/******* ENTREPRENEUR OF THE MONTH *********/
+
+#homepage-area-d{
+    z-index: 1;
+    position: relative;
+    -webkit-box-shadow: 0px -10px 46px -6px #414154;
+    -moz-box-shadow: 0px -10px 46px -6px #414154;
+    box-shadow: 0px -10px 46px -6px #414154;
+    padding: 80px 0px 60px !important;
+}
+
+#media_image-7 img{
+    -webkit-box-shadow: 0px 0px 55px 0px rgba(99,255,255,0.8);
+    -moz-box-shadow: 0px 0px 55px 0px rgba(99,255,255,0.8);
+    box-shadow: 0px 0px 55px 0px rgba(99,255,255,0.8);
+    border-radius: 50%;
+}
+
+#media_image-7 h2{
+    color: #F15A24;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+#video-4-1_youtube_iframe{
+    -webkit-border-radius: 10px;
+    -webkit-border-bottom-right-radius: 20px;
+    -webkit-border-bottom-left-radius: 20px;
+    -moz-border-radius: 10px;
+    -moz-border-radius-bottomright: 20px;
+    -moz-border-radius-bottomleft: 20px;
+    border-radius: 10px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+/******** END ENTREPRENEUR OF THE MONTH *******/
+
+/******* FRONT *********/
+
+.frontpage{
+    padding: 40px 0px;
+}
+
+.homepage-content article{
+    border: none;
+}
+
+.homepage-content .avenue-sidebar .widget{
+    box-shadow: 0px 0px 11px -4px #1B1464;
+    -moz-box-shadow: 0px 0px 11px -4px #1B1464;
+    -webkit-box-shadow: 0px 0px 11px -4px #1B1464;
+    border: none;
+}
+
+.widget-title{
+    color: #F15A24;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.avenue-sidebar .widget .textwidget{
+    color: #666684;
+}
+
+.widget.buddypress #bp-login-widget-form label{
+    color: #1b1464;
+}
+
+#bp-login-widget-submit{
+    float: left;
+}
+
+#bp-login-widget-form span{
+    float: left;
+    margin-top: 4px;
+}
+
+.bp-login-widget-register-link a:hover{
+    border-radius: 3px;
+    box-shadow: 0px 1px 1px 0px #63ffff;
+    -moz-box-shadow: 0px 1px 1px 0px #63ffff;
+    -webkit-box-shadow: 0px 1px 1px 0px #63ffff;
+    font-weight: 600;
+    background-color: white;
+    color: #0fe5ff;
+    border: 1px solid #1B1464;
+    height: 29px;
+}
+
+.bp-login-widget-register-link a{
+    border-radius: 3px;
+    box-shadow: 0px 1px 1px 0px #F15A24;
+    -moz-box-shadow: 0px 1px 1px 0px #F15A24;
+    -webkit-box-shadow: 0px 1px 1px 0px #F15A24;
+    font-weight: 600;
+    background-color: white;
+    color: #F15A24;
+    border: 1px solid #1B1464;
+    padding: 6px 15px;
+    transition: .3s all ease-in-out;
+    -moz-transition: .3s all ease-in-out;
+    -webkit-transition: .3s all ease-in-out;
+}
+
+/******* END FRONT **********/
+
 /****** FOOTER **********/ 
 div#footer-callout{
-    background-color: #0fe5ff;
+    background-color: #00cbcc;
 }
 
 #footer-callout a.button-cta{
-    color: darkorange;
-    border: 1px solid darkorange;
-    box-shadow: 0px 1px 1px 0px darkorange;
-    -moz-box-shadow: 0px 1px 1px 0px darkorange;
-    -webkit-box-shadow: 0px 1px 1px 0px darkorange;
+    color: #F15A24;
+    border: 1px solid #F15A24;
+    box-shadow: 0px 1px 1px 0px #F15A24;
+    -moz-box-shadow: 0px 1px 1px 0px #F15A24;
+    -webkit-box-shadow: 0px 1px 1px 0px #F15A24;
 }
 
 div#footer-callout .row{
@@ -149,7 +307,7 @@ div#footer-callout .row{
 
 .site-footer div.site-info{
     color: white;
-    background: #211963;
+    background: #1B1464;
     padding: 0;
 }
 
@@ -163,11 +321,11 @@ div#footer-callout .row{
 }
 
 footer.site-footer{
-    color: #606060;
-    background: rgb(248, 248, 248) !important;
+    color: #FFF;
+    background: #000032 !important;
 }
 
 .site-footer .widget-title{
-    color: #201863;
+    color: #F15A24;
 }
 /******* END FOOTER **********/
