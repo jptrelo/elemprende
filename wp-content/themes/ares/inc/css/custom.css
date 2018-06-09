@@ -6,7 +6,7 @@ body img{
 }
 
 h2{
-    color: #1B1464;
+    color: #F15A24;
 }
 
 #site-branding img{
@@ -109,7 +109,7 @@ div#site-toolbar .social-bar a:hover{
 
 /******* FOOT MAIN SLIDER ******/
 div#post-slider-cta{
-    background-color: #1B1464;
+    background-color: #1B1464 !important;
 }
 
 div#post-slider-cta .main-heading{
@@ -118,6 +118,7 @@ div#post-slider-cta .main-heading{
 
 div#post-slider-cta h4.secondary-heading{
     font-weight: 400;
+    color: white !important;
 }
 
 div#site-cta-wrap{
@@ -225,13 +226,23 @@ div#homepage-area-c{
 /******** END ENTREPRENEUR OF THE MONTH *******/
 
 /******* FRONT *********/
+.homepage-content div article header.entry-header{
+    display: none;
+}
 
 .frontpage{
     padding: 40px 0px;
 }
 
 .homepage-content article{
+    padding-top: 1px;
+    padding-bottom: 30px;
+    background: #fff;
+    box-shadow: 0px 0px 11px -4px #1B1464;
+    -moz-box-shadow: 0px 0px 11px -4px #1B1464;
+    -webkit-box-shadow: 0px 0px 11px -4px #1B1464;
     border: none;
+    border-radius: 3px;
 }
 
 .homepage-content .avenue-sidebar .widget{
@@ -294,6 +305,10 @@ div#homepage-area-c{
 /******* END FRONT **********/
 
 /****** FOOTER **********/ 
+.site-footer{
+    margin-top: 0 !important;
+}
+
 div#footer-callout{
     background-color: #00cbcc;
 }
@@ -339,6 +354,7 @@ footer.site-footer{
 /******* COMPANIES ***********/
 main.site-main{
     background-image: url(https://elemprende.herokuapp.com/wp-content/themes/ares/inc/images/brickwall.png);
+    padding-bottom: 30px;
 }
 
 .item-post{
