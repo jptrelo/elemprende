@@ -334,3 +334,57 @@ footer.site-footer{
     color: #F15A24;
 }
 /******* END FOOTER **********/
+
+
+/******* COMPANIES ***********/
+main.site-main{
+    background-image: url(https://elemprende.herokuapp.com/wp-content/themes/ares/inc/images/brickwall.png);
+}
+
+.item-post{
+    box-shadow: 0px 0px 11px -4px #1B1464;
+    -moz-box-shadow: 0px 0px 11px -4px #1B1464;
+    -webkit-box-shadow: 0px 0px 11px -4px #1B1464;
+}
+
+.item-post .post-thumb img{
+    border: none !important;
+    box-shadow: 0px 0px 10px 1px #0fe5ff;
+    -moz-box-shadow: 0px 0px 10px 1px #0fe5ff;
+    -webkit-box-shadow: 0px 0px 10px 1px #0fe5ff;
+}
+
+h2.post-title a{
+    color: #F15A24;
+}
+
+.post-content p{
+    color: #1B1464;
+}
+
+.item-post a.ares-button{
+    margin-top: 0;
+}
+
+a.button-primary{
+    border-radius: 3px;
+    box-shadow: 0px 1px 1px 0px #F15A24;
+    -moz-box-shadow: 0px 1px 1px 0px #F15A24;
+    -webkit-box-shadow: 0px 1px 1px 0px #F15A24;
+    font-weight: 600;
+    background-color: white;
+    color: #F15A24;
+    border: 1px solid #1B1464;
+}
+
+a.button-primary:hover{
+    border-radius: 3px;
+    box-shadow: 0px 1px 1px 0px #63ffff;
+    -moz-box-shadow: 0px 1px 1px 0px #63ffff;
+    -webkit-box-shadow: 0px 1px 1px 0px #63ffff;
+    font-weight: 600;
+    background-color: white;
+    color: #0fe5ff;
+}
+
+/******** END COMPANIES *******/

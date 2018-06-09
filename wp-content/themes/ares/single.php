@@ -19,7 +19,8 @@ get_header(); ?>
     
                 <div class="page-content row ">
                     
-                    <div class="col-md-<?php echo is_active_sidebar(1) && $ares_options['ares_single_layout'] == 'col2r' ? '8' : '12'; ?>">
+                    <!-- <div class="col-md-<?php echo is_active_sidebar(1) && $ares_options['ares_single_layout'] == 'col2r' ? '8' : '12'; ?>"> -->
+                    <div class="col-md-3 col-sm-6">
                     
                         <?php if ( isset( $ares_options['single_post_layout_style'] ) && $ares_options['single_post_layout_style'] == 'alternate' ) : ?>
                         
@@ -68,7 +69,7 @@ get_header(); ?>
 
                     <?php if ( is_active_sidebar(1) && $ares_options['ares_single_layout'] == 'col2r' ) : ?>
 
-                        <div class="col-md-4 avenue-sidebar">
+                        <div class="col-md-3 avenue-sidebar">
                             <?php get_sidebar(); ?>
                         </div>
 
