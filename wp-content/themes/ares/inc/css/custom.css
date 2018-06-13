@@ -46,9 +46,9 @@ div input[type="submit"]:hover{
 }
 
 div#site-toolbar .social-bar a{
-    background: #c1ffff;
-    border: 1px solid #a2ffff;
-    color: #0fe5ff;
+    background: #c1ffff !important;
+    border: 1px solid #0fe5ff !important;
+    color: #0fe5ff !important;
 }
 
 div#site-toolbar .social-bar a:hover{
