@@ -23,12 +23,12 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
 
     <main id="main" class="site-main index">
   
-        <div class="container">
+        <div class="container-fluid">
 
             <div class="page-content row">
 
                 <!-- <div class="col-md-<?php echo $ares_options['ares_blog_layout'] == 'col2r' && is_active_sidebar(1) ? '8' : '12'; ?> site-content item-page"> -->
-                <div class="col-md-9">
+                <div class="col-md-9 companies-row">
 
                     <?php if ( have_posts() ) :
                     
@@ -50,7 +50,7 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
                                 get_template_part('template-parts/content', 'posts-alt' );
                                     
                             else : ?>
-                                <div class="col-md-4 col-sm-6 col-xs-6">
+                                <div class="col-md-3 col-sm-3 col-xs-6">
                                     <div class="item-post">
 
                                         <?php if ( $ares_options['ares_blog_featured'] == 'on' && has_post_thumbnail() ) : ?>

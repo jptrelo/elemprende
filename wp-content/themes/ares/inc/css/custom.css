@@ -416,4 +416,8 @@ a.button-primary:hover{
     p{
         font-size: 12px;
     }
+
+    .companies-row{
+        padding: 0;
+    }
 }
