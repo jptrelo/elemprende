@@ -75,7 +75,7 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
                                             </h2>
 
                                             <div class="post-content">
-                                                <?php the_excerpt(); ?>
+                                                <?php substr(the_excerpt(), 1, 50); ?>
                                             </div>
 
                                             <div class="text-right">
