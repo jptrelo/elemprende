@@ -409,9 +409,10 @@ a.button-primary:hover{
 /******** END COMPANIES *******/
 
 @media screen and (max-width: 440px) {
-    h2{
+    .item-post .post-title, h2{
         font-size: 20px;
     }
+
     p{
         font-size: 12px;
     }
