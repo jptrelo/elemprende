@@ -116,7 +116,7 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
                     
                 <?php if ( $ares_options['ares_blog_layout'] == 'col2r' && is_active_sidebar(1) ) : ?>
 
-                    <div class="col-md-3 avenue-sidebar">
+                    <div class="col-md-3 col-sm-12 col-xs-12 avenue-sidebar">
                         <?php get_sidebar(); ?>
                     </div>
 
