@@ -242,7 +242,7 @@ div#homepage-area-c{
     -moz-box-shadow: 0px 0px 11px -4px #1B1464;
     -webkit-box-shadow: 0px 0px 11px -4px #1B1464;
     border: none;
-    border-radius: 3px;
+    border-radius: 3px !important;
 }
 
 .homepage-content .avenue-sidebar .widget{
