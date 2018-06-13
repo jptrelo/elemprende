@@ -50,7 +50,7 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
                                 get_template_part('template-parts/content', 'posts-alt' );
                                     
                             else : ?>
-                                <div class="col-md-4 col-sm-6">
+                                <div class="col-md-4 col-sm-6 col-xs-6">
                                     <div class="item-post">
 
                                         <?php if ( $ares_options['ares_blog_featured'] == 'on' && has_post_thumbnail() ) : ?>
