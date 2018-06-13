@@ -45,8 +45,7 @@ $alternate_blog = isset( $avenue_options['blog_layout_style'] ) && $avenue_optio
 
                 <?php endif; ?>
                 
-                <!-- <div class="col-md-<?php echo esc_attr( $columns ); ?> site-content item-page"> -->
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-<?php echo esc_attr( $columns ); ?> site-content item-page">
 
                     <?php if ( have_posts() ) :
                     
@@ -73,7 +72,7 @@ $alternate_blog = isset( $avenue_options['blog_layout_style'] ) && $avenue_optio
 
                                     <?php if ( $avenue_options['sc_blog_featured'] == 'on' && has_post_thumbnail() ) : ?>
 
-                                        <div class="post-thumb col-sm-12">
+                                        <div class="post-thumb col-sm-4">
 
                                             <a href="<?php the_permalink(); ?>">
                                                 <?php the_post_thumbnail('large'); ?>
@@ -84,8 +83,8 @@ $alternate_blog = isset( $avenue_options['blog_layout_style'] ) && $avenue_optio
 
                                     <?php endif; ?>
 
-                                    <!-- <div class="col-sm-<?php echo $avenue_options['sc_blog_featured'] == 'on' && has_post_thumbnail() ? '8' : '12'; ?> <?php echo has_post_thumbnail() ? '' : 'text-left'; ?>"> -->
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-<?php echo $avenue_options['sc_blog_featured'] == 'on' && has_post_thumbnail() ? '8' : '12'; ?> <?php echo has_post_thumbnail() ? '' : 'text-left'; ?>">
+
                                         <h2 class="post-title">
                                             <a href="<?php the_permalink(); ?>">
                                                 <?php the_title(); ?>
@@ -134,7 +133,7 @@ $alternate_blog = isset( $avenue_options['blog_layout_style'] ) && $avenue_optio
                 
                 <?php if ( $avenue_options['sc_blog_layout'] == 'col2r' && is_active_sidebar( 1 ) ) : ?>
 
-                    <div class="col-md-3 avenue-sidebar">
+                    <div class="col-md-4 avenue-sidebar">
                         <?php get_sidebar( '1' ); ?>
                     </div>
 

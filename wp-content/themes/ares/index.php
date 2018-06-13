@@ -27,7 +27,8 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
 
             <div class="page-content row">
 
-                <div class="col-md-<?php echo $ares_options['ares_blog_layout'] == 'col2r' && is_active_sidebar(1) ? '8' : '12'; ?> site-content item-page">
+                <!-- <div class="col-md-<?php echo $ares_options['ares_blog_layout'] == 'col2r' && is_active_sidebar(1) ? '8' : '12'; ?> site-content item-page"> -->
+                <div class="col-md-3 col-sm-6">
 
                     <?php if ( have_posts() ) :
                     
@@ -54,7 +55,7 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
 
                                     <?php if ( $ares_options['ares_blog_featured'] == 'on' && has_post_thumbnail() ) : ?>
 
-                                        <div class="post-thumb col-sm-4">
+                                        <div class="post-thumb col-sm-12">
 
                                             <a href="<?php the_permalink(); ?>">
                                                 <?php the_post_thumbnail('large'); ?>
@@ -64,7 +65,8 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
 
                                     <?php endif; ?>
 
-                                    <div class="col-sm-<?php echo $ares_options['ares_blog_featured'] == 'on' && has_post_thumbnail() ? '8' : '12'; ?> <?php echo has_post_thumbnail() ? '' : 'text-left'; ?>">
+                                    <!-- <div class="col-sm-<?php echo $ares_options['ares_blog_featured'] == 'on' && has_post_thumbnail() ? '8' : '12'; ?> <?php echo has_post_thumbnail() ? '' : 'text-left'; ?>"> -->
+                                    <div class="col-sm-12">
 
                                         <h2 class="post-title">
                                             <a href="<?php the_permalink(); ?>">
@@ -112,7 +114,7 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
                 
                 <?php if ( $ares_options['ares_blog_layout'] == 'col2r' && is_active_sidebar(1) ) : ?>
 
-                    <div class="col-md-4 avenue-sidebar">
+                    <div class="col-md-3 avenue-sidebar">
                         <?php get_sidebar(); ?>
                     </div>
 
