@@ -115,6 +115,11 @@ if ( ! function_exists( 'ares_setup' ) ) :
 endif;
 add_action( 'after_setup_theme', 'ares_setup' );
 
+function longitud_excerpt($length) {
+    return 25;
+}
+add_filter('excerpt_length', 'longitud_excerpt');
+
 /**
  * Set the content width in pixels, based on the theme's design and stylesheet.
  *
