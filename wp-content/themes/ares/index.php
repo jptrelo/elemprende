@@ -50,44 +50,44 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
                                 get_template_part('template-parts/content', 'posts-alt' );
                                     
                             else : ?>
-                                    
-                                <div class="item-post col-md-4 col-sm-6">
+                                <div class="col-md-4 col-sm-6">
+                                    <div class="item-post">
 
-                                    <?php if ( $ares_options['ares_blog_featured'] == 'on' && has_post_thumbnail() ) : ?>
+                                        <?php if ( $ares_options['ares_blog_featured'] == 'on' && has_post_thumbnail() ) : ?>
 
-                                        <div class="post-thumb col-sm-12">
+                                            <div class="post-thumb col-sm-12">
 
-                                            <a href="<?php the_permalink(); ?>">
-                                                <?php the_post_thumbnail('large'); ?>
-                                            </a>
+                                                <a href="<?php the_permalink(); ?>">
+                                                    <?php the_post_thumbnail('large'); ?>
+                                                </a>
+
+                                            </div>
+
+                                        <?php endif; ?>
+
+                                        <!-- <div class="col-sm-<?php echo $ares_options['ares_blog_featured'] == 'on' && has_post_thumbnail() ? '8' : '12'; ?> <?php echo has_post_thumbnail() ? '' : 'text-left'; ?>"> -->
+                                        <div class="col-sm-12">
+
+                                            <h2 class="post-title">
+                                                <a href="<?php the_permalink(); ?>">
+                                                    <?php the_title(); ?>
+                                                </a>
+                                            </h2>
+
+                                            <div class="post-content">
+                                                <?php the_excerpt(); ?>
+                                            </div>
+
+                                            <div class="text-right">
+                                                <a class="ares-button button-primary" href="<?php the_permalink(); ?>">
+                                                    <?php _e( 'Read More', 'ares' ); ?>
+                                                </a>
+                                            </div>  
 
                                         </div>
-
-                                    <?php endif; ?>
-
-                                    <!-- <div class="col-sm-<?php echo $ares_options['ares_blog_featured'] == 'on' && has_post_thumbnail() ? '8' : '12'; ?> <?php echo has_post_thumbnail() ? '' : 'text-left'; ?>"> -->
-                                    <div class="col-sm-12">
-
-                                        <h2 class="post-title">
-                                            <a href="<?php the_permalink(); ?>">
-                                                <?php the_title(); ?>
-                                            </a>
-                                        </h2>
-
-                                        <div class="post-content">
-                                            <?php the_excerpt(); ?>
-                                        </div>
-
-                                        <div class="text-right">
-                                            <a class="ares-button button-primary" href="<?php the_permalink(); ?>">
-                                                <?php _e( 'Read More', 'ares' ); ?>
-                                            </a>
-                                        </div>  
 
                                     </div>
-
-                                </div>
-                                    
+                                </div>  
                             <?php endif;
 
                         endwhile;
