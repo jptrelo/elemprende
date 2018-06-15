@@ -439,7 +439,7 @@ a.button-primary:hover{
     height: 29px;
 }
 
-.woocommerce ul.products li.product .button{
+.woocommerce ul.products li.product .button:hover{
     border-radius: 3px;
     box-shadow: 0px 1px 1px 0px #F15A24;
     -moz-box-shadow: 0px 1px 1px 0px #F15A24;
