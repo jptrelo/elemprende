@@ -409,7 +409,7 @@ a.button-primary:hover{
 /******** END COMPANIES *******/
 
 @media screen and (max-width: 440px) {
-    .item-post .post-title, h2{
+    .item-post .post-title, h2, h2.post-title{
         font-size: 20px;
     }
 
@@ -419,5 +419,11 @@ a.button-primary:hover{
 
     .companies-row{
         padding: 0;
+    }
+}
+
+@media screen and (max-width: 340px) {
+    .post-content{
+        display: none;
     }
 }
