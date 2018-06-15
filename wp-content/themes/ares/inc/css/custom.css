@@ -445,6 +445,7 @@ a.button-primary:hover{
     -moz-box-shadow: 0px 1px 1px 0px #F15A24;
     -webkit-box-shadow: 0px 1px 1px 0px #F15A24;
     font-weight: 600;
+    color: #F15A24 !important;
 }
 
 .woocommerce .star-rating span{
