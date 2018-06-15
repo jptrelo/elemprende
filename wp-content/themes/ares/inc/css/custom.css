@@ -362,6 +362,7 @@ main.site-main{
     -moz-box-shadow: 0px 0px 11px -4px #1B1464;
     -webkit-box-shadow: 0px 0px 11px -4px #1B1464;
     border: none;
+    cursor: pointer;
 }
 
 .item-post .post-thumb{
