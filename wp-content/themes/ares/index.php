@@ -51,7 +51,7 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
                                     
                             else : ?>
                                 <div class="col-md-3 col-sm-3 col-xs-6">
-                                    <div class="item-post">
+                                    <div onClick="location.href='<?php the_permalink(); ?>'" class="item-post">
 
                                         <?php if ( $ares_options['ares_blog_featured'] == 'on' && has_post_thumbnail() ) : ?>
 
@@ -80,11 +80,11 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
                                                     ?>
                                             </div>
 
-                                            <div class="text-right">
+                                            <!-- <div class="text-right">
                                                 <a class="ares-button button-primary" href="<?php the_permalink(); ?>">
                                                     <?php _e( 'Read More', 'ares' ); ?>
                                                 </a>
-                                            </div>  
+                                            </div>   -->
 
                                         </div>
 
