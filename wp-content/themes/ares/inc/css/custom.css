@@ -53,8 +53,8 @@ div#site-toolbar .social-bar a{
 
 div#site-toolbar .social-bar a:hover{
     background: white !important;
-    color: #F15A24;
-    border-color: #F15A24;
+    color: #F15A24 !important;
+    border-color: #F15A24 !important;
 }
 
 .navigation #site-navigation.main-navigation li a{
@@ -450,6 +450,11 @@ a.button-primary:hover{
 
 .woocommerce .star-rating span{
     color: #F15A24 !important;
+}
+
+.woocommerce-breadcrumb{
+    color: #F15A24 !important;
+    background-color: #1B1464 !important;
 }
 
 /****** END STORE ********/
