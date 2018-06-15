@@ -138,7 +138,7 @@ div#site-cta{
 #site-cta .site-cta i.fa{
     background: white !important;
     border: 2px solid #63ffff;
-    color: #63ffff;
+    color: #00cbcc !important;
     -webkit-box-shadow: 0px 0px 55px 0px rgba(99,255,255,0.8);
     -moz-box-shadow: 0px 0px 55px 0px rgba(99,255,255,0.8);
     box-shadow: 0px 0px 55px 0px rgba(99,255,255,0.8);
