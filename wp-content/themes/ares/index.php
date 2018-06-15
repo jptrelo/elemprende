@@ -28,7 +28,7 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
             <div class="page-content row">
 
                 <!-- <div class="col-md-<?php echo $ares_options['ares_blog_layout'] == 'col2r' && is_active_sidebar(1) ? '8' : '12'; ?> site-content item-page"> -->
-                <div class="col-md-9 companies-row">
+                <div class="col-md-12 companies-row">
 
                     <?php if ( have_posts() ) :
                     
@@ -50,7 +50,7 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
                                 get_template_part('template-parts/content', 'posts-alt' );
                                     
                             else : ?>
-                                <div class="col-md-3 col-sm-3 col-xs-6">
+                                <div class="col-md-2 col-sm-3 col-xs-4">
                                     <div onClick="location.href='<?php the_permalink(); ?>'" class="item-post">
 
                                         <?php if ( $ares_options['ares_blog_featured'] == 'on' && has_post_thumbnail() ) : ?>
@@ -75,9 +75,9 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
                                             </h2>
 
                                             <div class="post-content">
-                                                <?php   $excerpt = the_excerpt();
+                                                <!-- <?php   $excerpt = the_excerpt();
                                                         echo substr($excerpt, 1, 50); 
-                                                    ?>
+                                                    ?> -->
                                             </div>
 
                                             <!-- <div class="text-right">
@@ -116,9 +116,9 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
                     
                 <?php if ( $ares_options['ares_blog_layout'] == 'col2r' && is_active_sidebar(1) ) : ?>
 
-                    <div class="col-md-3 col-sm-12 col-xs-12 avenue-sidebar">
+                    <!-- <div class="col-md-3 col-sm-12 col-xs-12 avenue-sidebar">
                         <?php get_sidebar(); ?>
-                    </div>
+                    </div> -->
 
                 <?php endif; ?>
             </div>
