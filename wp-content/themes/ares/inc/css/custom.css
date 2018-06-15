@@ -448,7 +448,7 @@ a.button-primary:hover{
 }
 
 .woocommerce .star-rating span{
-    color: #F15A24;
+    color: #F15A24 !important;
 }
 
 /****** END STORE ********/
