@@ -423,7 +423,16 @@ a.button-primary:hover{
 }
 
 @media screen and (max-width: 340px) {
+    .item-post .post-title, h2, h2.post-title{
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 20px;
+    }
+
     .post-content{
-        display: none;
+        font-size: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
