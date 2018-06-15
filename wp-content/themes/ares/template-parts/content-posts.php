@@ -29,7 +29,7 @@ $ares_options = ares_get_options();
                     </a>
                 </h2>
                 <div class="post-content">
-                    <?php echo wp_trim_words( $post->post_content, 20); ?>
+                    <!-- <?php echo wp_trim_words( $post->post_content, 20); ?> -->
                 </div>
                 <!-- <div class="text-right">
                     <a class="ares-button button-primary" href="<?php the_permalink(); ?>"><?php echo esc_html_e( 'Read More', 'ares' ); ?></a>

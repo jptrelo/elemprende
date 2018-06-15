@@ -5,8 +5,14 @@ body img{
     border-radius: 3px;
 }
 
-h2{
+h2, h2.elementor-heading-title{
     color: #F15A24;
+}
+
+h2.elementor-heading-title{
+    font-weight: 500;
+    font-size: 26px;
+    font-family: Rajdhani, sans-serif;
 }
 
 #site-branding img{
