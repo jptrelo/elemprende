@@ -9,8 +9,7 @@ $ares_options = ares_get_options();
 
 ?>
 <div class="col-md-3 col-sm-3 col-xs-6">
-    <a href="<?php the_permalink(); ?>">
-        <div class="item-post <?php echo has_post_thumbnail() && $ares_options['ares_blog_featured'] == 'on' ? '' : 'text-left'; ?>">
+        <div onClick="location.href='<?php the_permalink(); ?>'" class="item-post <?php echo has_post_thumbnail() && $ares_options['ares_blog_featured'] == 'on' ? '' : 'text-left'; ?>">
             
             <?php if ( has_post_thumbnail() && $ares_options['ares_blog_featured'] == 'on' ) : ?>
             
@@ -38,5 +37,4 @@ $ares_options = ares_get_options();
             </div>
             
         </div>
-    </a>
 </div>
