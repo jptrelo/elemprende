@@ -4,6 +4,7 @@
     Author     : Bilal
 */
 @import url("custom.css");
+@import url("quienes.css");
 
 body * {
     outline: none !important;
