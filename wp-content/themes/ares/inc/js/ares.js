@@ -131,4 +131,12 @@ jQuery(document).ready( function( $ ) {
         position: 'left'
     });
 
+    /*---------------
+    * Quienes Somos
+    *-----------------*/
+    var buttonSections = jQuery("div.elementor-button-info").parents("section");
+    buttonSections.each(function() {
+        jQuery(this).addClass('col-md-4 col-sm-6 col-xs-12');
+    });
+
 });
