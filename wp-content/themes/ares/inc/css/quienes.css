@@ -1,7 +1,7 @@
 .page-id-10 .site-content{
     padding-bottom: 60px;
 }
-
+/******* HEADER **********/
 .elementor-element-3cd6dc8{
     padding: 0;
     background-color: #1b1464;
@@ -36,6 +36,9 @@ div.elementor-element-8801ae0, div.elementor-element-8801ae0 div.elementor-eleme
     box-shadow: 0px 0px 5px 1px #000039;
 } */
 
+/************* END HEADER **************/
+
+/*********** MISION VISION *************/
 .elementor-element-2ed4046{
     padding: 30px 0;
     -webkit-box-shadow: 0px 10px 40px -23px #1B1464;
@@ -55,7 +58,29 @@ div.elementor-element-8801ae0, div.elementor-element-8801ae0 div.elementor-eleme
     line-height: 30px !important;
     text-align: center;
 }
+/*********** END MISION VISION *********/
 
+/************ MANAGERS ****************/
+.page-id-10 div.elementor-widget-premium-addon-person,
+.page-id-10 div.elementor-widget-premium-addon-person div.elementor-widget-container,
+.page-id-10 div.premium-person-container{
+    height: 100%;
+}
+
+.elementor-element-dc7edb2 .elementor-column-wrap{
+    box-shadow: 0px 0px 11px -4px #1B1464;
+    -moz-box-shadow: 0px 0px 11px -4px #1B1464;
+    -webkit-box-shadow: 0px 0px 11px -4px #1B1464;
+}
+
+.elementor-element-dc7edb2 .elementor-column-wrap:hover{
+    box-shadow: 0px 0px 10px -1px #63ffff !important;
+    -moz-box-shadow: 0px 0px 10px -1px #63ffff !important;
+    -webkit-box-shadow: 0px 0px 10px -1px #63ffff !important;
+}
+/************ END MANAGERS ************/
+
+/*********** BUTTONS ******************/
 .elementor-button.elementor-size-xl{
     font-size: 14px !important;
     padding: 25px 25px !important;
@@ -87,3 +112,5 @@ div.elementor-element-8801ae0, div.elementor-element-8801ae0 div.elementor-eleme
         display: inline-block;
     }
 }
+
+/*************** END BUTTONS ******************/
