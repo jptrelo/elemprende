@@ -63,8 +63,13 @@ div.elementor-element-8801ae0, div.elementor-element-8801ae0 div.elementor-eleme
 /************ MANAGERS ****************/
 .page-id-10 div.elementor-widget-premium-addon-person,
 .page-id-10 div.elementor-widget-premium-addon-person div.elementor-widget-container,
-.page-id-10 div.premium-person-container{
+.page-id-10 div.premium-person-container,
+.page-id-10 div.premium-person-image-container{
     height: 100%;
+}
+
+.page-id-10 .premium-person-container .premium-person-image-container img{
+    transform: scale(1) !important;
 }
 
 .elementor-element-dc7edb2 .elementor-column-wrap{
@@ -77,6 +82,14 @@ div.elementor-element-8801ae0, div.elementor-element-8801ae0 div.elementor-eleme
     box-shadow: 0px 0px 10px -1px #63ffff !important;
     -moz-box-shadow: 0px 0px 10px -1px #63ffff !important;
     -webkit-box-shadow: 0px 0px 10px -1px #63ffff !important;
+}
+
+.page-id-10 div.elementor-widget-container h2.elementor-heading-title{
+    font-weight: 700 !important;
+}
+
+div.elementor-social-icons-wrapper{
+    text-align: center;
 }
 /************ END MANAGERS ************/
 
