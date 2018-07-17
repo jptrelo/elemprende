@@ -1,14 +1,14 @@
-SetEnvIf X-Forwarded-Proto https HTTPS
+#SetEnvIf X-Forwarded-Proto https HTTPS
 #Force SSL 
 
 #Normal way (in case you need to deploy to NON-heroku)
-RewriteCond %{HTTPS} !=on
+#RewriteCond %{HTTPS} !=on
 
 #Heroku way
-RewriteCond %{HTTP:X-Forwarded-Proto} !https 
+#RewriteCond %{HTTP:X-Forwarded-Proto} !https 
 
 #If neither above conditions are met, redirect to https
-RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+#RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # BEGIN WordPress
 <IfModule mod_rewrite.c>
