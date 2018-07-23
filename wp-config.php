@@ -68,6 +68,7 @@ define('FTP_PASS', 'HarryPotter929292');
  *
  * @since 2.6.0
  */
+
 define('AUTH_KEY', 'WQU[rY`d5[p/F`I}wgK&Za{L%az,l=K_9xG9zE@|F/.l|[2lkKo wZ8Td7pbXMM=');
 define('SECURE_AUTH_KEY', 'PbN7pzt5ulT/siXAD$OeY8k_gm.hEG$-V{cv:CQ(6A;EkVH9/JRXAwQs|Cu9M5-o');
 define('LOGGED_IN_KEY', 'HUd8;}](mAM5#/A*JqNcuH$hbE6JMOt:pk24ZJ[0a}@NwF4`Gu2x:/Kn6:+3^EkA');
