@@ -68,25 +68,25 @@ define('FTP_PASS', 'HarryPotter929292');
  *
  * @since 2.6.0
  */
-// define('AUTH_KEY', 'WQU[rY`d5[p/F`I}wgK&Za{L%az,l=K_9xG9zE@|F/.l|[2lkKo wZ8Td7pbXMM=');
-// define('SECURE_AUTH_KEY', 'PbN7pzt5ulT/siXAD$OeY8k_gm.hEG$-V{cv:CQ(6A;EkVH9/JRXAwQs|Cu9M5-o');
-// define('LOGGED_IN_KEY', 'HUd8;}](mAM5#/A*JqNcuH$hbE6JMOt:pk24ZJ[0a}@NwF4`Gu2x:/Kn6:+3^EkA');
-// define('NONCE_KEY', 'j_0qM 6[J/mG$VHb8La|^EX5#qO<>!_iRfcM!vjk!N:s0Wa_)P`/%UdQF+-Z]2Fs');
-// define('AUTH_SALT', '0jYXu&fZ[ }(},F0&PL^~N%`]a-f*pdA=D0I}Up4K|8&MhjY}ZCH,=@YP`K5SW{6');
-// define('SECURE_AUTH_SALT', '3J<OtH(g 01l@x^:OUNxJS0jmgR;B!,^U_2g1Y(J{Uvtd107R)_if$.U8bJ;s,e,');
-// define('LOGGED_IN_SALT', '-s5s^-:8k[|T;Ygih.hx:vlTq`zQ;{C13Q*+<|eP~DwV^B{9,mpm?&;w(9fm<M4d');
-// define('NONCE_SALT', 'h;W6WEtm(oQN^;FbcT:nUF0tW;M(&j=CKJC&gr~r1qxDXqzQyW;MzyjaB.:}9t7A');
+define('AUTH_KEY', 'WQU[rY`d5[p/F`I}wgK&Za{L%az,l=K_9xG9zE@|F/.l|[2lkKo wZ8Td7pbXMM=');
+define('SECURE_AUTH_KEY', 'PbN7pzt5ulT/siXAD$OeY8k_gm.hEG$-V{cv:CQ(6A;EkVH9/JRXAwQs|Cu9M5-o');
+define('LOGGED_IN_KEY', 'HUd8;}](mAM5#/A*JqNcuH$hbE6JMOt:pk24ZJ[0a}@NwF4`Gu2x:/Kn6:+3^EkA');
+define('NONCE_KEY', 'j_0qM 6[J/mG$VHb8La|^EX5#qO<>!_iRfcM!vjk!N:s0Wa_)P`/%UdQF+-Z]2Fs');
+define('AUTH_SALT', '0jYXu&fZ[ }(},F0&PL^~N%`]a-f*pdA=D0I}Up4K|8&MhjY}ZCH,=@YP`K5SW{6');
+define('SECURE_AUTH_SALT', '3J<OtH(g 01l@x^:OUNxJS0jmgR;B!,^U_2g1Y(J{Uvtd107R)_if$.U8bJ;s,e,');
+define('LOGGED_IN_SALT', '-s5s^-:8k[|T;Ygih.hx:vlTq`zQ;{C13Q*+<|eP~DwV^B{9,mpm?&;w(9fm<M4d');
+define('NONCE_SALT', 'h;W6WEtm(oQN^;FbcT:nUF0tW;M(&j=CKJC&gr~r1qxDXqzQyW;MzyjaB.:}9t7A');
 
-define('WP_HOME','https://www.elemprende.com');
-define('WP_SITEURL','https://www.elemprende.com');
-define('AUTH_KEY',         getenv('AUTH_KEY'));
-define('SECURE_AUTH_KEY',  getenv('SECURE_AUTH_KEY'));
-define('LOGGED_IN_KEY',    getenv('LOGGED_IN_KEY'));
-define('NONCE_KEY',        getenv('NONCE_KEY'));
-define('AUTH_SALT',        getenv('AUTH_SALT'));
-define('SECURE_AUTH_SALT', getenv('SECURE_AUTH_SALT'));
-define('LOGGED_IN_SALT',   getenv('LOGGED_IN_SALT'));
-define('NONCE_SALT',       getenv('NONCE_SALT'));
+// define('WP_HOME','https://www.elemprende.com');
+// define('WP_SITEURL','https://www.elemprende.com');
+// define('AUTH_KEY',         getenv('AUTH_KEY'));
+// define('SECURE_AUTH_KEY',  getenv('SECURE_AUTH_KEY'));
+// define('LOGGED_IN_KEY',    getenv('LOGGED_IN_KEY'));
+// define('NONCE_KEY',        getenv('NONCE_KEY'));
+// define('AUTH_SALT',        getenv('AUTH_SALT'));
+// define('SECURE_AUTH_SALT', getenv('SECURE_AUTH_SALT'));
+// define('LOGGED_IN_SALT',   getenv('LOGGED_IN_SALT'));
+// define('NONCE_SALT',       getenv('NONCE_SALT'));
 
 /**#@-*/
 
