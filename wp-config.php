@@ -78,8 +78,8 @@ define('SECURE_AUTH_SALT', '3J<OtH(g 01l@x^:OUNxJS0jmgR;B!,^U_2g1Y(J{Uvtd107R)_i
 define('LOGGED_IN_SALT', '-s5s^-:8k[|T;Ygih.hx:vlTq`zQ;{C13Q*+<|eP~DwV^B{9,mpm?&;w(9fm<M4d');
 define('NONCE_SALT', 'h;W6WEtm(oQN^;FbcT:nUF0tW;M(&j=CKJC&gr~r1qxDXqzQyW;MzyjaB.:}9t7A');
 
-// define('WP_HOME','https://www.elemprende.com');
-// define('WP_SITEURL','https://www.elemprende.com');
+define('WP_HOME','http://www.elemprende.com');
+define('WP_SITEURL','http://www.elemprende.com');
 // define('AUTH_KEY',         getenv('AUTH_KEY'));
 // define('SECURE_AUTH_KEY',  getenv('SECURE_AUTH_KEY'));
 // define('LOGGED_IN_KEY',    getenv('LOGGED_IN_KEY'));
@@ -109,12 +109,12 @@ $table_prefix  = 'wp_';
  */
 define('WP_DEBUG', false);
 
-define('FORCE_SSL_ADMIN', true);
+// define('FORCE_SSL_ADMIN', true);
 // in some setups HTTP_X_FORWARDED_PROTO might contain 
 // a comma-separated list e.g. http,https
 // so check for https existence
-if (strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false)
-	   $_SERVER['HTTPS']='on';
+// if (strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false)
+// 	   $_SERVER['HTTPS']='on';
 	   
 /* ¡Eso es todo, deja de editar! Feliz blogging */
 
