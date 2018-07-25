@@ -46,7 +46,7 @@ define('DB_USER', 'b6b6a903184873');
 define('DB_PASSWORD', '3d11f4ab');
 
 /** MySQL hostname */
-define('DB_HOST', 'devinstance.ccgeehskphbz.us-east-1.rds.amazonaws.com');
+define('DB_HOST', 'develemprende.ccgeehskphbz.us-east-1.rds.amazonaws.com');
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
@@ -115,7 +115,7 @@ define('WP_DEBUG', false);
 // so check for https existence
 // if (strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false)
 // 	   $_SERVER['HTTPS']='on';
-	   
+
 /* ¡Eso es todo, deja de editar! Feliz blogging */
 
 /** WordPress absolute path to the Wordpress directory. */
