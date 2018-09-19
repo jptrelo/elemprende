@@ -1,3 +1,8 @@
+<?php
+if ( ! defined('WPINC')) {
+    die;
+}
+?>
 <form method="post" action="options.php">
 	<?php wp_nonce_field('update-options'); ?>
 

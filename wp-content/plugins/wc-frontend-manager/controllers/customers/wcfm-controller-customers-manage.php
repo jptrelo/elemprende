@@ -87,6 +87,7 @@ class WCFM_Customers_Manage_Controller {
 							$wcfm_customer_billing_fields = array( 
 																						'billing_first_name'  => 'bfirst_name',
 																						'billing_last_name'   => 'blast_name',
+																						'billing_phone'       => 'bphone',
 																						'billing_address_1'   => 'baddr_1',
 																						'billing_address_2'   => 'baddr_2',
 																						'billing_country'     => 'bcountry',
@@ -117,12 +118,13 @@ class WCFM_Customers_Manage_Controller {
 						
 						
 						if( !$is_update ) {
-							define( 'DOING_WCFM_EMAIL', true );
+							if( !defined( 'DOING_WCFM_EMAIL' ) ) 
+								define( 'DOING_WCFM_EMAIL', true );
 							
 							// Sending Mail to new user
 							$mail_to = $wcfm_customer_form_data['user_email'];
 							$new_account_mail_subject = "{site_name}: New Account Created";
-							$new_account_mail_body = __( 'Dear', 'wc-frontend-manager' ) . ' {first_name}' .
+							$new_account_mail_body = '<br/>' . __( 'Dear', 'wc-frontend-manager' ) . ' {first_name}' .
 																			 ',<br/><br/>' . 
 																			 __( 'Your account has been created as {user_role}. Follow the bellow details to log into the system', 'wc-frontend-manager' ) .
 																			 '<br/><br/>' . 
@@ -131,7 +133,8 @@ class WCFM_Customers_Manage_Controller {
 																			 __( 'Login', 'wc-frontend-manager' ) . ': {username}' .
 																			 '<br/>' . 
 																			 __( 'Password', 'wc-frontend-manager' ) . ': {password}' .
-																			 '<br /><br/>Thank You';
+																			 '<br /><br/>Thank You' .
+																			 '<br/><br/>';
 																			 
 							$subject = str_replace( '{site_name}', get_bloginfo( 'name' ), $new_account_mail_subject );
 							$message = str_replace( '{site_url}', get_bloginfo( 'url' ), $new_account_mail_body );
@@ -150,8 +153,8 @@ class WCFM_Customers_Manage_Controller {
 							$author_is_admin = 0;
 							$author_is_vendor = 1;
 							$message_to = 0;
-							$wcfm_messages = sprintf( __( 'A new customer <b>%s</b> added to the store by <b>%s</b>', 'wc-frontend-manager' ), '<a class="wcfm_dashboard_item_title" href="' . get_wcfm_customers_details_url( $customer_id ) . '">' . $wcfm_customer_form_data['first_name'] . ' ' . $wcfm_customer_form_data['last_name'] . '</a>', $new_term, get_user_by( 'id', $author_id )->display_name );
-							$WCFM->frontend->wcfm_send_direct_message( $author_id, $message_to, $author_is_admin, $author_is_vendor, $wcfm_messages, 'new_customer' );
+							$wcfm_messages = sprintf( __( 'A new customer <b>%s</b> added to the store by <b>%s</b>', 'wc-frontend-manager' ), '<a class="wcfm_dashboard_item_title" href="' . get_wcfm_customers_details_url( $customer_id ) . '">' . $wcfm_customer_form_data['first_name'] . ' ' . $wcfm_customer_form_data['last_name'] . '</a>', get_user_by( 'id', $author_id )->display_name );
+							$WCFM->wcfm_notification->wcfm_send_direct_message( $author_id, $message_to, $author_is_admin, $author_is_vendor, $wcfm_messages, 'new_customer' );
 						}
 						
 						do_action( 'wcfm_customers_manage', $customer_id, $wcfm_customer_form_data );

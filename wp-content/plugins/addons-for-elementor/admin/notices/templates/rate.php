@@ -4,7 +4,7 @@
 
 	<div class="lae-notice-rate-content">
 
-		<p><?php _e( 'Hello!', 'livemesh-el-adddons' ); ?> <?php _e( 'I see that you have the plugin <strong>Addons for Elementor by Livemesh</strong> installed for some time now.', 'livemesh-el-adddons' ); ?></p>
+		<p><?php _e( 'Hello!', 'livemesh-el-adddons' ); ?> <?php _e( 'I see that you have the plugin <strong>Livemesh Addons for Elementor</strong> installed for some time now.', 'livemesh-el-adddons' ); ?></p>
         <p><?php _e( 'If you like this plugin, please write a few words about it at wordpress.org or social media. Your opinion will help others discover our plugin.', 'livemesh-el-adddons' ); ?></p>
         <p><?php _e( 'Thank you!', 'livemesh-el-adddons' ); ?></p>
 

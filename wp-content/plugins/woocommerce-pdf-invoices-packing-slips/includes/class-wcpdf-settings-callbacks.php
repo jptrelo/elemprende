@@ -52,7 +52,7 @@ class Settings_Callbacks {
 		extract( $this->normalize_settings_args( $args ) );
 
 		// output checkbox	
-		printf( '<input type="checkbox" id="%1$s" name="%2$s" value="%3$s"%4$s />', $id, $setting_name, $value, checked( $value, $current, false ) );
+		printf( '<input type="checkbox" id="%1$s" name="%2$s" value="%3$s" %4$s %5$s/>', $id, $setting_name, $value, checked( $value, $current, false ), !empty($disabled) ? 'disabled="disabled"' : '' );
 	
 		// output description.
 		if ( isset( $description ) ) {
@@ -80,13 +80,60 @@ class Settings_Callbacks {
 			$type = 'text';
 		}
 
-		printf( '<input type="%1$s" id="%2$s" name="%3$s" value="%4$s" size="%5$s" placeholder="%6$s"/>', $type, $id, $setting_name, esc_attr( $current ), $size, $placeholder );
+		printf( '<input type="%1$s" id="%2$s" name="%3$s" value="%4$s" size="%5$s" placeholder="%6$s" %7$s/>', $type, $id, $setting_name, esc_attr( $current ), $size, $placeholder, !empty($disabled) ? 'disabled="disabled"' : '' );
 	
 		// output description.
 		if ( isset( $description ) ) {
 			printf( '<p class="description">%s</p>', $description );
 		}
 	}
+
+	/**
+	 * Combined checkbox & text input callback.
+	 *
+	 * args:
+	 *   option_name - name of the main option
+	 *   id          - key of the setting
+	 *   value       - value if not 1 (optional)
+	 *   default     - default setting (optional)
+	 *   description - description (optional)
+	 *
+	 * @return void.
+	 */
+	public function checkbox_text_input( $args ) {
+		$args = $this->normalize_settings_args( $args );
+		extract( $args );
+		unset($args['description']); // already extracted, should only be used here
+		
+		// get checkbox	
+		ob_start();
+		$this->checkbox( $args );
+		$checkbox = ob_get_clean();
+
+		// get text input for insertion in wrapper
+		$input_args = array(
+			'id'			=> $args['text_input_id'],
+			'default'		=> isset( $args['text_input_default'] ) ? (string) $args['text_input_default'] : NULL,
+			'size'			=> isset( $args['text_input_size'] ) ? $args['text_input_size'] : NULL,
+		)  + $args;
+		unset($input_args['current']);
+
+		ob_start();
+		$this->text_input( $input_args );
+		$text_input = ob_get_clean();
+
+		if (!empty($text_input_wrap)) {
+		 	printf( "{$checkbox} {$text_input_wrap}", $text_input);
+		} else {
+			echo "{$checkbox} {$text_input}";
+		}
+	
+		// output description.
+		if ( isset( $description ) ) {
+			printf( '<p class="description">%s</p>', $description );
+		}
+	}
+
 
 	// Single text option (not part of any settings array)
 	public function singular_text_element( $args ) {
@@ -369,7 +416,11 @@ class Settings_Callbacks {
 					if (!empty($args['i18n_description'])) {
 						$args['description'] = $args['i18n_description'];
 					}
-					call_user_func( array( $this, $callback ), $args );
+					if ( is_array( $callback ) ) {
+						call_user_func( $callback, $args );
+					} else {
+						call_user_func( array( $this, $callback ), $args );
+					}
 					echo '</div>';
 				}
 				?>
@@ -378,7 +429,11 @@ class Settings_Callbacks {
 			<?php
 		} else {
 			$args['lang'] = 'default';
-			call_user_func( array( $this, $callback ), $args );
+			if ( is_array( $callback ) ) {
+				call_user_func( $callback, $args );
+			} else {
+				call_user_func( array( $this, $callback ), $args );
+			}
 		}
 	}
 

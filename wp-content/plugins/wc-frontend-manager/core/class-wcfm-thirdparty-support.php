@@ -29,7 +29,19 @@ class WCFM_ThirdParty_Support {
 		add_filter( 'wcfm_product_types', array( &$this, 'wcfm_thirdparty_product_types' ), 50 );
     
     // Third Party Product Type Capability
-		add_filter( 'wcfm_settings_fields_product_types', array( &$this, 'wcfmcap_product_types' ), 50, 3 );
+		add_filter( 'wcfm_capability_settings_fields_product_types', array( &$this, 'wcfmcap_product_types' ), 50, 3 );
+		
+		if( apply_filters( 'wcfm_is_allow_listings', true ) && apply_filters( 'wcfm_is_allow_products_for_listings', true ) ) {
+			if ( WCFM_Dependencies::wcfm_wp_job_manager_plugin_active_check() ) {
+				if( wcfm_is_allow_wcfm() && apply_filters( 'wcfm_is_allow_manage_listings_wcfm_wrapper', true ) ) {
+					if( !WCFM_Dependencies::wcfm_products_mylistings_active_check() ) {
+						add_filter( 'the_content', array( &$this, 'wcfm_add_listing_page' ), 20 );
+						add_filter( 'wcfm_current_endpoint', array( $this, 'wcfm_add_listing_endpoint' ) );
+						add_action( 'wp_enqueue_scripts', array( $this, 'wcfm_add_listing_enqueue_scripts' ) );
+					}
+				}
+			}
+		}
     
     // WC Paid Listing Support - 2.3.4
     if( $wcfm_allow_job_package = apply_filters( 'wcfm_is_allow_job_package', true ) ) {
@@ -66,7 +78,7 @@ class WCFM_ThirdParty_Support {
 		// WooCommerce Product Voucher Support - 3.4.7
 		if( apply_filters( 'wcfm_is_allow_wc_product_voucher', true ) ) {
 			if( WCFM_Dependencies::wcfm_wc_product_voucher_plugin_active_check() ) {
-				add_filter( 'wcfm_product_manage_fields_general', array( &$this, 'wcfm_wc_product_voucher_product_manage_fields_general' ), 50, 3 );
+				add_filter( 'wcfm_product_manage_fields_general', array( &$this, 'wcfm_wc_product_voucher_product_manage_fields_general' ), 30, 3 );
 				add_filter( 'wcfm_product_manage_fields_pricing', array( &$this, 'wcfm_wc_product_voucher_product_manage_fields_pricing' ), 50, 3 );
 			}
 		}
@@ -75,7 +87,7 @@ class WCFM_ThirdParty_Support {
     if( apply_filters( 'wcfm_is_allow_woocommerce_germanized', true ) ) {
 			if( WCFM_Dependencies::wcfm_woocommerce_germanized_plugin_active_check() ) {
 				// Woocommerce Germanized Product Pricing & Shipping options
-				add_filter( 'wcfm_product_manage_fields_general', array( &$this, 'wcfm_woocommerce_germanized_product_manage_fields_general' ), 50, 3 );
+				add_filter( 'wcfm_product_manage_fields_general', array( &$this, 'wcfm_woocommerce_germanized_product_manage_fields_general' ), 40, 3 );
 				add_filter( 'wcfm_product_manage_fields_content', array( &$this, 'wcfm_woocommerce_germanized_product_manage_fields_content' ), 50, 3 );
 				add_filter( 'wcfm_product_manage_fields_pricing', array( &$this, 'wcfm_woocommerce_germanized_product_manage_fields_pricing' ), 50, 3 );
 				add_filter( 'wcfm_product_manage_fields_shipping', array( &$this, 'wcfm_woocommerce_germanized_product_manage_fields_shipping' ), 50, 2 );
@@ -83,6 +95,25 @@ class WCFM_ThirdParty_Support {
 				// Woocommerce Germanized Variations Pricing & Shipping options
 				add_filter( 'wcfm_product_manage_fields_variations', array( &$this, 'wcfm_woocommerce_germanized_product_manage_fields_variations' ), 100, 4 );
 				add_filter( 'wcfm_variation_edit_data', array( &$this, 'wcfm_woocommerce_germanized_product_data_variations' ), 100, 3 );
+			}
+		}
+		
+		// WC Epeken Support - 4.1.0
+    if( apply_filters( 'wcfm_is_allow_epeken', true ) ) {
+			if( WCFM_Dependencies::wcfm_epeken_plugin_active_check() ) {
+				// WC Epeken Product options
+				add_filter( 'end_wcfm_products_manage', array( &$this, 'wcfm_wcepeken_product_manage_views' ), 150 );
+				
+				// WC Epeken User Settings
+				add_action( 'end_wcfm_vendor_settings', array( &$this, 'wcfm_wcepeken_settings_views' ), 150 );
+				add_action( 'wcfm_vendor_settings_update', array( &$this, 'wcfm_wcepeken_vendor_settings_update' ), 150, 2 );
+			}
+		}
+		
+		// WooCommerce Schedular - 5.0.7
+    if( apply_filters( 'wcfm_is_allow_wdm_scheduler', true ) ) {
+			if( WCFM_Dependencies::wcfm_wdm_scheduler_active_check() ) {
+				//add_filter( 'end_wcfm_products_manage', array( &$this, 'wcfm_wdm_scheduler_product_manage_views' ), 160 );
 			}
 		}
 		
@@ -102,7 +133,7 @@ class WCFM_ThirdParty_Support {
 				$wcfm_modified_endpoints = (array) get_option( 'wcfm_endpoints' );
   	
 				$query_listing_vars = array(
-					'wcfm-listings'       => ! empty( $wcfm_modified_endpoints['wcfm-listings'] ) ? $wcfm_modified_endpoints['wcfm-listings'] : 'wcfm-listings',
+					'wcfm-listings'       => ! empty( $wcfm_modified_endpoints['wcfm-listings'] ) ? $wcfm_modified_endpoints['wcfm-listings'] : 'listings',
 				);
 		
 				$query_vars = array_merge( $query_vars, $query_listing_vars );
@@ -156,7 +187,7 @@ class WCFM_ThirdParty_Support {
 		if( $wcfm_allow_listings = apply_filters( 'wcfm_is_allow_listings', true ) ) {
 			if ( WCFM_Dependencies::wcfm_wp_job_manager_plugin_active_check() ) {
 				$listings_endpoints = array(
-															'wcfm-listings'  		   => 'wcfm-listings',
+															'wcfm-listings'  		   => 'listings',
 															);
 				$endpoints = array_merge( $endpoints, $listings_endpoints );
 			}
@@ -246,6 +277,81 @@ class WCFM_ThirdParty_Support {
 		}
 		
 		return $product_types;
+	}
+	
+	function wcfm_add_listing_page( $content ) {
+		global $post, $WCFM;
+		
+		$job_dashboard_page = get_option( 'job_manager_job_dashboard_page_id' );
+		$add_listings_page = get_option( 'job_manager_submit_job_form_page_id' );
+		$post_a_job = get_permalink ( $add_listings_page );
+		if( ( $add_listings_page && is_object( $post ) && ( $add_listings_page == $post->ID ) ) || ( $job_dashboard_page && is_object( $post ) && ( $job_dashboard_page == $post->ID ) && isset( $_GET['action'] ) && ( $_GET['action'] == 'edit' ) ) ) {
+			ob_start();
+			echo '<div id="wcfm-main-contentainer">';
+			echo  '<div id="wcfm-content">';
+			$WCFM->template->get_template( 'wcfm-view-menu.php' );
+			echo '<div class="collapse wcfm-collapse" id="wcfm_listing_job_submit">';
+			echo '<div class="wcfm-page-headig">';
+			echo '<span class="fa fa-dashboard"></span>';
+			echo '<span class="wcfm-page-heading-text">' . __( 'Manage Listings', 'wc-frontend-manager-ultimate' ) . '</span>';
+			$WCFM->template->get_template( 'wcfm-view-header-panels.php' );
+			echo '</div>';
+			echo '<div class="wcfm-collapse-content">';
+			echo '<div class="wcfm-container wcfm-top-element-container">';
+			if( isset( $_GET['action'] ) && ( $_GET['action'] == 'edit' ) ) {
+				echo '<h2>' . __( 'Edit Listing', 'wc-frontend-manager' ) . '</h2>';
+			} else {
+				echo '<h2>' . __( 'Add Listing', 'wc-frontend-manager' ) . '</h2>';
+			}
+			if( apply_filters( 'wcfm_allow_wp_admin_view', true ) ) {
+				echo '<a target="_blank" class="wcfm_wp_admin_view text_tip" href="' . admin_url('edit.php?post_type=job_listing') . '" data-tip="' . __( 'WP Admin View', 'wc-frontend-manager' ) . '"><span class="fa fa-wordpress"></span></a>';
+			}
+			if( isset( $_GET['action'] ) && ( $_GET['action'] == 'edit' ) ) {
+				echo '<a id="add_new_listing_dashboard" class="add_new_wcfm_ele_dashboard text_tip" href="'.get_wcfm_listings_url().'" data-tip="' . __('Manage Listings', 'wc-frontend-manager') . '"><span class="fa fa-briefcase"></span></a>';
+				echo '<a id="add_new_listing_dashboard" class="add_new_wcfm_ele_dashboard text_tip" href="'.$post_a_job.'" data-tip="' . __('Add New Listing', 'wc-frontend-manager') . '"><span class="fa fa-briefcase"></span><span class="text">' . __( 'Add New', 'wc-frontend-manager') . '</span></a>';
+			} else {
+				echo '<a id="add_new_listing_dashboard" class="add_new_wcfm_ele_dashboard text_tip" href="'.get_wcfm_listings_url().'" data-tip="' . __('Manage Listings', 'wc-frontend-manager') . '"><span class="fa fa-briefcase"></span><span class="text">' . __( 'Listings', 'wc-frontend-manager') . '</span></a>';
+			}
+			echo '<div class="wcfm-clearfix"></div></div><div class="wcfm-clearfix"></div></br>';
+			echo '<div class="wcfm-container wcfm_listing_job_fields_container">';
+			$content = ob_get_clean() . $content . '</div></div></div></div></div>';
+		}
+		
+		return $content;
+	}
+	
+	/**
+	 * Add/Edit listing WCfM End point set
+	 */
+	function wcfm_add_listing_endpoint( $current_endpoint ) {
+		global $WCFM, $WCFMu, $post, $_GET;
+		
+		$job_dashboard_page = get_option( 'job_manager_job_dashboard_page_id' );
+		$add_listings_page = get_option( 'job_manager_submit_job_form_page_id' );
+		if( ( $add_listings_page && is_object( $post ) && ( $add_listings_page == $post->ID ) ) || ( $job_dashboard_page && is_object( $post ) && ( $job_dashboard_page == $post->ID ) && isset( $_GET['action'] ) && ( $_GET['action'] == 'edit' ) ) ) {
+			$current_endpoint = 'wcfm-listings-manage';
+		}
+		return $current_endpoint;
+	}
+	
+	/**
+	 * Listings - WCfM Dashboard wrapper Script - 4.2.3
+	 */
+	function wcfm_add_listing_enqueue_scripts() {
+		global $WCFM, $post, $_GET;
+		
+		$job_dashboard_page = get_option( 'job_manager_job_dashboard_page_id' );
+		$add_listings_page = get_option( 'job_manager_submit_job_form_page_id' );
+		if( ( $add_listings_page && is_object( $post ) && ( $add_listings_page == $post->ID ) ) || ( $job_dashboard_page && is_object( $post ) && ( $job_dashboard_page == $post->ID ) && isset( $_GET['action'] ) && ( $_GET['action'] == 'edit' ) ) ) {
+			
+			if( !WCFM_Dependencies::wcfm_products_listings_active_check() && !WCFM_Dependencies::wcfm_products_mylistings_active_check() ) {
+				$WCFM->library->load_scripts( 'wcfm-profile' );
+				
+				// Load Styles
+				$WCFM->library->load_styles( 'wcfm-profile' );
+				wp_enqueue_style( 'wcfm_add_listings_css', $WCFM->library->css_lib_url . 'listings/wcfm-style-listings-manage.css', array(), $WCFM->version );
+			}
+		}
 	}
 	
   /**
@@ -348,8 +454,8 @@ class WCFM_ThirdParty_Support {
 			$_yith_auction_for = get_post_meta( $product_id, '_yith_auction_for', true );
 			$_yith_auction_to = get_post_meta( $product_id, '_yith_auction_to', true );
 			
-			if( $_yith_auction_for ) $_yith_auction_for = date( 'Y-m-d h:i:s', $_yith_auction_for);
-			if( $_yith_auction_to ) $_yith_auction_to = date( 'Y-m-d h:i:s', $_yith_auction_to);
+			if( $_yith_auction_for ) $_yith_auction_for = get_date_from_gmt( date( 'Y-m-d H:i:s', absint( $_yith_auction_for ) ) );
+			if( $_yith_auction_to ) $_yith_auction_to = get_date_from_gmt( date( 'Y-m-d H:i:s', absint( $_yith_auction_to ) ) );
 		}
 		
 		?>
@@ -358,8 +464,8 @@ class WCFM_ThirdParty_Support {
 			<div id="wcfm_products_manage_form_yithauction_free_expander" class="wcfm-content">
 				<?php
 				$WCFM->wcfm_fields->wcfm_generate_form_field( array( 
-					"_yith_auction_for" => array( 'label' => __('Auction Date From', 'wc-frontend-manager') , 'type' => 'text', 'placeholder' => 'YYYY-MM-DD hh:mm:ss', 'class' => 'wcfm-text wcfm_ele auction', 'label_class' => 'wcfm_title auction', 'value' => $_yith_auction_for ),
-					"_yith_auction_to" => array( 'label' => __('Auction Date To', 'wc-frontend-manager') , 'type' => 'text', 'placeholder' => 'YYYY-MM-DD hh:mm:ss', 'class' => 'wcfm-text wcfm_ele auction', 'label_class' => 'wcfm_title auction', 'value' => $_yith_auction_to ),
+					"_yith_auction_for" => array( 'label' => __('Auction Date From', 'wc-frontend-manager') , 'type' => 'text', 'placeholder' => 'YYYY-MM-DD hh:mm:ss', 'class' => 'wcfm-text wcfm_ele auction', 'label_class' => 'wcfm_title auction', 'value' => $_yith_auction_for, 'attributes' => array( "pattern" => "[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01]) (0[0-9]|1[0-9]|2[0-3]):(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]):(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])" ) ),
+					"_yith_auction_to" => array( 'label' => __('Auction Date To', 'wc-frontend-manager') , 'type' => 'text', 'placeholder' => 'YYYY-MM-DD hh:mm:ss', 'class' => 'wcfm-text wcfm_ele auction', 'label_class' => 'wcfm_title auction', 'value' => $_yith_auction_to, 'attributes' => array( "pattern" => "[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01]) (0[0-9]|1[0-9]|2[0-3]):(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]):(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])" ) ),
 					) );
 				?>
 			</div>
@@ -373,7 +479,7 @@ class WCFM_ThirdParty_Support {
 	function wcfm_geomywp_products_manage_views( ) {
 		global $WCFM;
 	  
-	  require_once( $WCFM->library->views_path . 'products-manager/wcfm-view-geomywp-products-manage.php' );
+	  $WCFM->template->get_template( 'products-manager/wcfm-view-geomywp-products-manage.php' );
 	}
 	
 	/**
@@ -389,11 +495,11 @@ class WCFM_ThirdParty_Support {
 			$_has_voucher = ( get_post_meta( $product_id, '_has_voucher', true ) == 'yes' ) ? 'yes' : '';
 		}
 		
-		$general_fields = array_slice($general_fields, 0, 4, true) + 
+		$general_fields = array_slice($general_fields, 0, 1, true) + 
 													array(
 														"_has_voucher" => array( 'desc' => __( 'Has Voucher', 'wc-frontend-manager') , 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele wcfm_half_ele_checkbox simple non-variable-subscription non-job_package non-resume_package non-auction non-redq_rental non-appointment non-accommodation-booking', 'desc_class' => 'wcfm_title wcfm_ele downloadable_ele_title checkbox_title simple non-variable-subscription non-job_package non-resume_package non-auction non-redq_rental non-appointment non-accommodation-booking', 'value' => 'yes', 'dfvalue' => $_has_voucher),
 														) +
-											array_slice($general_fields, 4, count($general_fields) - 1, true) ;
+											array_slice($general_fields, 1, count($general_fields) - 1, true) ;
 		
 		return $general_fields;
 	}
@@ -444,12 +550,12 @@ class WCFM_ThirdParty_Support {
 		$_differential_taxation = ( get_post_meta( $product_id, '_differential_taxation', true) == 'yes' ) ? 'yes' : '';
 		if( $product_type != 'simple' ) $_service = '';
 		
-		$general_fields = array_slice($general_fields, 0, 2, true) + 
+		$general_fields = array_slice($general_fields, 0, 1, true) + 
 													array(
 														"_service" => array( 'desc' => __( 'Service', 'woocommerce-germanized') , 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele wcfm_half_ele_checkbox simple non-variable-subscription non-job_package non-resume_package non-auction non-redq_rental non-appointment non-accommodation-booking', 'desc_class' => 'wcfm_title wcfm_ele virtual_ele_title checkbox_title simple non-variable-subscription non-job_package non-resume_package non-auction non-redq_rental non-appointment non-accommodation-booking', 'value' => 'yes', 'dfvalue' => $_service),
 														"_differential_taxation" => array( 'desc' => __( 'Diff. Taxation', 'woocommerce-germanized') , 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele simple variable external groupd wcfm_half_ele_checkbox simple non-variable-subscription non-job_package non-resume_package non-auction non-redq_rental non-appointment non-accommodation-booking', 'desc_class' => 'wcfm_title wcfm_ele simple variable external groupd downloadable_ele_title checkbox_title simple non-variable-subscription non-job_package non-resume_package non-auction non-redq_rental non-appointment non-accommodation-booking', 'value' => 'yes', 'dfvalue' => $_differential_taxation),
 														) +
-											array_slice($general_fields, 2, count($general_fields) - 1, true) ;
+											array_slice($general_fields, 1, count($general_fields) - 1, true) ;
 		
 		return $general_fields;
 	}
@@ -609,6 +715,178 @@ class WCFM_ThirdParty_Support {
 		
 		return $variations;
 	}
+	
+	/**
+	 * Product manage Epeken Plugins View
+	 */
+	function wcfm_wcepeken_product_manage_views() {
+		global $WCFM;
+	  $WCFM->template->get_template( 'products-manager/wcfm-view-epeken-products-manage.php' );
+	}
+	
+	/**
+	 * Product manage WDM Scheduler Plugins View
+	 */
+	function wcfm_wdm_scheduler_product_manage_views() {
+		global $wp, $WCFM;
+		
+		$product_id = 0;
+		if( isset( $wp->query_vars['wcfm-products-manage'] ) && !empty( $wp->query_vars['wcfm-products-manage'] ) ) {
+			$product_id = $wp->query_vars['wcfm-products-manage'];
+		}
+		?>
+		<div class="page_collapsible products_manage_scheduler simple variable nonvirtual booking" id="wcfm_products_manage_form_scheduler_head"><label class="fa fa-clock-o"></label><?php _e('Scheduler Config', 'wc-frontend-manager'); ?><span></span></div>
+		<div class="wcfm-container simple variable nonvirtual booking">
+			<div id="wcfm_products_manage_form_scheduler_expander" class="wcfm-content">
+			  <?php
+				$scheduler_admin = new SchedulerAdmin();
+				$scheduler_admin->wdmStartEndDate( $product_id );
+				?>
+			</div>
+		</div>
+		<?php
+		wdmCpbEnqueueScripts( 'post-new.php' );
+	}
+	
+	/**
+	 * Vendor Settings Epeken Plugins View
+	 */
+	function wcfm_wcepeken_settings_views( $user_id ) {
+		global $WCFM;
+		
+		$vendor_data_asal_kota = get_user_meta(intval($user_id), 'vendor_data_kota_asal', true);
+		$vendor_jne_reg = get_user_meta(intval($user_id), 'vendor_jne_reg', true);
+		$vendor_jne_oke = get_user_meta(intval($user_id), 'vendor_jne_oke', true);
+		$vendor_jne_yes = get_user_meta(intval($user_id), 'vendor_jne_yes', true);
+		$vendor_tiki_reg = get_user_meta(intval($user_id), 'vendor_tiki_reg', true);
+		$vendor_tiki_eco = get_user_meta(intval($user_id), 'vendor_tiki_eco', true);
+		$vendor_tiki_ons = get_user_meta(intval($user_id), 'vendor_tiki_ons', true);
+		$vendor_pos_kilat_khusus = get_user_meta(intval($user_id), 'vendor_pos_kilat_khusus', true);
+		$vendor_pos_express_next_day = get_user_meta(intval($user_id), 'vendor_pos_express_next_day', true);
+		$vendor_pos_valuable_goods = get_user_meta(intval($user_id), 'vendor_pos_valuable_goods', true);
+		$vendor_jnt_ez = get_user_meta(intval($user_id), 'vendor_jnt_ez', true);
+		$vendor_sicepat_reg = get_user_meta(intval($user_id), 'vendor_sicepat_reg', true);
+		$vendor_sicepat_best = get_user_meta(intval($user_id), 'vendor_sicepat_best', true);
+		$vendor_wahana = get_user_meta(intval($user_id), 'vendor_wahana', true);
+		
+		?>
+		<div class="page_collapsible" id="wcfm_settings_form_epeken_head">
+			<label class="fa fa-truck"></label>
+			<?php _e('Shipping', 'wc-frontend-manager'); ?><span></span>
+		</div>
+		<div class="wcfm-container">
+			<div id="wcfm_settings_form_epeken_expander" class="wcfm-content">
+				
+				<h2><?php _e('Shipment Origin Information', 'wc-frontend-manager'); ?></h2>
+				<table class="form-table">
+				 <tr>
+					 <th>
+						Kota Asal Pengiriman
+					 </th>
+					 <td>
+						<select name="vendor_data_asal_kota" id="vendor_data_asal_kota" style="width: 50%">
+							<?php
+							$license = get_option('epeken_wcjne_license_key');     
+							$origins = epeken_get_valid_origin($license);
+							$origins = json_decode($origins,true);
+							$origins = $origins["validorigin"];
+							?>		
+							<option value="0">None</option>
+							<?php
+							foreach($origins as $origin) {
+								$idx=$origin['origin_code'];
+								?>
+								<option value=<?php echo '"'.$idx.'"'; if($vendor_data_asal_kota === $idx){echo ' selected';}?>><?php echo $origin["kota_kabupaten"]; ?></option>
+						  <?php
+							}
+						  ?>
+						</select>
+						<script type='text/javascript'>
+							jQuery(document).ready(function($){
+									$('#vendor_data_asal_kota').select2();
+							});
+						</script>
+					 </td>
+				 </tr>
+				 <tr>
+					 <th>
+					 Expedisi/Kurir Yang Diaktifkan
+					 </th>
+					 <td>
+						<table>
+							<tr>
+								<td style="width: 33%">
+								 <input type="checkbox" class="wcfm-checkbox" style="margin-right: 5%;" name="vendor_jne_reg" <?php if($vendor_jne_reg === 'on') echo " checked"; ?>> JNE REG</input><br>
+								 <input type="checkbox" class="wcfm-checkbox" style="margin-right: 5%;" name="vendor_jne_oke" <?php if($vendor_jne_oke === 'on') echo " checked"; ?>> JNE OKE</input><br>
+								 <input type="checkbox" class="wcfm-checkbox" style="margin-right: 5%;" name="vendor_jne_yes" <?php if($vendor_jne_yes === 'on') echo " checked"; ?>> JNE YES</input><br>
+								</td>
+								<td style="width: 33%">
+								 <input type="checkbox" class="wcfm-checkbox" style="margin-right: 5%;" name="vendor_tiki_reg" <?php if($vendor_tiki_reg === 'on') echo " checked"; ?>> TIKI REG</input><br>
+								 <input type="checkbox" class="wcfm-checkbox" style="margin-right: 5%;" name="vendor_tiki_eco" <?php if($vendor_tiki_eco === 'on') echo " checked"; ?>> TIKI ECO</input><br>
+								 <input type="checkbox" class="wcfm-checkbox" style="margin-right: 5%;" name="vendor_tiki_ons" <?php if($vendor_tiki_ons === 'on') echo " checked"; ?>> TIKI ONS</input><br>
+								</td>
+								<td style="width: 33%">
+								 <input type="checkbox" class="wcfm-checkbox" style="margin-right: 5%;" name="vendor_pos_kilat_khusus" <?php if($vendor_pos_kilat_khusus === 'on') echo " checked"; ?>> POS KILAT KHUSUS</input><br>
+								 <input type="checkbox" class="wcfm-checkbox" style="margin-right: 5%;" name="vendor_pos_express_next_day" <?php if($vendor_pos_express_next_day === 'on') echo " checked"; ?>> POS Express Next Day</input><br>
+								 <input type="checkbox" class="wcfm-checkbox" style="margin-right: 5%;" name="vendor_pos_valuable_goods" <?php if($vendor_pos_valuable_goods === 'on') echo " checked"; ?>> POS Valuable Goods</input><br>
+								</td>
+								</tr>
+								<tr>
+								<td style="width: 33%">
+								 <input type="checkbox" class="wcfm-checkbox" style="margin-right: 5%;" name="vendor_jnt_ez" <?php if($vendor_jnt_ez === 'on') echo " checked"; ?>> J&T EZ</input><br>
+								</td>
+								<td style="width: 33%">
+								 <input type="checkbox" class="wcfm-checkbox" style="margin-right: 5%;" name="vendor_sicepat_reg" <?php if($vendor_sicepat_reg === 'on') echo " checked"; ?>> SICEPAT REG</input><br>
+								 <input type="checkbox" class="wcfm-checkbox" style="margin-right: 5%;" name="vendor_sicepat_best" <?php if($vendor_sicepat_best === 'on') echo " checked"; ?>> SICEPAT BEST</input><br>
+								</td>
+								<td style="width: 33%">
+								 <input type="checkbox" class="wcfm-checkbox" style="margin-right: 5%;" name="vendor_wahana" <?php if($vendor_wahana === 'on') echo " checked"; ?>> Wahana </input><br>
+								</td>
+							</tr>
+						</table>
+					 </td>
+				 </tr>
+				</table>
+			</div>
+		</div>
+		<?php
+	}
+	
+	/**
+	 * Vendor Settings Epeken Plugins Data Update
+	 */
+	function wcfm_wcepeken_vendor_settings_update( $user_id, $wcfm_settings_form ) {
+		
+		$vendor_data_asal_kota = (empty($wcfm_settings_form['vendor_data_asal_kota'] )) ? '' : $wcfm_settings_form['vendor_data_asal_kota']; // code kota asal
+		$vendor_jne_reg = (empty($wcfm_settings_form['vendor_jne_reg'])) ? '' : $wcfm_settings_form['vendor_jne_reg'];
+		$vendor_jne_oke = (empty($wcfm_settings_form['vendor_jne_oke'])) ? '' : $wcfm_settings_form['vendor_jne_oke'];
+		$vendor_jne_yes = (empty($wcfm_settings_form['vendor_jne_yes'])) ? '' : $wcfm_settings_form['vendor_jne_yes'];
+		$vendor_tiki_reg = (empty($wcfm_settings_form['vendor_tiki_reg'])) ? '' : $wcfm_settings_form['vendor_tiki_reg'];
+		$vendor_tiki_eco = (empty($wcfm_settings_form['vendor_tiki_eco'])) ? '' : $wcfm_settings_form['vendor_tiki_eco'];
+		$vendor_tiki_ons = (empty($wcfm_settings_form['vendor_tiki_ons'])) ? '' : $wcfm_settings_form['vendor_tiki_ons'];
+		$vendor_pos_kilat_khusus = (empty($wcfm_settings_form['vendor_pos_kilat_khusus'])) ? '' : $wcfm_settings_form['vendor_pos_kilat_khusus'];
+		$vendor_pos_express_next_day = (empty($wcfm_settings_form['vendor_pos_express_next_day'])) ? '' : $wcfm_settings_form['vendor_pos_express_next_day'];
+		$vendor_pos_valuable_goods = (empty($wcfm_settings_form['vendor_pos_valuable_goods'])) ? '' : $wcfm_settings_form['vendor_pos_valuable_goods'];
+		$vendor_jnt_ez = (empty($wcfm_settings_form['vendor_jnt_ez'])) ? '' : $wcfm_settings_form['vendor_jnt_ez'];
+		$vendor_sicepat_reg = (empty($wcfm_settings_form['vendor_sicepat_reg'])) ? '' : $wcfm_settings_form['vendor_sicepat_reg'];
+		$vendor_sicepat_best = (empty($wcfm_settings_form['vendor_sicepat_best'])) ? '' : $wcfm_settings_form['vendor_sicepat_best'];
+		$vendor_wahana = (empty($wcfm_settings_form['vendor_wahana'])) ? '' : $wcfm_settings_form['vendor_wahana'];
+		
+		update_user_meta( $user_id, 'vendor_data_kota_asal', $vendor_data_asal_kota);
+		update_user_meta( $user_id, 'vendor_jne_reg', $vendor_jne_reg);
+		update_user_meta( $user_id, 'vendor_jne_oke', $vendor_jne_oke);
+		update_user_meta( $user_id, 'vendor_jne_yes', $vendor_jne_yes);
+		update_user_meta( $user_id, 'vendor_tiki_reg', $vendor_tiki_reg);
+		update_user_meta( $user_id, 'vendor_tiki_eco', $vendor_tiki_eco);
+		update_user_meta( $user_id, 'vendor_tiki_ons', $vendor_tiki_ons);
+		update_user_meta( $user_id, 'vendor_pos_kilat_khusus', $vendor_pos_kilat_khusus);
+		update_user_meta( $user_id, 'vendor_pos_express_next_day', $vendor_pos_express_next_day);
+		update_user_meta( $user_id, 'vendor_pos_valuable_goods', $vendor_pos_valuable_goods);
+		update_user_meta( $user_id, 'vendor_jnt_ez', $vendor_jnt_ez);
+		update_user_meta( $user_id, 'vendor_sicepat_reg', $vendor_sicepat_reg);
+		update_user_meta( $user_id, 'vendor_sicepat_best', $vendor_sicepat_best);
+		update_user_meta( $user_id, 'vendor_wahana', $vendor_wahana);
+	}
 		
 	
 	/**
@@ -616,7 +894,6 @@ class WCFM_ThirdParty_Support {
    */
   function wcfm_thirdparty_products_manage_views( ) {
 		global $WCFM;
-	  
-	  require_once( $WCFM->library->views_path . 'products-manager/wcfm-view-thirdparty-products-manage.php' );
+	  $WCFM->template->get_template( 'products-manager/wcfm-view-thirdparty-products-manage.php' );
 	}
 }

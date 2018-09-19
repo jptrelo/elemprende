@@ -4,7 +4,7 @@
  * Commission functions
  *
  * @author  Matt Gates <http://mgates.me>
- * @package ProductVendor
+ * @package WCVendors
  */
 
 
@@ -52,9 +52,9 @@ class WCV_Commission
 	public static function commission_status(){
 
 		return apply_filters( 'wcvendors_commission_status', array(
-				'due' 		=> __( 'Due', 'wcvendors' ),
-				'paid'		=> __( 'Paid', 'wcvendors' ),
-				'reversed'	=> __( 'Reversed', 'wcvendors' )
+				'due' 		=> __( 'Due', 'wc-vendors' ),
+				'paid'		=> __( 'Paid', 'wc-vendors' ),
+				'reversed'	=> __( 'Reversed', 'wc-vendors' )
 			)
 		);
 	}
@@ -146,7 +146,7 @@ class WCV_Commission
 			foreach ( $details as $key => $detail ) {
 
 				$product_id = $detail['product_id'];
-				$order_date = ( version_compare( WC_VERSION, '2.7', '<' ) ) ? $order->order_date : $order->get_date_created();
+				$order_date = $order->get_date_created();
 
 				$insert_due[ $product_id ] = array(
 					'order_id'       => $order_id,
@@ -216,7 +216,7 @@ class WCV_Commission
 		$table_name = $wpdb->prefix . "pv_commission";
 		$where      = $wpdb->prepare( 'WHERE status = %s', 'due' );
 		$where 		= apply_filters( 'wcvendors_commission_all_due_where', $where );
-		$query      = "SELECT id, vendor_id, total_due FROM `{$table_name}` $where";
+		$query      = "SELECT id, vendor_id, total_due, total_shipping FROM `{$table_name}` $where";
 		$query 		= apply_filters( 'wcvendors_commission_all_due_sql', $query );
 		$results    = $wpdb->get_results(  $query );
 
@@ -300,7 +300,7 @@ class WCV_Commission
 
 		$product_commission = get_post_meta( $product_id, 'pv_commission_rate', true );
 		$vendor_commission  = WCV_Vendors::get_default_commission( $vendor_id );
-		$default_commission = WC_Vendors::$pv_options->get_option( 'default_commission' );
+		$default_commission = get_option( 'wcvendors_vendor_commission_rate' );
 
 		if ( $product_commission != '' && $product_commission !== false ) {
 			$commission = $product_commission;
@@ -544,5 +544,127 @@ class WCV_Commission
 		return $commission_due;
 
 	} // get_commission_due()
+
+
+	/**
+	 * Get the total due for all commissions
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 */
+	public static function get_totals( $status = 'due' ){
+
+		$total_due = 0;
+
+		global $wpdb;
+
+		$table_name = $wpdb->prefix . "pv_commission";
+		$query      = "SELECT sum(total_due + total_shipping + tax) as total
+					FROM `{$table_name}`
+					WHERE status = %s";
+		$results    = $wpdb->get_results( $wpdb->prepare( $query, $status ) );
+
+		$totals = array_shift( $results )->total;
+
+		return $totals;
+
+	}
+
+	/*
+	* Get the summed total for each vendor based on the status
+	* @since 2.0.3
+	* @access public
+	*/
+	public static function get_sum_vendor_totals(){
+
+		global $wpdb;
+
+		$due 		= array();
+		$paid 		= array();
+		$reversed 	= array();
+
+		$table_name = $wpdb->prefix . "pv_commission";
+		$query      = "SELECT `id`, `total_due`, `total_shipping`, `tax`, `vendor_id`, `status`
+					FROM `{$table_name}`";
+
+		$orderby 	= ! empty( $_REQUEST[ 'orderby' ] ) ? esc_attr( $_REQUEST[ 'orderby' ] ) : 'time';
+		$order   	= ( ! empty( $_REQUEST[ 'order' ] ) && $_REQUEST[ 'order' ] == 'asc' ) ? 'ASC' : 'DESC';
+		$com_status = ! empty( $_REQUEST[ 'com_status' ] ) ? esc_attr( $_REQUEST[ 'com_status' ] ) : '';
+		$vendor_id 	= ! empty( $_REQUEST[ 'vendor_id' ] ) ? esc_attr( $_REQUEST[ 'vendor_id' ] ) : '';
+		$status_sql = '';
+		$time_sql 	= '';
+
+		if ( !empty( $_GET[ 'm' ] ) ) {
+
+			$year  = substr( $_GET[ 'm' ], 0, 4 );
+			$month = substr( $_GET[ 'm' ], 4, 2 );
+
+			$time_sql = "
+				WHERE MONTH(`time`) = '$month'
+				AND YEAR(`time`) = '$year'
+			";
+
+			$query .= $time_sql;
+		}
+
+		if ( !empty( $_GET[ 'com_status' ] ) ) {
+
+			if ( $time_sql == '' ) {
+				$status_sql = "
+				WHERE status = '$com_status'
+				";
+			} else {
+				$status_sql = "
+				AND status = '$com_status'
+				";
+			}
+
+			$query .= $status_sql;
+		}
+
+		if ( !empty( $_GET[ 'vendor_id' ] ) ) {
+
+			if ( $time_sql == '' && $status_sql == '' ) {
+				$vendor_sql = "
+				WHERE vendor_id = '$vendor_id'
+				";
+			} else {
+				$vendor_sql = "
+				AND vendor_id = '$vendor_id'
+				";
+			}
+
+			$query .= $vendor_sql;
+		}
+
+		$results = $wpdb->get_results( $query );
+
+		foreach ( $results as $commission ) {
+
+			switch ( $commission->status ) {
+				case 'due':
+					$due[ $commission->vendor_id ] = !empty( $due[ $commission->vendor_id ] ) ? ( $due[ $commission->vendor_id ] + ( $commission->total_due + $commission->total_shipping + $commission->tax ) ) : ( $commission->total_due + $commission->total_shipping + $commission->tax );
+					break;
+				case 'paid':
+					$paid[ $commission->vendor_id ] = !empty( $paid[ $commission->vendor_id ] ) ? ( $paid[ $commission->vendor_id ] + ( $commission->total_due + $commission->total_shipping + $commission->tax ) ) : ( $commission->total_due + $commission->total_shipping + $commission->tax );
+					break;
+				case 'reversed':
+					$reversed[ $commission->vendor_id ] = !empty( $reversed[ $commission->vendor_id ] ) ? ( $reversed[ $commission->vendor_id ] + ( $commission->total_due + $commission->total_shipping + $commission->tax ) ) : ( $commission->total_due + $commission->total_shipping + $commission->tax );
+					break;
+				default:
+					# code...
+					break;
+			}
+		}
+
+		$sum_totals = array(
+			'due' 		=> $due,
+			'paid'		=> $paid,
+			'reversed'	=> $reversed
+		);
+
+		return $sum_totals;
+
+	}
 
 }

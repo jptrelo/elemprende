@@ -42,6 +42,9 @@ if( !$wcfm_is_allow_manage_customer ) {
 				echo '<a class="add_new_wcfm_ele_dashboard text_tip" href="'.get_wcfm_customers_manage_url().'" data-tip="' . __('Add New Customer', 'wc-frontend-manager') . '"><span class="fa fa-user-plus"></span><span class="text">' . __( 'Add New', 'wc-frontend-manager' ) . '</span></a>';
 			}
 			?>
+			
+			<?php	echo apply_filters( 'wcfm_customers_limit_label', '' ); ?>
+			
 			<div class="wcfm-clearfix"></div>
 		</div>
 	  <div class="wcfm-clearfix"></div><br />

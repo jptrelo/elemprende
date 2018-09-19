@@ -72,11 +72,8 @@ $count_articles['any']     = $count_articles['publish'] + $count_articles['pendi
 		</div>
 		<div class="wcfm-clearfix"></div><br />
 		
-		<div class="wcfm_articles_filter_wrap wcfm_filters_wrap">
+		<div class="wcfm_articles_filter_wrap wcfm_products_filter_wrap  wcfm_filters_wrap">
 			<?php	
-			// Buk Edit Button action 
-			do_action( 'wcfm_article_filters_before' );
-			
 			// Category Filtering
 			if( $wcfm_is_articles_category_filter = apply_filters( 'wcfm_is_articles_category_filter', true ) ) {
 				$article_categories   = get_terms( 'category', 'orderby=name&hide_empty=0&parent=0' );
@@ -110,7 +107,7 @@ $count_articles['any']     = $count_articles['publish'] + $count_articles['pendi
 					<thead>
 						<tr>
 							<th><span class="fa fa-image text_tip" data-tip="<?php _e( 'Image', 'wc-frontend-manager' ); ?>"></span></th>
-							<th><?php _e( 'Name', 'wc-frontend-manager' ); ?></th>
+							<th style="max-width: 250px;"><?php _e( 'Name', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Status', 'wc-frontend-manager' ); ?></th>
 							<th><span class="fa fa-eye text_tip" data-tip="<?php _e( 'Views', 'wc-frontend-manager' ); ?>"></span></th>
 							<th><?php _e( 'Date', 'wc-frontend-manager' ); ?></th>
@@ -121,7 +118,7 @@ $count_articles['any']     = $count_articles['publish'] + $count_articles['pendi
 					<tfoot>
 						<tr>
 							<th><span class="fa fa-image text_tip" data-tip="<?php _e( 'Image', 'wc-frontend-manager' ); ?>"></span></th>
-							<th><?php _e( 'Name', 'wc-frontend-manager' ); ?></th>
+							<th style="max-width: 250px;"><?php _e( 'Name', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Status', 'wc-frontend-manager' ); ?></th>
 							<th><span class="fa fa-eye text_tip" data-tip="<?php _e( 'Views', 'wc-frontend-manager' ); ?>"></span></th>
 							<th><?php _e( 'Date', 'wc-frontend-manager' ); ?></th>

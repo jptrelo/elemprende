@@ -10,7 +10,7 @@ class Premium_Counter_Widget extends Widget_Base {
 	}
 
 	public function get_title() {
-		return esc_html__( 'Premium Counter', 'premium-addons-for-elementor' );
+		return \PremiumAddons\Helper_Functions::get_prefix() . ' Counter';
 	}
 
 	public function get_icon() {
@@ -18,7 +18,7 @@ class Premium_Counter_Widget extends Widget_Base {
 	}
 
 	public function get_script_depends() {
-		return [ 'counter-up-js' ];
+		return [ 'waypoints','premium-addons-js','counter-up-js' ];
 	}
 
 	public function get_categories() {
@@ -38,6 +38,7 @@ class Premium_Counter_Widget extends Widget_Base {
 			[
 				'label'			=> esc_html__( 'Title', 'premium-addons-for-elementor' ),
 				'type'			=> Controls_Manager::TEXT,
+                'dynamic'       => [ 'active' => true ],
 				'description'	=> esc_html__( 'Enter title for stats counter block', 'premium-addons-for-elementor'),
 			]
 		);
@@ -81,6 +82,7 @@ class Premium_Counter_Widget extends Widget_Base {
 			[
 				'label'			=> esc_html__( 'Value Prefix', 'premium-addons-for-elementor' ),
 				'type'			=> Controls_Manager::TEXT,
+                'dynamic'       => [ 'active' => true ],
 				'description'	=> esc_html__( 'Enter prefix for counter value', 'premium-addons-for-elementor' )
 			]
 		);
@@ -89,6 +91,7 @@ class Premium_Counter_Widget extends Widget_Base {
 			[
 				'label'			=> esc_html__( 'Value suffix', 'premium-addons-for-elementor' ),
 				'type'			=> Controls_Manager::TEXT,
+                'dynamic'       => [ 'active' => true ],
 				'description'	=> esc_html__( 'Enter suffix for counter value', 'premium-addons-for-elementor' )
 			]
 		);
@@ -477,18 +480,15 @@ class Premium_Counter_Widget extends Widget_Base {
 	}
 
 	protected function render() {
-		$settings = $this->get_settings();
+		$settings = $this->get_settings_for_display();
 
         $this->add_inline_editing_attributes('premium_counter_title');
         
-		$options = ''; // The counter settings store
-		$options .= 'useEasing : true,';
-
 		if( $sep = $settings['premium_counter_t_separator'] ) {
-			$options .= 'separator : \''. $sep .'\',';
+			$separator = $sep;
 		}
 		if( $dec = $settings['premium_counter_t_separator'] ) {
-			$options .= 'decimal : \''. $dec .'\',';
+			$decimal = $dec;
 		}
     
         if( $settings['premium_counter_icon_image'] == 'icon' ) {
@@ -522,17 +522,26 @@ class Premium_Counter_Widget extends Widget_Base {
  		if( $settings['premium_counter_icon_image'] == 'custom' && $settings['premium_counter_icon_style'] == 'simple' ) {
  			$flex_width = ' flex-width ';
  		}
-		?>
 
-			<div class="premium-counter-area<?php echo $center; ?>" id="counter-wrapper-<?php echo esc_attr($this->get_id()); ?>">
+ 		$counter_settings = [
+            'id'            => $this->get_id(),
+            'value'			=> $settings['premium_counter_value'],
+            'digits_after' 	=> $d_after,
+            'speed'			=> $settings['premium_counter_speed'],
+            'separator'		=> $separator,
+            'decimal'		=> $decimal,
+ 		];
+
+		?>
+			<div id="counter-wrapper-<?php echo esc_attr($this->get_id()); ?>" class="premium-counter premium-counter-area<?php echo $center; ?>" data-settings='<?php echo wp_json_encode($counter_settings); ?>'>
 				<?php if( $settings['premium_counter_icon_position'] == 'right' ) : ?>
 					<div class="premium-init-wrapper <?php echo $settings['premium_counter_icon_position']; ?>">
                         
-						<?php if (!empty( $settings['premium_counter_preffix'] ) ) : ?><span id="suffix" class="counter-su-pre"><?php echo $settings['premium_counter_preffix']; ?></span><?php endif; ?>
+						<?php if (!empty( $settings['premium_counter_preffix'] ) ) : ?><span id="prefix" class="counter-su-pre"><?php echo $settings['premium_counter_preffix']; ?></span><?php endif; ?>
                         
 						<span class="premium-counter-init" id="counter-<?php echo esc_attr($this->get_id()); ?>"><?php echo $exact_value; ?></span>
                         
-						<?php if (!empty( $settings['premium_counter_suffix'] ) ) : ?><span id="prefix" class="counter-su-pre"><?php echo $settings['premium_counter_suffix']; ?></span><?php endif; ?>
+						<?php if (!empty( $settings['premium_counter_suffix'] ) ) : ?><span id="suffix" class="counter-su-pre"><?php echo $settings['premium_counter_suffix']; ?></span><?php endif; ?>
                         
 						<?php if (!empty( $settings['premium_counter_title'] ) ) : ?><h4 class="premium-counter-title"><div <?php echo $this->get_render_attribute_string('premium_counter_title'); ?>><?php echo $settings['premium_counter_title'];?></div></h4><?php endif; ?>
 					</div>
@@ -545,7 +554,7 @@ class Premium_Counter_Widget extends Widget_Base {
 
 				<?php else: ?>
 
-					<?php if( !empty( $settings['premium_counter_icon'] ) || !empty( $settings['pct_image_upload'] ) ) : ?>
+					<?php if( !empty( $settings['premium_counter_icon'] ) || !empty( $settings['premium_counter_image_upload'] ) ) : ?>
                     <div class="premium-counter-icon<?php echo $left; ?>">
 							<span data-animation="<?php echo $animation; ?>" class="icon<?php echo $flex_width; ?><?php echo $icon_style; ?>"><?php echo $icon_image; ?></span>
 						</div>		
@@ -553,11 +562,11 @@ class Premium_Counter_Widget extends Widget_Base {
 
 					<div class="premium-init-wrapper<?php echo $left; ?>">
                         
-						<?php if (!empty( $settings['premium_counter_preffix'] ) ) : ?><span id="suffix" class="counter-su-pre"><?php echo $settings['premium_counter_preffix']; ?></span><?php endif; ?>
+						<?php if (!empty( $settings['premium_counter_preffix'] ) ) : ?><span id="prefix" class="counter-su-pre"><?php echo $settings['premium_counter_preffix']; ?></span><?php endif; ?>
                         
 						<span class="premium-counter-init" id="counter-<?php echo esc_attr($this->get_id()); ?>"><?php echo $exact_value; ?></span>
 						
-                        <?php if (!empty( $settings['premium_counter_suffix'] ) ) : ?><span id="prefix" class="counter-su-pre"><?php echo $settings['premium_counter_suffix']; ?></span><?php endif; ?>
+                        <?php if (!empty( $settings['premium_counter_suffix'] ) ) : ?><span id="suffix" class="counter-su-pre"><?php echo $settings['premium_counter_suffix']; ?></span><?php endif; ?>
                         
 						<?php if (!empty( $settings['premium_counter_title'] ) ) : ?><h4 class="premium-counter-title"><div <?php echo $this->get_render_attribute_string('premium_counter_title'); ?>><?php echo $settings['premium_counter_title'];?></div></h4><?php endif; ?>
 					</div>
@@ -565,57 +574,9 @@ class Premium_Counter_Widget extends Widget_Base {
 				<?php endif; ?>
 				
 			</div>
-			
-<script type="text/javascript">
-    jQuery(document).ready(function( $ ) {
-        var counter_offset = $("#counter-<?php echo esc_attr($this->get_id()); ?>").offset().top;
-        var <?php echo 'counter' . esc_attr($this->get_id()); ?> = new CountUp(
-            'counter-<?php echo esc_attr($this->get_id()); ?>', 0,
-            <?php echo $settings['premium_counter_value']; ?>,
-            <?php echo $d_after; ?>,
-            <?php echo $settings['premium_counter_speed']; ; ?>, 
-            { <?php echo $options ?> }        
-        );
-    if(counter_offset < $(window).outerHeight()- 150) {
-            counter<?php echo esc_attr($this->get_id()); ?>.start();
-        }
-    function start_counter(){
-            if($(window).scrollTop() >  counter_offset - 600 ) {
-                counter<?php echo esc_attr($this->get_id()); ?>.start();
-                }
-            }
-    function isScrolledIntoView(elem) {
-            var docViewTop = $(window).scrollTop();
-            var docViewBottom = docViewTop + $(window).height();
-            var elemTop = elem.offset().top;
-            var elemBottom = elemTop + elem.height();
-            return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
-        }
-    function addAnimation() {
-            $('.premium-counter-init').each( function() {
-                var $this = $(this),
-                parentId = $this.parents('.premium-counter-area').attr('id'),
-                iconClass = $('#' + parentId ).find('.icon'),
-                animation = iconClass.data('animation');
-                if( iconClass.length ) {
-                    if( isScrolledIntoView( iconClass ) ) {
-                        if( ! iconClass.hasClass('animated') ) {            
-                            $('#' + parentId ).find('.icon').addClass('animated ' + animation );
-                                }
-                            }
-                        }
-                    });
-                }
-            addAnimation();
-            $(window).on('scroll', function() {
-                addAnimation();
-                start_counter();
-            });
-        });
-</script>
+
 		<?php
 	}
-
 }
 
 Plugin::instance()->widgets_manager->register_widget_type( new Premium_Counter_Widget() );

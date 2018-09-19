@@ -47,18 +47,19 @@ class premium_Template_Tags {
 	public function get_all_post() {
 
 		$post_types = get_post_types();
-		$post_type_not__in = array('attachment', 'revision', 'nav_menu_item', 'custom_css', 'customize_changeset', 'elementor_library');
+		$post_type_not__in = array('attachment', 'revision', 'nav_menu_item', 'custom_css', 'customize_changeset', 'elementor_library', 'post');
 
 		foreach ( $post_type_not__in as $post_type_not ) {
 			unset( $post_types[$post_type_not] );
 		}
 		$post_type = array_values( $post_types );
+        
 
 		$all_posts = get_posts( array(
-				'post_type' => $post_type
+                'posts_per_page'    => -1,
+				'post_type'         => $post_type,
 			)
 		);
-
 		if( !empty( $all_posts ) && !is_wp_error( $all_posts ) ) {
 			foreach ( $all_posts as $post ) {
 				$this->options[ $post->ID ] = strlen( $post->post_title ) > 20 ? substr( $post->post_title, 0, 20 ).'...' : $post->post_title;
@@ -72,13 +73,13 @@ class premium_Template_Tags {
 			'post_type' => 'elementor_library',
 			'showposts' => 999,
 		));
-		
+        
 		if ( ! empty( $pagelist ) && ! is_wp_error( $pagelist ) ){
 			foreach ( $pagelist as $post ) {
 				$options[ $post->ID ] = __( $post->post_title, 'premium-addons-for-elementor' );
 			}
-			update_option( 'temp_count', $options );
-			return $options;
+        update_option( 'temp_count', $options );
+        return $options;
 		}
 	}
 }

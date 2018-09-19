@@ -99,7 +99,7 @@ if( !$customer_id ) {
 			
 			echo '<a class="add_new_wcfm_ele_dashboard text_tip" href="'.get_wcfm_customers_url().'" data-tip="' . __('Manage Customers', 'wc-frontend-manager') . '"><span class="fa fa-user-circle-o"></span></a>';
 			
-			if( apply_filters( 'wcfm_is_allow_edit_customer', true ) ) {
+			if( apply_filters( 'wcfm_is_allow_edit_customer', true ) && apply_filters( 'wcfm_is_vendor_customer', true, $customer_id ) ) {
 				echo '<a class="add_new_wcfm_ele_dashboard text_tip" href="'.get_wcfm_customers_manage_url($customer_id).'" data-tip="' . __('Edit Customer', 'wc-frontend-manager') . '"><span class="fa fa-edit"></span></a>';
 			}
 			
@@ -177,7 +177,7 @@ if( !$customer_id ) {
 		<?php do_action( 'begin_wcfm_customers_details_bookings' ); ?>
 	  
 		<?php if( wcfm_is_booking() && current_user_can( 'manage_bookings' ) && apply_filters( 'wcfm_is_allow_booking_list', true ) && apply_filters( 'wcfm_is_allow_customer_details_bookings', true ) ) { ?>
-			<div class="page_collapsible" id="wcfm_customers_bookings_head"><span class="fa fa-calendar-check-o"></span><span class="dashboard_widget_head"><?php _e('Bookings', 'wc-frontend-manager'); ?></span></div>
+			<div class="page_collapsible" id="wcfm_customers_bookings_head"><span class="fa fa-calendar-check-o"></span><span class="dashboard_widget_head">&nbsp;<?php _e('Bookings', 'wc-frontend-manager'); ?></span></div>
 			<div class="wcfm-container">
 				<div id="wcfm_customers_bookings_listing_expander" class="wcfm-content">
 					<table id="wcfm-customers-details-bookings" class="display" cellspacing="0" width="100%">
@@ -215,7 +215,7 @@ if( !$customer_id ) {
 		<?php do_action( 'begin_wcfm_customers_details_appointments' ); ?>
 	  
 		<?php if( WCFM_Dependencies::wcfmu_plugin_active_check() && WCFMu_Dependencies::wcfm_wc_appointments_active_check() && current_user_can( 'manage_appointments' ) && apply_filters( 'wcfm_is_allow_appointment_list', true ) && apply_filters( 'wcfm_is_allow_customer_details_appointments', true ) ) { ?>
-			<div class="page_collapsible" id="wcfm_customers_appointments_head"><span class="fa fa-clock-o"></span><span class="dashboard_widget_head"><?php _e('Appointments', 'wc-frontend-manager'); ?></span></div>
+			<div class="page_collapsible" id="wcfm_customers_appointments_head"><span class="fa fa-clock-o"></span><span class="dashboard_widget_head">&nbsp;<?php _e('Appointments', 'wc-frontend-manager'); ?></span></div>
 			<div class="wcfm-container">
 				<div id="wcfm_customers_appointments_listing_expander" class="wcfm-content">
 					<table id="wcfm-customers-details-appointments" class="display" cellspacing="0" width="100%">
@@ -253,7 +253,7 @@ if( !$customer_id ) {
 		<?php do_action( 'begin_wcfm_customers_details_orders' ); ?>
 	  
 		<?php if( apply_filters( 'wcfm_is_allow_orders', true ) && apply_filters( 'wcfm_is_allow_customer_details_orders', true ) ) { ?>
-			<div class="page_collapsible" id="wcfm_customers_orders_head"><span class="fa fa-cart-plus"></span><span class="dashboard_widget_head"><?php _e('Orders', 'wc-frontend-manager'); ?></span></div>
+			<div class="page_collapsible" id="wcfm_customers_orders_head"><span class="fa fa-cart-plus"></span><span class="dashboard_widget_head">&nbsp;<?php _e('Orders', 'wc-frontend-manager'); ?></span></div>
 			<div class="wcfm-container">
 				<div id="wcfm_customers_orders_listing_expander" class="wcfm-content">
 					<table id="wcfm-customers-details-orders" class="display" cellspacing="0" width="100%">

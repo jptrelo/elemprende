@@ -16,43 +16,43 @@
 
 // ** Ajustes de MySQL. Solicita estos datos a tu proveedor de alojamiento web. ** //
 /** El nombre de tu base de datos de WordPress */
-// define('DB_NAME', 'elemprende');
+define('DB_NAME', 'elemprende');
 
-// /** Tu nombre de usuario de MySQL */
-// define('DB_USER', 'root');
+/** Tu nombre de usuario de MySQL */
+define('DB_USER', 'root');
 
-// /** Tu contraseña de MySQL */
-// define('DB_PASSWORD', '');
+/** Tu contraseña de MySQL */
+define('DB_PASSWORD', '');
 
-// /** Host de MySQL (es muy probable que no necesites cambiarlo) */
-// define('DB_HOST', 'localhost');
+/** Host de MySQL (es muy probable que no necesites cambiarlo) */
+define('DB_HOST', 'localhost');
 
-// /** Codificación de caracteres para la base de datos. */
-// define('DB_CHARSET', 'utf8mb4');
+/** Codificación de caracteres para la base de datos. */
+define('DB_CHARSET', 'utf8mb4');
 
-// /** Cotejamiento de la base de datos. No lo modifiques si tienes dudas. */
-// define('DB_COLLATE', '');
+/** Cotejamiento de la base de datos. No lo modifiques si tienes dudas. */
+define('DB_COLLATE', '');
 
 // ** MySQL settings - You can get this info from your web host ** //
 // $url = parse_url(getenv('DATABASE_URL') ? getenv('DATABASE_URL') : getenv('CLEARDB_DATABASE_URL'));
 
 /** The name of the database for WordPress */
-define('DB_NAME', 'elemprende');
+// define('DB_NAME', 'elemprende');
 
-/** MySQL database username */
-define('DB_USER', 'b6b6a903184873');
+// /** MySQL database username */
+// define('DB_USER', 'b6b6a903184873');
 
-/** MySQL database password */
-define('DB_PASSWORD', '3d11f4ab');
+// /** MySQL database password */
+// define('DB_PASSWORD', '3d11f4ab');
 
-/** MySQL hostname */
-define('DB_HOST', 'develemprende.ccgeehskphbz.us-east-1.rds.amazonaws.com');
+// /** MySQL hostname */
+// define('DB_HOST', 'develemprende.ccgeehskphbz.us-east-1.rds.amazonaws.com');
 
-/** Database Charset to use in creating database tables. */
-define('DB_CHARSET', 'utf8');
+// /** Database Charset to use in creating database tables. */
+// define('DB_CHARSET', 'utf8');
 
-/** The Database Collate type. Don't change this if in doubt. */
-define('DB_COLLATE', '');
+// /** The Database Collate type. Don't change this if in doubt. */
+// define('DB_COLLATE', '');
 
 // ** FTP CONFIGURACIÓN PARA AUTO-FTP ** //
 define('FTP_HOST', 'localhost');
@@ -78,8 +78,8 @@ define('SECURE_AUTH_SALT', '3J<OtH(g 01l@x^:OUNxJS0jmgR;B!,^U_2g1Y(J{Uvtd107R)_i
 define('LOGGED_IN_SALT', '-s5s^-:8k[|T;Ygih.hx:vlTq`zQ;{C13Q*+<|eP~DwV^B{9,mpm?&;w(9fm<M4d');
 define('NONCE_SALT', 'h;W6WEtm(oQN^;FbcT:nUF0tW;M(&j=CKJC&gr~r1qxDXqzQyW;MzyjaB.:}9t7A');
 
-// define('WP_HOME','http://www.elemprende.com');
-// define('WP_SITEURL','http://www.elemprende.com');
+// define('WP_HOME','http://localhost/elemprende');
+// define('WP_SITEURL','http://localhost/elemprende');
 // define('AUTH_KEY',         getenv('AUTH_KEY'));
 // define('SECURE_AUTH_KEY',  getenv('SECURE_AUTH_KEY'));
 // define('LOGGED_IN_KEY',    getenv('LOGGED_IN_KEY'));

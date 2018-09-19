@@ -52,6 +52,37 @@ jQuery(document).ready(function($) {
             }
         },
 
+        validateOption : function($input){
+
+            var eqTest = false;
+
+            if (!$input.find('option').length) {
+                if ($input.is(':checked')) {
+                    eqTest = true;
+                }
+                var formEl = $input.closest('.rtec-input-wrapper');
+            } else {
+                if ($input.find('option:selected').val() !== '') {
+                    eqTest = true;
+                }
+                var formEl = $input;
+            }
+
+            if (eqTest) {
+                if (formEl.hasClass(RtecForm.invalidClass)) {
+                    formEl.removeClass(RtecForm.invalidClass);
+                }
+                formEl.addClass(RtecForm.validClass);
+                RtecForm.removeErrorMessage(formEl);
+            } else {
+                if (formEl.hasClass(RtecForm.validClass)) {
+                    formEl.removeClass(RtecForm.validClass);
+                }
+                formEl.addClass(RtecForm.invalidClass);
+                RtecForm.showErrorMessage(formEl);
+            }
+        },
+
         isValidEmail : function(val) {
             var regEx = /[^\s@]+@[^\s@]+\.[^\s@]+/;
 
@@ -250,11 +281,19 @@ jQuery(document).ready(function($) {
 
             $rtecEl.find('#rtec-form :input').each(function() {
                 var name = $(this).attr('name');
-                var val = $(this).val();
-                submittedData[name] = val;
+                if ($(this).attr('type') === 'checkbox') {
+                    if ($(this).is(':checked')) {
+                        submittedData[name] = $(this).val();
+                    }
+                } else {
+                    submittedData[name] = $(this).val();
+                }
             });
 
             submittedData['action'] = 'rtec_process_form_submission';
+            if ($('input[name=lang]').length) {
+                submittedData['lang'] = $('input[name=lang]').val();
+            }
 
             $.ajax({
                 url : rtec.ajaxUrl,
@@ -292,5 +331,19 @@ jQuery(document).ready(function($) {
         } // if not .rtec-error
     }); // on rtec-form submit
 
+    // hide options initially
+    var $rtecReveal = $('.rtec-already-registered-reveal'),
+        $rtecOptions = $('.rtec-already-registered-options.rtec-is-visitor'),
+        $rtecOptionsRemove = $('.rtec-already-registered-js-remove');
+    $rtecReveal.show();
+    $rtecOptions.hide();
+    $rtecOptionsRemove.remove();
+    $rtecReveal.click(function() {
+        if ($rtecOptions.is(':visible')) {
+            $rtecOptions.slideUp();
+        } else {
+            $rtecOptions.slideDown();
+        }
+    });
 
 });

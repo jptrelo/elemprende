@@ -10,7 +10,7 @@ function lae_get_all_post_type_options() {
         $options[$post_type->name] = $post_type->label;
     }
 
-    return $options;
+    return apply_filters('lae_post_type_options', $options);
 }
 
 /**
@@ -26,11 +26,12 @@ function lae_get_all_taxonomy_options() {
 		SELECT terms.slug AS 'slug', terms.name AS 'label', termtaxonomy.taxonomy AS 'type'
 		FROM $wpdb->terms AS terms
 		JOIN $wpdb->term_taxonomy AS termtaxonomy ON terms.term_id = termtaxonomy.term_id
-		LIMIT 100
+		LIMIT 500
 	") as $result) {
         $results[$result->type . ':' . $result->slug] = $result->type . ':' . $result->label;
     }
-    return $results;
+
+    return apply_filters('lae_taxonomy_options', $results);
 }
 
 function lae_build_query_args($settings) {
@@ -75,5 +76,5 @@ function lae_build_query_args($settings) {
 
     $query_args['paged'] = max(1, get_query_var('paged'), get_query_var('page'));
 
-    return $query_args;
+    return apply_filters('lae_posts_query_args', $query_args, $settings);
 }

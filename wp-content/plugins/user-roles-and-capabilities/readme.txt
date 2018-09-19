@@ -3,8 +3,8 @@ Contributors: mahabub81
 Donate link: https://solvease.com/donate/
 Tags: user roles, user capabilities, roles and capabilities, wordpress capabilities, wordpress user roles, manage capabilities, security, wordpress user security, permission system, wordpress user permission
 Requires at least: 3.5
-Tested up to: 4.5
-Stable tag: 1.2.1
+Tested up to: 4.9.5
+Stable tag: 1.2.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -67,3 +67,9 @@ If you find any issue just let us know we will get back to you with the fix in 2
 * Fixing Branch Naming
 = 1.2.1 =
 * Fix the version number in code
+= 1.2.2 =
+* Show Hide capabilities
+* For multisite allow upload type txt file from admin panel ( Otherwise import options will not work)
+= 1.2.3 =
+* Fixing UI bugs
+

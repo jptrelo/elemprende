@@ -33,6 +33,8 @@ class WPCF7_ContactForm {
 			),
 			'rewrite' => false,
 			'query_var' => false,
+			'public' => false,
+			'capability_type' => 'page',
 		) );
 	}
 
@@ -80,7 +82,7 @@ class WPCF7_ContactForm {
 		self::$current = $contact_form = new self;
 		$contact_form->title =
 			( $title ? $title : __( 'Untitled', 'contact-form-7' ) );
-		$contact_form->locale = ( $locale ? $locale : get_locale() );
+		$contact_form->locale = ( $locale ? $locale : get_user_locale() );
 
 		$properties = $contact_form->get_properties();
 

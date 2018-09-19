@@ -24,6 +24,17 @@ if ( ! class_exists( 'WC_Connect_Compatibility_WC30' ) ) {
 		}
 
 		/**
+		 * Get admin url for a given order
+		 *
+		 * @param WC_Order $order
+		 *
+		 * @return string
+		 */
+		public function get_edit_order_url( WC_Order $order ) {
+			return $order->get_edit_order_url();
+		}
+
+		/**
 		 * Get the payment method for a given Order.
 		 *
 		 * @param WC_Order $order
@@ -117,6 +128,33 @@ if ( ! class_exists( 'WC_Connect_Compatibility_WC30' ) ) {
 
 			/* translators: %d: Deleted Product ID */
 			return sprintf( __( '#%d - [Deleted product]', 'woocommerce-services' ), $product_id );
+		}
+
+		/**
+		 * For a given product ID, it tries to find its price inside an order's line items.
+		 *
+		 * @param int $product_id Product ID or variation ID
+		 * @param WC_Order $order
+		 * @return float The product (or variation) price, or NULL if it wasn't found
+		 */
+		public function get_product_price_from_order( $product_id, $order ) {
+			foreach ( $order->get_items() as $line_item ) {
+				$line_product_id = $line_item->get_product_id();
+				$line_variation_id = $line_item->get_variation_id();
+
+				if ( ! $line_product_id ) {
+					$line_product_id = (int) get_metadata( 'order_item', $line_item->get_id(), '_product_id', true );
+				}
+
+				if ( ! $line_variation_id ) {
+					$line_variation_id = (int) get_metadata( 'order_item', $line_item->get_id(), '_variation_id', true );
+				}
+
+				if ( $line_product_id === $product_id || $line_variation_id === $product_id ) {
+					return round( floatval( $line_item->get_total() ) / $line_item->get_quantity(), 2 );
+				}
+			}
+			return null;
 		}
 
 		/**

@@ -50,7 +50,7 @@ class WCFM_Dependencies {
 	// WC Vendors Pro
 	static function wcvpro_plugin_active_check() {
 		if ( ! self::$active_plugins ) self::init();
-		return in_array( 'wc-vendors-pro/wcvendors-pro.php', self::$active_plugins ) || array_key_exists( 'wc-vendors-pro/wcvendors-pro.php', self::$active_plugins );
+		return in_array( 'wc-vendors-pro/wcvendors-pro.php', self::$active_plugins ) || array_key_exists( 'wc-vendors-pro/wcvendors-pro.php', self::$active_plugins ) || class_exists( 'WCVendors_Pro' );
 		return false;
 	}
 	
@@ -65,6 +65,13 @@ class WCFM_Dependencies {
 	static function wcfm_subscriptions_plugin_active_check() {
 		if ( ! self::$active_plugins ) self::init();
 		return in_array( 'woocommerce-subscriptions/woocommerce-subscriptions.php', self::$active_plugins ) || array_key_exists( 'woocommerce-subscriptions/woocommerce-subscriptions.php', self::$active_plugins );
+		return false;
+	}
+	
+	// XA Subscriptions
+	static function wcfm_xa_subscriptions_plugin_active_check() {
+		if ( ! self::$active_plugins ) self::init();
+		return in_array( 'xa-woocommerce-subscriptions/xa-woocommerce-subscriptions.php', self::$active_plugins ) || array_key_exists( 'xa-woocommerce-subscriptions/xa-woocommerce-subscriptions.php', self::$active_plugins );
 		return false;
 	}
 	
@@ -113,7 +120,7 @@ class WCFM_Dependencies {
 	// WP Job Manager
 	static function wcfm_wp_job_manager_plugin_active_check() {
 		if ( ! self::$active_plugins ) self::init();
-		return in_array( 'wp-job-manager/wp-job-manager.php', self::$active_plugins ) || array_key_exists( 'wp-job-manager/wp-job-manager.php', self::$active_plugins );
+		return in_array( 'wp-job-manager/wp-job-manager.php', self::$active_plugins ) || array_key_exists( 'wp-job-manager/wp-job-manager.php', self::$active_plugins ) || class_exists( 'WP_Job_Manager' );
 		return false;
 	}
 	
@@ -127,7 +134,7 @@ class WCFM_Dependencies {
 	// GEO my Wp Support
 	static function wcfm_geo_my_wp_plugin_active_check() {
 		if ( ! self::$active_plugins ) self::init();
-		return in_array( 'geo-my-wp/geo-my-wp.php', self::$active_plugins ) || array_key_exists( 'geo-my-wp/geo-my-wp.php', self::$active_plugins );
+		return in_array( 'geo-my-wp/geo-my-wp.php', self::$active_plugins ) || array_key_exists( 'geo-my-wp/geo-my-wp.php', self::$active_plugins ) || class_exists( 'GEO_MY_WP' );
 		return false;
 	}
 	
@@ -211,7 +218,7 @@ class WCFM_Dependencies {
 	// Dokan Pro - 3.3.0
 	static function dokanpro_plugin_active_check() {
 		if ( ! self::$active_plugins ) self::init();
-		return in_array( 'dokan-pro/dokan-pro.php', self::$active_plugins ) || array_key_exists( 'dokan-pro/dokan-pro.php', self::$active_plugins );
+		return in_array( 'dokan-pro/dokan-pro.php', self::$active_plugins ) || array_key_exists( 'dokan-pro/dokan-pro.php', self::$active_plugins ) || class_exists( 'Dokan_Pro' );
 		return false;
 	}
 	
@@ -250,17 +257,40 @@ class WCFM_Dependencies {
 		return false;
 	}
 	
-	// Woocommerce Germanized Support - 4.0.0
+	// Woocommerce SKU Generator Support - 4.0.0
 	static function wcfm_wc_sku_generator_plugin_active_check() {
 		if ( ! self::$active_plugins ) self::init();
 		return in_array( 'woocommerce-product-sku-generator/woocommerce-product-sku-generator.php', self::$active_plugins ) || array_key_exists( 'woocommerce-product-sku-generator/woocommerce-product-sku-generator.php', self::$active_plugins );
 		return false;
 	}
 	
-	// Dokan Stripe Connect Support - 3.4.3
-	static function wcfm_dokan_stripe_plugin_active_check() {
+	// Woocommerce Epeken Support - 4.1.0
+	static function wcfm_epeken_plugin_active_check() {
 		if ( ! self::$active_plugins ) self::init();
-		return in_array( 'stripe/gateway-stripe.php', self::$active_plugins ) || array_key_exists( 'stripe/gateway-stripe.php', self::$active_plugins );
+		return in_array( 'epeken-all-kurir/epeken_courier.php', self::$active_plugins ) || array_key_exists( 'epeken-all-kurir/epeken_courier.php', self::$active_plugins );
 		return false;
 	}
+	
+	// Products for WP Job Manager (Listings) - 4.2.3
+	static function wcfm_products_listings_active_check() {
+		if ( ! self::$active_plugins ) self::init();
+		return in_array( 'wp-job-manager-products/wp-job-manager-products.php', self::$active_plugins ) || array_key_exists( 'wp-job-manager-products/wp-job-manager-products.php', self::$active_plugins );
+		return false;
+	}
+	
+	// Products for WP Job Manager (MY Listings) - 4.2.3
+	static function wcfm_products_mylistings_active_check() {
+		if ( ! self::$active_plugins ) self::init();
+		return in_array( 'my-listing-addons/my-listing-addons.php', self::$active_plugins ) || array_key_exists( 'my-listing-addons/my-listing-addons.php', self::$active_plugins );
+		return false;
+	}
+	
+	// WooCommerce Schedular - 5.0.7
+	static function wcfm_wdm_scheduler_active_check() {
+		if ( ! self::$active_plugins ) self::init();
+		return in_array( 'woocommerce-scheduler/woocommerce-scheduler.php', self::$active_plugins ) || array_key_exists( 'woocommerce-scheduler/woocommerce-scheduler.php', self::$active_plugins );
+		return false;
+	}
+	
+	
 }

@@ -49,10 +49,10 @@ $country_obj   = new WC_Countries();
 $countries     = $country_obj->countries;
 $states        = $country_obj->states;
 $state_options = array();
-if( $state ) $state_options[$state] = $state;
 if( $state && isset( $states[$country] ) && is_array( $states[$country] ) ) {
 	$state_options = $states[$country];
 }
+if( $state ) $state_options[$state] = $state;
 
 // Gravatar image
 $gravatar_url = $gravatar ? wp_get_attachment_url( $gravatar ) : '';
@@ -72,6 +72,9 @@ $swift     = isset( $vendor_data['payment']['bank']['swift'] ) ? esc_attr( $vend
 
 $wcfm_vacation_mode = isset( $vendor_data['wcfm_vacation_mode'] ) ? $vendor_data['wcfm_vacation_mode'] : 'no';
 $wcfm_disable_vacation_purchase = isset( $vendor_data['wcfm_disable_vacation_purchase'] ) ? $vendor_data['wcfm_disable_vacation_purchase'] : 'no';
+$wcfm_vacation_mode_type = isset( $vendor_data['wcfm_vacation_mode_type'] ) ? $vendor_data['wcfm_vacation_mode_type'] : 'instant';
+$wcfm_vacation_start_date = isset( $vendor_data['wcfm_vacation_start_date'] ) ? $vendor_data['wcfm_vacation_start_date'] : '';
+$wcfm_vacation_end_date = isset( $vendor_data['wcfm_vacation_end_date'] ) ? $vendor_data['wcfm_vacation_end_date'] : '';
 $wcfm_vacation_mode_msg = ! empty( $vendor_data['wcfm_vacation_mode_msg'] ) ? $vendor_data['wcfm_vacation_mode_msg'] : '';
 
 if( WCFM_Dependencies::dokanpro_plugin_active_check() ) {
@@ -131,6 +134,14 @@ $is_marketplace = wcfm_is_marketplace();
 	  
 	  <div class="wcfm-container wcfm-top-element-container">
 	  	<h2><?php _e('Store Settings', 'wc-frontend-manager' ); ?></h2>
+	  	
+	  	<?php 
+	  	do_action( 'wcfm_vendor_setting_header_before', $user_id );
+			if( apply_filters( 'wcfm_is_allow_social_profile', true ) ) {
+				echo '<a id="wcfm_social_settings" class="add_new_wcfm_ele_dashboard text_tip" href="'.get_wcfm_profile_url().'#wcfm_profile_form_social_head" data-tip="' . __( 'Social', 'wc-frontend-manager' ) . '"><span class="fa fa-users"></span><span class="text">' . __( 'Social', 'wc-frontend-manager' ) . '</span></a>';
+			}
+			do_action( 'wcfm_vendor_setting_header_after', $user_id );
+			?>
 	  	<div class="wcfm-clearfix"></div>
 		</div>
 	  <div class="wcfm-clearfix"></div><br />
@@ -147,12 +158,12 @@ $is_marketplace = wcfm_is_marketplace();
 					<label class="fa fa-shopping-bag"></label>
 					<?php _e('Store', 'wc-frontend-manager'); ?><span></span>
 				</div>
-				<div class="wcfm-container">
+				<div class="wcfm-container wcfm_dokan_store_settings">
 					<div id="wcfm_settings_form_store_expander" class="wcfm-content">
 						<?php
 							$settings_fields_general = apply_filters( 'wcfm_dokan_settings_fields_general', array(
 																																																"gravatar" => array('label' => __('Profile Image', 'wc-frontend-manager') , 'type' => 'upload', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title', 'prwidth' => 150, 'value' => $gravatar_url ),
-																																																"banner" => array('label' => __('Banner', 'wc-frontend-manager') , 'type' => 'upload', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title', 'prwidth' => 250, 'value' => $banner_url, 'hints' => $banner_help_text ),
+																																																"banner" => array('label' => __('Banner', 'wc-frontend-manager') , 'type' => 'upload', 'class' => 'wcfm-text wcfm_ele wcfm-banner-uploads', 'label_class' => 'wcfm_title', 'prwidth' => 250, 'value' => $banner_url, 'hints' => $banner_help_text ),
 																																																"store_name" => array('label' => __('Shop Name', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $store_name ),
 																																																"store_ppp" => array('label' => __('Store Product Per Page', 'wc-frontend-manager') , 'type' => 'number', 'placeholder' => '10', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $store_ppp ),
 																																																"phone" => array('label' => __('Store Phone', 'wc-frontend-manager') , 'type' => 'text', 'placeholder' => '+123456..', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $phone ),
@@ -189,7 +200,7 @@ $is_marketplace = wcfm_is_marketplace();
 																																																		"street_1" => array('label' => __('Street', 'wc-frontend-manager'), 'placeholder' => __('Street adress', 'wc-frontend-manager'), 'name' => 'address[street_1]', 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $street_1 ),
 																																																		"street_2" => array('label' => __('Street 2', 'wc-frontend-manager'), 'placeholder' => __('Apartment, suit, unit etc. (optional)', 'wc-frontend-manager'), 'name' => 'address[street_2]', 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $street_2 ),
 																																																		"city" => array('label' => __('City/Town', 'wc-frontend-manager'), 'placeholder' => __('Town / City', 'wc-frontend-manager'), 'name' => 'address[city]', 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $city ),
-																																																		"zip" => array('label' => __('Postcode/Zip', 'wc-frontend-manager'), 'placeholder' => __('Postcode / Zip', 'wc-frontend-manager'), 'name' => 'address[zip]', 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $zip ),
+																																																		"zip" => array('label' => __('Postcode/Zip', 'wc-frontend-manager'), 'placeholder' => __('Postcode / Zip', 'wc-frontend-manager'), 'name' => 'address[zip]', 'type' => 'number', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $zip, 'attributes' => array( 'min' => '1', 'step'=> '1' ) ),
 																																																		"country" => array('label' => __('Country', 'wc-frontend-manager'), 'name' => 'address[country]', 'type' => 'country', 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'custom_attributes' => array( 'required' => true ), 'value' => $country ),
 																																																		"state" => array('label' => __('State/County', 'wc-frontend-manager'), 'name' => 'address[state]', 'type' => 'select', 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'custom_attributes' => array( 'required' => true ), 'options' => $state_options, 'value' => $state ),
 																																																		) ) );
@@ -221,7 +232,7 @@ $is_marketplace = wcfm_is_marketplace();
 							<div class="store_address">
 								<?php
 									$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_dokan_settings_fields_terms', array(
-																																																												"enable_tnc" => array('label' => __('Show terms and conditions in store page', 'dokan-lite') , 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => 'yes', 'dfvalue' => $enable_tnc ),
+																																																												"enable_tnc" => array('label' => __('Show terms and conditions in store page', 'dokan-lite') , 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => 'on', 'dfvalue' => $enable_tnc ),
 																																																												"store_tnc" => array('label' => __('TOC Details', 'dokan-lite') , 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $store_tnc )
 																																																											 ) ) );
 								?>
@@ -234,20 +245,6 @@ $is_marketplace = wcfm_is_marketplace();
 				<div class="wcfm_clearfix"></div>
 				<!-- end collapsible -->
 				
-				<!-- collapsible - Social -->
-				<?php if( $wcfm_is_allow_social_profile = apply_filters( 'wcfm_is_allow_social_profile', true ) ) { ?>
-					<a href="<?php echo get_wcfm_profile_url(); ?>#wcfm_profile_form_social_head" class="page_collapsible page_collapsible_dummy" id="wcfm_profile_form_social_head">
-						<label class="fa fa-users"></label>
-						<?php _e('Social', 'wc-frontend-manager'); ?><span></span>
-					</a>
-					<div class="wcfm-container">
-						<div id="wcfm_profile_form_social_expander" class="wcfm-content">
-						
-						</div>
-					</div>
-				<?php } ?>
-				<!-- end collapsible -->
-			
 			  <!-- collapsible -->
 				<?php if( $wcfm_is_allow_billing_settings = apply_filters( 'wcfm_is_allow_billing_settings', true ) ) { ?>
 					<div class="page_collapsible" id="wcfm_settings_form_payment_head">
@@ -287,7 +284,7 @@ $is_marketplace = wcfm_is_marketplace();
 								</div>
 							<?php } ?>
 							
-							<?php if( in_array( 'dokan-stripe-connect', $dokan_withdraw_methods ) && WCFM_Dependencies::wcfm_dokan_stripe_plugin_active_check() && class_exists( 'Dokan_Stripe' ) && apply_filters( 'wcfm_is_allow_billing_stripe', true ) ) { ?>
+							<?php if( in_array( 'dokan-stripe-connect', $dokan_withdraw_methods ) && class_exists( 'Dokan_Stripe' ) && apply_filters( 'wcfm_is_allow_billing_stripe', true ) ) { ?>
 								<?php
 								$stripe_settings   = get_option('woocommerce_dokan-stripe-connect_settings');
 								if ( $stripe_settings ) {
@@ -312,7 +309,7 @@ $is_marketplace = wcfm_is_marketplace();
 												$url   = $oauth->getAuthorizeUri();
 												?>
 												<br/>
-												<a class="clear" href="<?php echo $url; ?>" target="_TOP">
+												<a class="" href="<?php echo $url; ?>" target="_TOP">
 														<img style="display: block; margin: 10px auto;" src="<?php echo plugins_url( '/assets/images/blue.png', DOKAN_STRIPE_FILE ); ?>" width="190" height="33" data-hires="true">
 												</a>
 												<?php
@@ -348,47 +345,92 @@ $is_marketplace = wcfm_is_marketplace();
 								<?php
 								// Dokan Pro Settings
 								if( WCFM_Dependencies::wcfmu_plugin_active_check() ) {
-									$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_vendors_settings_fields_shipping', array(
-																																								"dps_shipping_enable" => array('label' => __('Enable Shipping', 'wc-frontend-manager') , 'name' => 'shipping[_dps_shipping_enable]', 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele', 'label_class' => 'wcfm_title checkbox_title wcfm_ele', 'value' => 'yes', 'dfvalue' => $dps_shipping_enable, 'hints' => __('Check this if you want to enable shipping for your store', 'dokan') ),
-																																								"dps_shipping_type_price" => array('label' => __('Default Shipping Price', 'dokan'), 'name' => 'shipping[_dps_shipping_type_price]', 'placeholder' => '0.00', 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $dps_shipping_type_price, 'hints' => __('This is the base price and will be the starting shipping price for each product', 'dokan') ),
-																																								"dps_additional_product" => array('label' => __('Per Product Additional Price', 'dokan'), 'name' => 'shipping[_dps_additional_product]', 'placeholder' => '0.00', 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $dps_additional_product, 'hints' => __('If a customer buys more than one type product from your store, first product of the every second type will be charged with this price', 'dokan') ),
-																																								"dps_additional_qty" => array('label' => __('Per Qty Additional Price', 'dokan'), 'name' => 'shipping[_dps_additional_qty]', 'placeholder' => '0.00', 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $dps_additional_qty, 'hints' => __('Every second product of same type will be charged with this price', 'dokan') ),
-																																								"dps_pt" => array('label' => __('Processing Time', 'dokan'), 'name' => 'shipping[_dps_pt]', 'type' => 'select', 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'options' => $processing_time, 'value' => $dps_pt, 'hints' => __('The time required before sending the product for delivery', 'dokan') ),
-																																								"dps_ship_policy" => array('label' => __('Shipping Policy', 'wc-frontend-manager'), 'name' => 'shipping[_dps_ship_policy]', 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $dps_ship_policy, 'hints' => __( 'Write your terms, conditions and instructions about shipping', 'dokan' ) ),
-																																								"dps_refund_policy" => array('label' => __('Refund Policy', 'wc-frontend-manager'), 'name' => 'shipping[_dps_refund_policy]', 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $dps_refund_policy, 'hints' => __( 'Write your terms, conditions and instructions about refund', 'dokan' ) ),
-																																								"dps_form_location" => array('label' => __('Ships from:', 'dokan'), 'name' => 'shipping[_dps_form_location]','type' => 'country', 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $dps_form_location, 'hints' => __( 'Location from where the products are shipped for delivery. Usually it is same as the store.', 'dokan' ) ),
-																									
-																																								) ) );
-									
-									$dps_shipping_rates = array();
-									$state_options = array();
-									if ( $dps_country_rates ) {
-                    foreach ( $dps_country_rates as $country => $country_rate ) {
-                    	$dps_shipping_state_rates = array();
-                    	$state_options = array();
-                    	if ( !empty( $dps_state_rates ) && isset( $dps_state_rates[$country] ) ) {
-                    		foreach ( $dps_state_rates[$country] as $state => $state_rate ) {
-                    			$state_options[$state] = $state;
-                    			$dps_shipping_state_rates[] = array( 'dps_state_to' => $state, 'dps_state_to_price' => $state_rate, 'option_values' => $state_options );
-                    		}
-                    	}
-                    	$dps_shipping_rates[] = array( 'dps_country_to' => $country, 'dps_country_to_price' => $country_rate, 'dps_shipping_state_rates' => $dps_shipping_state_rates );
-                   	} 	
-                  }
-									$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_vendors_settings_fields_shipping_rates', array( 
-																																												"dps_shipping_rates" => array('label' => __('Shipping Rates', 'wc-frontend-manager') , 'type' => 'multiinput', 'label_class' => 'wcfm_title', 'value' => $dps_shipping_rates, 'desc' => __( 'Add the countries you deliver your products to. You can specify states as well. If the shipping price is same except some countries/states, there is an option Everywhere Else, you can use that.', 'wc-frontend-manager' ), 'options' => array(
-																																																									"dps_country_to" => array('label' => __('Country', 'wc-frontend-manager'), 'type' => 'country', 'class' => 'wcfm-select dps_country_to_select', 'label_class' => 'wcfm_title', 'dokan_shipping_country' => true ),
-																																																									"dps_country_to_price" => array( 'label' => __('Cost', 'wc-frontend-manager') . '('.get_woocommerce_currency_symbol().')', 'type' => 'text', 'class' => 'wcfm-text', 'label_class' => 'wcfm_title' ),
-																																																									"dps_shipping_state_rates" => array('label' => __('State Shipping Rates', 'wc-frontend-manager') , 'type' => 'multiinput', 'label_class' => 'wcfm_title dps_shipping_state_rates_label', 'options' => array(
-																																																																											"dps_state_to" => array( 'label' => __('State', 'wc-frontend-manager'), 'type' => 'select', 'class' => 'wcfm-select dps_state_to_select', 'label_class' => 'wcfm_title', 'options' => $state_options ),
-																																																																											"dps_state_to_price" => array( 'label' => __('Cost', 'wc-frontend-manager') . '('.get_woocommerce_currency_symbol().')', 'type' => 'text', 'class' => 'wcfm-text', 'label_class' => 'wcfm_title' ),
-																																																									)	)		
-																																									) )
-																																							) ) );
-								} else {
-									if( $is_wcfmu_inactive_notice_show = apply_filters( 'is_wcfmu_inactive_notice_show', true ) ) {
-										wcfmu_feature_help_text_show( __( 'Dokan Pro Shipping Settings', 'wc-frontend-manager' ) );
+									if ( ! current_user_can( 'dokan_view_store_shipping_menu' ) ) {
+										dokan_get_template_part('global/dokan-error', '', array( 'deleted' => false, 'message' => __( 'You have no permission to view this page', 'dokan' ) ) );
+									} else {
+										$disable_woo_shipping  = get_option( 'woocommerce_ship_to_countries' );
+		
+										if ( 'disabled' == $disable_woo_shipping ) {
+											dokan_get_template_part('global/dokan-error', '', array( 'deleted' => false, 'message' => __( 'Shipping functionality is currentlly disabled by site owner', 'dokan' ) ) );
+										} else {
+											$dokan_shipping_option = get_option( 'woocommerce_dokan_product_shipping_settings' );
+											$enable_shipping       = ( isset( $dokan_shipping_option['enabled'] ) ) ? $dokan_shipping_option['enabled'] : 'yes';
+											$wcfm_dokan_regular_shipping = get_user_meta( $user_id, 'wcfm_dokan_regular_shipping', true );
+											if( $wcfm_dokan_regular_shipping == 'yes' ) $wcfm_dokan_regular_shipping = 'checked';
+											
+											if ( 'yes' == $enable_shipping ) {
+												if( version_compare( DOKAN_PRO_PLUGIN_VERSION, '2.8.0', '>' ) ) {
+													printf ( '<p>%s&nbsp;&nbsp;<input type="checkbox" class="wcfm-checkbox" name="wcfm_dokan_regular_shipping" style="margin-right: 5px;" value="yes" %s /></p><br />',
+																		__( 'If you want to use Country-State wise Shipping system then', 'wc-frontend-manager' ),
+																		$wcfm_dokan_regular_shipping
+																);
+												}
+											} else {
+												$wcfm_dokan_regular_shipping = 'non-checked';
+											}
+											
+											if( version_compare( DOKAN_PRO_PLUGIN_VERSION, '2.8.0', '>' ) ) {
+												echo '<div class="wcfm_dokan_non_regular_shipping">';
+													printf( '<p>%s<br /></p>', __( 'A shipping zone is a geographic region where a certain set of shipping methods are offered. System will match a customer to a single zone using their shipping address and present the shipping methods within that zone to them.', 'wc-frontend-manager' ) );
+													echo "<div id='dokan-vue-shipping'></div>";
+												echo '</div>';
+												
+												echo '<div class="wcfm_dokan_regular_shipping">';
+											}
+												if ( 'no' == $enable_shipping ) {
+													dokan_get_template_part('global/dokan-error', '', array( 'deleted' => false, 'message' => __( 'Shipping functionality is currentlly disabled by site owner', 'dokan' ) ) );
+												} else {
+													printf ( '<p>%s</p><p>%s</p><br />',
+																		__( 'This page contains your store-wide shipping settings, costs, shipping and refund policy.', 'dokan' ),
+																		__( 'You can enable/disable shipping for your products. Also you can override these shipping costs while creating or editing a product.', 'dokan' )
+																);
+													$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_vendors_settings_fields_shipping', array(
+																																												"dps_shipping_enable" => array('label' => __('Enable Shipping', 'wc-frontend-manager') , 'name' => 'shipping[_dps_shipping_enable]', 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele', 'label_class' => 'wcfm_title checkbox_title wcfm_ele', 'value' => 'yes', 'dfvalue' => $dps_shipping_enable, 'hints' => __('Check this if you want to enable shipping for your store', 'dokan') ),
+																																												"dps_shipping_type_price" => array('label' => __('Default Shipping Price', 'dokan'), 'name' => 'shipping[_dps_shipping_type_price]', 'placeholder' => '0.00', 'type' => 'number', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $dps_shipping_type_price, 'hints' => __('This is the base price and will be the starting shipping price for each product', 'dokan'), 'attributes' => array( 'min' => '0.01', 'step' => '0.01' ) ),
+																																												"dps_additional_product" => array('label' => __('Per Product Additional Price', 'dokan'), 'name' => 'shipping[_dps_additional_product]', 'placeholder' => '0.00', 'type' => 'number', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $dps_additional_product, 'hints' => __('If a customer buys more than one type product from your store, first product of the every second type will be charged with this price', 'dokan'), 'attributes' => array( 'min' => '0.01', 'step' => '0.01' ) ),
+																																												"dps_additional_qty" => array('label' => __('Per Qty Additional Price', 'dokan'), 'name' => 'shipping[_dps_additional_qty]', 'placeholder' => '0.00', 'type' => 'number', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $dps_additional_qty, 'hints' => __('Every second product of same type will be charged with this price', 'dokan'), 'attributes' => array( 'min' => '0.01', 'step' => '0.01' ) ),
+																																												"dps_pt" => array('label' => __('Processing Time', 'dokan'), 'name' => 'shipping[_dps_pt]', 'type' => 'select', 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'options' => $processing_time, 'value' => $dps_pt, 'hints' => __('The time required before sending the product for delivery', 'dokan') ),
+																																												//"dps_ship_policy" => array('label' => __('Shipping Policy', 'wc-frontend-manager'), 'name' => 'shipping[_dps_ship_policy]', 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $dps_ship_policy, 'hints' => __( 'Write your terms, conditions and instructions about shipping', 'dokan' ) ),
+																																												//"dps_refund_policy" => array('label' => __('Refund Policy', 'wc-frontend-manager'), 'name' => 'shipping[_dps_refund_policy]', 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $dps_refund_policy, 'hints' => __( 'Write your terms, conditions and instructions about refund', 'dokan' ) ),
+																																												"dps_form_location" => array('label' => __('Ships from:', 'dokan'), 'name' => 'shipping[_dps_form_location]','type' => 'country', 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $dps_form_location, 'hints' => __( 'Location from where the products are shipped for delivery. Usually it is same as the store.', 'dokan' ) ),
+																													
+																																												) ) );
+													
+													$dps_shipping_rates = array();
+													$state_options = array();
+													if ( $dps_country_rates ) {
+														foreach ( $dps_country_rates as $country => $country_rate ) {
+															$dps_shipping_state_rates = array();
+															$state_options = array();
+															if ( !empty( $dps_state_rates ) && isset( $dps_state_rates[$country] ) ) {
+																foreach ( $dps_state_rates[$country] as $state => $state_rate ) {
+																	$state_options[$state] = $state;
+																	$dps_shipping_state_rates[] = array( 'dps_state_to' => $state, 'dps_state_to_price' => $state_rate, 'option_values' => $state_options );
+																}
+															}
+															$dps_shipping_rates[] = array( 'dps_country_to' => $country, 'dps_country_to_price' => $country_rate, 'dps_shipping_state_rates' => $dps_shipping_state_rates );
+														} 	
+													}
+													$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_vendors_settings_fields_shipping_rates', array( 
+																																																"dps_shipping_rates" => array('label' => __('Shipping Rates', 'wc-frontend-manager') , 'type' => 'multiinput', 'label_class' => 'wcfm_title', 'value' => $dps_shipping_rates, 'desc' => __( 'Add the countries you deliver your products to. You can specify states as well. If the shipping price is same except some countries/states, there is an option Everywhere Else, you can use that.', 'wc-frontend-manager' ), 'options' => array(
+																																																													"dps_country_to" => array('label' => __('Country', 'wc-frontend-manager'), 'type' => 'country', 'class' => 'wcfm-select dps_country_to_select', 'label_class' => 'wcfm_title', 'dokan_shipping_country' => true ),
+																																																													"dps_country_to_price" => array( 'label' => __('Cost', 'wc-frontend-manager') . '('.get_woocommerce_currency_symbol().')', 'type' => 'number', 'class' => 'wcfm-text', 'label_class' => 'wcfm_title', 'attributes' => array( 'min' => '0.01', 'step' => '0.01' ) ),
+																																																													"dps_shipping_state_rates" => array('label' => __('State Shipping Rates', 'wc-frontend-manager') , 'type' => 'multiinput', 'label_class' => 'wcfm_title dps_shipping_state_rates_label', 'options' => array(
+																																																																															"dps_state_to" => array( 'label' => __('State', 'wc-frontend-manager'), 'type' => 'select', 'class' => 'wcfm-select dps_state_to_select', 'label_class' => 'wcfm_title', 'options' => $state_options ),
+																																																																															"dps_state_to_price" => array( 'label' => __('Cost', 'wc-frontend-manager') . '('.get_woocommerce_currency_symbol().')', 'type' => 'number', 'class' => 'wcfm-text', 'label_class' => 'wcfm_title', 'attributes' => array( 'min' => '0.01', 'step' => '0.01' ) ),
+																																																													)	)		
+																																													) )
+																																											) ) );
+												}
+											if( version_compare( DOKAN_PRO_PLUGIN_VERSION, '2.8.0', '>' ) ) {
+												echo '</div>';
+											}
+										}
 									}
+								} else {
+									//if( $is_wcfmu_inactive_notice_show = apply_filters( 'is_wcfmu_inactive_notice_show', true ) ) {
+										wcfmu_feature_help_text_show( __( 'Dokan Pro Shipping Settings', 'wc-frontend-manager' ) );
+									//}
 								}
 								?>
 							</div>
@@ -418,9 +460,9 @@ $is_marketplace = wcfm_is_marketplace();
 																																							 ) ) );
 									
 								} else {
-									if( $is_wcfmu_inactive_notice_show = apply_filters( 'is_wcfmu_inactive_notice_show', true ) ) {
+									//if( $is_wcfmu_inactive_notice_show = apply_filters( 'is_wcfmu_inactive_notice_show', true ) ) {
 										wcfmu_feature_help_text_show( __( 'Dokan Pro SEO Settings', 'wc-frontend-manager' ) );
-									}
+									//}
 								}
 								?>
 							</div>
@@ -429,35 +471,36 @@ $is_marketplace = wcfm_is_marketplace();
 				<?php } ?>
 				<!-- end collapsible -->
 				
+				<?php do_action( 'end_wcfm_vendor_settings', $user_id ); ?>
+				
 				<!-- collapsible -->
-				<?php if( $wcfm_is_allow_vacation_settings = apply_filters( 'wcfm_is_allow_vacation_settings', true ) ) { ?>
-					<div class="page_collapsible" id="wcfm_settings_form_vacation_head">
-						<label class="fa fa-tripadvisor"></label>
-						<?php _e('Vacation Mode', 'wc-frontend-manager'); ?><span></span>
-					</div>
-					<div class="wcfm-container">
-						<div id="wcfm_settings_form_vacation_expander" class="wcfm-content">
-							<?php
-							if( WCFM_Dependencies::wcfmu_plugin_active_check() ) {
-								$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_vendors_settings_fields_vacation', array(
-																																																													"wcfm_vacation_mode" => array('label' => __('Enable Vacation Mode', 'wc-frontend-manager') , 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele', 'label_class' => 'wcfm_title checkbox_title wcfm_ele', 'value' => 'yes', 'dfvalue' => $wcfm_vacation_mode ),
-																																																													"wcfm_disable_vacation_purchase" => array('label' => __('Disable Purchase During Vacation', 'wc-frontend-manager') , 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => 'yes', 'dfvalue' => $wcfm_disable_vacation_purchase ),
-																																																													"wcfm_vacation_mode_msg" => array('label' => __('Vacation Message', 'wc-frontend-manager') , 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $wcfm_vacation_mode_msg )
-																																																												 ) ) );
-							} else {
-								if( $is_wcfmu_inactive_notice_show = apply_filters( 'is_wcfmu_inactive_notice_show', true ) ) {
-									wcfmu_feature_help_text_show( __( 'Vacation Mode', 'wc-frontend-manager' ) );
-								}
-							}
-							?>
+				<?php if( WCFM_Dependencies::wcfmu_plugin_active_check() ) { ?>
+					<?php if( apply_filters( 'wcfm_is_pref_vendor_vacation', true ) && apply_filters( 'wcfm_is_allow_vacation_settings', true ) ) { ?>
+						<div class="page_collapsible" id="wcfm_settings_form_vacation_head">
+							<label class="fa fa-tripadvisor"></label>
+							<?php _e('Vacation Mode', 'wc-frontend-manager'); ?><span></span>
 						</div>
-					</div>
-					<div class="wcfm_clearfix"></div>
-				<?php } ?>
+						<div class="wcfm-container">
+							<div id="wcfm_settings_form_vacation_expander" class="wcfm-content">
+								<?php
+									$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_vendors_settings_fields_vacation', array(
+																																																														"wcfm_vacation_mode" => array('label' => __('Enable Vacation Mode', 'wc-frontend-manager') , 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele', 'label_class' => 'wcfm_title checkbox_title wcfm_ele', 'value' => 'yes', 'dfvalue' => $wcfm_vacation_mode ),
+																																																														"wcfm_disable_vacation_purchase" => array('label' => __('Disable Purchase During Vacation', 'wc-frontend-manager') , 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => 'yes', 'dfvalue' => $wcfm_disable_vacation_purchase ),
+																																																														"wcfm_vacation_mode_type" => array('label' => __('Vacation Type', 'wc-frontend-manager') , 'type' => 'select', 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'options' => array( 'instant' => __( 'Instantly Close', 'wc-frontend-manager' ), 'date_wise' => __( 'Date wise close', 'wc-frontend-manager' ) ), 'value' => $wcfm_vacation_mode_type ),
+																																																														"wcfm_vacation_start_date" => array('label' => __('From', 'wc-frontend-manager'), 'type' => 'text', 'placeholder' => 'From... YYYY-MM-DD', 'class' => 'wcfm-text wcfm_ele date_wise_vacation_ele', 'label_class' => 'wcfm_title wcfm_ele date_wise_vacation_ele', 'value' => $wcfm_vacation_start_date),
+																																																														"wcfm_vacation_end_date" => array('label' => __('Upto', 'wc-frontend-manager'), 'type' => 'text', 'placeholder' => 'To... YYYY-MM-DD', 'class' => 'wcfm-text wcfm_ele date_wise_vacation_ele', 'label_class' => 'wcfm_title wcfm_ele date_wise_vacation_ele', 'value' => $wcfm_vacation_end_date),
+																																																														"wcfm_vacation_mode_msg" => array('label' => __('Vacation Message', 'wc-frontend-manager') , 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $wcfm_vacation_mode_msg )
+																																																													 ) ) );
+								?>
+							</div>
+						</div>
+						<div class="wcfm_clearfix"></div>
+					<?php } ?>
+				<?php
+				}
+				?>
 				<!-- end collapsible -->
 				
-				<?php do_action( 'end_wcfm_vendor_settings', $user_id ); ?>
-			
 			  <?php do_action( 'end_wcfm_dokan_settings', $user_id ); ?>
 			  
 			</div>

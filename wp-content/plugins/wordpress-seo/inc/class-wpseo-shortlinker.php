@@ -9,6 +9,7 @@
  * Helps with creating shortlinks in the plugin
  */
 class WPSEO_Shortlinker {
+
 	/**
 	 * Builds a URL to use in the plugin as shortlink.
 	 *
@@ -25,6 +26,7 @@ class WPSEO_Shortlinker {
 				'software'         => $this->get_software(),
 				'software_version' => WPSEO_VERSION,
 				'role'             => $this->get_filtered_user_role(),
+				'days_active'      => $this->get_days_active(),
 			),
 			$url
 		);
@@ -69,23 +71,11 @@ class WPSEO_Shortlinker {
 	 * @return string The software name + activation state.
 	 */
 	private function get_software() {
-		if ( ! class_exists( 'WPSEO_Product_Premium' ) ) {
-			return 'free';
+		if ( WPSEO_Utils::is_yoast_seo_premium() ) {
+			return 'premium';
 		}
 
-		static $software;
-
-		if ( $software === null ) {
-			$software          = 'premium-inactive';
-			$product_premium   = new WPSEO_Product_Premium();
-			$extension_manager = new WPSEO_Extension_Manager();
-
-			if ( $extension_manager->is_activated( $product_premium->get_slug() ) ) {
-				$software = 'premium-activated';
-			}
-		}
-
-		return $software;
+		return 'free';
 	}
 
 	/**
@@ -111,5 +101,17 @@ class WPSEO_Shortlinker {
 			$role = 'unknown';
 		}
 		return $role;
+	}
+
+	/**
+	 * Gets the number of days the plugin has been active.
+	 *
+	 * @return int The number of days the plugin is active.
+	 */
+	private function get_days_active() {
+		$date_activated = WPSEO_Options::get( 'first_activated_on' );
+		$datediff       = ( time() - $date_activated );
+
+		return (int) round( $datediff / DAY_IN_SECONDS );
 	}
 }

@@ -9,15 +9,22 @@ class YotuFields{
 
     }
 
-    public function render_field($data){
+    public function render_field($data ) {
 
-    	ob_start();
+		ob_start();
+		
+		$data = apply_filters('yotuwp_before_render_field', $data );
+
 		?>
-		<div class="yotu-field">
-			<label for="yotu-<?php echo esc_attr($data['group']) . '-'. esc_attr($data['name']);?>"><?php echo esc_attr($data['label']);?></label>
+		<div class="yotu-field yotu-field-type-<?php echo $data['type']; echo ( isset($data['pro']) )? ' yotu-field-pro' :''?>" id="yotuwp-field-<?php echo $data['name'];?>">
+			<?php if( isset( $data['label'] ) ):?>
+			<label for="yotu-<?php echo esc_attr($data['group']) . '-'. esc_attr($data['name']);?>"><?php echo esc_attr( $data['label'] );?></label>
+			<?php endif;?>
 			<div class="yotu-field-input">
+
 				<?php call_user_func_array(array($this, $data['type']), array($data));?>
-				<label for="yotu-<?php echo esc_html($data['group']) . '-'. esc_attr($data['name']);?>"><?php echo $data['description'];?></label>
+				<?php do_action('yotuwp_after_render_field', $data );?>
+				<label class="yotu-field-description" for="yotu-<?php echo esc_html($data['group']) . '-'. esc_attr($data['name']);?>"><?php echo $data['description'];?></label>
 			</div>
 			
 		</div>
@@ -27,20 +34,96 @@ class YotuFields{
 		ob_end_clean();
 
 		return $html;
-    }
-    public function color($data){
+	}
+
+	public function intro( $data ) {
+		?>
+<p>Hi there,</p>
+
+<p>It is Anthony Pham here…</p>
+
+<p>I am co-founder of YotuWP.</p>
+
+<p>I and Jindo have been working very hard. We’ve been working hard on a lot of new features for YotuWP.</p>
+
+<p>I hope you've had a good week too.</p>
+
+<p>Anyway I just wanted to say I hope you have a GREAT weekend and if you have a spare 3 minutes click on the link below and check out a new video tutorial on 'Create Full-width Gallery Videos' Once you've had a chance to have a look at it hit reply to this email and let me know what you think.</p>
+<p><a target="_blank" href="https://www.yotuwp.com/how-to-create-full-width-video-gallery/?utm_source=intro">https://www.yotuwp.com/how-to-create-full-width-video-gallery/</a>
+</p>
+
+<p>As I mentioned it only goes for 3 minutes and is a neat setting.</p>
+
+<p>&nbsp;</p>
+
+<p>Finally, I actually need your help. (Please keep reading...)</p>
+
+<p>I do really. You see I've been working very hard, I mean really hard lot's of late nights and early mornings for the past few months!! (my wife will testify to that!!)</p>
+
+<p>Why? you might ask! Well you see I've been working on something really special that is going to help you increase user interaction and makeup your website with videos.</p>
+
+<p>It's the most complete and extensive features and video tutorials on 'YotuWP Video Gallery' that you'll ever see
+(at this point I can't say much more...but rest assured it's going to be big!).</p>
+
+<p>But, before I finalize the product and put the finishing touches on it I want to make sure that I've covered EXACTLY what you want to have with a 'Video Gallery' - Touch up secrets!</p>
+
+<p>So, all I'm asking is for you to email me (just send me message via contact form at <a target="_blank" href="https://www.yotuwp.com/contact/?utm_source=intro">https://www.yotuwp.com/contact</a>) with your Requests as to what it will need to have for you to buy it.</p>
+
+<p>We're hoping to be able to launch on a special day for me... My son 2sd Birthday - July 10th...So if you can get back to me ASAP that would be much appreciated. You'll be glad you did when you see what's coming.</p>
+
+<p>Take care and have a GREAT weekend, and I look forward to hearing from you over the weekend.</p>
+
+<p>Cheers
+
+<p>Anthony<br/>
+Co-founder, YotuWp.com
+</p>
+		<?php
+	}
+
+    public function color( $data ) {
+		$preview_css = isset($data['preview_css'])? $data['preview_css'] : $data['css'];
     ?>
-        <input type="text" id="yotu-<?php echo esc_attr($data['group']) . '-'. esc_attr($data['name']);?>" class="yotu-param yotu-colorpicker" name="yotu-<?php echo esc_attr($data['group']);?>[<?php echo esc_attr($data['name']);?>]" data-css="<?php echo (isset( $data['css'] ) ? $data['css'] : '');?>" value="<?php echo (isset( $data['value'] ) ? $data['value'] : $data['default']);?>" />
+        <input type="text" id="yotu-<?php echo esc_attr( $data['group']) . '-'. esc_attr($data['name']);?>" class="yotu-param yotu-colorpicker" name="yotu-<?php echo esc_attr($data['group']);?>[<?php echo esc_attr($data['name']);?>]" data-css="<?php echo $preview_css;?>" value="<?php echo (isset( $data['value'] ) ? $data['value'] : $data['default']);?>" />
     <?php
 	}
 
-    public function text($data){
+    public function text( $data ) {
     ?>
-        <input type="text" id="yotu-<?php echo esc_attr($data['group']) . '-'. esc_attr($data['name']);?>" class="yotu-param" name="yotu-<?php echo esc_attr($data['group']);?>[<?php echo esc_attr($data['name']);?>]" value="<?php echo (isset( $data['value'] ) ? $data['value'] : $data['default']);?>" />
+        <input type="text" id="yotu-<?php echo esc_attr( $data['group']) . '-'. esc_attr($data['name']);?>" class="yotu-param" name="yotu-<?php echo esc_attr($data['group']);?>[<?php echo esc_attr($data['name']);?>]" value="<?php echo (isset( $data['value'] ) ? $data['value'] : $data['default']);?>" />
     <?php
 	}
 
-	public function select($data){
+	public function pro( $data ) {
+		echo '<i>i</i>';
+		echo '<span class="ytpro">Only in Premium version.</span>';
+		if ( isset( $data['img'] ) ) echo '<img src="'. esc_url( $data['img'] ).'" class="yotuwp-pro-img"/>';
+	}
+
+    public function license($data ) {
+		global $yotupro;
+    ?>
+        <input type="text" id="yotu-license-key" class="yotu-param" name="yotu-license-key" value="<?php echo ($yotupro->valid)? '***************' . substr($yotupro->updater->get('package_license'), -9):'';?>" />
+		<span class="yotu-license-verified <?php echo ($yotupro->valid == 1)? 'yotu-license-activated':'';?>">Verified</span>
+		<a href="#" id="yotuwp-license-action" data-func="<?php echo ( $yotupro->valid == 1? 'deactivate':'activate');?>"><?php echo ( $yotupro->valid == 1 ? 'Deactivate':'Activate');?></a>
+		<div class="yotu-license-status">
+		<?php
+		
+		if ( $yotupro->valid == 0 || $yotupro->valid == -1):
+			$diff_time = 604800 - (time() - get_option( 'yotuwp_pro_install_date', time() ));
+			if( $diff_time >= 0 ) {
+				echo sprintf( _('You are using YotuWP Pro trial license. You have %s days left to active license before all advance features leave to default settings.'), (int)($diff_time/86400));
+			} else {
+				echo sprintf( _('Your trial license for YotuWP is expired. Please purchase a license for keeping your customize styling. You can purchase a license <a target="_blank" href="%s">from here</a>'), 'https://www.yotuwp.com/pricing/');
+			}
+			
+		endif;
+		?>
+		</div>
+		<?php
+	}
+
+	public function select($data ) {
 		$value = (isset($data['value']) && !empty($data['value'])) ? $data['value'] : $data['default'];
 	?>
     <select id="yotu-<?php echo esc_attr($data['group']) . '-'. esc_attr($data['name']);?>" class="yotu-param" name="yotu-<?php echo esc_attr($data['group']);?>[<?php echo esc_attr($data['name']);?>]">
@@ -55,7 +138,27 @@ class YotuFields{
 	<?php
 	}
 
-	public function toggle($data){
+	public function checkbox( $data ) {
+		$value = (isset($data['value']) && !empty($data['value'])) ? $data['value'] : $data['default'];
+	?>
+    
+        <?php
+            foreach ($data['options'] as $key => $val) {
+				$key_id = $data['group'] . '-'. $data['name'] .'-'. $key;
+				$name = $data['name'] .'|'. $key;
+			?>
+			<div class="yotuwp-field-checkbox-item">
+				<input type="checkbox"<?php echo (isset( $value[ $key ] ) && $value[ $key ] == 'on' )? ' checked="checked"' :'' ;?> id="yotuwp-<?php echo esc_attr( $key_id );?>" class="yotu-param" name="yotu-<?php echo esc_attr($data['group']);?>[<?php echo esc_attr( $name );?>]">		
+				<label for="yotuwp-<?php echo esc_attr( $key_id );?>"><?php echo $val;?></label>
+			</div>
+            <?php
+            }
+        ?>
+    </select>
+	<?php
+	}
+
+	public function toggle($data ) {
         global $yotuwp;
 	?>
 	<label class="yotu-switch">
@@ -65,21 +168,37 @@ class YotuFields{
 	<?php
 	}
 
-	public function radios($data){
-        global $yotuwp;
-		$value = (isset($data['value']) && !empty($data['value'])) ? $data['value'] : $data['default'];
+	public function radios( $data ) {
+		global $yotuwp;
+		
+		$value = (isset($data['value']) && !empty($data['value']) && isset($data['options'][ $data['value'] ])) ? $data['value'] : $data['default'];
 
 	?>
 	<div class="yotu-radios-img yotu-radios-img-<?php echo isset($data['class'])? $data['class']:'full';?>">
 		<?php
+
+			if ( $value != '' && isset($data['options'][ $value ]) ) {
+				$temp = array( $value => $data['options'][ $value ] );
+				unset( $data['options'][$value] );
+				$data['options'] = $temp + $data['options'];
+			}
+
             foreach ($data['options'] as $key => $val) {
-            	$id = 'yotu-' . esc_attr($data['group']) . '-'. esc_attr($data['name']) . '-'. $key;
-            	$selected = ($value == $key)? ' yotu-field-radios-selected' : ''
+            	$id       = 'yotu-' . esc_attr($data['group']) . '-'. esc_attr($data['name']) . '-'. $key;
+            	$selected = ($value == $key)? ' yotu-field-radios-selected' : '';
             ?>
             <label class="yotu-field-radios<?php echo $selected;?>" for="<?php echo $id;?>">
-            	<input class="yotu-param" value="<?php echo $key;?>" type="radio"<?php echo ($value == $key) ? ' checked="checked"' : '';?> id="<?php echo $id;?>" name="yotu-<?php echo esc_attr($data['group']);?>[<?php echo esc_attr($data['name']);?>]" />
-            	<img src="<?php echo $yotuwp->assets_url . $val['img'];?>" alt="<?php echo $val['title'];?>" title="<?php echo $val['title'];?>"/>
-            	<br/><span><?php echo $val['title'];?></span>
+				<input class="yotu-param" value="<?php echo $key;?>" type="radio"<?php echo ($value == $key) ? ' checked="checked"' : '';?> id="<?php echo $id;?>" name="yotu-<?php echo esc_attr($data['group']);?>[<?php echo esc_attr($data['name']);?>]" />
+
+				<?php if( !empty($val['img']) ) :
+					$img_url = ( strpos($val['img'], 'http') === false )? $yotuwp->assets_url . $val['img'] : $val['img'];
+				?>
+					<img src="<?php echo $img_url;?>" alt="<?php echo $val['title'];?>" title="<?php echo $val['title'];?>"/><br/>
+				<?php else:?>
+					<div class="yotuwp-field-radios-text-option"><?php echo $val['title'] . __(' Settings', 'yotuwp-easy-youtube-embed');?></div>
+				<?php endif;?>
+
+            	<span><?php echo $val['title'];?></span>
             </label>
             <?php
             }
@@ -88,7 +207,7 @@ class YotuFields{
 	<?php
 	}
 
-	public function buttons($data){
+	public function buttons($data ) {
         global $yotuwp;
 		$value = (isset($data['value']) && !empty($data['value'])) ? $data['value'] : $data['default'];
 
@@ -100,9 +219,11 @@ class YotuFields{
             	$selected = ($value == $i)? ' yotu-field-radios-selected' : ''
             ?>
             <label class="yotu-field-radios<?php echo $selected;?>" for="<?php echo $id;?>">
-            	<input value="<?php echo $i;?>" type="radio"<?php echo ($value == $i) ? ' checked="checked"' : '';?> id="<?php echo $id;?>" name="yotu-<?php echo esc_attr($data['group']);?>[<?php echo esc_attr($data['name']);?>]" class="yotu-param" />
-            	<a href="#" class="yotu-button-prs yotu-button-prs-<?php echo $i;?>"><?php echo __('Prev', 'yotuwp-easy-youtube-embed');?></a>
-            	<a href="#" class="yotu-button-prs yotu-button-prs-<?php echo $i;?>"><?php echo __('Next', 'yotuwp-easy-youtube-embed');?></a>
+				<input value="<?php echo $i;?>" type="radio"<?php echo ($value == $i) ? ' checked="checked"' : '';?> id="<?php echo $id;?>" name="yotu-<?php echo esc_attr($data['group']);?>[<?php echo esc_attr($data['name']);?>]" class="yotu-param" />
+				<div>
+            		<a href="#" class="yotu-button-prs yotu-button-prs-<?php echo $i;?>"><?php echo __('Prev', 'yotuwp-easy-youtube-embed');?></a>
+					<a href="#" class="yotu-button-prs yotu-button-prs-<?php echo $i;?>"><?php echo __('Next', 'yotuwp-easy-youtube-embed');?></a>
+				</div>
                 <br/>
                 <span><?php echo sprintf( __('Style %s', 'yotuwp-easy-youtube-embed'), $i);?></span>
             </label>
@@ -111,5 +232,36 @@ class YotuFields{
         ?>
 	</div>
 	<?php
+	}
+
+	public function icons($data ) {
+        global $yotuwp;
+		$value = (isset($data['value']) && !empty($data['value'])) ? $data['value'] : $data['default'];
+	?>
+	<div class="yotu-radios-img-buttons yotu-radios-img yotu-radios-img-<?php echo isset($data['class'])? $data['class']:'full';?>">
+		<?php
+            foreach ( $data['options'] as $key => $val ) {
+            	$id = 'yotu-' . esc_attr($data['group']) . '-'. esc_attr($data['name']) . '-'. $key;
+            	$selected = ($value == $key)? ' yotu-field-radios-selected' : ''
+            ?>
+            <label class="yotu-field-radios<?php echo $selected;?>" for="<?php echo $id;?>">
+				<input value="<?php echo $key;?>" type="radio"<?php echo ($value == $key) ? ' checked="checked"' : '';?> id="<?php echo $id;?>" name="yotu-<?php echo esc_attr($data['group']);?>[<?php echo esc_attr($data['name']);?>]" class="yotu-param" />
+				<div>
+            		<i class="yotu-video-thumb-wrp yotuicon-<?php echo $key;?>"></i>
+				</div>
+                <br/>
+                <span><?php echo sprintf( __('%s', 'yotuwp-easy-youtube-embed'), $val);?></span>
+            </label>
+            <?php
+            }
+        ?>
+	</div>
+	<?php
+	}
+
+	public function button($data) {
+		?>
+		<a href="#" class="yotu-button yotu-button-s" data-func="<?php echo $data['func'];?>"><?php echo $data['btn-label'];?></a>
+		<?php
 	}
 }

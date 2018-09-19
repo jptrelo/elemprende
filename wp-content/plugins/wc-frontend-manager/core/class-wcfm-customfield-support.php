@@ -27,6 +27,7 @@ class WCFM_Custom_Field_Support {
    */
   function wcfm_customfield_settings() {
   	global $WCFM;
+  	$product_types = apply_filters( 'wcfm_product_types', array('simple' => __('Simple Product', 'wc-frontend-manager'), 'variable' => __('Variable Product', 'wc-frontend-manager'), 'grouped' => __('Grouped Product', 'wc-frontend-manager'), 'external' => __('External/Affiliate Product', 'wc-frontend-manager') ) );
   	$field_types = apply_filters( 'wcfm_product_custom_filed_types', array( 'text' => 'Text', 'number' => 'Number', 'textarea' => 'Textarea', 'editor' => 'Rich Editor', 'datepicker' => 'Date Picker', 'timepicker' => 'Time Picker', 'checkbox' => 'Check Box', 'select' => 'Select', 'upload' => 'File/Image' ) );
   	$visibility_options = apply_filters( 'wcfm_product_custom_visibility_options', array( '' => __( 'Do not show', 'wc-frontend-manager' ) ) );
 		$wcfm_product_custom_fields = get_option( 'wcfm_product_custom_fields', array() );
@@ -38,14 +39,18 @@ class WCFM_Custom_Field_Support {
 		</div>
 		<div class="wcfm-container">
 			<div id="wcfm_settings_form_custom_field_expander" class="wcfm-content">
+			  <h2><?php _e('Product Custom Field', 'wc-frontend-manager'); ?></h2>
+				<?php wcfm_video_tutorial( 'https://wclovers.com/knowledgebase/wcfm-custom-fields/' ); ?>
+				<div class="wcfm_clearfix"></div>
 				<?php
 					$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_settings_fields_custom_field', array(
-																																														"wcfm_product_custom_fields" => array('label' => __('Custom Fields', 'wc-frontend-manager') , 'type' => 'multiinput', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title', 'value' => $wcfm_product_custom_fields, 'desc' => __( 'You can integrate any Third Party plugin using Custom Fields, but you should use the same fields name as used by Third Party plugins.', 'wc-frontend-manager' ), 'options' => array(
+																																														"wcfm_product_custom_fields" => array('label' => __('Custom Fields', 'wc-frontend-manager') , 'type' => 'multiinput', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title', 'desc_class' => 'instructions', 'value' => $wcfm_product_custom_fields, 'desc' => __( 'You can integrate any Third Party plugin using Custom Fields, but you should use the same fields name as used by Third Party plugins.', 'wc-frontend-manager' ), 'options' => array(
 																																															    "enable"   => array('label' => __('Enable', 'wc-frontend-manager'), 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele', 'label_class' => 'wcfm_title checkbox-title', 'value' => 'yes'),
-																																																	"block_name"   => array('label' => __('Block Name', 'wc-frontend-manager'), 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title'),
-																																																	"visibility"   => array( 'label' => __('Visibility', 'wc-frontend-manager'), 'type' => 'select', 'options' => $visibility_options, 'class' => 'wcfm-select wcfm_ele visibility_options', 'label_class' => 'wcfm_title', 'hints' => __( 'Set where and how you want to visible this custom field block in single product page.', 'wc-frontend-manager' ) ),
-																																																	"is_group"     => array('label' => __('Fields as Group?', 'wc-frontend-manager'), 'type' => 'checkbox', 'value' => 'yes', 'class' => 'wcfm-checkbox wcfm_ele custom_field_is_group', 'label_class' => 'wcfm_title checkbox_title'),
-																																																	"group_name"   => array('type' => 'text', 'class' => 'wcfm-text wcfm_ele custom_field_is_group_name', 'placeholder' => __('Group name', 'wc-frontend-manager'), 'label_class' => 'wcfm_title'),
+																																																	"block_name"              => array('label' => __('Block Name', 'wc-frontend-manager'), 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title'),
+																																																	"exclude_product_types"   => array( 'label' => __('Exlude Product Types', 'wc-frontend-manager'), 'type' => 'select', 'options' => $product_types, 'attributes' => array( 'multiple' => 'multiple', 'style' => 'width: 60%;' ), 'class' => 'wcfm-select wcfm-select2 wcfm_ele exclude_product_types', 'label_class' => 'wcfm_title', 'hints' => __( 'Choose product types for which you want to disable this field block.', 'wc-frontend-manager' ) ),
+																																																	"visibility"              => array( 'label' => __('Visibility', 'wc-frontend-manager'), 'type' => 'select', 'options' => $visibility_options, 'class' => 'wcfm-select wcfm_ele visibility_options', 'label_class' => 'wcfm_title', 'hints' => __( 'Set where and how you want to visible this custom field block in single product page.', 'wc-frontend-manager' ) ),
+																																																	"is_group"                => array('label' => __('Fields as Group?', 'wc-frontend-manager'), 'type' => 'checkbox', 'value' => 'yes', 'class' => 'wcfm-checkbox wcfm_ele custom_field_is_group', 'label_class' => 'wcfm_title checkbox_title'),
+																																																	"group_name"              => array('type' => 'text', 'class' => 'wcfm-text wcfm_ele custom_field_is_group_name', 'placeholder' => __('Group name', 'wc-frontend-manager'), 'label_class' => 'wcfm_title'),
 																																																	"wcfm_product_custom_block_fields" => array('label' => __('Fields', 'wc-frontend-manager') . '<span class="fields_collapser fa fa-arrow-circle-o-down"></span>', 'type' => 'multiinput', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title', 'options' => array(
 																																																									"type" => array( 'label' => __('Field Type', 'wc-frontend-manager'), 'type' => 'select', 'options' => $field_types, 'class' => 'wcfm-select wcfm_ele field_type_options', 'label_class' => 'wcfm_title'),           
 																																																									"label" => array( 'label' => __('Label', 'wc-frontend-manager'), 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title'),
@@ -89,6 +94,6 @@ class WCFM_Custom_Field_Support {
   function wcfm_custom_field_products_manage_views( ) {
 		global $WCFM;
 	  
-	 require_once( $WCFM->library->views_path . 'products-manager/wcfm-view-customfield-products-manage.php' );
+	 $WCFM->template->get_template( 'products-manager/wcfm-view-customfield-products-manage.php' );
 	}
 }

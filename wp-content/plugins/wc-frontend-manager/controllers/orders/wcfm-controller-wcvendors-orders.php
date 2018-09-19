@@ -24,6 +24,11 @@ class WCFM_Orders_WCVendors_Controller {
 	public function processing() {
 		global $WCFM, $wpdb, $_POST, $start_date, $end_date;
 		
+		if( !class_exists( 'WCV_Orders' ) ) {
+			include_once( wcv_plugin_dir . 'classes/front/orders/class-orders.php');
+			new WCV_Orders;
+		}
+		
 		$length = 10;
 		$offset = 0;
 		
@@ -167,7 +172,7 @@ class WCFM_Orders_WCVendors_Controller {
 				$wcfm_orders_json_arr[$index][] =  apply_filters( 'wcfm_order_status_display', '<span class="order-status tips wcicon-status-' . sanitize_title( $the_order->get_status() ) . ' text_tip" data-tip="' . wc_get_order_status_name( $the_order->get_status() ) . '"></span>', $the_order );
 				
 				// Order
-				if( apply_filters( 'wcfm_allow_order_customer_details', true ) ) {
+				if( apply_filters( 'wcfm_allow_view_customer_name', true ) ) {
 					$user_info = array();
 					if ( $the_order->get_user_id() ) {
 						$user_info = get_userdata( $the_order->get_user_id() );
@@ -218,6 +223,24 @@ class WCFM_Orders_WCVendors_Controller {
 				$order_item_details .= '</div>';
 				$wcfm_orders_json_arr[$index][] = '<a href="#" class="show_order_items">' . sprintf( _n( '%d item', '%d items', $order->qty, 'wc-frontend-manager' ), $order->qty ) . '</a>' . $order_item_details;
 				
+				// Billing Address
+				$billing_address = '&ndash;';
+				if( apply_filters( 'wcfm_allow_customer_billing_details', true ) ) {
+					if ( $the_order->get_formatted_billing_address() ) {
+						$billing_address = wp_kses( $the_order->get_formatted_billing_address(), array( 'br' => array() ) );
+					}
+				}
+				$wcfm_orders_json_arr[$index][] = $billing_address; 
+				
+				// Shipping Address
+				$shipping_address = '&ndash;';
+				if( apply_filters( 'wcfm_allow_customer_shipping_details', true ) ) {
+					if ( $the_order->get_formatted_shipping_address() ) {
+						$shipping_address = wp_kses( $the_order->get_formatted_shipping_address(), array( 'br' => array() ) );
+					}
+				}
+				$wcfm_orders_json_arr[$index][] = $shipping_address; 
+				
 				// Gross Sales
 				$gross_sales = 0;
 				try {
@@ -227,20 +250,38 @@ class WCFM_Orders_WCVendors_Controller {
 							$_variation_id = wc_get_order_item_meta( $key, '_variation_id', true );
 							if ( ( $_product_id == $order->product_id ) || ( $_variation_id == $order->product_id ) ) {
 								$gross_sales += (float) sanitize_text_field( $line_item->get_total() );
+								if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+									if(WC_Vendors::$pv_options->get_option( 'give_tax' )) {
+										$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
+									}
+									if(WC_Vendors::$pv_options->get_option( 'give_shipping' )) {
+										$gross_sales += (float) $order->total_shipping;
+									}
+								} else {
+									if(get_option('wcvendors_vendor_give_taxes')) {
+										$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
+									}
+									if(get_option('wcvendors_vendor_give_shipping')) {
+										$gross_sales += (float) $order->total_shipping;
+									}
+								}
+							}
+						} elseif ( ( $line_item->get_variation_id() == $order->product_id ) || ( $line_item->get_product_id() == $order->product_id ) ) {
+							$gross_sales += (float) sanitize_text_field( $line_item->get_total() );
+							if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
 								if(WC_Vendors::$pv_options->get_option( 'give_tax' )) {
 									$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
 								}
 								if(WC_Vendors::$pv_options->get_option( 'give_shipping' )) {
 									$gross_sales += (float) $order->total_shipping;
 								}
-							}
-						} elseif ( ( $line_item->get_variation_id() == $order->product_id ) || ( $line_item->get_product_id() == $order->product_id ) ) {
-							$gross_sales += (float) sanitize_text_field( $line_item->get_total() );
-							if(WC_Vendors::$pv_options->get_option( 'give_tax' )) {
-								$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
-							}
-							if(WC_Vendors::$pv_options->get_option( 'give_shipping' )) {
-								$gross_sales += (float) $order->total_shipping;
+							} else {
+								if(get_option('wcvendors_vendor_give_taxes')) {
+									$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
+								}
+								if(get_option('wcvendors_vendor_give_shipping')) {
+									$gross_sales += (float) $order->total_shipping;
+								}
 							}
 						}
 					}
@@ -266,21 +307,29 @@ class WCFM_Orders_WCVendors_Controller {
 				}
 				
 				$total = $order->total_due; 
-				if ( WC_Vendors::$pv_options->get_option( 'give_shipping' ) ) {
-					$total += $order->total_shipping;
-				}
-				if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) {
-					$total += $order->tax;
+				if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+					if ( WC_Vendors::$pv_options->get_option( 'give_shipping' ) ) {
+						$total += $order->total_shipping;
+					}
+					if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) {
+						$total += $order->tax;
+					}
+				} else {
+					if ( get_option('wcvendors_vendor_give_shipping') ) {
+						$total += $order->total_shipping;
+					}
+					if ( get_option('wcvendors_vendor_give_taxes') ) {
+						$total += $order->tax;
+					}
 				}
 				$wcfm_orders_json_arr[$index][] =  apply_filters( 'wcfm_vendor_order_total', wc_price( $total, array( 'currency' => $order_currency ) ) . '<br />' . $status, $order->order_id, $order->product_id, $total, $status );
 				
+				// Additional Info
+				$wcfm_orders_json_arr[$index][] = apply_filters( 'wcfm_orders_additonal_data', '&ndash;', $the_order->get_id() );
 				
 				// Date
 				$order_date = ( version_compare( WC_VERSION, '2.7', '<' ) ) ? $the_order->order_date : $the_order->get_date_created();
 				$wcfm_orders_json_arr[$index][] = date_i18n( wc_date_format(), strtotime( $order_date ) );
-				
-				// Additional Info
-				$wcfm_orders_json_arr[$index][] = apply_filters( 'wcfm_orders_additonal_data', '&ndash;', $the_order->get_id() );
 				
 				// Action
 				$actions = '';
@@ -298,20 +347,7 @@ class WCFM_Orders_WCVendors_Controller {
 					}
 				}
 				  
-				if( apply_filters( 'wcfm_is_allow_pdf_invoice', true ) || apply_filters( 'wcfm_is_allow_pdf_packing_slip', true ) ) {
-					if( WCFM_Dependencies::wcfmu_plugin_active_check() && WCFM_Dependencies::wcfm_wc_pdf_invoices_packing_slips_plugin_active_check() ) {
-						if( apply_filters( 'wcfm_is_allow_pdf_invoice', true ) ) {
-							$actions .= '<a class="wcfm_pdf_invoice wcfm-action-icon" href="#" data-orderid="' . $the_order->get_id() . '"><span class="fa fa-file-pdf-o text_tip" data-tip="' . esc_attr__( 'PDF Invoice', 'wc-frontend-manager' ) . '"></span></a>';
-						}
-						if( apply_filters( 'wcfm_is_allow_pdf_packing_slip', true ) ) {
-							$actions .= '<a class="wcfm_pdf_packing_slip wcfm-action-icon" href="#" data-orderid="' . $the_order->get_id() . '"><span class="fa fa-file-powerpoint-o text_tip" data-tip="' . esc_attr__( 'PDF Packing Slip', 'wc-frontend-manager' ) . '"></span></a>';
-						}
-					} else {
-						if( $is_wcfmu_inactive_notice_show = apply_filters( 'is_wcfmu_inactive_notice_show', true ) ) {
-							$actions .= '<a class="wcfm_pdf_invoice_vendor_dummy wcfm-action-icon" href="#" data-orderid="' . $the_order->get_id() . '"><span class="fa fa-file-pdf-o text_tip" data-tip="' . esc_attr__( 'PDF Invoice', 'wc-frontend-manager' ) . '"></span></a>';
-						}
-					}
-				}
+				$actions = apply_filters ( 'wcfm_orders_module_actions', $actions, $the_order->get_id(), $the_order );
 				
 				$wcfm_orders_json_arr[$index][] =  apply_filters ( 'wcvendors_orders_actions', $actions, $user_id, $the_order, $item_product_id );
 				

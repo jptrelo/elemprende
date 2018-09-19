@@ -732,6 +732,7 @@ class Solvease_Roles_Capabilities_Functionality
             require_once(ABSPATH . 'wp-admin/includes/file.php');
         }
 
+
         // upload file
         $overrides = array('test_form' => false);
         $file = wp_handle_upload($_FILES['caps_file'], $overrides);

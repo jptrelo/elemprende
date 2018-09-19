@@ -2,8 +2,8 @@
 Contributors: premmerce
 Tags: woocommerce seo, yoast woocommerce, yoast, opengraph, schema.org
 Requires at least: 4.8
-Tested up to: 4.9.1
-Stable tag: 1.1.4
+Tested up to: 4.9.8
+Stable tag: 1.1.5
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -56,6 +56,20 @@ We have tested how the plugin works with the basic WooCommerce kit and the stand
 1. The plugin settings
 2. Product page with additional Open Graph data
 3. Product page with additional Schema.org data
+
+== Frequently Asked Questions ==
+
+= Documentation =
+
+Full documentation is available here: [WooCommerce SEO Addon](https://premmerce.com/woocommerce-seo-addon-yoast/)
+
+= Installation Instructions =
+Go to Plugins -> Add New section from your admin account and search for WooCommerce SEO Addon.
+
+You can also install this plugin manually:
+* Download the plugin’s ZIP archive and unzip it.
+* Copy the unzipped premmerce-woocommerce-product-filter folder to the /wp-content/plugins/ directory.
+* Activate the plugin through the ‘Plugins’ menu in WordPress
 
 == Changelog ==
 
@@ -115,14 +129,11 @@ Release Date: Jan 24, 2018
 * Updated freemius sdk
 * Fixed the dependency check on multisite
 
-== Translators ==
+= 1.1.5 =
 
-= Available Languages =
+Release Date: Aug 22, 2018
 
-* English (Default)
-* Russian
-* Ukrainian
-
-== Documentation ==
-
-Full documentation is available here: [WooCommerce seo addon](https://premmerce.com/woocommerce-seo-addon-yoast/)
+* Fixed translations
+* Fixed security issues
+* Updated freemius SDk
+* Updated premmerce SDk

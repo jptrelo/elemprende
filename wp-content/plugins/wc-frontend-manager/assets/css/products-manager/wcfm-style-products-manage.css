@@ -20,7 +20,7 @@
 .product-status-pending { background-color: #FF7400; }
 .product-status-draft { background-color: #4096EE; }
 
-#wcfm-main-contentainer div.wcfm-content { 
+#wcfm-main-contentainer #wcfm_products_manage_form div.wcfm-content { 
 	margin: 0 auto;
   padding: 20px;
   padding-right: 0px;
@@ -62,7 +62,7 @@
 #wcfm-main-contentainer .wcfm_add_attribute, #wcfm-main-contentainer .wcfm_add_attribute_term, #wcfm-main-contentainer .wcfm_add_category_bt {
 	float: none;
 	margin-top: 0px !important;
-	padding: 8px 10px !important;
+	padding: 8px 8px !important;
 	vertical-align: top;
 }
 
@@ -74,6 +74,10 @@
 
 .required {
   color: red; 
+}
+
+.wcfm-tabWrap .wcfm-container {
+	display: none;
 }
 
 input[type='checkbox'].wcfm-checkbox, .wcfm-tabWrap input[type="checkbox"] {
@@ -185,7 +189,7 @@ input[type='checkbox'].wcfm-checkbox, .wcfm-tabWrap input[type="checkbox"] {
 	font-size: 15px;
 }
 
-#wcfm-main-contentainer #gallery_img input.remove_button {
+#wcfm-main-contentainer #gallery_img input.remove_button_bak {
 	display: none !important;
 }
 
@@ -230,7 +234,7 @@ ul.product_taxonomy_checklist li {
 }
 
 .sub_checklist_toggler {
-	color: #00897b;
+	color: #00798b;
 	margin-right: 5px;
 	cursor: pointer;
 	visibility: hidden;
@@ -267,7 +271,7 @@ ul.product_taxonomy_checklist li {
   margin-left: 5px !important;
 }
 
-.product_tags_ele, .wcfm_fetch_tag_cloud, .wcfm_add_new_category, .wcfm_new_tax_ele, .wcfm_new_parent_taxt_ele, .wcfm_add_new_taxonomy_form {
+.product_tags_ele, .wcfm_fetch_tag_cloud, .wcfm_add_new_category, .wcfm_new_tax_ele, .wcfm_new_parent_taxt_ele, .wcfm_add_new_taxonomy_form, .catalog_visibility_ele {
 	max-width: 214px;
 	margin: auto !important;
   display: block !important;
@@ -287,7 +291,7 @@ ul.product_taxonomy_checklist li {
 #wcfm-main-contentainer .wcfm_add_category_bt { margin-right: 0px !important; }
 .wcfm_add_new_taxonomy_form_hide { display: none !important; }
 
-.wcfm_add_new_category:hover, .wcfm_fetch_tag_cloud:hover, .wcfm_fetch_tag_cloud a:hover { color: #00897b;}
+.wcfm_add_new_category:hover, .wcfm_fetch_tag_cloud:hover, .wcfm_fetch_tag_cloud a:hover { color: #00798b;}
 
 .wcfm_fetch_tag_cloud ul {
   margin: 0;
@@ -305,7 +309,7 @@ ul.product_taxonomy_checklist li {
 	text-align: right;
 	cursor: pointer;
 	text-decoration: underline;
-	color: #00897b;
+	color: #00798b;
 	padding: 0px !important;
 }
 
@@ -323,7 +327,7 @@ ul.product_taxonomy_checklist li {
 	font-size: 20px;
 	margin-left: 10px;
 	cursor: pointer;
-	color: #00897b;
+	color: #00798b;
 }
 
 .variations_collapser, .attributes_collapser {
@@ -375,7 +379,7 @@ ul.product_taxonomy_checklist li {
 }
 
 #wcfm_auto_suggest_product_title li a:hover {
-	background-color: #00897b;
+	background-color: #00798b;
 	color: #ffffff;
 	font-weight: 500;
 }
@@ -447,7 +451,7 @@ ul.product_taxonomy_checklist li {
 
 @media screen and (min-width:641px) {
 	
-	.page_collapsible {
+	.wcfm-tabWrap .page_collapsible {
 		width: 20%;
 		display: block; 
 		overflow: hidden;
@@ -464,7 +468,7 @@ ul.product_taxonomy_checklist li {
 			background: #fff;
 			overflow:hidden;
 	}
-	.page_collapsible + .wcfm-container {
+	.wcfm-tabWrap .page_collapsible + .wcfm-container {
 			width: 75%;
 			position: absolute;
 			right: 0;

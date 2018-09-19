@@ -57,49 +57,49 @@ class WCFM_Query {
 		
 		// Query vars to add to WP.
 		$this->query_vars = apply_filters( 'wcfm_query_vars', array( 
-			'wcfm-products'                 => ! empty( $wcfm_modified_endpoints['wcfm-products'] ) ? $wcfm_modified_endpoints['wcfm-products'] : 'wcfm-products',
-			'wcfm-products-manage'          => ! empty( $wcfm_modified_endpoints['wcfm-products-manage'] ) ? $wcfm_modified_endpoints['wcfm-products-manage'] : 'wcfm-products-manage',
-			'wcfm-stock-manage'             => ! empty( $wcfm_modified_endpoints['wcfm-stock-manage'] ) ? $wcfm_modified_endpoints['wcfm-stock-manage'] : 'wcfm-stock-manage',
+			'wcfm-products'                 => ! empty( $wcfm_modified_endpoints['wcfm-products'] ) ? $wcfm_modified_endpoints['wcfm-products'] : 'products',
+			'wcfm-products-manage'          => ! empty( $wcfm_modified_endpoints['wcfm-products-manage'] ) ? $wcfm_modified_endpoints['wcfm-products-manage'] : 'products-manage',
+			'wcfm-stock-manage'             => ! empty( $wcfm_modified_endpoints['wcfm-stock-manage'] ) ? $wcfm_modified_endpoints['wcfm-stock-manage'] : 'stock-manage',
 			
 			// Import / Export
-			'wcfm-products-import'          => ! empty( $wcfm_modified_endpoints['wcfm-products-import'] ) ? $wcfm_modified_endpoints['wcfm-products-import'] : 'wcfm-products-import',
-			'wcfm-products-export'          => ! empty( $wcfm_modified_endpoints['wcfm-products-export'] ) ? $wcfm_modified_endpoints['wcfm-products-export'] : 'wcfm-products-export',
+			'wcfm-products-import'          => ! empty( $wcfm_modified_endpoints['wcfm-products-import'] ) ? $wcfm_modified_endpoints['wcfm-products-import'] : 'products-import',
+			'wcfm-products-export'          => ! empty( $wcfm_modified_endpoints['wcfm-products-export'] ) ? $wcfm_modified_endpoints['wcfm-products-export'] : 'products-export',
 			
 			// Coupon
-			'wcfm-coupons'                  => ! empty( $wcfm_modified_endpoints['wcfm-coupons'] ) ? $wcfm_modified_endpoints['wcfm-coupons'] : 'wcfm-coupons',
-			'wcfm-coupons-manage'           => ! empty( $wcfm_modified_endpoints['wcfm-coupons-manage'] ) ? $wcfm_modified_endpoints['wcfm-coupons-manage'] : 'wcfm-coupons-manage',
+			'wcfm-coupons'                  => ! empty( $wcfm_modified_endpoints['wcfm-coupons'] ) ? $wcfm_modified_endpoints['wcfm-coupons'] : 'coupons',
+			'wcfm-coupons-manage'           => ! empty( $wcfm_modified_endpoints['wcfm-coupons-manage'] ) ? $wcfm_modified_endpoints['wcfm-coupons-manage'] : 'coupons-manage',
 			
 			// Order
-			'wcfm-orders'                   => ! empty( $wcfm_modified_endpoints['wcfm-orders'] ) ? $wcfm_modified_endpoints['wcfm-orders'] : 'wcfm-orders',
-			'wcfm-orders-details'           => ! empty( $wcfm_modified_endpoints['wcfm-orders-details'] ) ? $wcfm_modified_endpoints['wcfm-orders-details'] : 'wcfm-orders-details',
+			'wcfm-orders'                   => ! empty( $wcfm_modified_endpoints['wcfm-orders'] ) ? $wcfm_modified_endpoints['wcfm-orders'] : 'orders',
+			'wcfm-orders-details'           => ! empty( $wcfm_modified_endpoints['wcfm-orders-details'] ) ? $wcfm_modified_endpoints['wcfm-orders-details'] : 'orders-details',
 			
 			// Reports
-			'wcfm-reports-sales-by-date'    => ! empty( $wcfm_modified_endpoints['wcfm-reports-sales-by-date'] ) ? $wcfm_modified_endpoints['wcfm-reports-sales-by-date'] : 'wcfm-reports-sales-by-date',
-			'wcfm-reports-out-of-stock'     => ! empty( $wcfm_modified_endpoints['wcfm-reports-out-of-stock'] ) ? $wcfm_modified_endpoints['wcfm-reports-out-of-stock'] : 'wcfm-reports-out-of-stock',
+			'wcfm-reports-sales-by-date'    => ! empty( $wcfm_modified_endpoints['wcfm-reports-sales-by-date'] ) ? $wcfm_modified_endpoints['wcfm-reports-sales-by-date'] : 'reports-sales-by-date',
+			'wcfm-reports-out-of-stock'     => ! empty( $wcfm_modified_endpoints['wcfm-reports-out-of-stock'] ) ? $wcfm_modified_endpoints['wcfm-reports-out-of-stock'] : 'reports-out-of-stock',
 			
 			// WCFMu Reports
-			'wcfm-reports-sales-by-product' => ! empty( $wcfm_modified_endpoints['wcfm-reports-sales-by-product'] ) ? $wcfm_modified_endpoints['wcfm-reports-sales-by-product'] : 'wcfm-reports-sales-by-product',
-			'wcfm-reports-coupons-by-date'  => ! empty( $wcfm_modified_endpoints['wcfm-reports-coupons-by-date'] ) ? $wcfm_modified_endpoints['wcfm-reports-coupons-by-date'] : 'wcfm-reports-coupons-by-date',
-			'wcfm-reports-low-in-stock'     => ! empty( $wcfm_modified_endpoints['wcfm-reports-low-in-stock'] ) ? $wcfm_modified_endpoints['wcfm-reports-low-in-stock'] : 'wcfm-reports-low-in-stock',
+			'wcfm-reports-sales-by-product' => ! empty( $wcfm_modified_endpoints['wcfm-reports-sales-by-product'] ) ? $wcfm_modified_endpoints['wcfm-reports-sales-by-product'] : 'reports-sales-by-product',
+			'wcfm-reports-coupons-by-date'  => ! empty( $wcfm_modified_endpoints['wcfm-reports-coupons-by-date'] ) ? $wcfm_modified_endpoints['wcfm-reports-coupons-by-date'] : 'reports-coupons-by-date',
+			'wcfm-reports-low-in-stock'     => ! empty( $wcfm_modified_endpoints['wcfm-reports-low-in-stock'] ) ? $wcfm_modified_endpoints['wcfm-reports-low-in-stock'] : 'reports-low-in-stock',
 			
 			// Profile
-			'wcfm-profile'                  => ! empty( $wcfm_modified_endpoints['wcfm-profile'] ) ? $wcfm_modified_endpoints['wcfm-profile'] : 'wcfm-profile',
+			'wcfm-profile'                  => ! empty( $wcfm_modified_endpoints['wcfm-profile'] ) ? $wcfm_modified_endpoints['wcfm-profile'] : 'profile',
 			
 			// Settings
-			'wcfm-settings'                 => ! empty( $wcfm_modified_endpoints['wcfm-settings'] ) ? $wcfm_modified_endpoints['wcfm-settings'] : 'wcfm-settings',
-			'wcfm-capability'               => ! empty( $wcfm_modified_endpoints['wcfm-capability'] ) ? $wcfm_modified_endpoints['wcfm-capability'] : 'wcfm-capability',
+			'wcfm-settings'                 => ! empty( $wcfm_modified_endpoints['wcfm-settings'] ) ? $wcfm_modified_endpoints['wcfm-settings'] : 'settings',
+			'wcfm-capability'               => ! empty( $wcfm_modified_endpoints['wcfm-capability'] ) ? $wcfm_modified_endpoints['wcfm-capability'] : 'capability',
 			
 			// Knowledgebase
-			'wcfm-knowledgebase'            => ! empty( $wcfm_modified_endpoints['wcfm-knowledgebase'] ) ? $wcfm_modified_endpoints['wcfm-knowledgebase'] : 'wcfm-knowledgebase',
-			'wcfm-knowledgebase-manage'     => ! empty( $wcfm_modified_endpoints['wcfm-knowledgebase-manage'] ) ? $wcfm_modified_endpoints['wcfm-knowledgebase-manage'] : 'wcfm-knowledgebase-manage',
+			'wcfm-knowledgebase'            => ! empty( $wcfm_modified_endpoints['wcfm-knowledgebase'] ) ? $wcfm_modified_endpoints['wcfm-knowledgebase'] : 'knowledgebase',
+			'wcfm-knowledgebase-manage'     => ! empty( $wcfm_modified_endpoints['wcfm-knowledgebase-manage'] ) ? $wcfm_modified_endpoints['wcfm-knowledgebase-manage'] : 'knowledgebase-manage',
 			
 			// Notice
-			'wcfm-notices'                 => ! empty( $wcfm_modified_endpoints['wcfm-notices'] ) ? $wcfm_modified_endpoints['wcfm-notices'] : 'wcfm-notices',
-			'wcfm-notice-manage'           => ! empty( $wcfm_modified_endpoints['wcfm-notice-manage'] ) ? $wcfm_modified_endpoints['wcfm-notice-manage'] : 'wcfm-notice-manage',
-			'wcfm-notice-view'             => ! empty( $wcfm_modified_endpoints['wcfm-notice-view'] ) ? $wcfm_modified_endpoints['wcfm-notice-view'] : 'wcfm-notice-view',
+			'wcfm-notices'                 => ! empty( $wcfm_modified_endpoints['wcfm-notices'] ) ? $wcfm_modified_endpoints['wcfm-notices'] : 'notices',
+			'wcfm-notice-manage'           => ! empty( $wcfm_modified_endpoints['wcfm-notice-manage'] ) ? $wcfm_modified_endpoints['wcfm-notice-manage'] : 'notice-manage',
+			'wcfm-notice-view'             => ! empty( $wcfm_modified_endpoints['wcfm-notice-view'] ) ? $wcfm_modified_endpoints['wcfm-notice-view'] : 'notice-view',
 			
 			// Messages
-			'wcfm-messages'                => ! empty( $wcfm_modified_endpoints['wcfm-messages'] ) ? $wcfm_modified_endpoints['wcfm-messages'] : 'wcfm-messages',
+			'wcfm-messages'                => ! empty( $wcfm_modified_endpoints['wcfm-messages'] ) ? $wcfm_modified_endpoints['wcfm-messages'] : 'messages',
 		) );
 	}
 

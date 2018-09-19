@@ -10,8 +10,8 @@ class Premium_Video_Box_Widget extends Widget_Base
     }
 
     public function get_title() {
-        return esc_html__('Premium Video Box', 'premium-addons-for-elementor');
-    }
+		return \PremiumAddons\Helper_Functions::get_prefix() . ' Video Box';
+	}
 
     public function get_icon() {
         return 'pa-video-box';
@@ -19,6 +19,10 @@ class Premium_Video_Box_Widget extends Widget_Base
 
     public function get_categories() {
         return [ 'premium-elements' ];
+    }
+    
+    public function get_script_depends() {
+        return [ 'premium-addons-js' ];
     }
 
     // Adding the controls fields for the premium video box
@@ -94,6 +98,19 @@ class Premium_Video_Box_Widget extends Widget_Base
                         ]
                     ]
                 );
+        
+        /*Related Videos*/
+        $this->add_control('premium_video_box_related_video',
+            [
+                'label'         => esc_html__('Show Related Videos', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SWITCHER,
+                'description'   => esc_html__('Enable/Disable related videos after the video'),
+                'default'       => 'yes',
+                'condition'     => [
+                    'premium_video_box_video_type' => 'youtube',
+                ]
+            ]
+        );
         
         /*End Image Settings Section*/
         $this->end_controls_section();
@@ -175,6 +192,7 @@ class Premium_Video_Box_Widget extends Widget_Base
                     'condition'     => [
                         'premium_video_box_video_text_switcher' => 'yes'
                     ],
+                    'dynamic'       => [ 'active' => true ],
                     'label_block'   => true,
                 ]
                 );
@@ -493,7 +511,7 @@ class Premium_Video_Box_Widget extends Widget_Base
     protected function render($instance = [])
     {
         // get our input from the widget settings.
-        $settings = $this->get_settings();
+        $settings = $this->get_settings_for_display();
         
         $this->add_inline_editing_attributes('premium_video_box_description_text');
         
@@ -504,6 +522,8 @@ class Premium_Video_Box_Widget extends Widget_Base
         $video_id = $settings['premium_video_box_video_id'];
         
         $video_embed = $settings['premium_video_box_video_embed'];
+        
+        $rel_videos = ( 'yes' == $settings['premium_video_box_related_video'] && isset( $settings['premium_video_box_related_video'] ) ) ? '' : '?rel=0';
 ?>
 
 <div class="premium-video-box-container" id="premium-video-box-container-<?php echo esc_attr( $this->get_id() ); ?>">
@@ -523,10 +543,10 @@ class Premium_Video_Box_Widget extends Widget_Base
     <div class="premium-video-box-video-container">
         <?php if ( $video_type  === 'youtube'){ ?>
         <?php if ( $video_url_type === 'id' && !empty( $video_id ) ) : ?>
-            <iframe src="https://www.youtube.com/embed/<?php echo $video_id; ?>" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen>
+            <iframe src="https://www.youtube.com/embed/<?php echo $video_id . $rel_videos; ?>" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen>
             </iframe>
         <?php elseif ( $video_url_type === 'embed' && !empty( $video_embed ) ) : ?>
-            <iframe src="<?php echo $video_embed; ?>" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen>
+            <iframe src="<?php echo $video_embed . $rel_videos; ?>" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen>
             </iframe>
         <?php endif; ?>
         <?php } elseif ( $video_type  === 'vimeo'){ ?>
@@ -541,20 +561,6 @@ class Premium_Video_Box_Widget extends Widget_Base
         
     </div>
 </div>
-<script>
-    jQuery(function( $ ){
-       $( "#premium-video-box-container-<?php echo esc_attr( $this->get_id() ); ?>" ).on( "click", function(){
-        $( this ).children( ".premium-video-box-video-container" ).css(
-        {
-            'opacity': '1',
-            'visibility': 'visible'
-        } );
-        setTimeout(function(){
-            $("#premium-video-box-container-<?php echo esc_attr( $this->get_id() ); ?> iframe" ).attr('src', $("#premium-video-box-container-<?php echo esc_attr( $this->get_id() ); ?> iframe").attr('src') + '?autoplay=1'); ;
-        },600);
-        }); 
-    });
-</script>
 
     <?php
     }

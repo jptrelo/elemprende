@@ -21,6 +21,9 @@ class WCFM_Preferences {
 		$this->wcfm_module_options = isset( $this->wcfm_options['module_options'] ) ? $this->wcfm_options['module_options'] : array();
 		$this->wcfm_module_options = apply_filters( 'wcfm_module_options', $this->wcfm_module_options );
 		
+		add_filter( 'wcfm_is_pref_pat_for_product', array( &$this, 'wcfmpref_pay_for_product' ), 750 );
+		add_filter( 'wcfm_is_pref_product_popup', array( &$this, 'wcfmpref_product_popup' ), 750 );
+		add_filter( 'wcfm_is_pref_menu_manager', array( &$this, 'wcfmpref_menu_manager' ), 750 );
 		add_filter( 'wcfm_is_pref_hover_submenu', array( &$this, 'wcfmpref_hover_submenu' ), 750 );
 		add_filter( 'wcfm_is_pref_dashboard_logo', array( &$this, 'wcfmpref_dashboard_logo' ), 750 );
 		add_filter( 'wcfm_is_pref_welcome_box', array( &$this, 'wcfmpref_welcome_box' ), 750 );
@@ -29,10 +32,13 @@ class WCFM_Preferences {
 		add_filter( 'wcfm_is_pref_direct_message', array( &$this, 'wcfmpref_direct_message' ), 750 );
 		add_filter( 'wcfm_is_pref_enquiry', array( &$this, 'wcfmpref_enquiry' ), 750 );
 		add_filter( 'wcfm_is_pref_enquiry_tab', array( &$this, 'wcfmpref_enquiry_tab' ), 750 );
+		add_filter( 'wcfm_is_pref_enquiry_button', array( &$this, 'wcfmpref_enquiry_button' ), 750 );
 		add_filter( 'wcfm_is_pref_catalog', array( &$this, 'wcfmpref_catalog' ), 750 );
 		add_filter( 'wcfm_is_pref_knowledgebase', array( &$this, 'wcfmpref_knowledgebase' ), 750 );
 		add_filter( 'wcfm_is_pref_profile', array( &$this, 'wcfmpref_profile' ), 750 );
+		add_filter( 'wcfm_is_pref_policies', array( &$this, 'wcfmpref_policies' ), 750 );
 		add_filter( 'wcfm_is_pref_withdrawal', array( &$this, 'wcfmpref_withdrawal' ), 750 );
+		add_filter( 'wcfm_is_pref_refund', array( &$this, 'wcfmpref_refund' ), 750 );
 		
 		add_filter( 'wcfm_is_pref_article', array( &$this, 'wcfmpref_article' ), 750 );
 		
@@ -44,7 +50,31 @@ class WCFM_Preferences {
 		
 		add_filter( 'wcfm_is_allow_geo_lookup', array( &$this, 'wcfmpref_geo_lookup' ), 750 );
 		
+		// WCFM Marketplace Product Multivendor
+		add_filter( 'wcfm_is_pref_product_multivendor', array( &$this, 'wcfmpref_product_multivendor' ), 750 );
+		
 	}
+	
+	// Pay for Product
+  function wcfmpref_pay_for_product( $is_pref ) {
+  	$pay_for_product = ( isset( $this->wcfm_module_options['pay_for_product'] ) ) ? $this->wcfm_module_options['pay_for_product'] : 'no';
+  	if( $pay_for_product == 'yes' ) $is_pref = false;
+  	return $is_pref;
+  }
+	
+	// Product popup
+  function wcfmpref_product_popup( $is_pref ) {
+  	$product_popup = ( isset( $this->wcfm_module_options['product_popup'] ) ) ? $this->wcfm_module_options['product_popup'] : 'no';
+  	if( $product_popup == 'yes' ) $is_pref = false;
+  	return $is_pref;
+  }
+  
+  // Menu manager
+  function wcfmpref_menu_manager( $is_pref ) {
+  	$menu_manager = ( isset( $this->wcfm_module_options['menu_manager'] ) ) ? $this->wcfm_module_options['menu_manager'] : 'no';
+  	if( $menu_manager == 'yes' ) $is_pref = false;
+  	return $is_pref;
+  }
 	
 	// Hover Sub menu
   function wcfmpref_hover_submenu( $is_pref ) {
@@ -95,6 +125,13 @@ class WCFM_Preferences {
   	return $is_pref;
   }
   
+  // Enquiry Button
+  function wcfmpref_enquiry_button( $is_pref ) {
+  	$is_enquiry_button_disabled = ( isset( $this->wcfm_options['enquiry_button_disabled'] ) ) ? $this->wcfm_options['enquiry_button_disabled'] : 'no';
+  	if( $is_enquiry_button_disabled == 'yes' ) $is_pref = false;
+  	return $is_pref;
+  }
+  
   // Catalog
   function wcfmpref_catalog( $is_pref ) {
   	$catalog = ( isset( $this->wcfm_module_options['catalog'] ) ) ? $this->wcfm_module_options['catalog'] : 'no';
@@ -116,10 +153,24 @@ class WCFM_Preferences {
   	return $is_pref;
   }
   
+  // Plocies
+  function wcfmpref_policies( $is_pref ) {
+  	$policies = ( isset( $this->wcfm_module_options['policies'] ) ) ? $this->wcfm_module_options['policies'] : 'no';
+  	if( $policies == 'yes' ) $is_pref = false;
+  	return $is_pref;
+  }
+  
   // Withdrawal
   function wcfmpref_withdrawal( $is_pref ) {
   	$withdrawal = ( isset( $this->wcfm_module_options['withdrawal'] ) ) ? $this->wcfm_module_options['withdrawal'] : 'no';
   	if( $withdrawal == 'yes' ) $is_pref = false;
+  	return $is_pref;
+  }
+  
+  // Refund
+  function wcfmpref_refund( $is_pref ) {
+  	$refund = ( isset( $this->wcfm_module_options['refund'] ) ) ? $this->wcfm_module_options['refund'] : 'no';
+  	if( $refund == 'yes' ) $is_pref = false;
   	return $is_pref;
   }
   
@@ -156,6 +207,14 @@ class WCFM_Preferences {
   	if ( !is_wcfm_analytics() || !WCFM_Dependencies::wcfma_plugin_active_check() ) {
   		$is_pref = false;
   	}
+  	return $is_pref;
+  }
+  
+  // WCFM Marketplace Product Multivendor
+  function wcfmpref_product_multivendor( $is_pref ) {
+  	global $WCFM, $WCFMmp;
+  	$product_mulivendor = isset( $WCFMmp->wcfmmp_marketplace_options['product_mulivendor'] ) ? $WCFMmp->wcfmmp_marketplace_options['product_mulivendor'] : 'yes';
+  	if( $product_mulivendor == 'no' ) $is_pref = false;
   	return $is_pref;
   }
   

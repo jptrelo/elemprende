@@ -3,13 +3,12 @@ jQuery(document).ready(function($) {
 	$wcfm_withdrawal_table = $('#wcfm-withdrawal').DataTable( {
 		"processing": true,
 		"serverSide": true,
+		"pageLength": dataTables_config.pageLength,
 		"bFilter"   : false,
 		"dom"       : 'Bfrtip',
 		"responsive": true,
 		"language"  : $.parseJSON(dataTables_language),
-		"buttons"   : [
-            				'print', 'pdf', 'excel', 'csv' 
-        					],
+		"buttons"   : $wcfm_datatable_button_args,
 		"columns"   : [
 										{ responsivePriority: 1 },
 										{ responsivePriority: 3 },
@@ -59,15 +58,15 @@ jQuery(document).ready(function($) {
 		$.post(wcfm_params.ajax_url, data, function(response) {
 			if(response) {
 				$response_json = $.parseJSON(response);
+				$('.wcfm-message').html('').removeClass('wcfm-success').removeClass('wcfm-error').slideUp();
+				wcfm_notification_sound.play();
 				if($response_json.status) {
-					audio.play();
 					$('#wcfm_withdrawal_manage_form .wcfm-message').html('<span class="wcicon-status-completed"></span>' + $response_json.message).addClass('wcfm-success').slideDown();
 					$wcfm_withdrawal_table.ajax.reload();	
 				} else {
-					audio.play();
-					$('.wcfm-message').html('').removeClass('wcfm-success').slideUp();
 					$('#wcfm_withdrawal_manage_form .wcfm-message').html('<span class="wcicon-status-cancelled"></span>' + $response_json.message).addClass('wcfm-error').slideDown();
 				}
+				wcfmMessageHide();
 				$('#wcfm-content').unblock();
 			}
 		});

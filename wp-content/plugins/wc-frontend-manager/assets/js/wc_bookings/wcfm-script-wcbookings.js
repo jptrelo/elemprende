@@ -7,6 +7,7 @@ jQuery(document).ready(function($) {
 	$wcfm_bookings_table = $('#wcfm-bookings').DataTable( {
 		"processing": true,
 		"serverSide": true,
+		"pageLength": dataTables_config.pageLength,
 		"bFilter"   : false,
 		"responsive": true,
 		"language"  : $.parseJSON(dataTables_language),

@@ -32,19 +32,19 @@ class WCFM_Library {
   
   public $views_path;
   
-  	/**
+  /**
 	 * Billing fields.
 	 *
 	 * @var array
 	 */
-	protected static $billing_fields = array();
+	public $billing_fields = array();
 
 	/**
 	 * Shipping fields.
 	 *
 	 * @var array
 	 */
-	protected static $shipping_fields = array();
+	public $shipping_fields = array();
 	
 	public function __construct() {
     global $WCFM;
@@ -74,9 +74,7 @@ class WCFM_Library {
 	  global $WCFM;
 	  
 	  // Load Menu JS
-	  wp_enqueue_script( 'wcfm_menu_js', $this->js_lib_url . 'wcfm-script-menu.js', array('jquery'), $WCFM->version, true );
-	  // Localized Script
-	  wp_localize_script( 'wcfm_menu_js', 'wcfm_notification_sound', $this->lib_url . 'sounds/audio_file.mp3' );
+	  wp_enqueue_script( 'wcfm_menu_js', $this->js_lib_url . 'wcfm-script-menu.js', array('jquery', 'wcfm_core_js'), $WCFM->version, true );
     $wcfm_dashboard_messages = get_wcfm_dashboard_messages();
 		wp_localize_script( 'wcfm_menu_js', 'wcfm_dashboard_messages', $wcfm_dashboard_messages );
 	  
@@ -85,7 +83,7 @@ class WCFM_Library {
 	  $noloader = isset( $wcfm_options['noloader'] ) ? $wcfm_options['noloader'] : 'no';
 	  wp_localize_script( 'wcfm_menu_js', 'wcfm_noloader', $noloader );
 	  
-	  $this->load_blockui_lib();
+	  //$this->load_blockui_lib();
 	  
 	  do_action( 'before_wcfm_load_scripts', $end_point );
 	  
@@ -93,13 +91,13 @@ class WCFM_Library {
 	  	
 	  	case 'wcfm-dashboard':
         $this->load_chartjs_lib();
-        wp_enqueue_script( 'wcfm_dashboard_js', $this->js_lib_url . 'wcfm-script-dashboard.js', array('jquery'), $WCFM->version, true );
+        wp_enqueue_script( 'wcfm_dashboard_js', $this->js_lib_url . 'dashboard/wcfm-script-dashboard.js', array('jquery'), $WCFM->version, true );
       break;
       
 	    case 'wcfm-products':
 	    	$this->load_select2_lib();
         $this->load_datatable_lib();
-        wp_enqueue_script( 'wcfm_products_js', $this->js_lib_url . 'wcfm-script-products.js', array('jquery', 'dataTables_js'), $WCFM->version, true );
+        wp_enqueue_script( 'wcfm_products_js', $this->js_lib_url . 'products/wcfm-script-products.js', array('jquery', 'dataTables_js'), $WCFM->version, true );
         
         // Screen manager
 	    	$wcfm_screen_manager = (array) get_option( 'wcfm_screen_manager' );
@@ -117,15 +115,22 @@ class WCFM_Library {
 	    	if( !$WCFM->is_marketplace || wcfm_is_vendor() ) {
 	    		$wcfm_screen_manager_data[10] = 'yes';
 	    	}
+	    	if( ! apply_filters( 'wcfm_is_allow_sku', true ) ) {
+	    		$wcfm_screen_manager_data[3] = 'yes';
+	    	}
 	    	if( ! apply_filters( 'wcfm_is_allow_inventory', true ) ) {
 	    		$wcfm_screen_manager_data[5] = 'yes';
 	    	}
-	    	$wcfm_screen_manager_data[11] = apply_filters( 'wcfm_products_additonal_data_hidden', 'yes' );
+	    	if( apply_filters( 'wcfm_products_additonal_data_hidden', true ) ) {
+	    		$wcfm_screen_manager_data[11] = 'yes';
+	    	}
 	    	wp_localize_script( 'wcfm_products_js', 'wcfm_products_screen_manage', $wcfm_screen_manager_data );
       break;
       
       case 'wcfm-products-manage':
-      	$this->load_tinymce_lib();
+      	if( !apply_filters( 'wcfm_is_allow_product_wpeditor', 'wpeditor' ) ) {
+      		$this->load_tinymce_lib();
+      	}
       	$this->load_upload_lib();
       	$this->load_select2_lib();
       	$this->load_datepicker_lib();
@@ -133,7 +138,7 @@ class WCFM_Library {
         wp_enqueue_script( 'wcfm_products_manage_js', $this->js_lib_url . 'products-manager/wcfm-script-products-manage.js', array('jquery', 'select2_js'), $WCFM->version, true );
         
 		  	// WC Subscription Support
-		  	if( wcfm_is_subscription() ) {
+		  	if( wcfm_is_subscription() || wcfm_is_xa_subscription() ) {
 		  		wp_enqueue_script( 'wcfm_wcsubscriptions_products_manage_js', $this->js_lib_url . 'products-manager/wcfm-script-wcsubscriptions-products-manage.js', array('jquery'), $WCFM->version, true );
 		  	}
 		  	
@@ -167,7 +172,7 @@ class WCFM_Library {
       	//wp_register_script( 'wc-product-export', WC()->plugin_url() . '/assets/js/admin/wc-product-export.js', array( 'jquery' ), WC_VERSION );
 				//wp_enqueue_script( 'wc-product-export' );
 				$this->load_select2_lib();
-        wp_enqueue_script( 'wc-product-export', $this->js_lib_url . 'wcfm-script-products-export.js', array('jquery'), $WCFM->version, true );
+        wp_enqueue_script( 'wc-product-export', $this->js_lib_url . 'products/wcfm-script-products-export.js', array('jquery'), $WCFM->version, true );
         wp_localize_script( 'wc-product-export', 'wc_product_export_params', array(
 					'export_nonce' => wp_create_nonce( 'wc-product-export' ),
 				) );
@@ -176,13 +181,13 @@ class WCFM_Library {
         
       case 'wcfm-coupons':
         $this->load_datatable_lib();
-        wp_enqueue_script( 'wcfm_coupons_js', $this->js_lib_url . 'wcfm-script-coupons.js', array('jquery', 'dataTables_js' ), $WCFM->version, true );
+        wp_enqueue_script( 'wcfm_coupons_js', $this->js_lib_url . 'coupons/wcfm-script-coupons.js', array('jquery', 'dataTables_js' ), $WCFM->version, true );
       break;
       
       case 'wcfm-coupons-manage':
       	$this->load_collapsible_lib();
       	$this->load_datepicker_lib();
-        wp_enqueue_script( 'wcfm_coupons_manage_js', $this->js_lib_url . 'wcfm-script-coupons-manage.js', array('jquery'), $WCFM->version, true );
+        wp_enqueue_script( 'wcfm_coupons_manage_js', $this->js_lib_url . 'coupons/wcfm-script-coupons-manage.js', array('jquery'), $WCFM->version, true );
         // Localized Script
         $wcfm_messages = get_wcfm_coupons_manage_messages();
 			  wp_localize_script( 'wcfm_coupons_manage_js', 'wcfm_coupons_manage_messages', $wcfm_messages );
@@ -191,7 +196,7 @@ class WCFM_Library {
       case 'wcfm-orders':
         $this->load_datatable_lib();
         $this->load_datatable_download_lib();
-        wp_enqueue_script( 'wcfm_orders_js', $this->js_lib_url . 'wcfm-script-orders.js', array('jquery', 'dataTables_js'), $WCFM->version, true );
+        wp_enqueue_script( 'wcfm_orders_js', $this->js_lib_url . 'orders/wcfm-script-orders.js', array('jquery', 'dataTables_js'), $WCFM->version, true );
         
         // Screen manager
 	    	$wcfm_screen_manager = (array) get_option( 'wcfm_screen_manager' );
@@ -203,24 +208,32 @@ class WCFM_Library {
 				}
 				if( wcfm_is_vendor() ) {
 					$wcfm_screen_manager_data = $wcfm_screen_manager_data['vendor'];
+					if( !apply_filters( 'wcfm_allow_customer_billing_details', true ) ) {
+						$wcfm_screen_manager_data[3] = 'yes';
+					}
+					if( !apply_filters( 'wcfm_allow_customer_shipping_details', true ) ) {
+						$wcfm_screen_manager_data[4] = 'yes';
+					}
 				} else {
 					$wcfm_screen_manager_data = $wcfm_screen_manager_data['admin'];
 				}
 				if( !$WCFM->is_marketplace ) {
-	    		$wcfm_screen_manager_data[4] = 'yes';
+	    		$wcfm_screen_manager_data[6] = 'yes';
 	    	}
-	    	$wcfm_screen_manager_data[6] = apply_filters( 'wcfm_orders_additonal_data_hidden', 'yes' );
+	    	if( apply_filters( 'wcfm_orders_additonal_data_hidden', true ) ) {
+	    		$wcfm_screen_manager_data[7] = 'yes';
+	    	}
 	    	wp_localize_script( 'wcfm_orders_js', 'wcfm_orders_screen_manage', $wcfm_screen_manager_data );
 	    	wp_localize_script( 'wcfm_orders_js', 'wcfm_orders_auto_refresher', array( 'is_allow' => apply_filters( 'wcfm_orders_is_allow_auto_refresher', false ) ) );
       break;
       
       case 'wcfm-orders-details':
-        wp_enqueue_script( 'wcfm_orders_details_js', $this->js_lib_url . 'wcfm-script-orders-details.js', array('jquery'), $WCFM->version, true );
+        wp_enqueue_script( 'wcfm_orders_details_js', $this->js_lib_url . 'orders/wcfm-script-orders-details.js', array('jquery'), $WCFM->version, true );
       break;
       
       case 'wcfm-listings':
       	$this->load_datatable_lib();
-	    	wp_enqueue_script( 'wcfm_listings_js', $this->js_lib_url . 'wcfm-script-listings.js', array('jquery'), $WCFM->version, true );
+	    	wp_enqueue_script( 'wcfm_listings_js', $this->js_lib_url . 'listings/wcfm-script-listings.js', array('jquery'), $WCFM->version, true );
 	    	
 	    	// Screen manager
 	    	$wcfm_screen_manager = (array) get_option( 'wcfm_screen_manager' );
@@ -235,26 +248,35 @@ class WCFM_Library {
 				} else {
 					$wcfm_screen_manager_data = $wcfm_screen_manager_data['admin'];
 				}
+				if( !WCFM_Dependencies::wcfm_products_listings_active_check() ) {
+					$wcfm_screen_manager_data[2] = 'yes';
+				}
 	    	wp_localize_script( 'wcfm_listings_js', 'wcfm_listings_screen_manage', $wcfm_screen_manager_data );
       break;
       
       case 'wcfm-reports-sales-by-date':
       	$this->load_chartjs_lib();
-        //wp_enqueue_script( 'wcfm_reports_js', $this->js_lib_url . 'wcfm-script-reports-sales-by-date.js', array('jquery'), $WCFM->version, true );
+        //wp_enqueue_script( 'wcfm_reports_js', $this->js_lib_url . 'reports/wcfm-script-reports-sales-by-date.js', array('jquery'), $WCFM->version, true );
       break;
       
       case 'wcfm-reports-out-of-stock':
       	$this->load_datatable_lib();
       	$this->load_datatable_download_lib();
-        wp_enqueue_script( 'wcfm_reports_js', $this->js_lib_url . 'wcfm-script-reports-out-of-stock.js', array('jquery', 'dataTables_js'), $WCFM->version, true );
+        wp_enqueue_script( 'wcfm_reports_js', $this->js_lib_url . 'reports/wcfm-script-reports-out-of-stock.js', array('jquery', 'dataTables_js'), $WCFM->version, true );
       break;
       
       case 'wcfm-profile':
       	$this->load_select2_lib();
       	$this->load_collapsible_lib();
-      	$this->load_tinymce_lib();
       	$this->load_upload_lib();
       	
+      	if( !apply_filters( 'wcfm_is_allow_profile_wpeditor', 'wpeditor' ) ) {
+					$this->load_tinymce_lib();
+				}
+      	
+				$this->load_datepicker_lib();
+				$this->load_timepicker_lib();
+				
 				$this->load_colorpicker_lib();
 				wp_enqueue_script( 'iris', admin_url('js/iris.min.js'),array('jquery-ui-draggable', 'jquery-ui-slider', 'jquery-touch-punch'), false, 1);
 				wp_enqueue_script( 'wp-color-picker', admin_url('js/color-picker.min.js'), array('iris'), false,1);
@@ -262,9 +284,9 @@ class WCFM_Library {
 				$colorpicker_l10n = array('clear' => __('Clear'), 'defaultString' => __('Default'), 'pick' => __('Select Color'));
 				wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', $colorpicker_l10n );
 				
-				wp_enqueue_script( 'wcfm_multiinput_js', $this->js_lib_url . 'wcfm-script-multiinput.js', array('jquery'), $WCFM->version, true );
+				$this->load_multiinput_lib();
 				
-      	wp_enqueue_script( 'wcfm_profile_js', $this->js_lib_url . 'wcfm-script-profile.js', array('jquery','select2_js'), $WCFM->version, true );
+      	wp_enqueue_script( 'wcfm_profile_js', $this->js_lib_url . 'profile/wcfm-script-profile.js', array('jquery','select2_js'), $WCFM->version, true );
       break;
       
       case 'wcfm-settings':
@@ -272,14 +294,17 @@ class WCFM_Library {
       	$this->load_collapsible_lib();
       	$this->load_upload_lib();
       	$this->load_select2_lib();
+      	$this->load_datepicker_lib();
       	
       	if( $WCFM->is_marketplace && wcfm_is_vendor() ) {
-      		$this->load_tinymce_lib();
+      		if( !apply_filters( 'wcfm_is_allow_settings_wpeditor', 'wpeditor' ) ) {
+      			$this->load_tinymce_lib();
+      		}
       		
       		if( $WCFM->is_marketplace == 'dokan' ) {
       			wp_enqueue_script( 'jquery-ui' );
             wp_enqueue_script( 'jquery-ui-autocomplete' );
-      			wp_enqueue_script( 'wcfm_dokan_settings_js', $this->js_lib_url . 'wcfm-script-dokan-settings.js', array('jquery'), $WCFM->version, true );
+      			wp_enqueue_script( 'wcfm_dokan_settings_js', $this->js_lib_url . 'settings/wcfm-script-dokan-settings.js', array('jquery'), $WCFM->version, true );
       			
       			$scheme  = is_ssl() ? 'https' : 'http';
 						$api_key = dokan_get_option( 'gmap_api_key', 'dokan_general', false );
@@ -287,17 +312,68 @@ class WCFM_Library {
 						if ( $api_key ) {
 							wp_enqueue_script( 'wcfm-dokan-setting-google-maps', $scheme . '://maps.googleapis.com/maps/api/js?key=' . $api_key . '&libraries=places' );
 						}
+						
+						if( WCFM_Dependencies::dokanpro_plugin_active_check() && WCFM_Dependencies::wcfmu_plugin_active_check() ) {
+							if( version_compare( DOKAN_PRO_PLUGIN_VERSION, '2.8.0', '>' ) ) {
+								if ( current_user_can( 'dokan_view_store_shipping_menu' ) ) {
+									$disable_woo_shipping  = get_option( 'woocommerce_ship_to_countries' );
+									$dokan_shipping_option = get_option( 'woocommerce_dokan_product_shipping_settings' );
+									$enable_shipping       = ( isset( $dokan_shipping_option['enabled'] ) ) ? $dokan_shipping_option['enabled'] : 'yes';
+									if ( ( 'disabled' != $disable_woo_shipping ) && ( 'yes' == $enable_shipping ) ) {
+										wp_enqueue_style( 'dokan-vue-bootstrap' );
+										wp_enqueue_style( 'dokan-magnific-popup' );
+										wp_enqueue_style( 'dokan-pro-vue-frontend-shipping' );
+										
+										wp_enqueue_script( 'dokan-moment' );
+										wp_enqueue_script( 'dokan-chart' );
+										wp_enqueue_script( 'dokan-tooltip' );
+										wp_enqueue_script( 'dokan-popup' );
+										wp_enqueue_script( 'speaking-url' );
+										wp_enqueue_script( 'dokan-pro-vue-frontend-shipping' );
+			
+										$localize_array = array(
+												'nonce'             => wp_create_nonce( 'dokan_shipping_nonce' ),
+												'allowed_countries' => WC()->countries->get_allowed_countries(),
+												'continents'        => WC()->countries->get_continents(),
+												'states'            => WC()->countries->get_states(),
+												'shipping_class'    => WC()->shipping->get_shipping_classes(),
+												'i18n'             => array( 'dokan' => dokan_get_jed_locale_data( 'dokan' ) ) ,
+										);
+			
+										wp_localize_script( 'dokan-pro-vue-frontend-shipping', 'dokanShipping', $localize_array );
+									}
+								}
+							}
+						}
       		} elseif( $WCFM->is_marketplace == 'wcmarketplace' ) {
+      			wp_enqueue_script( 'wcfm_wcmarketplace_settings_js', $this->js_lib_url . 'settings/wcfm-script-wcmarketplace-settings.js', array('jquery'), $WCFM->version, true );
+      			
       			$scheme  = is_ssl() ? 'https' : 'http';
 						$api_key = get_wcmp_vendor_settings( 'google_api_key' );
 		
 						if ( $api_key ) {
 							wp_enqueue_script( 'jquery-ui' );
 							wp_enqueue_script( 'jquery-ui-autocomplete' );
-							wp_enqueue_script( 'wcfm_wcmarketplace_settings_js', $this->js_lib_url . 'wcfm-script-wcmarketplace-settings.js', array('jquery'), $WCFM->version, true );
       			
 							wp_enqueue_script( 'wcfm-wcmarketplace-setting-google-maps', $scheme . '://maps.googleapis.com/maps/api/js?key=' . $api_key . '&libraries=places' );
 						}
+      		} elseif( $WCFM->is_marketplace == 'wcfmmarketplace' ) {
+      			wp_enqueue_script( 'jquery-ui' );
+      			wp_enqueue_script( 'wcfm_marketplace_settings_js', $this->js_lib_url . 'settings/wcfm-script-wcfmmarketplace-settings.js', array('jquery'), $WCFM->version, true );
+      			
+      			$scheme  = is_ssl() ? 'https' : 'http';
+      			$wcfm_marketplace_options = get_option( 'wcfm_marketplace_options', array() );
+						$api_key = isset( $wcfm_marketplace_options['wcfm_google_map_api'] ) ? $wcfm_marketplace_options['wcfm_google_map_api'] : '';
+						
+						wp_enqueue_script( 'wcfm-wcfmmarketplace-jquery-ui', $scheme . '://code.jquery.com/ui/1.12.1/jquery-ui.js' );
+		
+						if ( $api_key ) {
+							wp_enqueue_script( 'jquery-ui-autocomplete' );
+      			
+							wp_enqueue_script( 'wcfm-wcfmmarketplace-setting-google-maps', $scheme . '://maps.googleapis.com/maps/api/js?key=' . $api_key . '&libraries=places' );
+						}
+            
+            
       		}
       	}
       	
@@ -313,27 +389,24 @@ class WCFM_Library {
 					wp_localize_script( 'wp-color-picker', 'wcfm_color_setting_options', $wcfm_color_setting_options );
 				}
 				
-				wp_enqueue_script( 'wcfm_multiinput_js', $this->js_lib_url . 'wcfm-script-multiinput.js', array('jquery'), $WCFM->version, true );
-				wp_enqueue_script( 'wcfm_settings_js', $this->js_lib_url . 'wcfm-script-settings.js', array('jquery'), $WCFM->version, true );
+				$this->load_multiinput_lib();
+				wp_enqueue_script( 'wcfm_settings_js', $this->js_lib_url . 'settings/wcfm-script-settings.js', array('jquery'), $WCFM->version, true );
 				
       break;
       
       case 'wcfm-capability':
       	$this->load_collapsible_lib();
       	$this->load_select2_lib();
-      	wp_enqueue_script( 'wcfm_capability_js', $this->js_lib_url . 'wcfm-script-capability.js', array('jquery'), $WCFM->version, true );
+      	wp_enqueue_script( 'wcfm_capability_js', $this->js_lib_url . 'capability/wcfm-script-capability.js', array('jquery'), $WCFM->version, true );
       break;
       
       case 'wcfm-knowledgebase':
-      	$this->load_tinymce_lib();
       	$this->load_datatable_lib();
-      	$this->load_collapsible_lib();
-      	wp_enqueue_script( 'wcfm_knowledgebase_js', $this->js_lib_url . 'wcfm-script-knowledgebase.js', array('jquery'), $WCFM->version, true );
+      	wp_enqueue_script( 'wcfm_knowledgebase_js', $this->js_lib_url . 'knowledgebase/wcfm-script-knowledgebase.js', array('jquery'), $WCFM->version, true );
       break;
       
       case 'wcfm-knowledgebase-manage':
-      	$this->load_tinymce_lib();
-      	wp_enqueue_script( 'wcfm_knowledgebase_manage_js', $this->js_lib_url . 'wcfm-script-knowledgebase-manage.js', array('jquery'), $WCFM->version, true );
+      	wp_enqueue_script( 'wcfm_knowledgebase_manage_js', $this->js_lib_url . 'knowledgebase/wcfm-script-knowledgebase-manage.js', array('jquery'), $WCFM->version, true );
       	// Localized Script
         $wcfm_messages = get_wcfm_knowledgebase_manage_messages();
 			  wp_localize_script( 'wcfm_knowledgebase_manage_js', 'wcfm_knowledgebase_manage_messages', $wcfm_messages );
@@ -345,7 +418,6 @@ class WCFM_Library {
       break;
       
       case 'wcfm-notice-manage':
-      	$this->load_tinymce_lib();
       	wp_enqueue_script( 'wcfm_notice_manage_js', $this->js_lib_url . 'notice/wcfm-script-notice-manage.js', array('jquery'), $WCFM->version, true );
       	// Localized Script
         $wcfm_messages = get_wcfm_notice_manage_messages();
@@ -353,7 +425,6 @@ class WCFM_Library {
       break;
       
       case 'wcfm-notice-view':
-      	$this->load_tinymce_lib();
       	wp_enqueue_script( 'wcfm_notice_view_js', $this->js_lib_url . 'notice/wcfm-script-notice-view.js', array('jquery'), $WCFM->version, true );
       	// Localized Script
         $wcfm_messages = get_wcfm_notice_view_messages();
@@ -361,10 +432,9 @@ class WCFM_Library {
       break;
       
       case 'wcfm-messages':
-      	$this->load_tinymce_lib();
       	$this->load_datatable_lib();
       	$this->load_select2_lib();
-      	wp_enqueue_script( 'wcfm_messages_js', $this->js_lib_url . 'wcfm-script-messages.js', array('jquery', 'dataTables_js', 'select2_js'), $WCFM->version, true );
+      	wp_enqueue_script( 'wcfm_messages_js', $this->js_lib_url . 'messages/wcfm-script-messages.js', array('jquery', 'dataTables_js', 'select2_js'), $WCFM->version, true );
       break;
       
       case 'wcfm-vendors':
@@ -376,17 +446,18 @@ class WCFM_Library {
       	// Screen manager
 	    	$wcfm_screen_manager_data = array();
 	    	if( !WCFM_Dependencies::wcfmvm_plugin_active_check() ) {
-	    		$wcfm_screen_manager_data = array( 2  => __( 'Memebership', 'wc-frontend-manager' ) );
+	    		$wcfm_screen_manager_data = array( 4  => __( 'Memebership', 'wc-frontend-manager' ) );
 	    	}
-	    	$wcfm_screen_manager_data[7] = apply_filters( 'wcfm_vendors_additonal_data_hidden', 'yes' );
+	    	if( apply_filters( 'wcfm_vendors_additonal_data_hidden', true ) ) {
+	    		$wcfm_screen_manager_data[10] = 'yes';
+	    	}
 	    	wp_localize_script( 'wcfm_vendors_js', 'wcfm_vendors_screen_manage', $wcfm_screen_manager_data );
       break;
       
-      case 'wcfm-vendors-manage':
-      	$this->load_datatable_lib();
+      case 'wcfm-vendors-new':
       	$this->load_select2_lib();
       	$this->load_upload_lib();
-      	$this->load_tinymce_lib();
+      	$this->load_collapsible_lib();
       	
       	$this->load_colorpicker_lib();
 				wp_enqueue_script( 'iris', admin_url('js/iris.min.js'),array('jquery-ui-draggable', 'jquery-ui-slider', 'jquery-touch-punch'), false, 1);
@@ -395,9 +466,38 @@ class WCFM_Library {
 				$colorpicker_l10n = array('clear' => __('Clear'), 'defaultString' => __('Default'), 'pick' => __('Select Color'));
 				wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', $colorpicker_l10n );
 				
-				wp_enqueue_script( 'wcfm_multiinput_js', $this->js_lib_url . 'wcfm-script-multiinput.js', array('jquery'), $WCFM->version, true );
+      	wp_enqueue_script( 'wcfm_vendors_new_js', $this->js_lib_url . 'vendors/wcfm-script-vendors-new.js', array('jquery'), $WCFM->version, true );
+      	
+      	wp_enqueue_script( 'wc-country-select' );
+      	wp_enqueue_script( 'wcfm_marketplace_settings_js', $this->js_lib_url . 'settings/wcfm-script-wcfmmarketplace-settings.js', array('jquery'), $WCFM->version, true );
+      	
+      	// Localized Script
+        $wcfm_messages = get_wcfm_vendors_new_messages();
+			  wp_localize_script( 'wcfm_vendors_new_js', 'get_wcfm_vendors_new_messages', $wcfm_messages );
+      	
+      break;
+      
+      case 'wcfm-vendors-manage':
+      	$this->load_datatable_lib();
+      	$this->load_select2_lib();
+      	$this->load_upload_lib();
+      	$this->load_collapsible_lib();
+      	
+      	$this->load_colorpicker_lib();
+				wp_enqueue_script( 'iris', admin_url('js/iris.min.js'),array('jquery-ui-draggable', 'jquery-ui-slider', 'jquery-touch-punch'), false, 1);
+				wp_enqueue_script( 'wp-color-picker', admin_url('js/color-picker.min.js'), array('iris'), false,1);
+				
+				$colorpicker_l10n = array('clear' => __('Clear'), 'defaultString' => __('Default'), 'pick' => __('Select Color'));
+				wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', $colorpicker_l10n );
+				
+				$this->load_multiinput_lib();
 				
       	wp_enqueue_script( 'wcfm_vendors_manage_js', $this->js_lib_url . 'vendors/wcfm-script-vendors-manage.js', array('jquery'), $WCFM->version, true );
+      	
+      	if( $WCFM->is_marketplace == 'wcfmmarketplace' ) {
+      		wp_enqueue_script( 'wc-country-select' );
+      		wp_enqueue_script( 'wcfm_marketplace_settings_js', $this->js_lib_url . 'settings/wcfm-script-wcfmmarketplace-settings.js', array('jquery'), $WCFM->version, true );
+      	}
       break;
       
       case 'wcfm-vendors-commission':
@@ -421,18 +521,18 @@ class WCFM_Library {
 	  
 	  // Load Menu Style
 	  if( apply_filters( 'wcfm_is_allow_old_view', false ) ) {
-	  	wp_enqueue_style( 'wcfm_menu_css',  $this->css_lib_url . 'wcfm-style-menu-old.css', array(), $WCFM->version );
+	  	wp_enqueue_style( 'wcfm_menu_css',  $this->css_lib_url . 'menu/wcfm-style-menu-old.css', array(), $WCFM->version );
 	  } else {
-	  	wp_enqueue_style( 'wcfm_menu_css',  $this->css_lib_url . 'wcfm-style-menu.css', array(), $WCFM->version );
+	  	wp_enqueue_style( 'wcfm_menu_css',  $this->css_lib_url . 'menu/wcfm-style-menu.css', array(), $WCFM->version );
 	  }
 	  
 	  // Load No-menu style
 	  $is_menu_disabled = isset( $wcfm_options['menu_disabled'] ) ? $wcfm_options['menu_disabled'] : 'no';
 	  if( $is_menu_disabled == 'yes' ) {
 	  	if( apply_filters( 'wcfm_is_allow_old_view', false ) ) {
-	  		wp_enqueue_style( 'wcfm_no_menu_css',  $this->css_lib_url . 'wcfm-style-no-menu.css', array('wcfm_menu_css'), $WCFM->version );
+	  		wp_enqueue_style( 'wcfm_no_menu_css',  $this->css_lib_url . 'menu/wcfm-style-no-menu.css', array('wcfm_menu_css'), $WCFM->version );
 	  	} else {
-	  		wp_enqueue_style( 'wcfm_no_menu_css',  $this->css_lib_url . 'wcfm-style-no-menu.css', array('wcfm_menu_css'), $WCFM->version );
+	  		wp_enqueue_style( 'wcfm_no_menu_css',  $this->css_lib_url . 'menu/wcfm-style-no-menu.css', array('wcfm_menu_css'), $WCFM->version );
 	  	}
 	  }
 	  
@@ -440,16 +540,26 @@ class WCFM_Library {
 	  $is_slick_menu_disabled = isset( $wcfm_options['slick_menu_disabled'] ) ? $wcfm_options['slick_menu_disabled'] : 'no';
 	  if( $is_slick_menu_disabled != 'yes' ) {
 	  	if( apply_filters( 'wcfm_is_allow_old_view', false ) ) {
-	  		wp_enqueue_style( 'wcfm_menu_slick_css',  $this->css_lib_url . 'wcfm-style-menu-slick-old.css', array( 'wcfm_menu_css' ), $WCFM->version );
+	  		wp_enqueue_style( 'wcfm_menu_slick_css',  $this->css_lib_url . 'menu/wcfm-style-menu-slick-old.css', array( 'wcfm_menu_css' ), $WCFM->version );
 	  	} else {
-	  		wp_enqueue_style( 'wcfm_menu_slick_css',  $this->css_lib_url . 'wcfm-style-menu-slick.css', array( 'wcfm_menu_css' ), $WCFM->version );
+	  		wp_enqueue_style( 'wcfm_menu_slick_css',  $this->css_lib_url . 'menu/wcfm-style-menu-slick.css', array( 'wcfm_menu_css' ), $WCFM->version );
+	  	}
+	  }
+	  
+	  // Block Responsive Float Menu Style
+	  $is_responsive_float_menu_disabled = isset( $wcfm_options['responsive_float_menu_disabled'] ) ? $wcfm_options['responsive_float_menu_disabled'] : 'no';
+	  if( $is_responsive_float_menu_disabled == 'yes' ) {
+	  	if( apply_filters( 'wcfm_is_allow_responsive_non_float_button', true ) ) {
+	  		wp_enqueue_style( 'wcfm_responsive_non_float_menu_css',  $this->css_lib_url . 'menu/wcfm-style-responsive-non-float-menu.css', array( 'wcfm_menu_css' ), $WCFM->version );
 	  	}
 	  }
 	  
 	  // Load Float Button Style
 	  $is_float_button_disabled = isset( $wcfm_options['float_button_disabled'] ) ? $wcfm_options['float_button_disabled'] : 'no';
 	  if( $is_float_button_disabled != 'yes' ) {
-	    wp_enqueue_style( 'wcfm_float_button_css',  $this->css_lib_url . 'wcfm-style-float-button.css', array( 'wcfm_menu_css' ), $WCFM->version );
+	  	if( apply_filters( 'wcfm_is_allow_float_button', true ) ) {
+	  		wp_enqueue_style( 'wcfm_float_button_css',  $this->css_lib_url . 'wcfm-style-float-button.css', array( 'wcfm_menu_css' ), $WCFM->version );
+	  	}
 	  }
 	  
 	  // Load Template Style
@@ -465,18 +575,19 @@ class WCFM_Library {
 	  	case 'wcfm-dashboard':
 	  		//wp_enqueue_style( 'dashicons' );
 		    wp_enqueue_style( 'collapsible_css',  $this->css_lib_url . 'wcfm-style-collapsible.css', array(), $WCFM->version );
-		    wp_enqueue_style( 'wcfm_dashboard_css',  $this->css_lib_url . 'wcfm-style-dashboard.css', array(), $WCFM->version );
+		    wp_enqueue_style( 'wcfm_dashboard_css',  $this->css_lib_url . 'dashboard/wcfm-style-dashboard.css', array(), $WCFM->version );
+		    wp_enqueue_style( 'wcfm_dashboard_welcomebox_css',  $this->css_lib_url . 'dashboard/wcfm-style-dashboard-welcomebox.css', array(), $WCFM->version );
 		  break;
 	  	
 	    case 'wcfm-products':
-		    wp_enqueue_style( 'wcfm_products_css',  $this->css_lib_url . 'wcfm-style-products.css', array(), $WCFM->version );
+		    wp_enqueue_style( 'wcfm_products_css',  $this->css_lib_url . 'products/wcfm-style-products.css', array(), $WCFM->version );
 		  break;
 		  
 		  case 'wcfm-products-manage':
 		    wp_enqueue_style( 'wcfm_products_manage_css',  $this->css_lib_url . 'products-manager/wcfm-style-products-manage.css', array(), $WCFM->version );
 		    
 		  	// WC Subscriptions Support
-		    if( wcfm_is_subscription() ) {
+		    if( wcfm_is_subscription() || wcfm_is_xa_subscription() ) {
 		  		wp_enqueue_style( 'wcfm_wcsubscriptions_products_manage_css',  $this->css_lib_url . 'products-manager/wcfm-style-wcsubscriptions-products-manage.css', array(), $WCFM->version );
 		  	}
 		  	
@@ -488,62 +599,61 @@ class WCFM_Library {
 		  
 		  case 'wcfm-products-export':
 		  	wp_enqueue_style( 'collapsible_css',  $this->css_lib_url . 'wcfm-style-collapsible.css', array(), $WCFM->version );
-		    wp_enqueue_style( 'wcfm_products_export_css',  $this->css_lib_url . 'wcfm-style-products-export.css', array(), $WCFM->version );
+		    wp_enqueue_style( 'wcfm_products_export_css',  $this->css_lib_url . 'products/wcfm-style-products-export.css', array(), $WCFM->version );
 		  break;
 		    
 		  case 'wcfm-coupons':
-		    wp_enqueue_style( 'wcfm_coupons_css',  $this->css_lib_url . 'wcfm-style-coupons.css', array(), $WCFM->version );
+		    wp_enqueue_style( 'wcfm_coupons_css',  $this->css_lib_url . 'coupons/wcfm-style-coupons.css', array(), $WCFM->version );
 		  break;
 		  
 		  case 'wcfm-coupons-manage':
-		    wp_enqueue_style( 'wcfm_coupons_manage_css',  $this->css_lib_url . 'wcfm-style-coupons-manage.css', array(), $WCFM->version );
+		    wp_enqueue_style( 'wcfm_coupons_manage_css',  $this->css_lib_url . 'coupons/wcfm-style-coupons-manage.css', array(), $WCFM->version );
 		  break;
 		  
 		  case 'wcfm-orders':
-		    wp_enqueue_style( 'wcfm_orders_css',  $this->css_lib_url . 'wcfm-style-orders.css', array(), $WCFM->version );
+		    wp_enqueue_style( 'wcfm_orders_css',  $this->css_lib_url . 'orders/wcfm-style-orders.css', array(), $WCFM->version );
 		  break;                                                                                                                                    
 		  
 		  case 'wcfm-orders-details':
 		  	wp_enqueue_style( 'collapsible_css',  $this->css_lib_url . 'wcfm-style-collapsible.css', array(), $WCFM->version );
-		    wp_enqueue_style( 'wcfm_orders_details_css',  $this->css_lib_url . 'wcfm-style-orders-details.css', array(), $WCFM->version );
+		    wp_enqueue_style( 'wcfm_orders_details_css',  $this->css_lib_url . 'orders/wcfm-style-orders-details.css', array(), $WCFM->version );
 		  break;
 		  
 		  case 'wcfm-listings':
-	    	wp_enqueue_style( 'wcfm_listings_css',  $this->css_lib_url . 'wcfm-style-listings.css', array(), $WCFM->version );
+	    	wp_enqueue_style( 'wcfm_listings_css',  $this->css_lib_url . 'listings/wcfm-style-listings.css', array(), $WCFM->version );
 		  break;
 		  
 		  case 'wcfm-reports-sales-by-date':
-		  	wp_enqueue_style( 'reports_menus_css',  $this->css_lib_url . 'wcfm-style-reports-menus.css', array(), $WCFM->version );
-		    wp_enqueue_style( 'wcfm_reports_css',  $this->css_lib_url . 'wcfm-style-reports-sales-by-date.css', array(), $WCFM->version );
+		  	wp_enqueue_style( 'reports_menus_css',  $this->css_lib_url . 'reports/wcfm-style-reports-menus.css', array(), $WCFM->version );
+		    wp_enqueue_style( 'wcfm_reports_css',  $this->css_lib_url . 'reports/wcfm-style-reports-sales-by-date.css', array(), $WCFM->version );
 		  break;
 		  
 		  case 'wcfm-reports-out-of-stock':
-		  	wp_enqueue_style( 'reports_menus_css',  $this->css_lib_url . 'wcfm-style-reports-menus.css', array(), $WCFM->version );
+		  	wp_enqueue_style( 'reports_menus_css',  $this->css_lib_url . 'reports/wcfm-style-reports-menus.css', array(), $WCFM->version );
 		    //wp_enqueue_style( 'wcfm_reports_css',  $this->css_lib_url . 'wcfm-style-reports.css', array(), $WCFM->version );
 		  break;
 		  
 		  case 'wcfm-profile':
-		  	wp_enqueue_style( 'collapsible_css',  $this->css_lib_url . 'wcfm-style-collapsible.css', array(), $WCFM->version );
-		    wp_enqueue_style( 'wcfm_profile_css',  $this->css_lib_url . 'wcfm-style-profile.css', array(), $WCFM->version );
+		    wp_enqueue_style( 'wcfm_profile_css',  $this->css_lib_url . 'profile/wcfm-style-profile.css', array(), $WCFM->version );
 		  break;
 		  
 		  case 'wcfm-settings':
 		  	$this->load_checkbox_offon_lib();
-		    wp_enqueue_style( 'wcfm_settings_css',  $this->css_lib_url . 'wcfm-style-settings.css', array(), $WCFM->version );
+		    wp_enqueue_style( 'wcfm_settings_css',  $this->css_lib_url . 'settings/wcfm-style-settings.css', array(), $WCFM->version );
 		  break;
 		  
 		  case 'wcfm-capability':
 		  	$this->load_checkbox_offon_lib();
-		    wp_enqueue_style( 'wcfm_capability_css',  $this->css_lib_url . 'wcfm-style-capability.css', array(), $WCFM->version );
+		    wp_enqueue_style( 'wcfm_capability_css',  $this->css_lib_url . 'capability/wcfm-style-capability.css', array(), $WCFM->version );
       break;
 		  
 		  case 'wcfm-knowledgebase':
-		    wp_enqueue_style( 'wcfm_knowledgebase_css',  $this->css_lib_url . 'wcfm-style-knowledgebase.css', array(), $WCFM->version );
+		    wp_enqueue_style( 'wcfm_knowledgebase_css',  $this->css_lib_url . 'knowledgebase/wcfm-style-knowledgebase.css', array(), $WCFM->version );
 		  break;
 		  
 		  case 'wcfm-knowledgebase-manage':
 		  	wp_enqueue_style( 'collapsible_css',  $this->css_lib_url . 'wcfm-style-collapsible.css', array(), $WCFM->version );
-		  	wp_enqueue_style( 'wcfm_knowledgebase_manage_css',  $this->css_lib_url . 'wcfm-style-knowledgebase-manage.css', array(), $WCFM->version );
+		  	wp_enqueue_style( 'wcfm_knowledgebase_manage_css',  $this->css_lib_url . 'knowledgebase/wcfm-style-knowledgebase-manage.css', array(), $WCFM->version );
 		  break;
 		  
 		  case 'wcfm-notices':
@@ -561,17 +671,22 @@ class WCFM_Library {
 		  break;
 		  
 		  case 'wcfm-messages':
-		    wp_enqueue_style( 'wcfm_messages_css',  $this->css_lib_url . 'wcfm-style-messages.css', array(), $WCFM->version );
+		    wp_enqueue_style( 'wcfm_messages_css',  $this->css_lib_url . 'messages/wcfm-style-messages.css', array(), $WCFM->version );
 		  break;
 		  
 		  case 'wcfm-vendors':
 		    wp_enqueue_style( 'wcfm_vendors_css',  $this->css_lib_url . 'vendors/wcfm-style-vendors.css', array(), $WCFM->version );
 		  break;
 		  
+		  case 'wcfm-vendors-new':
+		  	wp_enqueue_style( 'wcfm_settings_css',  $this->css_lib_url . 'settings/wcfm-style-settings.css', array(), $WCFM->version );
+		    wp_enqueue_style( 'wcfm_vendors_new_css',  $this->css_lib_url . 'vendors/wcfm-style-vendors-new.css', array(), $WCFM->version );
+		  break;
+		  
 		  case 'wcfm-vendors-manage':
-		  	wp_enqueue_style( 'collapsible_css',  $this->css_lib_url . 'wcfm-style-collapsible.css', array(), $WCFM->version );
-		  	wp_enqueue_style( 'wcfm_dashboard_css',  $this->css_lib_url . 'wcfm-style-dashboard.css', array(), $WCFM->version );
-		    wp_enqueue_style( 'wcfm_vendors_manage_css',  $this->css_lib_url . 'vendors/wcfm-style-vendor-manage.css', array(), $WCFM->version );
+		  	//wp_enqueue_style( 'collapsible_css',  $this->css_lib_url . 'wcfm-style-collapsible.css', array(), $WCFM->version );
+		  	wp_enqueue_style( 'wcfm_dashboard_css',  $this->css_lib_url . 'dashboard/wcfm-style-dashboard.css', array(), $WCFM->version );
+		    wp_enqueue_style( 'wcfm_vendors_manage_css',  $this->css_lib_url . 'vendors/wcfm-style-vendors-manage.css', array(), $WCFM->version );
 		  break;
 		  
 		  case 'wcfm-vendors-commission':
@@ -587,7 +702,7 @@ class WCFM_Library {
 		// WCFM Custom CSS
 		$upload_dir      = wp_upload_dir();
 		$wcfm_style_custom = get_option( 'wcfm_style_custom' );
-		if( file_exists( trailingslashit( $upload_dir['basedir'] ) . 'wcfm/' . $wcfm_style_custom ) ) {
+		if( $wcfm_style_custom && file_exists( trailingslashit( $upload_dir['basedir'] ) . 'wcfm/' . $wcfm_style_custom ) ) {
 			wp_enqueue_style( 'wcfm_custom_css',  trailingslashit( $upload_dir['baseurl'] ) . 'wcfm/' . $wcfm_style_custom, array( 'wcfm_menu_css' ), $WCFM->version );
 		}
 		
@@ -604,7 +719,7 @@ class WCFM_Library {
 	  
 	  // WCFM Menu
 	  if( $menu )
-	  	require_once( $this->views_path . 'wcfm-view-menu.php' );
+	  	$WCFM->template->get_template( 'wcfm-view-menu.php' );
 	  
 	  do_action( 'before_wcfm_load_views', $end_point );
     
@@ -612,106 +727,110 @@ class WCFM_Library {
 	  	
 	  	case 'wcfm-dashboard':
 	  		if( $WCFM->is_marketplace && wcfm_is_vendor() ) {
-					require_once( $this->views_path . 'dashboard/wcfm-view-' . $WCFM->is_marketplace . '-dashboard.php' );
+					$WCFM->template->get_template( 'dashboard/wcfm-view-' . $WCFM->is_marketplace . '-dashboard.php' );
 				} else {
-					require_once( $this->views_path . 'dashboard/wcfm-view-dashboard.php' );
+					$WCFM->template->get_template( 'dashboard/wcfm-view-dashboard.php' );
 				}
       break;
 	  	
 	    case 'wcfm-products':
-        require_once( $this->views_path . 'wcfm-view-products.php' );
+        $WCFM->template->get_template( 'products/wcfm-view-products.php' );
       break;
       
       case 'wcfm-products-manage':
-        require_once( $this->views_path . 'products-manager/wcfm-view-products-manage.php' );
+        $WCFM->template->get_template( 'products-manager/wcfm-view-products-manage.php' );
       break;
       
       case 'wcfm-products-export':
-        require_once( $this->views_path . 'wcfm-view-products-export.php' );
+        include_once( $this->views_path . 'products/wcfm-view-products-export.php' );
       break;
         
       case 'wcfm-coupons':
-        require_once( $this->views_path . 'wcfm-view-coupons.php' );
+        $WCFM->template->get_template( 'coupons/wcfm-view-coupons.php' );
       break;
       
       case 'wcfm-coupons-manage':
-        require_once( $this->views_path . 'wcfm-view-coupons-manage.php' );
+        $WCFM->template->get_template( 'coupons/wcfm-view-coupons-manage.php' );
       break;
       
       case 'wcfm-orders':
-        require_once( $this->views_path . 'wcfm-view-orders.php' );
+        $WCFM->template->get_template( 'orders/wcfm-view-orders.php' );
       break;
       
       case 'wcfm-orders-details':
-        require_once( $this->views_path . 'wcfm-view-orders-details.php' );
+        $WCFM->template->get_template( 'orders/wcfm-view-orders-details.php' );
       break;
       
       case 'wcfm-listings':
-        require_once( $this->views_path . 'wcfm-view-listings.php' );
+        $WCFM->template->get_template( 'listings/wcfm-view-listings.php' );
       break;
       
       case 'wcfm-reports-sales-by-date':
       	if( $WCFM->is_marketplace && wcfm_is_vendor() ) {
-					require_once( $this->views_path . 'reports/wcfm-view-reports-' . $WCFM->is_marketplace . '-sales-by-date.php' );
+					$WCFM->template->get_template( 'reports/wcfm-view-reports-' . $WCFM->is_marketplace . '-sales-by-date.php' );
 				} else {
-					require_once( $this->views_path . 'reports/wcfm-view-reports-sales-by-date.php' );
+					$WCFM->template->get_template( 'reports/wcfm-view-reports-sales-by-date.php' );
 				}
       break;
       
       case 'wcfm-reports-out-of-stock':
-        require_once( $this->views_path . 'wcfm-view-reports-out-of-stock.php' );
+        $WCFM->template->get_template( 'reports/wcfm-view-reports-out-of-stock.php' );
       break;
       
       case 'wcfm-profile':
-        require_once( $this->views_path . 'wcfm-view-profile.php' );
+        $WCFM->template->get_template( 'profile/wcfm-view-profile.php' );
       break;
       
       case 'wcfm-settings':
       	if( $WCFM->is_marketplace && wcfm_is_vendor() ) {
-					require_once( $this->views_path . 'settings/wcfm-view-' . $WCFM->is_marketplace . '-settings.php' );
+					$WCFM->template->get_template( 'settings/wcfm-view-' . $WCFM->is_marketplace . '-settings.php' );
 				} else {
-					require_once( $this->views_path . 'settings/wcfm-view-settings.php' );
+					$WCFM->template->get_template( 'settings/wcfm-view-settings.php' );
 				}
       break;
       
       case 'wcfm-capability':
-      	require_once( $this->views_path . 'wcfm-view-capability.php' );
+      	include_once( $this->views_path . 'capability/wcfm-view-capability.php' );
       break;
       
       case 'wcfm-knowledgebase':
-        require_once( $this->views_path . 'wcfm-view-knowledgebase.php' );
+        $WCFM->template->get_template( 'knowledgebase/wcfm-view-knowledgebase.php' );
       break;
       
       case 'wcfm-knowledgebase-manage':
-        require_once( $this->views_path . 'wcfm-view-knowledgebase-manage.php' );
+        $WCFM->template->get_template( 'knowledgebase/wcfm-view-knowledgebase-manage.php' );
       break;
       
       case 'wcfm-notices':
-        require_once( $this->views_path . 'notice/wcfm-view-notices.php' );
+        $WCFM->template->get_template( 'notice/wcfm-view-notices.php' );
       break;
       
       case 'wcfm-notice-manage':
-        require_once( $this->views_path . 'notice/wcfm-view-notice-manage.php' );
+        $WCFM->template->get_template( 'notice/wcfm-view-notice-manage.php' );
       break;
       
       case 'wcfm-notice-view':
-        require_once( $this->views_path . 'notice/wcfm-view-notice-view.php' );
+        $WCFM->template->get_template( 'notice/wcfm-view-notice-view.php' );
       break;
       
       case 'wcfm-messages':
-        require_once( $this->views_path . 'wcfm-view-messages.php' );
+        $WCFM->template->get_template( 'messages/wcfm-view-messages.php' );
       break;
       
       case 'wcfm-vendors':
-        require_once( $this->views_path . 'vendors/wcfm-view-vendors.php' );
+        $WCFM->template->get_template( 'vendors/wcfm-view-vendors.php' );
+      break;
+      
+      case 'wcfm-vendors-new':
+        $WCFM->template->get_template( 'vendors/wcfm-view-vendors-new.php' );
       break;
       
       case 'wcfm-vendors-manage':
-        require_once( $this->views_path . 'vendors/wcfm-view-vendors-manage.php' );
+        $WCFM->template->get_template( 'vendors/wcfm-view-vendors-manage.php' );
       break;
       
       case 'wcfm-vendors-commission':
-        require_once( $this->views_path . 'vendors/wcfm-view-vendors-commission.php' );
+        include_once( $this->views_path . 'vendors/wcfm-view-vendors-commission.php' );
       break;
       
       default :
@@ -746,10 +865,25 @@ class WCFM_Library {
 		$dataTables_language = '{"processing": "' . __('Processing...', 'wc-frontend-manager' ) . '" , "search": "' . __('Search:', 'wc-frontend-manager' ) . '", "lengthMenu": "' . __('Show _MENU_ entries', 'wc-frontend-manager' ) . '", "info": " ' . __('Showing _START_ to _END_ of _TOTAL_ entries', 'wc-frontend-manager' ) . '", "infoEmpty": "' . __('Showing 0 to 0 of 0 entries', 'wc-frontend-manager' ) . '", "infoFiltered": "' . __('(filtered _MAX_ entries of total)', 'wc-frontend-manager' ) . '", "loadingRecords": "' . __('Loading...', 'wc-frontend-manager' ) . '", "zeroRecords": "' . __('No matching records found', 'wc-frontend-manager' ) . '", "emptyTable": "' . __('No data in the table', 'wc-frontend-manager' ) . '", "paginate": {"first": "' . __('First', 'wc-frontend-manager' ) . '", "previous": "' . __('Previous', 'wc-frontend-manager' ) . '", "next": "' . __('Next', 'wc-frontend-manager' ) . '", "last": "' .  __('Last', 'wc-frontend-manager') . '"}, "buttons": {"print": "' . __('Print', 'wc-frontend-manager' ) . '", "pdf": "' . __('PDF', 'wc-frontend-manager' ) . '", "excel": "' . __('Excel', 'wc-frontend-manager' ) . '", "csv": "' . __('CSV', 'wc-frontend-manager' ) . '"}}';
 		wp_localize_script( 'dataTables_js', 'dataTables_language', $dataTables_language );
 		
+		wp_localize_script( 'dataTables_js', 'dataTables_config', array( 'pageLength' => apply_filters( 'wcfm_datatable_page_length', 25 ) ) );
+		
 		// CSS
 		//wp_enqueue_style( 'wcfm_responsive_css',  $this->css_lib_url . 'wcfm-style-responsive.css', array('wcfm_menu_css'), $WCFM->version );
 		wp_enqueue_style( 'dataTables_css',  'https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css', array(), $WCFM->version );
 		wp_enqueue_style( 'dataTables_responsive_css',  'https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css', array(), $WCFM->version );
+	}
+	
+	/**
+	 * Jquery dataTable library
+	 */
+	function load_datatable_scroll_lib() {
+		global $WCFM;
+		
+		// JS
+		wp_enqueue_script( 'dataTables_scroll_js', 'https://cdn.datatables.net/scroller/1.5.1/js/dataTables.scroller.min.js', array('jquery', 'dataTables_js'), $WCFM->version, true );
+		
+		// CSS
+		wp_enqueue_style( 'dataTables_scroll_css',  'https://cdn.datatables.net/scroller/1.5.1/css/scroller.dataTables.min.css', array(), $WCFM->version );
 	}
 	
 	/**
@@ -828,6 +962,8 @@ class WCFM_Library {
 	public function load_upload_lib() {
 	  global $WCFM;
 	  wp_enqueue_media();
+	  //wp_enqueue_script( 'mce-view' );
+    //wp_enqueue_script( 'image-edit' );
 	  wp_enqueue_script( 'upload_js', $WCFM->plugin_url . 'includes/libs/upload/media-upload.js', array('jquery'), $WCFM->version, true );
 	  wp_enqueue_style( 'upload_css',  $WCFM->plugin_url . 'includes/libs/upload/media-upload.css', array(), $WCFM->version );
 	  $uploads_language = array( "choose_media" => __( 'Choose Media', 'wc-frontend-manager' ), "choose_image" => __( 'Choose Image', 'wc-frontend-manager' ), "add_to_gallery" => __( 'Add to Gallery', 'wc-frontend-manager' ) );
@@ -878,8 +1014,9 @@ class WCFM_Library {
 	public function load_timepicker_lib() {
 	  global $WCFM;
 	  wp_enqueue_script('jquery-ui-datepicker');
-	  wp_enqueue_script( 'wcfm_timepicker_js', $WCFM->plugin_url . 'includes/libs/timepicker/timepicker.js', array('jquery', 'jquery-ui-datepicker'), $WCFM->version, true );
+	  wp_enqueue_script( 'wcfm_timepicker_js', $WCFM->plugin_url . 'includes/libs/timepicker/timepicker.js', array('jquery', 'jquery-ui-core', 'jquery-ui-datepicker'), $WCFM->version, true );
 	  wp_enqueue_style( 'wcfm_timepicker_css',  $WCFM->plugin_url . 'includes/libs/timepicker/timepicker.css', array(), $WCFM->version );
+	  wp_enqueue_style('jquery-ui-datepicker');
 	}
 	
 	/**
@@ -900,9 +1037,12 @@ class WCFM_Library {
 	*/
 	public function load_chartjs_lib() {
 	  global $WCFM;
-	  wp_enqueue_script( 'jquery-chart_moment_js', $WCFM->plugin_url . 'includes/libs/chart-js/moment.min.js', array('jquery'), $WCFM->version, true );
+	  //wp_enqueue_script( 'jquery-chart_date_format_js', $WCFM->plugin_url . 'includes/libs/chart-js/date-format.js', array('jquery'), $WCFM->version, true );
+	  wp_enqueue_script( 'jquery-chart_moment_js', $WCFM->plugin_url . 'includes/libs/chart-js/moment.js', array('jquery'), $WCFM->version, true );
 	  wp_enqueue_script( 'jquery-chart_js', $WCFM->plugin_url . 'includes/libs/chart-js/chart.min.js', array('jquery', 'jquery-chart_moment_js'), $WCFM->version, true );
 	  wp_enqueue_script( 'jquery-chart_util_js', $WCFM->plugin_url . 'includes/libs/chart-js/chart-util.js', array(), $WCFM->version, true );
+	  
+	  wp_localize_script( 'jquery-chart_moment_js', 'wcfm_wp_date_format_to_js', wcfm_wp_date_format_to_js( wc_date_format() ) );
 	}
 	
 	/**
@@ -920,7 +1060,9 @@ class WCFM_Library {
 	public function load_blockui_lib() {
 	  global $WCFM;
 	  
-	  wp_enqueue_script( 'jquery-blockui_js', $WCFM->plugin_url . 'includes/libs/jquery-blockui/jquery.blockUI.min.js', array('jquery'), $WCFM->version, true );
+	  if( apply_filters( 'wcfm_is_allow_blockui', true ) ) {
+	  	wp_enqueue_script( 'jquery-blockui_js', $WCFM->plugin_url . 'includes/libs/jquery-blockui/jquery.blockUI.min.js', array('jquery'), $WCFM->version, true );
+	  }
 	}
 	
 	/**
@@ -931,9 +1073,17 @@ class WCFM_Library {
 	  wp_enqueue_style( 'checkbox-offon-style', $WCFM->plugin_url . 'includes/libs/checkbox-offon/checkbox_offon.css', array(), $WCFM->version );
 	}
 	
-	public static function init_address_fields() {
+	/**
+	 * WCfM Multiinput Library
+	 */
+	public function load_multiinput_lib() {
+		global $WCFM;
+		wp_enqueue_script( 'wcfm_multiinput_js', $WCFM->plugin_url . 'includes/libs/multi-input/wcfm-script-multiinput.js', array('jquery', 'jquery-ui-sortable'), $WCFM->version, true );
+	}
+	
+	public function init_address_fields() {
 
-		self::$billing_fields = apply_filters( 'woocommerce_admin_billing_fields', array(
+		$this->billing_fields = apply_filters( 'woocommerce_admin_billing_fields', array(
 			'first_name' => array(
 				'label' => __( 'First Name', 'woocommerce' ),
 				'show'  => false
@@ -982,7 +1132,7 @@ class WCFM_Library {
 			),
 		) );
 
-		self::$shipping_fields = apply_filters( 'woocommerce_admin_shipping_fields', array(
+		$this->shipping_fields = apply_filters( 'woocommerce_admin_shipping_fields', array(
 			'first_name' => array(
 				'label' => __( 'First Name', 'woocommerce' ),
 				'show'  => false
@@ -1030,7 +1180,7 @@ class WCFM_Library {
 	 * Get sales report data.
 	 * @return object
 	 */
-	private function get_sales_report_data() {
+	public function get_sales_report_data() {
 		include_once( dirname( WC_PLUGIN_FILE ) . '/includes/admin/reports/class-wc-report-sales-by-date.php' );
 
 		$sales_by_date                 = new WC_Report_Sales_By_Date();
@@ -1046,7 +1196,7 @@ class WCFM_Library {
 	 * Get top seller from DB.
 	 * @return object
 	 */
-	private function get_top_seller() {
+	public function get_top_seller() {
 		global $wpdb;
 
 		$query            = array();
@@ -1081,32 +1231,37 @@ class WCFM_Library {
 	}
 	
 	// Generate Taxonomy HTML
-	function generateTaxonomyHTML( $taxonomy, $product_taxonomies, $selected_taxonomies, $nbsp = '', $is_checklist = false, $is_custom = false, $is_hierarchical = true ) {
+	function generateTaxonomyHTML( $taxonomy, $product_taxonomies, $selected_taxonomies, $nbsp = '', $is_checklist = false, $is_custom = false, $is_hierarchical = true, $is_children = false, $super_parent = 0 ) {
 		global $WCFM;
 		
 		foreach ( $product_taxonomies as $cat ) {
-			$wcfm_allowed_taxonomies = apply_filters( 'wcfm_allowed_taxonomies', true, $taxonomy, $cat->term_id );
 			$checklis_label_class = '';
-			if( !$wcfm_allowed_taxonomies ) $checklis_label_class = 'product_cats_checklist_item_hide_by_cap';
+			if( !$is_children ) {
+				$super_parent = 0;
+				$wcfm_allowed_taxonomies = apply_filters( 'wcfm_allowed_taxonomies', true, $taxonomy, $cat->term_id );
+				if( !$wcfm_allowed_taxonomies ) continue; //$checklis_label_class = 'product_cats_checklist_item_hide_by_cap';
+			}
 			if( $is_checklist ) {
 				echo '<li class="product_cats_checklist_item checklist_item_' . esc_attr( $cat->term_id ) . '" data-item="' . esc_attr( $cat->term_id ) . '">';
 				if( !$nbsp ) echo '<span class="fa fa-arrow-circle-right sub_checklist_toggler"></span>';
 				if( $is_custom ) {
-					echo '<label class="selectit">' . $nbsp . '<input type="checkbox" class="wcfm-checkbox ' . $checklis_label_class . '" name="product_custom_taxonomies[' . $taxonomy . '][]" value="' . esc_attr( $cat->term_id ) . '"' . checked( in_array( $cat->term_id, $selected_taxonomies ), true, false ) . '/>' . esc_html( $cat->name ) . '</label>';
+					$ptax_custom_arrtibutes = apply_filters( 'wcfm_taxonomy_custom_attributes', array(), $taxonomy );
+					echo '<label class="selectit">' . $nbsp . '<input type="checkbox" class="wcfm-checkbox ' . $checklis_label_class . '" name="product_custom_taxonomies[' . $taxonomy . '][]" value="' . esc_attr( $cat->term_id ) . '"' . checked( in_array( $cat->term_id, $selected_taxonomies ), true, false ) . ' ' . implode( ' ', $ptax_custom_arrtibutes ) . '/>' . __( esc_html( $cat->name ), 'wc-frontend-manager' ) . '</label>';
 				} else {
-					echo '<label class="selectit">' . $nbsp . '<input type="checkbox" class="wcfm-checkbox ' . $checklis_label_class . '" name="product_cats[]" value="' . esc_attr( $cat->term_id ) . '"' . checked( in_array( $cat->term_id, $selected_taxonomies ), true, false ) . '/><span>' . esc_html( $cat->name ) . '</span></label>';
+					$ptax_custom_arrtibutes = apply_filters( 'wcfm_taxonomy_custom_attributes', array(), $taxonomy );
+					echo '<label class="selectit">' . $nbsp . '<input type="checkbox" class="wcfm-checkbox ' . $checklis_label_class . '" name="product_cats[]" value="' . esc_attr( $cat->term_id ) . '"' . checked( in_array( $cat->term_id, $selected_taxonomies ), true, false ) . ' ' . implode( ' ', $ptax_custom_arrtibutes ) . '/><span>' . __( esc_html( $cat->name ), 'wc-frontend-manager' ) . '</span></label>';
 				}
 			} else {
-				if( $wcfm_allowed_taxonomies ) {
-					echo '<option value="' . esc_attr( $cat->term_id ) . '"' . selected( in_array( $cat->term_id, $selected_taxonomies ), true, false ) . '>' . $nbsp . esc_html( $cat->name ) . '</option>';
-				}
+				if( !$super_parent ) $super_parent = $cat->term_id;
+				$cat_group_class = 'wcfm_cat_option_' . $super_parent;
+				echo '<option class=" ' . $cat_group_class . ' " value="' . esc_attr( $cat->term_id ) . '"' . selected( in_array( $cat->term_id, $selected_taxonomies ), true, false ) . '>' . $nbsp . __( esc_html( $cat->name ), 'wc-frontend-manager' ) . '</option>';
 			}
 			
 			if( $is_hierarchical ) {
 				$product_child_taxonomies   = get_terms( $taxonomy, 'orderby=name&hide_empty=0&parent=' . absint( $cat->term_id ) );
 				if ( $product_child_taxonomies ) {
 					if( $is_checklist ) { echo '<ul class="product_taxonomy_sub_checklist">'; }
-					$this->generateTaxonomyHTML( $taxonomy, $product_child_taxonomies, $selected_taxonomies, $nbsp . '&nbsp;&nbsp;', $is_checklist, $is_custom, $is_hierarchical );
+					$this->generateTaxonomyHTML( $taxonomy, $product_child_taxonomies, $selected_taxonomies, $nbsp . '&nbsp;&nbsp;', $is_checklist, $is_custom, $is_hierarchical, true, $super_parent );
 					if( $is_checklist ) { echo '</ul>'; }
 				}
 			}

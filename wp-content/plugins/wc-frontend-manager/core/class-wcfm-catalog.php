@@ -15,7 +15,7 @@ class WCFM_Catalog {
 		global $WCFM;
 		
 		if( apply_filters( 'wcfm_is_allow_catalog', true ) ) {
-			add_filter( 'wcfm_product_manage_fields_general', array( &$this, 'wcfm_product_manage_fields_catalog_mode' ), 10, 3 );
+			add_filter( 'wcfm_product_manage_fields_general', array( &$this, 'wcfm_product_manage_fields_catalog_mode' ), 100, 3 );
 			add_action( 'after_wcfm_products_manage_general', array( &$this, 'wcfm_products_manage_catalog_options' ), 10, 2 );
 			add_action( 'after_wcfm_products_manage_meta_save', array( &$this, 'wcfm_products_manage_catalog_options_save' ), 10, 2 );
 		}
@@ -37,11 +37,11 @@ class WCFM_Catalog {
 		$is_catalog = ( get_post_meta( $product_id, '_catalog', true) == 'yes' ) ? 'yes' : '';
 		if( $product_type != 'simple' ) $is_downloadable = '';
 		
-		$general_fields = array_slice($general_fields, 0, 2, true) +
+		$general_fields = array_slice($general_fields, 0, 1, true) +
 																	array(
 																				"is_catalog" => array( 'desc' => __( 'Catalog', 'wc-frontend-manager' ) , 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele wcfm_half_ele_checkbox simple variable booking', 'desc_class' => 'wcfm_title wcfm_ele virtual_ele_title checkbox_title simple variable booking', 'value' => 'yes', 'dfvalue' => $is_catalog),
 																				) +
-																	array_slice($general_fields, 2, count($general_fields) - 1, true) ;
+																	array_slice($general_fields, 1, count($general_fields) - 1, true) ;
 		return $general_fields;
 	}
 	
@@ -183,61 +183,8 @@ class WCFM_Catalog {
 				$disable_price = ( get_post_meta( $product_id, 'disable_price', true) ) ? get_post_meta( $product_id, 'disable_price', true) : 'no';
 				$disable_add_to_cart = ( get_post_meta( $product_id, 'disable_add_to_cart', true) ) ? get_post_meta( $product_id, 'disable_add_to_cart', true) : 'no';
 				if( $disable_add_to_cart == 'yes' ) {
+					add_filter( 'woocommerce_is_purchasable', '__return_false' );
 					remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30 );
-				}
-			
-				?>
-				<a href="#" id="wcfm_catalog_enquiry"><span class="fa fa-question-circle-o"></span>&nbsp;&nbsp;<span class="add_enquiry_label"><?php _e( 'Ask a Question', 'wc-frontend-manager' ); ?></span></a>
-				<div class="wcfm-clearfix"></div><br />
-				<style>
-				#wcfm_catalog_enquiry {
-					background: #3d3d3d;
-					padding: 5px 10px;         
-					-moz-border-radius: 3px;
-					-webkit-border-radius: 3px;
-					border-radius: 3px;
-					border:#f0f0f0 1px solid;
-					border-bottom: 1px solid #00897b;
-					color: #ffffff;
-					float: left;
-					text-align: center;
-					text-decoration: none;
-					margin-top: 10px;
-					-webkit-box-shadow: 0 1px 0 #ccc;
-					box-shadow: 0 1px 0 #ccc;
-					display: block;
-					cursor: pointer;
-				}
-				#wcfm_catalog_enquiry:hover { background-color: #00897b; color: #fff; }
-				</style>
-				<script>
-				jQuery(document).ready(function($) {
-					$('#wcfm_catalog_enquiry').click(function(event) {
-						event.preventDefault();
-						$enquiry_form_wrapper_html = $('#enquiry_form_wrapper').html();
-						jQuery.colorbox( { html: $enquiry_form_wrapper_html,
-							onComplete:function() {
-								$('#cboxLoadedContent').find('#wcfm_enquiry_submit_button').click(function(event) {
-									event.preventDefault();
-									$wcfm_enquiry_submited = false;
-									wcfm_enquiry_form_submit(jQuery(this).parent().parent());
-									jQuery( document ).ajaxComplete(function() {
-									  if( $wcfm_enquiry_submited ) {
-											setTimeout(function() {
-												$wcfm_enquiry_submited = false;
-												$.colorbox.remove();
-											}, 2000 );
-										}
-									});
-								});
-							},
-						} );
-					});
-				});
-				</script>
-				<?php
-				if( !apply_filters( 'wcfm_is_pref_enquiry_tab', true ) ) {
-					require_once( $WCFM->library->views_path . 'enquiry/wcfm-view-enquiry-tab.php' );
 				}
 			}
 		}

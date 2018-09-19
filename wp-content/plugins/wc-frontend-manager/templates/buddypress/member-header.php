@@ -72,14 +72,16 @@
 	}
 ?>
 
-<div id="buddypress">
-	<div id="item-nav">
-		<div class="item-list-tabs no-ajax" id="object-nav" role="navigation">
-			<ul>
-				<?php bp_get_displayed_user_nav(); ?>
-				<?php do_action( 'bp_member_options_nav' ); ?>
-			</ul>
-		</div>
-	</div><!-- #item-nav -->
+<div id="buddypress" class="buddypress-wrap bp-dir-hori-nav">
+  <div class="bp-wrap">
+		<div id="item-nav">
+			<nav class="main-navs no-ajax bp-navs single-screen-navs horizontal users-nav" id="object-nav" role="navigation" aria-label="Member menu">
+				<ul>
+					<?php bp_get_displayed_user_nav(); ?>
+					<?php do_action( 'bp_member_options_nav' ); ?>
+				</ul>
+			</nav>
+		</div><!-- #item-nav -->
+	</div>
 </div>
 <div class="wcfm-clearfix"></div><br />

@@ -1,13 +1,13 @@
 ﻿=== WooCommerce Frontend Manager - WC Marketplace, WC Vendors & Dokan with Bookings & Listings ===
 Contributors: wclovers
 Tags: woocommerce marketplace, multivendor marketplace, multi vendor, product vendors, wp user frontend, product vendor dashboard, ecommerce, vendor shop manager, woocommerce frontend shop manager, wcvendors, woocommerce frontend manager, wc frontend manager, woocommerce frontend shop manager, shop manager, ecommerce, e-commerce, woocommerce live manager
-Donate link: https://wclovers.com
+Donate link: https://www.paypal.me/wclovers/25usd
 Requires at least: 4.4
 Tested up to: 4.9
 WC requires at least: 3.0
 WC tested up to: 3.2.0
 Requires PHP: 5.6
-Stable tag: 4.0.4
+Stable tag: 5.0.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,9 +19,12 @@ Experience the best ever WooCommerce Frontend Product Manager. WooCommerce Front
 > Experience the most featured frontend product/store manager -
 > [WCFM Demo](http://demo.wcfmdemos.com/my-account/) - [Overview](https://www.youtube.com/watch?v=Nozi3VHVD6U) - [Guidelines](https://wclovers.com/blog/woocommerce-frontend-manager/)
 >
-> Premium WCFM will add many more feathers into the frontend wing - 
-> [WCFM - Ultimate](https://wclovers.com/product/woocommerce-frontend-manager-ultimate/) - [Overview](https://youtu.be/gitvRdLMTjw) - [Guidelines](https://wclovers.com/blog/why-woocommerce-frontend-manager-ultimate/)
+> FREE Modules -
+> [WCFM - Marketplace](https://wordpress.org/plugins/wc-multivendor-marketplace/) - [Demo](http://wcfmmp.wcfmdemos.com/my-account/) - [Documentation](https://wclovers.com/knowledgebase_category/wcfm-marketplace/)
 > [WCFM - Membership](https://wordpress.org/plugins/wc-multivendor-membership/) - [Demo](http://wcvendors.wcfmdemos.com/vendor-membership/) - [Documentation](https://wclovers.com/knowledgebase/wcfm-membership/)
+>
+> Premium addons also add many more feathers into the frontend wing - 
+> [WCFM - Ultimate](https://wclovers.com/product/woocommerce-frontend-manager-ultimate/) - [Overview](https://youtu.be/gitvRdLMTjw) - [Guidelines](https://wclovers.com/blog/why-woocommerce-frontend-manager-ultimate/)
 > [WCFM - Groups & Staffs](https://wclovers.com/product/woocommerce-frontend-manager-groups-staffs/) - [Demo](http://wcfmgs.wcfmdemos.com/my-account/) - [Documentation](https://wclovers.com/knowledgebase/wcfm-groups-staffs/)
 > [WCFM - Analytics](https://wclovers.com/product/woocommerce-frontend-manager-analytics/) - [Demo](http://wcmp.wcfmdemos.com/my-account/) - [Documentation](https://wclovers.com/knowledgebase/wcfm-analytics/)
 > [WCFM - Product HUB](https://wclovers.com/product/woocommerce-frontend-manager-product-hub/) - [Demo](http://wcmp.wcfmdemos.com/my-account/) - [Documentation](https://wclovers.com/knowledgebase/)
@@ -32,6 +35,7 @@ On any days, we provide <strong>6 hours</strong> turnaround time to reply every 
 
 Fully compatible with WordPress-WooCommerce most popular multivendor marketplace plugins - 
 
+- <strong>WooCommerce Multivendor Marketplace</strong> - [Demo](http://wcfmmp.wcfmdemos.com/my-account/)
 - <strong>Dokan Multivendor</strong> - [Demo](http://dokan.wcfmdemos.com/my-account)
 - <strong>WC Marketplace</strong> - [Overview](https://youtu.be/uZDU8NLeTb8) - [Documentation](https://wclovers.com/documentation/wcfm-wc-marketplace/) - [Demo](http://wcmp.wcfmdemos.com/my-account/)
 - <strong>WC Vendors</strong> - [Overview](https://youtu.be/efB2_UY49zI) - [Documentation](https://wclovers.com/documentation/wcfm-wc-vendors/) - [Demo](http://wcvendors.wcfmdemos.com/my-account/)
@@ -44,6 +48,12 @@ Exclusively compatible with <strong>WooCommerce Bookings</strong> -
 - <strong>WC Bookings</strong> - [Overview](https://youtu.be/PqSm6jO6bPY) - [Documentation](https://wclovers.com/documentation/wcfm-wc-booking/) - [Demo](http://wcbooking.wcfmdemos.com/my-account/)
 
 [youtube https://www.youtube.com/watch?v=sw4RTICctTc]
+
+= WCfM (Membership) Pay for Product Option =
+
+This will allow you to setup a system where vendor has to pay before adding a product -
+
+[youtube https://youtu.be/WwFHorx93Fw]
 
 > Read full feature list here -
 >
@@ -86,9 +96,11 @@ WCFM is now fully compatible with -
 - WooCommerce Barcode & ISBN
 - WooCommerce MSRP Pricing
 - WooCommerce Product Fees
+- WooCommerce Tab Manager
 - WooCommerce Custom Product Tabs Lite
 - WooCommerce Product SKU Generator
-- WooCommerce Tab Manager
+- Subscriptions for WooCommerce (Free Plugin only)
+- Epeken All Kurir Plugin for Woocommerce Full Version
 - FedEx WooCommerce Shipping with Print Label
 - DHL Express/DHL Paket WooCommerce Shipping with Print Label by XAdapter
 - BuddyPress
@@ -115,14 +127,23 @@ WooCommerce Frontend Manager is fully compatible with any WordPress-WooCommerce 
 = Quick view - what will be on your dashboard? =
 
 - Create and Manage Simple, Variable, Grouped, External, Subscription, Bookable, Accommodation, Auction, Rental, Job Package and Resume Package Products
-- Vendor PDF Invoices (Ultimate)
-- Bulk Stock manager (Ultimate)
-- Customer enquiry form
-- Vendor verification (Ultimate)
+- Product Enquiry Module
+- Support TIcket Module
+- Vendor Followers Module
+- Email Verification Module
+- Shipment Tracking Module
+- Vendor PDF Invoices & Packing Slick (Ultimate)
+- Bulk Stock manager Module (Ultimate)
+- Vendor verification Module (Ultimate)
 - Vendor Groups & Staffs
 - Message / Chat board
-- Knowledgebase Module
 - Notification Module
+- Vendor Article Module
+- Vendor Customer Module
+- Knowledgebase Module
+- Product, gallery limit
+- Category restriction
+- Featured and Duplicate Product
 - Vendor - Store Admin Direct messaging (Chat) system (Ultimate)
 - WP Job Manager listings associate with products (Ultimate)
 - Product <strong>Featured image</strong> and image gallery
@@ -158,7 +179,7 @@ WooCommerce Frontend Manager is fully compatible with any WordPress-WooCommerce 
 - Potuguese (Thanks to Rafael Sartori)
 - Russian   (Thanks to Alexey Seregin)
 - German    (Thanks to Ciao)
-- Spanish
+- Spanish   (Thanks to Felipe @sophivorus)
 - Arbic
 - Bulgarian
 
@@ -251,8 +272,447 @@ Fully compatible with all major multi-vendor marketplace plugins - <strong>WC Ma
 
 == Changelog ==
 
+= 5.0.10 =
+* Updated - 16/09/2018 *
+
+* Feature   - WCFM Marketplace vendor list widget compatibility added
+* Feature   - Store invoice download option added under vendor's orders page
+* Feature   - Store invoice advanced currency symbol support option added
+* Enhance   - Store invoice advanced characters (Chinese, Korian, Japanese etc ..) support option added
+* Enhance   - WCFM Marketplace Store Invoice vendor's shipping details added
+* Enhance   - WCFM Marketplace commission invoice shipping and refund details added
+* Enhance   - Product Quick and Bulk edit visibility controller added
+* Enhance   - WCFM Dashboard list pages restrict hidden columns export
+* Enhance   - Translations updated
+* Fixed     - Inquiry and Support Popup reCaptcha issue for loggedin users resolved
+* Fixed     - Minor CSS issues resolved
+
+= 5.0.9 =
+* Enhance    - My Account endpoint slug edit setting option added (WCFM Admin Setting -> Dashboard Pages -> My Account End Points)
+* Fixed     - My Account inquiry link broken issue resolved
+* Fixed     - Select2 library load issue resolved (for some specific themes)
+
+= 5.0.8 =
+* Feature   - WCFM Inquiry module extended for threded reply
+* Feature   - WCFM Marketplace Customer refund request option added
+* Enhance    - WCFM Marketplace vendors group list page design sync with store list page 
+* Enhance    - Users are now allowed to manage their inquiries from My Account page
+* Enhance    - WCFM Marketplace new booking and appointment store vendor email notification added 
+* Enhance    - WCFM Menu Manager menu for option added - All User or Only Admin or Only Vendor
+* Enhance    - WCFM Menu Manager menu open in new tab option added
+* Tweak     - Product Attachment delete on product delete function added - have to enable by filter "wcfm_is_allow_delete_post_media" 
+* Tweak     - WCFM list pages default row length change to 20 (previously it was 10)
+* Fixed     - Variable Product edit blank variations issue resolved
+* Fixed     - Product sales schdule date saving issue resolved
+* Fixed     - Some CSS issue resolved
+
+= 5.0.7 =
+* Feature   - WCFM Marketplace Store List separate banner option added
+* Feature   - WCFM Marketplace Vendor store no of products per page option added
+* Enhance   - WCFM Marketplace Store Banner width-height setting option added
+* Enhance   - Pending Vendors link added under WCFM Vendor Dashboard
+* Enhance   - Product taxonomy dropdown view sub-category support added
+* Enhance   - Support Ticket form Google Captcha support added
+* Fixed     - Group product child title change issue resolved 
+* Fixed     - WP Hide attachment upload issue resolved
+* Fixed     - Amazon S3 storage vendor disk usage calculation issue resolved
+* Fixed     - Some CSS issue resolved
+
+= 5.0.6 =
+* Feature   - WCFM Marketplace Slider store banner support added
+* Feature   - WCFM Marketplace  Video store banner support added
+* Fixed     - Vendor last login time display as per timezone issue resolved 
+* Fixed     - WCFM Marketplace Store slug update error issue resolved
+* Fixed     - Some CSS issue resolved
+
+= 5.0.5 =
+* Feature   - Product Visibility controller option added
+* Feature   - Custom taxonomy "Add new" option added
+* Enhance   - Variations bulk actions translation support added
+* Enhance   - WCFM Marketplace Vendor commission order sync with WC order item delete
+* Enhance   - WCFM Marketplace Vendor commission order sync with WC order delete
+* Enhance   - WC Product Vendors "pending vednor" restriction check added
+* Fixed     - WC Box Office checkout issue resolved 
+* Fixed     - Some CSS isuue resolved
+* Fixed     - Some missing strings added for translation
+
+= 5.0.4 =
+* Enhance   - Toolset profile field vendor specific customer data flexibility filter added - wcfm_toolset_profile_field_meta
+* Enhance   - WCFM Shipment Tracking form override option added 
+* Enhance   - WC Appointment lead and schedule duration options synched
+* Enhance   - SEO capability option added
+* Enhance   - WC Simple Auction "Auto Proxy" setting compatibility added
+* Enhance   - WCFM Marketplace GEO my WP compatibility added
+* Fixed     - WCFM Marketplace Store analytics issue resolved 
+* Fixed     - Vendor Export capability issue resolved
+* Fixed     - Vendor Import capability issue resolved
+* Fixed     - WCFM Email constant already defined PHP notie issue resolved
+* Fixed     - Notification email hyperlink escape issue resolved
+
+= 5.0.3 =
+* Enhance   - WCFM Marketplace Vendor shipping zone delete confirmation added
+* Enhance   - WCFM Marketplace Vendor country shipping disable notice option added 
+* Tweak     - Admin report data cache load disabled
+* Fixed     - Coupon list expiry date display issue resolved
+* Fixed     - Expired isting not visible in all listing issue resolved
+* Fixed     - WCFM Marketplace Cancel withdrawal not available for withdrawal issue resolved
+* Fixed     - WCFM Marketplace Cancel withdrawal multiple vendor notification issue resolved
+
+= 5.0.2 =
+* Enhance   - WCFM Marketplace frontend "Add Vendor" option added for Admin
+* Enhance   - WCFM Membership plan commission support added
+
+= 5.0.1 =
+* Feature   - WCFM Marketplace - Single Product Multivendor compatibility added - [Documentation](https://wclovers.com/knowledgebase/wcfm-marketplace-single-product-multi-vendor/)
+* Enhance   - Jetpack image lazy load compatibility added
+* Enhance   - WCFM Marketplace Store description support added
+* Fixed     - WCFM Marketplace vendor capability check issue resolved
+
+= 5.0.0 =
+* Feature   - [WCFM - Marketplace](https://wordpress.org/plugins/wc-multivendor-marketplace/) integrated version
+
+= 4.2.5 =
+* Fixed   - Article excerpt and description save issue resolved
+* Fixed   - Customer Toolset field save issue resolved
+* Fixed   - WC marketplace setting layout broken due to Address Capability OFF issue resolved
+* Fixed   - Manual Booking creation page hangs issue resolved
+* Fixed   - Dokan withdrawal cancel page hangs issue resolved
+* Fixed   - On save product save JS error issue resolved
+
+= 4.2.4 =
+* Feature - Variations bulk action more options added
+* Enahnce - Product approval vendor notification added
+* Enahnce - ACF field category type check enhance upto fifth hierarchy 
+* Tweak   - Store invoice now generated per vendor instead of per item
+* Tweak   - Product review option WC review status check added
+* Tweak   - Dashboard all editor changed tp WP_Editor
+* Tweak   - Product Type Toolset field mapping set by field id instead of slug 
+* Fixed   - Product quick edit out of stock issue resolved
+* Fixed   - Cancellation policy update issue resolved
+* Fixed   - Numeric value 0 update issue resolved
+* Fixed   - Vendors can see other users attachments issue resolved
+* Fixed   - WC Product Vendors manage vendor page broken issue resolved
+
+= 4.2.3 =
+* Feature - Dokan Admin withdrawal request manage screen added
+* Feature - Add/Edit Listing page wrap under WCfM Dashboard template
+* Feature - Articles Toolset field support added
+* Feature - Articles ACF and ACF Pro field support added
+* Feature - Inquiry button lable edit option added
+* Enahnce - Store Invoice, Commission Invoice and Packing Slip template override under theme option added
+* Enahnce - Store Invoice vendor email and phone included
+* Enahnce - Packing Slip store policies included
+* Enahnce - Product quick edit capabillity check added
+* Enahnce - Product quick edit custom validation check added
+* Enahnce - Knowledge base categories translation support added 
+* Enhance - GEO my WP capability option (Location) added
+* Enhance - After vendor login WCfM dashboard redirect disable filter added - wcfm_is_allow_login_redirect
+* Enhance - WC Tab Manager latest version compatibility added
+* Enhance - Admin bar quick WCfM Menu formatted menu support added
+* Enhance - Menu Manager module option added
+* Enhance - WCfM dashboard error/warning message auto-hide option added
+* Tweak   - Listing add product replace with WCfM Popup Add Product
+* Tweak   - Commission Invoice customer email, phone and shipping address replaced by Vendor store address, email and phone
+* Tweak   - Product from validation remove for Draft save
+* Tweak   - On duplicate SKU found product status change to Draft
+* Tweak   - Downloadable file default required check remove
+* Tweak   - WCfM Menu Manager default dashboard can not be deleted, only disable option available
+* Tweak   - WCfM Dashboard responsive display modified
+* Fixed   - WPML other language admin setting update permalink broken issue resolved
+* Fixed   - WPML vendor product translation process timeout issue resolved
+* Fixed   - Store Stock custom validation check issue resolved
+* Fixed   - WCFM Menu Manager vendor menu broken issue resolved
+* Fixed   - BuddyPress member menu vertical display issue resolved
+* Fixed   - Some CSS conflict issues resolved
+
+= 4.2.2 =
+* Enahnce - WCfM Menu Manager WPML compatibility added
+* Enahnce - WCfM Menu 'HOME' label edit option added
+* Enahnce - WCfM topbar 'My Store' label edit option added 
+* Enahnce - WCFM Menu Manager capability and module preference compatibility added
+* Fixed   - WCFM Menu Manager vendor menu broken issue resolved
+
+= 4.2.0 =
+* Feature - WCfM Policies module added - [Documentation](https://wclovers.com/knowledgebase/wcfm-store-policies/)
+* Feature - WCfM Menu Manager added ( WCfM Dashboard -> Admin Setting -> Menu Manager Tab )
+* Enahnce - Order, Booking, Appointment, Subscription status update notification added
+* Enahnce - WCfM Store Invoice polices added
+* Enahnce - WCfM Store Invoice vednor digital signature support added 
+* Enahnce - WCfM new welcome box RTL support added
+* Enahnce - WCfM Membership free plan expiry limit compatibility added
+* Tweak   - WC Pre-defined attributes are now available in WCfM Free
+* Tweak   - Sales scheduling now available in WCfM Free 
+* Tweak   - On delete Order status will change to trash from now
+* Tweak   - On delete Product can be hold at trash by filter - wcfm_is_allow_product_delete 
+* Tweak   - On focus textaea hieght toogle property removed
+* Fixed   - Product Popup Address Geocoder map intialize issue resolved
+* Fixed   - Multi-lingual product limit count issue resolved
+* Fixed   - Knowledgebase title link to restricted page for vendors issue resolved
+* Fixed   - On Draft product new product notification to admin issue resolved
+* Fixed   - Minor CSS fixes
+
+= 4.1.9 =
+* Feature - WCfM Vednor Store Invoice Module added - [Documentation](https://wclovers.com/knowledgebase/wcfm-store-invoice/)
+* Enahnce - Withdrawal request capability controller added
+* Enahnce - Staff list store info column added
+* Enahnce - Knowledge base list catagory column added
+* Enahnce - Capability controller module preference check added
+* Fixed   - WC Vendors 2.0.10 WCV_Orders class missing issue resolved
+* Fixed   - Dokan Terms & Conditions setting save issue resolved
+* Fixed   - Dokan store location search CSS issue resolved
+* Fixed   - WC Marketplace timezone setting update issue resolved
+
+= 4.1.8 =
+* Feature - Disk space usage limit capability option added
+* Feature - WCfM Knowledgebase category option added
+* Feature - WCfM Profile manage password change option added
+* Enhance - WCfM Product custom field display new option "After Title" and "After Price" added
+* Enhance - WCfM Knowledgebase view pop-up added
+* Enhance - WCfM Orders table billing and shipping address column added
+* Enhance - WCfM product import vendor capability status check added
+* Enhance - Auction product type virtual and downloadable option support added
+* Enhance - Vendor specific Toolset field info visible at WCfM vendor manage page
+* Enhance - Vendor vacation message display capability checking added
+* Enhance - WCMp 3.1 compatibility (integrated Stripe connect) added
+* Tweak   - Vendor setting page profile setting tabs move to header
+* Tweak   - WCfM Module Controler added - Shipment Tracking, Vendor Vacation
+* Tweak   - WCfM Notice rename to Announcement
+* Fixed   - Some minor CSS issues resolved
+
+= 4.1.7 =
+* Feature - Vendor specific capability controller added
+* Enhance - Vendors listing dashboard re-designed
+* Enhance - Inqury notification vendor capability checking added
+* Enhance - Support notification vendor capability checking added
+* Enhance - Upload type custom field display modified
+* Tweak   - Now WCfM screen templates can be override to theme for edit
+* Tweak   - On product publish it will no more redirect to product view page, instead stay on same page in edit mode
+* Tweak   - On article publish it will no more redirect to article view page, instead stay on same page in edit mode
+* Tweak   - WCMp Table rate shipping setting fields change to number type
+* Tweak   - Shipping setting cost fields changeto number type 
+* Fixed   - Social verification profile save issue resolved
+* Fixed   - PDF Voucher date and location save/edit issue resolved 
+* Fixed   - Variation attributes character display issue resolved
+* Fixed   - Some minor CSS issues resolved
+
+= 4.1.6 =
+* Feature - CC and BCC email option added for notifications
+* Enhance - Dokan vendor status restriction check added
+* Enhance - Dokan vendor publish product restriction check added (May disable using filter "wcfm_is_allow_respect_dokan_publish_product_settings")
+* Enhance - Inquiry button custom style setting support added
+* Enhance - Inquiry button short code "label" parameter added to define own button label
+* Enhance - Inquiry button short code "background" parameter added to define own button background color
+* Enhance - Inquiry button short code "color" parameter added to define own button color 
+* Enhance - Vendor Manager Toolset 3.0 compatibility added
+* Tweak   - WCfM Dashboard base color changed
+* Tweak   - WC Marketplace product policy pre-filled with vendor policy content
+* Fixed   - WCfM empty custom field visibility issue resolved
+* Fixed   - My account double Logout display issue resolved
+* Fixed   - PDF Voucher product manager empty field visible issue resolved
+* Fixed   - Some minor CSS issues resolved
+
+= 4.1.5 =
+* Feature - WC Warrenty compatibility added
+* Feature - WC Waitlists compatibility added
+* Feature - Appointment Calendar appointment details pop-up added
+* Enhance - Toolset 3.0 compatibility added
+* Enhance - Email header content type set to send emails at HTML mode 
+* Enhance - Missing strings added for trnslation
+* Tweak   - WCfM dashboard editors Text Mode disabled
+* Tweak   - Variable Virtual product is now part of WCfM Free
+* Tweak   - WCfM view mode change
+* Fixed   - Toolset date field save issue resolved
+* Fixed   - WCfM 'wcfm_hide_admin_bar_prefs' method missing issue resolved 
+* Fixed   - Bookings and Appointments dashboard undefined variable PHP warning issue resolved
+* Fixed   - Some minor CSS issues resolved
+
+= 4.1.4 =
+* Feature - Pay for Product limit module compatibility added  - [Documentation](https://youtu.be/WwFHorx93Fw)
+* Feature - WCfM Product custom fields are now dragable to re-arrange
+* Feature - WCfM Enquiry custom fields are now dragable to re-arrange
+* Enhance - Product custom taxonomy validation option added
+* Enhance - WC Vendors and WC Marketplace product specific commission manage option added
+* Enhance - WC Marketplace product specific policies manage option added
+* Enhance - Dokan withdrawal note added in payment list display
+* Enhance - Product custom fields WPML string translation compatibility added
+* Enhance - Enquiry custom fields WPML string translation compatibility added
+* Tweak   - TinyMCE editors context menu disabled to enable spell suggestion
+* Tweak   - Dokan withdrawal restricted without vendor's payment setting 
+* Fixed   - Mobile menu item click issue resolved
+* Fixed   - In mobile product attributes active double click issue resolved
+* Fixed   - Code resend to verified email address issue resolved 
+* Fixed   - Vendor verification custom identity fields JS error due to special characters issue resolved
+* Fixed   - Gallery image capability setting not working issue resolved
+* Fixed   - Dokan subscription remaining product limit check issue resolved 
+* Fixed   - Dokan shipping zone setting version check issue resolved
+* Fixed   - Coupon type display issue resolved
+* Fixed   - Dummy image icon missing CSS issue resolved
+* Fixed   - Other minor CSS issue resolved
+
+= 4.1.3 =
+* Feature - WCfM Enquiry custom field support added 
+* Feature - wcfm_enquiry -> short code added to add "Ask a Question" button in widgets 
+* Feature - Dokan Pro zone wise shipping support added 
+* Feature - WC Product Vendor -> Marketplace Stripe Connect support added
+* Feature - WCMp transaction details page added
+* Feature - Email from name and address setting option added
+* Feature - Article, Customer, Staff limit capability option added
+* Feature - Article category capability option added
+* Enhance - My Following list vendors store link added
+* Enhance - Gallery image remove X icon added
+* Tweak   - Vendor customer list now cotains own and order customers both
+* Tweak   - "Ask a Question" button placed outside Enquiry tab
+* Fixed   - New vendor sales by product stats disaplay using admin products issue resolved
+* Fixed   - WCMp withdrawal transaction status update display issue resolved
+* Fixed   - Product popup empty content due to theme collapse issue resolved 
+* Fixed   - Vendor Customers page throwing error issue resolved 
+* Fixed   - Email verification code visible with message issue resolved
+
+= 4.1.2 =
+* Feature - Vendor Followers module added
+* Feature - Vendor disable option added
+* Feature - Vendor email confirmation option added
+* Feature - Vacation mode date wise option added
+* Feature - ACF Pro User, Time & Date-Time field type support added
+* Enhance - ACF Pro category wise field group support added for WCfM product popup
+* Enhance - Wp admin top bar disable for Vendors
+* Tweak   - Social seeting now available with WCfM Free
+* Tweak   - Admin-Vendor review product notification conditional
+* Tweak   - Admin-Vendor new product notification conditional
+* Tweak   - Admin-Vendor new order notification conditional
+* Fixed   - WCfM emails twice footer text issue resolved
+
+= 4.1.1 =
+* Feature - WC 4.0 compatibility added
+* Feature - Subscriptions for WooCommerce (Free Plugin only) compatibility added
+* Feature - Dokan Subscription compatibility added
+* Feature - Shipment mark received admin and vendor notification added
+* Enhance - Epeken All Kurir Plugin compatibility improved
+* Enhance - Bulk product edit improved
+* Enhance - WCfM notification email message type added
+* Enhance - WCfM dashboard notification sound manage filter "wcfm_is_allow_notification_sound" added
+* Enhance - WCfM dashboard notification sound change filter "wcfm_notification_sound" added
+* Tweak   - Vendors are now allowed to view customers for their orders
+* Fixed   - Bulk product edit shipping class missing issue resolved 
+* Fixed   - Category archive product delete issue resolved
+* Fixed   - WCfM product popup float button issue resolved 
+* Fixed   - WCfM setting page break due to Dokan Pro JS - conflict issue resolved
+* Fixed   - WCfM multiple notification issue resolved
+
+= 4.1.0 =
+* Feature - Dashboard popup add product option added 
+* Feature - WooCommerce Tabs Manager compatibility added 
+* Feature - Epeken All Kurir Plugin compatibility added
+* Feature - Subscriptions for WooCommerce (Free Plugin only) compatibility added
+* Enhance - WCfM all dashboard notification will have email notifications as well
+* Enhance - WC Vendors Pro 1.5.0 compatibility added
+* Enhance - WC Vendors 2.0 vendor bank details support added
+* Enhance - Shipment Tracking customer email notification added
+* Enhance - Shipment Tracking admin desktop notification added
+* Tweak   - WCfM screens slugs chnage to without wcfm- suffix
+* Tweak   - Downlodable product now available in WCfM FREE
+* Tweak   - Image Gallery (4 images) now available in WCfM FREE
+* Fixed   - WP Editor text mode data save issue resolved 
+* Fixed   - WC Marketplace commission withdrawal duplicate transaction issue resolved
+* Fixed   - WC Marketplace Stripe disconnect issue resolved
+* Fixed   - WCfM-WPML pages setting update issues resolved 
+
+= 4.0.10 =
+* Enhance - WC Vendors 2.0 compatibility added
+
+= 4.0.9 =
+* Feature - WCfM dashboard new mobile menu added
+* Enhance - My Listings package group capability support added
+* Enhance - Geo my WP product default location by vendor store location compatibility added
+* Enhance - Select2 localization support added
+* Enhance - WCfM dashboard date filters format sync with WP date format
+* Fixed   - WC custom product attributes character issue resolved
+* Fixed   - WP user avatar sync issue resolved
+* Fixed   - Subscription manage screen custom permalink issue resolved
+* Fixed   - Product dashboard product count by status issue resolved
+* Fixed   - Knowledgebase display order issue resolved
+* Fixed   - WC Marketplace refund police settings edit issue resolved
+* Fixed   - WPML translated products edit URL issue resolved
+* Fixed   - WCfM page settings reset due to WPML resolved
+* Fixed   - WPML terms restore filter argument missing issue resolved
+* Fixed   - Some missing strings added for translation
+
+= 4.0.8 =
+* Feature - Product field specific capability options added
+* Feature - Featured product limit capability option added
+* Feature - Subscriptions capability options added
+* Feature - Subscription dashboard screen manager added
+* Enhance - GMW product default address set by vendor store location
+* Tweak   - WP Editor used as product manager default editor
+* Tweak   - WP Editor used as article manager default editor
+* Tweak   - WP Editor used as knowledgebase manager default editor
+* Tweak   - Sub-category allow / block depending upon main category
+* Tweak   - Profile shipping address same as shipping option added
+* Fixed   - Order item attributes display as slug issue resolved 
+* Fixed   - Vendor verification popup ID proof missing issue resolved
+* Fixed   - WC Simple Auction "Buy Now" option missing issue resolved
+* Fixed   - YiTH Auction Premium product data edit issue resolved
+* Fixed   - Auction products tab cut-off issue resolved
+* Fixed   - Mobile view popup display issue resolved
+
+= 4.0.7 =
+* Feature - WC Subscriptions front-end dashboard (vendor wise as well) added
+* Feature - WC Subscriptions front-end manage page added
+* Feature - WCfM product custom field product type wise condition added
+* Feature - GEO my WP 3.0 compatibility added
+* Feature - WC Appointment Google Calendar Sync option added
+* Feature - Vendor specific Appointment Gcal sync integrated
+* Feature - WCfM dashboard profile avatar sync with BuddyPress profile avatar 
+* Enhance - WC Appointments 3.8 quantity fields support added
+* Enhance - Products, Articles, Listings fetch performence enhanced
+* Enhance - Vendors drop-down search improved
+* Fixed   - On product type change Virtual options visibility issue resolved 
+* Fixed   - Message board display error due to deleted vendors resolved
+* Fixed   - Vendor product count PHP memory issue resolved 
+* Fixed   - WC Marketplace single product multiple seller association issue resolved
+* Fixed   - Dokan is_vendor check for multi-site issue resolved 
+* Fixed   - Dokan vendors orders page PHP notice issue resolved
+* Fixed   - Dokan stripe connect button missing issue resolved
+
+= 4.0.6 =
+* Feature - WP date format support added for report graph dates
+* Feature - WC PDF Voucher generate voucher code option added
+* Feature - WC PDF Voucher variable product support added
+* Enhance - Downloadable option enabled for Bookable and Appointable product type
+* Enhance - WCfM shipment tracking on complete "wcfm_after_order_mark_shipped" action hook added (Parameters -> $order_id, $order_item_id, $tracking_code, $tracking_url)
+* Tweak   - Downloadable file required set instead of downloadable file name 
+* Tweak   - WCfM product manager tax fields filter changed to "wcfm_product_simple_fields_tax"
+* Tweak   - WC core JS file missing error exception handler added 
+* Fixed   - Booking, Accommodation, Appointment product zero cost rule issue resolved
+* Fixed   - Booking, Accommodation, Appointment empty availability rule issue resolved
+* Fixed   - YiTH Auction date from / to display issue resolved 
+* Fixed   - DHL FedEX / UPS shipping label generation issue resolved
+* Fixed   - WCfM attributes limit override for all issue resolved
+* Fixed   - Dokan Stripe conect active check issue resolved
+* Fixed   - My Account support ticket label broken link issue resolved
+
+= 4.0.5 =
+* Feature - WCfM Product Manager custom validaton rule settings added (WCfM Ultimate Admin Settings -> Product Custom Validation)
+* Feature - Unverified vendors special product limit restriction option added - [Documentation](https://wclovers.com/knowledgebase/wcfm-vendor-verification/)
+* Enhance - WCfM admin vendor manage page -> verification section added 
+* Enhance - Vendor verification identity proofs manage option
+* Enhance - WCfM Shipment Tracking now possible by Admin and Shop Manager
+* Enhance - Dokan Single product multi-vendor module compatibility added
+* Enhance - WC Bookings "Restrict Days" 1.10.7 backward compatibility added
+* Enhance - WC Appointments 3.7 compatibility added
+* Enhance - WC Appointments missing translations added
+* Enhance - Dokan & WCfM both dashboard usage compatibility added
+* Fixed   - Products for Listings JS error issue resolved
+* Fixed   - WCfM -> WC Vendors Pro settings page broken issue resolved 
+* Fixed   - WC Marketplace store address state field uneditable issue resolved
+* Fixed   - Dokan store address state field uneditable issue resolved
+* Fixed   - Dokan disable shiping checkbox save issue resolved
+* Fixed   - WC Product Add-ons translation issue resolved
+* Fixed   - Product CSV import page CSS issues resolved (Update color setting to best view)
+* Fixed   - WCfM dashboard header and menu RTL display issue resolved
+
 = 4.0.4 =
-* Feature - WCfM Support Ticket module added - [Documentation](https://wclovers.com/knowledgebase/wcfm-support-ticket-system/)
+* Feature - WCfM Support Ticket module added - [Documentation](https://wclovers.com/knowledgebase/wcfm-support-ticket-module/)
 * Enhance - WC attribute delimiter change compatibillity added
 * Enhance - WCfM Dashboard load perfermence improved
 * Fixed   - WC Reports calculation order count issue resolved
@@ -262,7 +722,7 @@ Fully compatible with all major multi-vendor marketplace plugins - <strong>WC Ma
 * Fixed   - Dokan disable shiping checkbox save issue resolved
 
 = 4.0.3 =
-* Feature - WCfM Support Ticket module added - [Documentation](https://wclovers.com/knowledgebase/wcfm-support-ticket-system/)
+* Feature - WCfM Support Ticket module added - [Documentation](https://wclovers.com/knowledgebase/wcfm-support-ticket-module/)
 * Enhance - WC attribute delimiter change compatibillity added
 * Fixed   - WC Reports calculation order count issue resolved
 * Fixed   - Dokan vendor report sales calculaton cancelled order exclusion issue resolved 
@@ -341,7 +801,7 @@ Fully compatible with all major multi-vendor marketplace plugins - <strong>WC Ma
 * Feature - WCFM custom fields front-end automatic visibility option added - [Documentation](https://wclovers.com/knowledgebase/wcfm-custom-fields/)
 * Enhance - Now vendors are allowed to add embed code to their product description
 * Enhance - Now Shipment Tracking widget available under Order Details screen 
-* Enhance - Multi-site installation multi-vednor compatibility added
+* Enhance - Multi-site installation multi-Vendor compatibility added
 * Enhance - WCFM form custom validation option added using "wcfm_form_custom_validation" filter (Developer friendly) 
 * Tweaks  - Product review email added as backup option (only works if multi-vendor email failed)
 * Fixed   - Order details page "Order Again" button visibility issue resolved
@@ -364,7 +824,7 @@ Fully compatible with all major multi-vendor marketplace plugins - <strong>WC Ma
 = 3.5.2 =
 * Enhance - Variations sales price schedule option added
 * Enhance - Toolset fields data display added in customer manager page
-* Enhance - Toolset fields data display added in vednor manager page
+* Enhance - Toolset fields data display added in Vendor manager page
 * Fixed   - Auction product shiping tracking option unavailable issue resolved
 * Fixed   - Shop Manager wp admin view icon visible issue resolved
 
@@ -636,7 +1096,7 @@ Fully compatible with all major multi-vendor marketplace plugins - <strong>WC Ma
 
 = 3.2.1 =
 * Feature - Create product under add listings page - [Documentation](https://wclovers.com/knowledgebase/wcfm-product-listings/)
-* Feature - Vednors sales dashbaord for Admin
+* Feature - Vendors sales dashbaord for Admin
 * Feature - Admin and Vendor separate screen manager
 * Feature - WCFM dashbaord theme header disbale option added
 * Feature - WCFM menu sortable using priority
@@ -794,7 +1254,7 @@ Fully compatible with all major multi-vendor marketplace plugins - <strong>WC Ma
 = 2.4.5 =
 * Feature - RTL support added
 * Fixed   - Knowledgebase video embed issue resolved 
-* Enhance - Vednor Dashboard Hooks added
+* Enhance - Vendor Dashboard Hooks added
 * Fixed   - Vendor Order Price filter
 * Fixed   - Admin Dashboard Notice controller
 
@@ -1037,12 +1497,15 @@ Fully compatible with all major multi-vendor marketplace plugins - <strong>WC Ma
 
 == Upgrade Notice ==
 
-= 4.0.4 =
-* Feature - WCfM Support Ticket module added - [Documentation](https://wclovers.com/knowledgebase/wcfm-support-ticket-system/)
-* Enhance - WC attribute delimiter change compatibillity added
-* Enhance - WCfM Dashboard load perfermence improved
-* Fixed   - WC Reports calculation order count issue resolved
-* Fixed   - Dokan vendor report sales calculaton cancelled order exclusion issue resolved 
-* Fixed   - WCfM enquiry form freezing issue resolved
-* Fixed   - WC Appointment calendar broken issue resolved
-* Fixed   - Dokan disable shiping checkbox save issue resolved
+= 5.0.10 =
+* Feature   - WCFM Marketplace vendor list widget compatibility added
+* Feature   - Store invoice download option added under vendor's orders page
+* Feature   - Store invoice advanced currency symbol support option added
+* Enhance   - Store invoice advanced characters (Chinese, Korian, Japanese etc ..) support option added
+* Enhance   - WCFM Marketplace Store Invoice vendor's shipping details added
+* Enhance   - WCFM Marketplace commission invoice shipping and refund details added
+* Enhance   - Product Quick and Bulk edit visibility controller added
+* Enhance   - WCFM Dashboard list pages restrict hidden columns export
+* Enhance   - Translations updated
+* Fixed     - Inquiry and Support Popup reCaptcha issue for loggedin users resolved
+* Fixed     - Minor CSS issues resolved

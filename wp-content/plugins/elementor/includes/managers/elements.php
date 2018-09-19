@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Elementor elements manager class.
+ * Elementor elements manager.
  *
  * Elementor elements manager handler class is responsible for registering and
  * initializing all the supported elements.
@@ -239,11 +239,9 @@ class Elements_Manager {
 	 *
 	 * Fired by `wp_ajax_elementor_discard_changes` action.
 	 *
-	 * @since  1.9.0
+	 * @since 1.9.0
 	 * @deprecated 2.0.0 Use `Plugin::$instance->documents->ajax_discard_changes()` method instead.
 	 * @access public
-	 *
-	 * @throws \Exception If the request has no post id.
 	 *
 	 * @param $request
 	 *
@@ -267,9 +265,6 @@ class Elements_Manager {
 	 * @deprecated 2.0.0 Use `Plugin::$instance->documents->ajax_save()` method instead.
 	 * @access public
 	 *
-	 * @throws \Exception If the request has no post id.
-	 * @throws \Exception If current user don't have permissions to edit the post.
-	 *
 	 * @param array $request
 	 *
 	 * @return mixed
@@ -289,7 +284,7 @@ class Elements_Manager {
 		 *
 		 * @param array $return_data The returned data. Default is an empty array.
 		 */
-		$return_data = Utils::apply_filters_deprecated( 'elementor/ajax_save_builder/return_data', [ $return_data, $request['editor_post_id'] ], '2.0.0', 'elementor/documents/ajax_save/return_data' );
+		$return_data = apply_filters_deprecated( 'elementor/ajax_save_builder/return_data', [ $return_data, $request['editor_post_id'] ], '2.0.0', 'elementor/documents/ajax_save/return_data' );
 
 		return $return_data;
 	}
@@ -300,7 +295,7 @@ class Elements_Manager {
 	 * Initialize Elementor elements by registering the supported elements.
 	 * Elementor supports by default `section` element and `column` element.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 * @access private
 	 */
 	private function init_elements() {
@@ -337,16 +332,19 @@ class Elements_Manager {
 				'icon' => 'eicon-font',
 			],
 			'pro-elements' => [
-				'title' => __( 'Pro Elements', 'elementor' ),
-				'icon' => 'font',
-			],
-			'theme-elements' => [
-				'title' => __( 'Theme Elements', 'elementor' ),
-				'icon' => 'font',
+				'title' => __( 'Pro', 'elementor' ),
 			],
 			'general' => [
-				'title' => __( 'General Elements', 'elementor' ),
+				'title' => __( 'General', 'elementor' ),
 				'icon' => 'eicon-font',
+			],
+			'theme-elements' => [
+				'title' => __( 'Site', 'elementor' ),
+				'active' => false,
+			],
+			'woocommerce-elements' => [
+				'title' => __( 'WooCommerce', 'elementor' ),
+				'active' => false,
 			],
 		];
 
@@ -373,6 +371,7 @@ class Elements_Manager {
 		$this->categories['wordpress'] = [
 			'title' => __( 'WordPress', 'elementor' ),
 			'icon' => 'eicon-wordpress',
+			'active' => false,
 		];
 	}
 

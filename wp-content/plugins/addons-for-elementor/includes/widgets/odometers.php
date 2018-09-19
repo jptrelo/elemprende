@@ -1,7 +1,7 @@
 <?php
 
 /*
-Widget Name: Livemesh Odometers
+Widget Name: Odometers
 Description: Display one or more animated odometer statistics in a multi-column grid.
 Author: LiveMesh
 Author URI: https://www.livemeshthemes.com
@@ -15,6 +15,7 @@ use Elementor\Utils;
 use Elementor\Scheme_Color;
 use Elementor\Group_Control_Typography;
 use Elementor\Scheme_Typography;
+use Elementor\Modules\DynamicTags\Module as TagsModule;
 
 if (!defined('ABSPATH'))
     exit; // Exit if accessed directly
@@ -27,7 +28,7 @@ class LAE_Odometers_Widget extends Widget_Base {
     }
 
     public function get_title() {
-        return __('Livemesh Odometers', 'livemesh-el-addons');
+        return __('Odometers', 'livemesh-el-addons');
     }
 
     public function get_icon() {
@@ -42,7 +43,7 @@ class LAE_Odometers_Widget extends Widget_Base {
         return [
             'lae-widgets-scripts',
             'lae-frontend-scripts',
-            'waypoints',
+            'lae-waypoints',
             'jquery-stats'
         ];
     }
@@ -56,15 +57,23 @@ class LAE_Odometers_Widget extends Widget_Base {
             ]
         );
 
-        $this->add_control(
+        $this->add_responsive_control(
             'per_line',
             [
-                'label' => __('Odometers per row', 'livemesh-el-addons'),
-                'type' => Controls_Manager::NUMBER,
-                'min' => 1,
-                'max' => 5,
-                'step' => 1,
-                'default' => 4,
+                'label' => __( 'Odometers per row', 'livemesh-el-addons' ),
+                'type' => Controls_Manager::SELECT,
+                'default' => '4',
+                'tablet_default' => '2',
+                'mobile_default' => '1',
+                'options' => [
+                    '1' => '1',
+                    '2' => '2',
+                    '3' => '3',
+                    '4' => '4',
+                    '5' => '5',
+                    '6' => '6',
+                ],
+                'frontend_available' => true,
             ]
         );
 
@@ -107,8 +116,12 @@ class LAE_Odometers_Widget extends Widget_Base {
                     [
                         'name' => 'stats_title',
                         'label' => __('Stats Title', 'livemesh-el-addons'),
+                        'default' => __('My stats title', 'livemesh-el-addons'),
                         'type' => Controls_Manager::TEXT,
                         'label_block' => true,
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
                     [
                         'name' => 'start_value',
@@ -145,6 +158,9 @@ class LAE_Odometers_Widget extends Widget_Base {
                         'condition' => [
                             'icon_type' => 'icon_image',
                         ],
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
 
                     [
@@ -163,6 +179,12 @@ class LAE_Odometers_Widget extends Widget_Base {
                         'label' => __('Prefix', 'livemesh-el-addons'),
                         'type' => Controls_Manager::TEXT,
                         'description' => __('The prefix string like currency symbols like $ to indicate a monetary value.', 'livemesh-el-addons'),
+                        'dynamic' => [
+                            'active' => true,
+                            'categories' => [
+                                TagsModule::POST_META_CATEGORY,
+                            ],
+                        ],
                     ],
 
                     [
@@ -170,6 +192,12 @@ class LAE_Odometers_Widget extends Widget_Base {
                         'label' => __('Suffix', 'livemesh-el-addons'),
                         'type' => Controls_Manager::TEXT,
                         'description' => __('The suffix string like hr for hours or m for million.', 'livemesh-el-addons'),
+                        'dynamic' => [
+                            'active' => true,
+                            'categories' => [
+                                TagsModule::POST_META_CATEGORY,
+                            ],
+                        ],
                     ],
 
                 ],
@@ -202,7 +230,7 @@ class LAE_Odometers_Widget extends Widget_Base {
             Group_Control_Typography::get_type(),
             [
                 'name' => 'stats_number_typography',
-                'selector' => '{{WRAPPER}} .lae-odometers .lae-odometer .lae-number',
+                'selector' => '{{WRAPPER}} .lae-odometers .lae-odometer .lae-number span',
             ]
         );
 
@@ -331,72 +359,65 @@ class LAE_Odometers_Widget extends Widget_Base {
 
     protected function render() {
 
-        $settings = $this->get_settings();
-        ?>
+        $settings = $this->get_settings_for_display();
 
-        <?php $column_style = lae_get_column_class(intval($settings['per_line'])); ?>
+        $settings = apply_filters('lae_odometers_' . $this->get_id() . '_settings', $settings);
 
-        <div class="lae-odometers lae-grid-container">
+        $output = '<div class="lae-odometers lae-grid-container ' . lae_get_grid_classes($settings) . '">';
 
-            <?php foreach ($settings['odometers'] as $odometer): ?>
+        foreach ($settings['odometers'] as $odometer):
 
-                <?php
+            $prefix = (!empty ($odometer['prefix'])) ? '<span class="prefix">' . $odometer['prefix'] . '</span>' : '';
+            $suffix = (!empty ($odometer['suffix'])) ? '<span class="suffix">' . $odometer['suffix'] . '</span>' : '';
 
-                $prefix = (!empty ($odometer['prefix'])) ? '<span class="prefix">' . $odometer['prefix'] . '</span>' : '';
-                $suffix = (!empty ($odometer['suffix'])) ? '<span class="suffix">' . $odometer['suffix'] . '</span>' : '';
+            $child_output = '<div class="lae-grid-item lae-odometer">';
 
-                ?>
+            $child_output .= (!empty ($odometer['prefix'])) ? '<span class="lae-prefix">' . $odometer['prefix'] . '</span>' : '';
 
-                <div class="lae-odometer <?php echo $column_style; ?>">
+            $child_output .= '<div class="lae-number odometer" data-stop="' . intval($odometer['stop_value']) . '">';
 
-                    <?php echo (!empty ($odometer['prefix'])) ? '<span class="lae-prefix">' . $odometer['prefix'] . '</span>' : ''; ?>
+            $child_output .= intval($odometer['start_value']);
 
-                    <div class="lae-number odometer" data-stop="<?php echo intval($odometer['stop_value']); ?>">
+            $child_output .= '</div><!-- .lae-number -->';
 
-                        <?php echo intval($odometer['start_value']); ?>
+            $child_output .= (!empty ($odometer['suffix'])) ? '<span class="lae-suffix">' . $odometer['suffix'] . '</span>' : '';
 
-                    </div>
+            $icon_type = esc_html($odometer['icon_type']);
 
-                    <?php echo (!empty ($odometer['suffix'])) ? '<span class="lae-suffix">' . $odometer['suffix'] . '</span>' : ''; ?>
+            if ($icon_type == 'icon_image') :
 
-                    <?php $icon_type = esc_html($odometer['icon_type']); ?>
+                $icon_image = $odometer['icon_image'];
 
-                    <?php if ($icon_type == 'icon_image') : ?>
+                if (!empty($icon_image)):
 
-                        <?php $icon_image = $odometer['icon_image']; ?>
+                    $icon_html = '<span class="lae-image-wrapper">' . wp_get_attachment_image($icon_image['id'], 'full', false, array('class' => 'lae-image full')) . '</span>';
 
-                        <?php if (!empty($icon_image)): ?>
+                endif;
 
-                            <?php $icon_html = '<span class="lae-image-wrapper">' . wp_get_attachment_image($icon_image['id'], 'full', false, array('class' => 'lae-image full')) . '</span>'; ?>
+            else :
 
-                        <?php endif; ?>
+                $icon_html = '<span class="lae-icon-wrapper"><i class="' . esc_attr($odometer['icon']) . '"></i></span>';
 
+            endif;
 
-                    <?php else : ?>
+            $child_output .= '<div class="lae-stats-title-wrap">';
 
-                        <?php $icon_html = '<span class="lae-icon-wrapper"><i class="' . esc_attr($odometer['icon']) . '"></i></span>'; ?>
+            $child_output .= '<div class="lae-stats-title">' . $icon_html . esc_html($odometer['stats_title']) . '</div>';
 
-                    <?php endif; ?>
+            $child_output .= '</div>';
 
-                    <div class="lae-stats-title-wrap">
+            $child_output .= '</div><!-- .lae-odometer -->';
 
-                        <div class="lae-stats-title"><?php echo $icon_html . esc_html($odometer['stats_title']); ?></div>
+            $output .= apply_filters('lae_odometer_output', $child_output, $odometer, $settings);
 
-                    </div>
+        endforeach;
 
-                </div>
+        $output .= '</div><!-- .lae-odometers -->';
 
-                <?php
+        $output .= '<div class="lae-clear"></div>';
 
-            endforeach;
+        echo apply_filters('lae_odometers_output', $output, $settings);
 
-            ?>
-
-        </div>
-
-        <div class="lae-clear"></div>
-
-        <?php
     }
 
     protected function content_template() {

@@ -23,10 +23,16 @@ class ComposerStaticInit453516e196e1be4c43fa495b9bb9d572
         ),
     );
 
+    public static $classMap = array (
+        'WP_Async_Request' => __DIR__ . '/..' . '/a5hleyrich/wp-background-processing/classes/wp-async-request.php',
+        'WP_Background_Process' => __DIR__ . '/..' . '/a5hleyrich/wp-background-processing/classes/wp-background-process.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixesPsr0 = ComposerStaticInit453516e196e1be4c43fa495b9bb9d572::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit453516e196e1be4c43fa495b9bb9d572::$classMap;
 
         }, null, ClassLoader::class);
     }

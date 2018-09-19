@@ -90,23 +90,23 @@ class WCFM_Admin {
 		}
 
 		// check if it has already been dismissed
-		$offer_key = 'wcfm_wcfmu_inactive1402';
+		$offer_key = 'wcfm_wcfmu_inactive1609';
 		$hide_notice = get_option( $offer_key . '_tracking_notice', 'no' );
 
 		if ( 'hide' == $hide_notice ) {
 			return;
 		}
 
-		$offer_msg = sprintf( __( '<h2>
+		$offer_msg = __( '<h2>
 										           Is there anything missing in your front-end dashboard !!!
-								               </h2>', 'wc-frontend-manager' ) );
+								               </h2>', 'wc-frontend-manager' );
 		/*$offer_msg = sprintf( __( '<h2>
 										           Warm wishes for Bright & Prosperous New Year. It\'s time to grab your best deals !!!
 								               </h2>', 'wc-frontend-manager' ) );*/
-		$offer_msg .= sprintf( __( '<p>WooCommerce Frontend Manage - Ultimate is there to fill up all those for you. Product image gallery, shipment tracking, direct messaging, GEO map, product importer, custom attriutes and many more, almost a never ending features list for you.</p>', 'wc-frontend-manager' ) );
+		$offer_msg .= __( '<p>WooCommerce Frontend Manage - Ultimate is there to fill up all those for you. Store Invoice, Support Ticket, Shipment Tracking, Direct Messaging, Followers, Badges, Verificaton, Product Importer, Bulk Edit and many more, almost a never ending features list for you.</p>', 'wc-frontend-manager' );
 		?>
 			<div class="notice is-dismissible wcfm_addon_inactive_notice_box" id="wcfm-ultimate-notice">
-				<img src="https://ps.w.org/wc-frontend-manager/assets/icon-128x128.jpg?rev=1800818" alt="">
+				<img src="https://ps.w.org/wc-multivendor-marketplace/assets/icon-128x128.png?rev=1925332" alt="">
 				<?php echo $offer_msg; ?>
 				<span class="dashicons dashicons-megaphone"></span>
 				<a href="https://wclovers.com/product/woocommerce-frontend-manager-ultimate/" class="button button-primary promo-btn" target="_blank"><?php _e( 'WCFM U >>', 'wc-frontend-manager' ); ?></a>
@@ -138,17 +138,17 @@ class WCFM_Admin {
 		}
 
 		// check if it has already been dismissed
-		$offer_key = 'wcfm_wcfmvm_inactive1402';
+		$offer_key = 'wcfm_wcfmvm_inactive2306';
 		$hide_notice = get_option( $offer_key . '_tracking_notice', 'no' );
 
 		if ( 'hide' == $hide_notice ) {
 			return;
 		}
 
-		$offer_msg = sprintf( __( '<h2>
+		$offer_msg = __( '<h2>
 										           Now setup your vendor membership subscription in minutes & it\'s FREE !!!
-								               </h2>', 'wc-frontend-manager' ) );
-		$offer_msg .= sprintf( __( '<p>A simple membership plugin for offering FREE AND PREMIUM SUBSCRIPTION for your multi-vendor marketplace. You may set up unlimited membership levels (example: free, silver, gold etc) with different pricing plan, capabilities and commission.</p>', 'wc-frontend-manager' ) );
+								               </h2>', 'wc-frontend-manager' );
+		$offer_msg .= __( '<p>A simple membership plugin for offering FREE AND PREMIUM SUBSCRIPTION for your multi-vendor marketplace. You may set up unlimited membership levels (example: free, silver, gold etc) with different pricing plan, capabilities and commission. Also you will have Pay for Product option.</p>', 'wc-frontend-manager' );
 		?>
 			<div class="notice is-dismissible wcfm_addon_inactive_notice_box" id="wcfm-membership-notice">
 				<img src="https://ps.w.org/wc-multivendor-membership/assets/icon-128x128.jpg?rev=1804240" alt="">
@@ -183,20 +183,20 @@ class WCFM_Admin {
 		}
 
 		// check if it has already been dismissed
-		$offer_key = 'wcfm_wcfmgs_inactive1402';
+		$offer_key = 'wcfm_wcfmgs_inactive1609';
 		$hide_notice = get_option( $offer_key . '_tracking_notice', 'no' );
 
 		if ( 'hide' == $hide_notice ) {
 			return;
 		}
 
-		$offer_msg = sprintf( __( '<h2>
+		$offer_msg = __( '<h2>
 										           Do you want to have different capabilities for each membership levels !!!
-								               </h2>', 'wc-frontend-manager' ) );
+								               </h2>', 'wc-frontend-manager' );
 		/*$offer_msg = sprintf( __( '<h2>
 										           Warm wishes for Bright & Prosperous New Year. It\'s time to grab your best deals !!!
 								               </h2>', 'wc-frontend-manager' ) );*/
-		$offer_msg .= sprintf( __( '<p>WCFM - Groups & Staffs will empower you to set up totaly different capability rules for your each membership levels very easily.</p>', 'wc-frontend-manager' ) );
+		$offer_msg .= __( '<p>WCFM - Groups & Staffs will empower you to set up totaly different capability rules for your each membership levels very easily.</p>', 'wc-frontend-manager' );
 		?>
 			<div class="notice is-dismissible wcfm_addon_inactive_notice_box" id="wcfm-groups-sttafs-notice">
 				<img src="https://ps.w.org/wc-multivendor-membership/assets/icon-128x128.jpg?rev=1804240" alt="">
@@ -355,7 +355,11 @@ class WCFM_Admin {
 		$woocommerce_pages = array ( wc_get_page_id('shop'), wc_get_page_id('cart'), wc_get_page_id('checkout'), wc_get_page_id('myaccount'));
 		foreach ( $pages as $page ) {
 			if(!in_array($page->ID, $woocommerce_pages)) {
-				$pages_array[$page->ID] = $page->post_title;
+				if ( function_exists('icl_object_id') ) {
+					$pages_array[icl_object_id( $page->ID, 'page', true )] = $page->post_title;
+				} else {
+					$pages_array[$page->ID] = $page->post_title;
+				}
 			}
 		}
 	 // output the field
@@ -428,17 +432,18 @@ class WCFM_Admin {
 			</div>
 			
 			<div class="wcfm_admin_message_wrapper">
-				<?php if(!WCFM_Dependencies::wcfmu_plugin_active_check()) { ?>
-					<div class="wcfm_admin_message wcfm_admin_help_docs">
-						<h2>How can we help you?</h2>
-						<ul style="list-style: outside; margin-left: 50px;">
-							<li><a target="_blank" href="https://wclovers.com/blog/woocommerce-frontend-manager/">WCFM - what will do for you?</a></li>
-							<li><a target="_blank" href="https://wclovers.com/blog/wcfm-dashboard-as-site-template/">Customize WCFM Dashboard</a></li>
-							<li><a target="_blank" href="https://wclovers.com/blog/choose-best-woocommerce-multi-vendor-marketplace-plugin/">Choose your Marketplace plugin</a></li>
-							<li><a target="_blank" href="https://wclovers.com/blog/location-products-wcfm/">WCFM -> GEO my WP</a></li>
-						</ul>
-					</div>
-				<?php } ?>
+				<div class="wcfm_admin_message wcfm_admin_help_docs">
+					<h2>How can we help you?</h2>
+					<ul style="list-style: outside; margin-left: 50px;">
+					  <li><a target="_blank" href="https://wclovers.com/blog/woocommerce-multivendor-marketplace-wcfm-marketplace/">WCFM - Marketplace</a></li>
+					  <li><a target="_blank" href="http://wclovers.com/knowledgebase/">WCFM - Documentation</a></li>
+					  <li><a target="_blank" href="https://wclovers.com/wcfm-tutorials/">WCFM - Video Tutorial</a></li>
+						<li><a target="_blank" href="https://wclovers.com/blog/woocommerce-frontend-manager/">WCFM - what will do for you?</a></li>
+						<li><a target="_blank" href="https://wclovers.com/blog/wcfm-dashboard-as-site-template/">Customize WCFM Dashboard</a></li>
+						<li><a target="_blank" href="https://wclovers.com/blog/choose-best-woocommerce-multi-vendor-marketplace-plugin/">Choose your Marketplace plugin</a></li>
+						<li><a target="_blank" href="https://wclovers.com/blog/location-products-wcfm/">WCFM -> GEO my WP</a></li>
+					</ul>
+				</div>
 				<?php if(!WCFM_Dependencies::wcfmvm_plugin_active_check()) { ?>
 					<div class="wcfm_admin_message">
 						<h2>Setup vendor subscription in 5 minutes -</h2>
@@ -449,9 +454,9 @@ class WCFM_Admin {
 					<div class="wcfm_admin_message">
 						<h2>Are you looking for something like this?</h2>
 						<ul style="list-style: outside; margin-left: 50px;">
-							<li>Image Gallery</li>
-							<li>Custom Attributes</li>
-							<li>PDF Invoice</li>
+							<li>Support Ticket System</li>
+							<li>Vednor Followers</li>
+							<li>Store Invoice</li>
 							<li>Product Importer</li>
 							<li>Shipping Tracking</li>
 							<li>Advanced Custom Fields</li>
@@ -498,13 +503,20 @@ class WCFM_Admin {
 	  
 	  // Admin Bar CSS
 	  wp_enqueue_style( 'wcfm_admin_bar_css',  $WCFM->library->css_lib_url . 'wcfm-style-adminbar.css', array(), $WCFM->version );
+	  
+	  if( is_rtl() ) {
+	  	wp_enqueue_style( 'wcfm_admin_bar_rtl_css',  $WCFM->library->css_lib_url . 'wcfm-style-adminbar-rtl.css', array('wcfm_admin_bar_css'), $WCFM->version );
+	  }
   }
   
   /**
  	 * Add support of Google reCaptcha
  	 */
  	function wcfm_enquiry_recaptcha( $forms ) {
-    $forms['wcfm_enquiry_form'] = array( "form_name" => "WCfM Enquiry Form" );
+    $forms['wcfm_enquiry_form']        = array( "form_name" => __( "WCfM Enquiry Form", "wc-frontend-mnager" ) );
+    $forms['wcfm_support_form']        = array( "form_name" => __( "WCfM Support Form", "wc-frontend-mnager" ) );
+    $forms['wcfm_registration_form']   = array( "form_name" => __( "WCfM Registration Form", "wc-frontend-mnager" ) );
+    $forms['wcfm_refund_request_form'] = array( "form_name" => __( "WCfM Refund Request Form", "wc-frontend-mnager" ) );
     return $forms;
   }
   

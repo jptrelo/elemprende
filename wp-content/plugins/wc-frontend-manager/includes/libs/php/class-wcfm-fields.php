@@ -61,7 +61,7 @@ class WCFM_Fields {
     $field['class'] 		= isset( $field['class'] ) ? $field['class'] : 'regular-text';
     $field['dfvalue'] 	= isset( $field['dfvalue'] ) ? $field['dfvalue'] : '';
     $field['value'] 		= isset( $field['value'] ) ? $field['value'] : $field['dfvalue'];
-    if(empty($field['value'])) {
+    if( !in_array( $field['type'], array('numeric', 'number') ) && empty( $field['value'] ) ) {
     	$field['value'] =  $field['dfvalue'];
     }
     $field['name'] 			= isset( $field['name'] ) ? $field['name'] : $field['id'];
@@ -82,6 +82,10 @@ class WCFM_Fields {
         			$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
         		} elseif( isset( $field['placeholder'] ) && !empty( $field['placeholder'] ) ) {
         			$custom_attributes[] = 'data-required_message="' . esc_attr( $field['placeholder'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
+        		} else {
+        			if( !isset( $field['label'] ) ) $field['label'] = str_replace( '_', ' ', ucfirst( $field['id'] ) );
+        			$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
+        			unset( $field['label'] );
         		}
         	}
         	if( isset( $field['label'] ) && !empty( $field['label'] ) ) {
@@ -106,7 +110,7 @@ class WCFM_Fields {
         esc_attr($field['id']),
         esc_attr($field['name']),
         esc_attr($field['class']),
-        esc_attr($this->string_wpml(''.$field['value'].'')),
+        esc_attr(wcfm_removeslashes($this->string_wpml(''.$field['value'].''))),
         esc_attr($this->string_wpml(''.$field['placeholder'].'')),
         implode( ' ', $custom_attributes ),
         implode( ' ', $attributes )
@@ -140,6 +144,7 @@ class WCFM_Fields {
         // Required Option
         if( $attribute == 'required' ) { 
         	if( !isset( $field['custom_attributes']['required_message'] ) ) {
+        		if( !isset( $field['label'] ) ) $field['label'] = str_replace( '_', ' ', ucfirst( $field['id'] ) );
         		$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
         	}
         	if( isset( $field['label'] ) && !empty( $field['label'] ) ) {
@@ -148,11 +153,18 @@ class WCFM_Fields {
         }
       }
     }
+    
+    // attribute handling
+    $attributes = array();
+    
+    if ( ! empty( $field['attributes'] ) && is_array( $field['attributes'] ) )
+      foreach ( $field['attributes'] as $attribute => $value )
+        $attributes[] = esc_attr( $attribute ) . '="' . esc_attr( $value ) . '"';
       
     $field = $this->field_wrapper_start($field);
       
     printf(
-        '<textarea id="%s" name="%s" class="%s" placeholder="%s" rows="%s" cols="%s" %s>%s</textarea>',
+        '<textarea id="%s" name="%s" class="%s" placeholder="%s" rows="%s" cols="%s" %s %s>%s</textarea>',
         esc_attr($field['id']),
         esc_attr($field['name']),
         esc_attr($field['class']),
@@ -160,6 +172,7 @@ class WCFM_Fields {
         absint($field['rows']), 
         absint($field['cols']),
         implode( ' ', $custom_attributes ),
+        implode( ' ', $attributes ),
         esc_textarea($this->string_wpml($field['value']))
     );
     
@@ -176,13 +189,46 @@ class WCFM_Fields {
   function wpeditor_input( $field ) {
   
     $field['name'] 			= isset( $field['name'] ) ? $field['name'] : $field['id'];
-    $field['rows'] 			= isset( $field['rows'] ) ? $field['rows'] : 5;
-    $field['cols'] 			= isset( $field['cols'] ) ? $field['cols'] : 10;
+    $field['class'] 		= isset( $field['class'] ) ? $field['class'] : 'textarea';
+    $field['rows'] 			= isset( $field['rows'] ) ? $field['rows'] : 10;
     $field['value'] 		= isset( $field['value'] ) ? $field['value'] : '';
+    $field['tinymce']   = isset( $field['tinymce'] ) ? $field['tinymce'] : true;
+    $field['quicktags']   = isset( $field['quicktags'] ) ? $field['quicktags'] : false;
+    $field['media_buttons']   = isset( $field['media_buttons'] ) ? $field['media_buttons'] : true;
+    
+    $field['rows']  = apply_filters( 'wcfm_wpeditor_rows', $field['rows'] );
+    $field['tinymce']  = apply_filters( 'wcfm_is_allow_wpeditor_view_mode', $field['tinymce'] );
+    $field['quicktags']  = apply_filters( 'wcfm_is_allow_wpeditor_quicktags', $field['quicktags'] );
+    $field['media_buttons']  = apply_filters( 'wcfm_is_allow_wpeditor_media_buttons', $field['media_buttons'] );
+    
+    if( $field['tinymce'] ) {
+    	add_filter( 'user_can_richedit', 'wcfm_force_user_can_richedit', 999 );
+    }
+    
+    // Custom attribute handling
+    $custom_attributes = array();
+
+    if ( ! empty( $field['custom_attributes'] ) && is_array( $field['custom_attributes'] ) ) {
+      foreach ( $field['custom_attributes'] as $attribute => $value ) {
+        $custom_attributes[] = 'data-' . esc_attr( $attribute ) . '="' . esc_attr( $value ) . '"';
+        
+        // Required Option
+        if( $attribute == 'required' ) { 
+        	if( !isset( $field['custom_attributes']['required_message'] ) ) {
+        		if( !isset( $field['label'] ) ) $field['label'] = str_replace( '_', ' ', ucfirst( $field['id'] ) );
+        		$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
+        	}
+        	$field['class'] .= ' wcfm_wpeditor_required';
+        	if( isset( $field['label'] ) && !empty( $field['label'] ) ) {
+        		$field['label'] .= '<span class="required">*</span>';
+        	}
+        }
+      }
+    }
     
     $field = $this->field_wrapper_start($field);
     
-    wp_editor(stripslashes($field['value']), $field['id'], $settings = array('textarea_name' => $field['name'], 'textarea_rows' => $field['rows']));
+    wp_editor(stripslashes($field['value']), $field['id'], $settings = array('textarea_name' => $field['name'], 'textarea_rows' => $field['rows'], 'editor_class' => $field['class'], 'tinymce' => $field['tinymce'], 'media_buttons' => $field['media_buttons'], 'quicktags' => $field['quicktags'], 'text_direction' => 'RTL' ) );
   
     $this->field_wrapper_end($field);
   }
@@ -211,6 +257,7 @@ class WCFM_Fields {
         // Required Option
         if( $attribute == 'required' ) { 
         	if( !isset( $field['custom_attributes']['required_message'] ) ) {
+        		if( !isset( $field['label'] ) ) $field['label'] = str_replace( '_', ' ', ucfirst( $field['id'] ) );
         		$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
         	}
         	if( isset( $field['label'] ) && !empty( $field['label'] ) ) {
@@ -251,6 +298,7 @@ class WCFM_Fields {
   public function checkbox_offon_input($field) {
     $field['class'] 		= isset( $field['class'] ) ? $field['class'] : 'checkbox';
     $field['class'] 		.= ' onoffswitch-checkbox';
+    $field['wrapper_class'] 		= isset( $field['wrapper_class'] ) ? $field['wrapper_class'] : '';
     $field['value'] 		= isset( $field['value'] ) ? $field['value'] : '';
     $field['id']        = sanitize_title( $field['name'] ) . '-' . $field['id'];
     $field['name'] 			= isset( $field['name'] ) ? $field['name'] : $field['id'];
@@ -267,6 +315,7 @@ class WCFM_Fields {
         // Required Option
         if( $attribute == 'required' ) { 
         	if( !isset( $field['custom_attributes']['required_message'] ) ) {
+        		if( !isset( $field['label'] ) ) $field['label'] = str_replace( '_', ' ', ucfirst( $field['id'] ) );
         		$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
         	}
         	$field['label'] .= '<span class="required">*</span>';
@@ -282,7 +331,7 @@ class WCFM_Fields {
     $field = $this->field_wrapper_start($field);
     
     printf(
-        '<div class="onoffswitch">
+        '<div class="onoffswitch %s">
            <input type="checkbox" id="%s" name="%s" class="%s" value="%s" %s %s %s />
            <label class="onoffswitch-label" for="%s">
 					   <span class="onoffswitch-inner"></span>
@@ -290,6 +339,7 @@ class WCFM_Fields {
 					</label>
         </div>
         ',
+        esc_attr($field['wrapper_class']),
         esc_attr($field['id']),
         esc_attr($field['name']),
         esc_attr($field['class']),
@@ -327,6 +377,7 @@ class WCFM_Fields {
         // Required Option
         if( $attribute == 'required' ) { 
         	if( !isset( $field['custom_attributes']['required_message'] ) ) {
+        		if( !isset( $field['label'] ) ) $field['label'] = str_replace( '_', ' ', ucfirst( $field['id'] ) );
         		$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
         	}
         	$field['label'] .= '<span class="required">*</span>';
@@ -386,6 +437,7 @@ class WCFM_Fields {
         // Required Option
         if( $attribute == 'required' ) { 
         	if( !isset( $field['custom_attributes']['required_message'] ) ) {
+        		if( !isset( $field['label'] ) ) $field['label'] = str_replace( '_', ' ', ucfirst( $field['id'] ) );
         		$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
         	}
         	$field['label'] .= '<span class="required">*</span>';
@@ -490,6 +542,7 @@ class WCFM_Fields {
         // Required Option
         if( $attribute == 'required' ) { 
         	if( !isset( $field['custom_attributes']['required_message'] ) ) {
+        		if( !isset( $field['label'] ) ) $field['label'] = str_replace( '_', ' ', ucfirst( $field['id'] ) );
         		$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
         	}
         	if( isset( $field['label'] ) && !empty( $field['label'] ) ) {
@@ -503,23 +556,25 @@ class WCFM_Fields {
     $attributes = array();
     $is_multiple = false;
     if ( ! empty( $field['attributes'] ) && is_array( $field['attributes'] ) ) {
-     foreach ( $field['attributes'] as $attribute => $value ) {
+      foreach ( $field['attributes'] as $attribute => $value ) {
         $attributes[] = esc_attr( $attribute ) . '="' . esc_attr( $value ) . '"';
         if($attribute  == 'multiple') {
         	$is_multiple = true;
         	$field['name'] .= '[]';
         }
-     }
+      }
     }
       
     $options = '';
-    foreach ( $field['options'] as $key => $value ) {
-    	if( $is_multiple || is_array( $field['value'] ) ) {
-    		$options .=  '<option value="' . esc_attr( $key ) . '"' . selected( in_array( $key, (array)$field['value'] ), true, false ) . '>' . esc_html( $value ) . '</option>';
-    	} else {
-    		$options .= '<option value="' . esc_attr( $key ) . '" ' . selected( esc_attr( $field['value'] ), esc_attr( $key ), false ) . '>' . esc_html( $this->string_wpml($value) ) . '</option>';
-    	}
-    }
+    if( !empty( $field['options'] ) ) {
+			foreach ( $field['options'] as $key => $value ) {
+				if( $is_multiple || is_array( $field['value'] ) ) {
+					$options .=  '<option value="' . esc_attr( $key ) . '"' . selected( in_array( $key, (array)$field['value'] ), true, false ) . '>' . esc_html( $value ) . '</option>';
+				} else {
+					$options .= '<option value="' . esc_attr( $key ) . '" ' . selected( esc_attr( $field['value'] ), esc_attr( $key ), false ) . '>' . esc_html( $this->string_wpml($value) ) . '</option>';
+				}
+			}
+		}
     
     $field = $this->field_wrapper_start($field);
     
@@ -548,7 +603,12 @@ class WCFM_Fields {
     $field['dfvalue'] 	= isset( $field['dfvalue'] ) ? $field['dfvalue'] : '';
     $field['value'] 		= isset( $field['value'] ) ? $field['value'] : $field['dfvalue'];
     $field['name'] 			= isset( $field['name'] ) ? $field['name'] : $field['id'];
-    $field['options']   = WC()->countries->get_allowed_countries();
+    
+    if( isset( $field['wcfmmp_shipping_country'] ) ) {
+    	$field['options']   = WC()->countries->get_shipping_countries();
+    } else {
+    	$field['options']   = WC()->countries->get_allowed_countries();
+    }
     
     // Custom attribute handling
     $custom_attributes = array();
@@ -560,6 +620,7 @@ class WCFM_Fields {
         // Required Option
         if( $attribute == 'required' ) { 
         	if( !isset( $field['custom_attributes']['required_message'] ) ) {
+        		if( !isset( $field['label'] ) ) $field['label'] = str_replace( '_', ' ', ucfirst( $field['id'] ) );
         		$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
         	}
         	$field['label'] .= '<span class="required">*</span>';
@@ -576,7 +637,7 @@ class WCFM_Fields {
       }
     }
       
-    if( isset( $field['dokan_shipping_country'] ) ) {
+    if( isset( $field['dokan_shipping_country'] ) || isset( $field['wcfmmp_shipping_country'] ) ) {
     	$options = '<option value="">' . __( '-Select a location-', 'wc-frontend-manager' ) . '</option><optgroup label="-------------------------------------">';
     	$options .= '<option value="everywhere" ' . selected( esc_attr( $field['value'] ), 'everywhere', false ) . '>' . __( 'Everywhere Else', 'wc-frontend-manager' ) . '</option>';
     	$options .= '</optgroup><optgroup label="-------------------------------------">';
@@ -629,6 +690,7 @@ class WCFM_Fields {
         // Required Option
         if( $attribute == 'required' ) { 
         	if( !isset( $field['custom_attributes']['required_message'] ) ) {
+        		if( !isset( $field['label'] ) ) $field['label'] = str_replace( '_', ' ', ucfirst( $field['id'] ) );
         		$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
         	}
         	$field['label'] .= '<span class="required">*</span>';
@@ -692,9 +754,15 @@ class WCFM_Fields {
         // Required Option
         if( $attribute == 'required' ) { 
         	if( !isset( $field['custom_attributes']['required_message'] ) ) {
-        		$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
+        		if( !isset( $field['label'] ) ) {
+        			$field['label'] = str_replace( '_', ' ', ucfirst( $field['id'] ) );
+        			$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
+        			unset( $field['label'] );
+        		} else {
+        			$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
+        			$field['label'] .= '<span class="required">*</span>';
+        		}
         	}
-        	$field['label'] .= '<span class="required">*</span>';
         }
       }
     }
@@ -753,6 +821,7 @@ class WCFM_Fields {
         // Required Option
         if( $attribute == 'required' ) { 
         	if( !isset( $field['custom_attributes']['required_message'] ) ) {
+        		if( !isset( $field['label'] ) ) $field['label'] = str_replace( '_', ' ', ucfirst( $field['id'] ) );
         		$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
         	}
         	$field['label'] .= '<span class="required">*</span>';
@@ -801,6 +870,7 @@ class WCFM_Fields {
         // Required Option
         if( $attribute == 'required' ) { 
         	if( !isset( $field['custom_attributes']['required_message'] ) ) {
+        		if( !isset( $field['label'] ) ) $field['label'] = str_replace( '_', ' ', ucfirst( $field['id'] ) );
         		$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
         	}
         	$field['label'] .= '<span class="required">*</span>';
@@ -894,6 +964,7 @@ class WCFM_Fields {
         // Required Option
         if( $attribute == 'required' ) { 
         	if( !isset( $field['custom_attributes']['required_message'] ) ) {
+        		if( !isset( $field['label'] ) ) $field['label'] = str_replace( '_', ' ', ucfirst( $field['id'] ) );
         		$custom_attributes[] = 'data-required_message="' . esc_attr( $field['label'] ) . ': ' . __( 'This field is required.', 'wc-frontend-manager' ) . '"';
         	}
         	$field['label'] .= '<span class="required">*</span>';
@@ -960,7 +1031,12 @@ class WCFM_Fields {
                 
               case 'textarea':
               case 'wysiwyg':
+              case 'wpeditor':
                 $this->textarea_input($optionField);
+                break;
+                
+              case 'wpeditor':
+                //$this->wpeditor_input($optionField);
                 break;
                 
               case 'checkbox':
@@ -1045,7 +1121,7 @@ class WCFM_Fields {
     $field['label_for'] = isset( $field['label_for'] ) ? ($field['label_for']. ' ' . $field['id']) : $field['id'];
     $field['label_class'] = isset( $field['label_class'] ) ? ($field['label_for']. ' ' . $field['label_class']) : $field['label_for'];
     
-    do_action('before_field_wrapper');
+    do_action('before_field_wrapper', $field);
     do_action('before_field_wrapper_' . $field['id']);
     
     if(isset($field['in_table'])) {
@@ -1055,12 +1131,12 @@ class WCFM_Fields {
       );
     }
     
-    do_action('field_wrapper_start');
-    do_action('field_wrapper_start_' . $field['id']);
+    do_action('field_wrapper_start', $field);
+    do_action('field_wrapper_start_' . $field['id'], $field);
       
     if(isset($field['label'])) {
       do_action('before_field_label');
-      do_action('before_field_label_' . $field['id']);
+      do_action('before_field_label_' . $field['id'], $field);
       
       if(isset($field['in_table'])) {
         printf(
@@ -1068,12 +1144,12 @@ class WCFM_Fields {
           $field['label_holder_class']
         );
       }
-      do_action('field_label_start');
-      do_action('field_label_start_' . $field['id']);
+      do_action('field_label_start', $field);
+      do_action('field_label_start_' . $field['id'], $field);
       printf(
         '<p class="%s"><strong>%s</strong>',
         $field['label_class'],
-        $field['label']
+        wcfm_removeslashes( $field['label'] )
       );
       if( isset( $field['hints'] ) && !empty( $field['hints'] ) ) {
         printf(
@@ -1084,14 +1160,14 @@ class WCFM_Fields {
       printf(
         '</p><label class="screen-reader-text" for="%s">%s</label>',
         $field['label_for'],
-        $field['label']
+        wcfm_removeslashes( $field['label'] )
       );
       
       // Description
       if( in_array( $field['type'], array( 'checklist', 'radio' ) ) ) {
 				if( isset( $field['desc'] ) && !empty( $field['desc'] ) ) {
-					do_action('before_desc');
-					do_action('before_desc_' . $field['id']);
+					do_action('before_desc', $field);
+					do_action('before_desc_' . $field['id'], $field);
 					if( !isset($field['desc_class']) ) $field['desc_class'] = '';
 					
 					printf(
@@ -1100,27 +1176,27 @@ class WCFM_Fields {
 						wp_kses_post ( $field['desc'] )
 					);
 					
-					do_action('after_desc_' . $field['id']);
-					do_action('after_desc');
+					do_action('after_desc_' . $field['id'], $field);
+					do_action('after_desc', $field);
 				}
 			}
       
-      do_action('field_label_end_' . $field['id']);
-      do_action('field_label_end');
+      do_action('field_label_end_' . $field['id'], $field);
+      do_action('field_label_end', $field);
       if(isset($field['in_table'])) printf('</th>');
       
-      do_action('after_field_label_' . $field['id']);
-      do_action('after_field_label');
+      do_action('after_field_label_' . $field['id'], $field);
+      do_action('after_field_label', $field);
     }
     
-    do_action('before_field');
-    do_action('before_field_' . $field['id']);
+    do_action('before_field', $field);
+    do_action('before_field_' . $field['id'], $field);
     
     if(isset($field['in_table']) && isset($field['label'])) printf('<td>');
     else if(isset($field['in_table']) && !isset($field['label'])) printf('<td colspan="2">');
     
-    do_action('field_start');
-    do_action('field_start_' . $field['id']);
+    do_action('field_start', $field);
+    do_action('field_start_' . $field['id'], $field);
     
     if(!isset($field['custom_attributes'])) $field['custom_attributes'] = array();
     $field['custom_attributes'] = apply_filters('manupulate_custom_attributes', $field['custom_attributes']);
@@ -1133,23 +1209,23 @@ class WCFM_Fields {
     
     // Help message
     if( !isset( $field['label'] ) && isset( $field['hints'] ) && !empty( $field['hints'] ) ) {
-      do_action('before_hints');
-      do_action('before_hints_' . $field['id']);
+      do_action('before_hints', $field);
+      do_action('before_hints_' . $field['id'], $field);
       
       printf(
         '<span class="img_tip fa fa-question-circle-o" data-tip="%s"></span>',
         wp_kses_post ( $field['hints'] )
       );
       
-      do_action('after_hints_' . $field['id']);
-      do_action('after_hints');
+      do_action('after_hints_' . $field['id'], $field);
+      do_action('after_hints', $field);
     }
     
     // Description
     if( !in_array( $field['type'], array( 'checklist', 'radio' ) ) ) {
 			if( isset( $field['desc'] ) && !empty( $field['desc'] ) ) {
-				do_action('before_desc');
-				do_action('before_desc_' . $field['id']);
+				do_action('before_desc', $field);
+				do_action('before_desc_' . $field['id'], $field);
 				if( !isset($field['desc_class']) ) $field['desc_class'] = '';
 				
 				printf(
@@ -1158,26 +1234,26 @@ class WCFM_Fields {
 					wp_kses_post ( $field['desc'] )
 				);
 				
-				do_action('after_desc_' . $field['id']);
-				do_action('after_desc');
+				do_action('after_desc_' . $field['id'], $field);
+				do_action('after_desc', $field);
 			}
 		}
     
-    do_action('field_end_' . $field['id']);
-    do_action('field_end');
+    do_action('field_end_' . $field['id'], $field);
+    do_action('field_end', $field);
     
     if(isset($field['in_table'])) printf('</td>');
     
-    do_action('after_field_' . $field['id']);
-    do_action('after_field');
+    do_action('after_field_' . $field['id'], $field);
+    do_action('after_field', $field);
     
-    do_action('field_wrapper_end_' . $field['id']);
-    do_action('field_wrapper_end');
+    do_action('field_wrapper_end_' . $field['id'], $field);
+    do_action('field_wrapper_end', $field);
     
     if(isset($field['in_table'])) printf('</tr>');
     
-    do_action('afet_field_wrapper_' . $field['id']);
-    do_action('after_field_wrapper');
+    do_action('afet_field_wrapper_' . $field['id'], $field);
+    do_action('after_field_wrapper', $field);
   }
   
   public function wcfm_generate_form_field($fields, $common_attrs = array()) {

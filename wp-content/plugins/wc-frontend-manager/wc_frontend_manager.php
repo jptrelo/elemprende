@@ -4,14 +4,14 @@
  * Plugin URI: https://wclovers.com
  * Description: WooCommerce is really Easy and Beautiful. We are here to make your life much more Easier and Peaceful.
  * Author: WC Lovers
- * Version: 4.0.4
+ * Version: 5.0.10
  * Author URI: https://wclovers.com
  *
  * Text Domain: wc-frontend-manager
  * Domain Path: /lang/
  *
  * WC requires at least: 3.0.0
- * WC tested up to: 3.3.0
+ * WC tested up to: 3.4.0
  *
  */
 
@@ -32,13 +32,13 @@ if(!WCFM_Dependencies::woocommerce_plugin_active_check()) {
 } else {
 
 	if(!class_exists('WCFM')) {
-		require_once( 'core/class-wcfm.php' );
+		include_once( 'core/class-wcfm.php' );
 		global $WCFM, $WCFM_Query;
 		$WCFM = new WCFM( __FILE__ );
 		$GLOBALS['WCFM'] = $WCFM;
 		
 		// Init WCFM Query
-		require_once( 'core/class-wcfm-query.php' );
+		include_once( 'core/class-wcfm-query.php' );
 		$WCFM_Query = new WCFM_Query();
 		$GLOBALS['WCFM_Query'] = $WCFM_Query;
 		

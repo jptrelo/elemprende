@@ -10,6 +10,10 @@
 	display: inline-block;
 }
 
+.wcfm-tabWrap .wcfm-container {
+	display: none;
+}
+
 @media only screen and (max-width: 640px) {
 	#wcfm-main-contentainer input.wcfm-checkbox, #wcfm-main-contentainer input[type="checkbox"] { margin-right: 5%; }
 	

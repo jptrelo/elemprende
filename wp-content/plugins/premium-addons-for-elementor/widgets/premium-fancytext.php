@@ -10,8 +10,8 @@ class Premium_Fancy_Text_Widget extends Widget_Base
     }
 
     public function get_title() {
-        return esc_html__('Premium Fancy Text', 'premium-addons-for-elementor');
-    }
+		return \PremiumAddons\Helper_Functions::get_prefix() . ' Fancy Text';
+	}
 
     public function get_icon() {
         return 'pa-fancy-text';
@@ -19,7 +19,7 @@ class Premium_Fancy_Text_Widget extends Widget_Base
     
     public function get_script_depends()
     {
-        return ['typed-js','vticker-js'];
+        return ['premium-addons-js','typed-js','vticker-js'];
     }
 
     public function get_categories() {
@@ -42,11 +42,23 @@ class Premium_Fancy_Text_Widget extends Widget_Base
                 [
                     'label'         => esc_html__('Prefix', 'premium-addons-for-elementor'),
                     'type'          => Controls_Manager::TEXT,
+                    'dynamic'       => [ 'active' => true ],
                     'default'       => esc_html__('This is', 'premium-addons-for-elementor'),
                     'description'   => esc_html__( 'Text before Fancy text', 'premium-addons-for-elementor' ),
                     'label_block'   => true,
                 ]
                 );
+        
+        $repeater = new REPEATER();
+        
+        $repeater->add_control('premium_text_strings_text_field',
+            [
+                'label'       => esc_html__( 'Fancy String', 'premium-addons-for-elementor' ),
+                'dynamic'     => [ 'active' => true ],
+                'type'        => Controls_Manager::TEXT,
+                'label_block' => true,
+            ]
+        );
         
         /*Fancy Text Strings*/
         $this->add_control('premium_fancy_text_strings',
@@ -64,14 +76,7 @@ class Premium_Fancy_Text_Widget extends Widget_Base
                             'premium_text_strings_text_field' => esc_html__( 'Awesome', 'premium-addons-for-elementor' ),
                             ],
                         ],
-                    'fields'        => [
-                        [
-                            'name'        => 'premium_text_strings_text_field',
-                            'label'       => esc_html__( 'Fancy String', 'premium-addons-for-elementor' ),
-                            'type'        => Controls_Manager::TEXT,
-                            'label_block' => true,
-                            ],
-                        ],
+                    'fields'        => array_values( $repeater->get_controls() ),
                     'title_field'   => '{{{ premium_text_strings_text_field }}}',
                     ]
                 );
@@ -81,6 +86,7 @@ class Premium_Fancy_Text_Widget extends Widget_Base
                 [
                     'label'         => esc_html__('Suffix', 'premium-addons-for-elementor'),
                     'type'          => Controls_Manager::TEXT,
+                    'dynamic'       => [ 'active' => true ],
                     'default'       => esc_html__('Text', 'premium-addons-for-elementor'),
                     'description'   => esc_html__( 'Text after Fancy text', 'premium-addons-for-elementor' ),
                     'label_block'   => true,
@@ -90,19 +96,19 @@ class Premium_Fancy_Text_Widget extends Widget_Base
         /*Front Text Align*/
         $this->add_responsive_control('premium_fancy_text_align',
                 [
-                    'label'         => esc_html__( 'Alignment', 'elementor' ),
+                    'label'         => esc_html__( 'Alignment', 'premium-addons-for-elementor' ),
                     'type'          => Controls_Manager::CHOOSE,
                     'options'       => [
                         'left'      => [
-                            'title'=> esc_html__( 'Left', 'elementor' ),
+                            'title'=> esc_html__( 'Left', 'premium-addons-for-elementor' ),
                             'icon' => 'fa fa-align-left',
                             ],
                         'center'    => [
-                            'title'=> esc_html__( 'Center', 'elementor' ),
+                            'title'=> esc_html__( 'Center', 'premium-addons-for-elementor' ),
                             'icon' => 'fa fa-align-center',
                             ],
                         'right'     => [
-                            'title'=> esc_html__( 'Right', 'elementor' ),
+                            'title'=> esc_html__( 'Right', 'premium-addons-for-elementor' ),
                             'icon' => 'fa fa-align-right',
                             ],
                         ],
@@ -331,6 +337,56 @@ class Premium_Fancy_Text_Widget extends Widget_Base
       
         /*End Fancy Text Settings Tab*/
         $this->end_controls_section();
+
+        /*Start Cursor Settings Tab*/
+        $this->start_controls_section('premium_fancy_cursor_text_style_tab',
+                [
+                    'label'         => esc_html__('Cursor Text', 'premium-addons-for-elementor'),
+                    'tab'           => Controls_Manager::TAB_STYLE,
+                    'condition'     => [
+                        'premium_fancy_text_cursor_text!'   => ''
+                ]
+            ]
+        );
+        
+        /*Cursor Color*/
+        $this->add_control('premium_fancy_text_cursor_color',
+                [
+                    'label'         => esc_html__('Color', 'premium-addons-for-elementor'),
+                    'type'          => Controls_Manager::COLOR,
+                    'scheme'        => [
+                        'type'  => Scheme_Color::get_type(),
+                        'value' => Scheme_Color::COLOR_1,
+                    ],
+                    'selectors'     => [
+                        '{{WRAPPER}} .typed-cursor' => 'color: {{VALUE}};',
+                    ]
+                ]
+                );
+        
+         /*Cursor Typography*/
+        $this->add_group_control(
+                Group_Control_Typography::get_type(),
+                [
+                    'name'          => 'fancy_text_cursor_typography',
+                    'scheme'        => Scheme_Typography::TYPOGRAPHY_1,
+                    'selector'      => '{{WRAPPER}} .typed-cursor',
+                    ]
+                );  
+        
+        /*Cursor Background Color*/
+        $this->add_control('premium_fancy_text_cursor_background',
+                [
+                    'label'         => esc_html__('Background Color', 'premium-addons-for-elementor'),
+                    'type'          => Controls_Manager::COLOR,
+                    'selectors'     => [
+                        '{{WRAPPER}} .typed-cursor' => 'background-color: {{VALUE}};',
+                    ]
+                ]
+                );
+      
+        /*End Fancy Text Settings Tab*/
+        $this->end_controls_section();
         
         /*Start Prefix Suffix Text Settings Tab*/
         $this->start_controls_section('premium_prefix_suffix_style_tab',
@@ -382,7 +438,7 @@ class Premium_Fancy_Text_Widget extends Widget_Base
 
     protected function render( ) {
         // get our input from the widget settings.
-        $settings = $this->get_settings();
+        $settings = $this->get_settings_for_display();
         $this->add_inline_editing_attributes('premium_fancy_prefix_text');
         $this->add_inline_editing_attributes('premium_fancy_suffix_text');
         $cursor_text = addslashes($settings['premium_fancy_text_cursor_text']);
@@ -392,55 +448,53 @@ class Premium_Fancy_Text_Widget extends Widget_Base
             $this->add_render_attribute( 'premium_fancy_suffix_text', 'class', 'premium-fancy-text-span-align' );
         }
         
+        if($settings['premium_fancy_text_effect'] == 'typing'){
+            $show_cursor = (!empty($settings['premium_fancy_text_show_cursor'])) ? true : false;
+            $loop = !empty( $settings['premium_fancy_text_type_loop'] ) ? true : false;
+            $strings = array();
+            foreach ( $settings['premium_fancy_text_strings'] as $item ) :
+                if ( ! empty( $item['premium_text_strings_text_field'] ) ) :
+                    array_push($strings, $item['premium_text_strings_text_field']);
+                endif;
+            endforeach;
+            $fancytext_settings = [
+                'effect'    => $settings['premium_fancy_text_effect'],
+                'strings'   => $strings,
+                'typeSpeed' => $settings['premium_fancy_text_type_speed'],
+                'backSpeed' => $settings['premium_fancy_text_back_speed'],
+                'startDelay'=> $settings['premium_fancy_text_start_delay'],
+                'backDelay' => $settings['premium_fancy_text_back_delay'],
+                'showCursor'=> $show_cursor,
+                'cursorChar'=> $cursor_text,
+                'loop'      => $loop,
+            ];
+        } else {
+            $mause_pause = !empty( $settings['premium_slide_up_hover_pause'] ) ? true : false;
+            $fancytext_settings = [
+                'effect'        => $settings['premium_fancy_text_effect'],
+                'speed'         => $settings['premium_slide_up_speed'],
+                'showItems'     => $settings['premium_slide_up_shown_items'],
+                'pause'         => $settings['premium_slide_up_pause_time'],
+                'mousePause'    => $mause_pause
+            ];
+        }
+        
 ?>
     
 
-<div class="premium-fancy-text-wrapper">
+<div class="premium-fancy-text-wrapper" data-settings='<?php echo wp_json_encode($fancytext_settings); ?>'>
     <span class="premium-prefix-text"><span <?php echo $this->get_render_attribute_string('premium_fancy_prefix_text'); ?>><?php echo wp_kses( ( $settings['premium_fancy_prefix_text'] ), true ); ?></span></span>
     
     <?php if ( $settings['premium_fancy_text_effect'] === 'typing'  ) : ?><span id="premium_fancy_text_<?php echo esc_attr( $this->get_id() ); ?>" class="premium-fancy-text" ></span>
     <?php else : ?> 
     <div id="premium_fancy_text_<?php echo esc_attr( $this->get_id() ); ?>" class="premium-fancy-text" style=' display: inline-block; text-align: center;'>
 	   <ul>
-            <?php foreach ( $settings['premium_fancy_text_strings'] as $item ) : ?><?php if ( ! empty( $item['premium_text_strings_text_field'] ) ) : ?><?php echo "<li>".esc_attr( $item['premium_text_strings_text_field'] )."</li>"; ?><?php endif; ?><?php endforeach; ?>
+            <?php foreach ( $settings['premium_fancy_text_strings'] as $item ) : ?><?php if ( ! empty( $item['premium_text_strings_text_field'] ) ) : ?><?php echo "<li class='premium-fancy-list-items' >".esc_attr( $item['premium_text_strings_text_field'] )."</li>"; ?><?php endif; ?><?php endforeach; ?>
         </ul>
     </div>
     <?php endif; ?>
     <span class="premium-suffix-text"><span <?php echo $this->get_render_attribute_string('premium_fancy_suffix_text'); ?>><?php echo wp_kses( ( $settings['premium_fancy_suffix_text'] ), true ); ?></span></span>
 </div>
-
-<!-- Typing Effect-->
-<?php if ( $settings['premium_fancy_text_effect'] === 'typing' ) : ?> 
-<script type="text/javascript">
-    jQuery(document).ready(function( $ ) {
-            $( "#premium_fancy_text_<?php echo esc_attr( $this->get_id() );?> " ).typed( {
-                strings: [ <?php foreach ( $settings['premium_fancy_text_strings'] as $item ) : ?><?php if ( ! empty( $item['premium_text_strings_text_field'] ) ) : ?>"<?php echo esc_attr($item['premium_text_strings_text_field'] ); ?>",<?php endif; ?><?php endforeach; ?> ],
-                typeSpeed: <?php  echo esc_attr( $settings['premium_fancy_text_type_speed'] ); ?>,
-                backSpeed: <?php  echo esc_attr( $settings['premium_fancy_text_back_speed'] ); ?>,
-                startDelay: <?php echo esc_attr( $settings['premium_fancy_text_start_delay'] ); ?>,
-                backDelay: <?php echo esc_attr( $settings['premium_fancy_text_back_delay'] ); ?>,
-                showCursor: <?php if( !empty( $settings['premium_fancy_text_show_cursor'] ) ) : ?> true <?php else : ?>false<?php endif; ?>,
-                cursorChar: <?php echo '"' . $cursor_text . '"' ; ?>,
-                loop: <?php if( !empty( $settings['premium_fancy_text_type_loop'] ) ) : ?>true<?php else : ?>false<?php endif; ?>,
-                });
-            });
-</script>
-<?php endif; ?>
-<!-- Slide up Effect --> 
-<?php if ( $settings['premium_fancy_text_effect'] === 'slide') : ?>
-<script>
-    jQuery(function( $ ) {
-        $( "#premium_fancy_text_<?php echo esc_attr( $this->get_id() ); ?>").vTicker( {
-        speed: <?php echo esc_attr( $settings['premium_slide_up_speed'] ); ?>,
-        showItems: <?php echo esc_attr( $settings['premium_slide_up_shown_items'] ); ?>,
-        pause: <?php echo esc_attr( $settings['premium_slide_up_pause_time'] ); ?>,
-        mousePause : <?php if ( !empty( $settings['premium_slide_up_hover_pause'] ) ) : ?>true<?php else : ?>false<?php endif; ?>,
-        direction: "up"
-        });
-    });
-</script>
-<?php endif; ?>
-
     <?php
     }
 }

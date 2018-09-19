@@ -185,10 +185,18 @@ class WCFM_Non_Ajax {
 	public function wcfm_plugin_action_links( $links ) {
 		global $WCFM;
 		$action_links = array(
-			'settings' => '<a target="_blank" href="' . admin_url( 'admin.php?page=wcfm_settings' ) . '" aria-label="' . esc_attr__( 'View WCFM settings', 'wc-frontend-manager' ) . '">' . esc_html__( 'Settings', 'wc-frontend-manager' ) . '</a>',
+			'settings' => '<a href="' . admin_url( 'admin.php?page=wcfm_settings' ) . '" aria-label="' . esc_attr__( 'View WCFM settings', 'wc-frontend-manager' ) . '">' . esc_html__( 'Settings', 'wc-frontend-manager' ) . '</a>',
 		);
+		
+		$action_links = array_merge( $action_links, $links );
+		
+		$ultimate_meta = array();
+		if(!WCFM_Dependencies::wcfmu_plugin_active_check()) {
+			$ultimate_meta = array( 'ultimate' => '<a target="_blank" href="' . esc_url( apply_filters( 'wcfm_ultimate_url', 'https://wclovers.com/product/woocommerce-frontend-manager-ultimate/' ) ) . '" aria-label="' . esc_attr__( 'Add more power to your WCFM', 'wc-frontend-manager' ) . '">' . esc_html__( 'WCFM Ultimate', 'wc-frontend-manager' ) . '</a>' );
+			$action_links =  array_merge( $action_links, $ultimate_meta );
+		}
 
-		return array_merge( $action_links, $links );
+		return $action_links;
 	}
 
 	/**
@@ -202,15 +210,16 @@ class WCFM_Non_Ajax {
 		global $WCFM;
 		if ( $WCFM->plugin_base_name == $file ) {
 			$row_meta = array(
-				'docs'      => '<a target="_blank" href="' . esc_url( apply_filters( 'wcfm_docs_url', 'https://wclovers.com/knowledgebase/' ) ) . '" aria-label="' . esc_attr__( 'View WCFM documentation', 'wc-frontend-manager' ) . '">' . esc_html__( 'Documentation', 'wc-frontend-manager' ) . '</a>',
-				'faq'       => '<a target="_blank" href="' . esc_url( apply_filters( 'wcfm_faq_url', 'https://wclovers.com/faq/' ) ) . '" aria-label="' . esc_attr__( 'View WCFM FAQ', 'wc-frontend-manager' ) . '">' . esc_html__( 'FAQ', 'wc-frontend-manager' ) . '</a>',
-				'support'   => '<a target="_blank" href="' . esc_url( apply_filters( 'wcfm_support_url', 'https://wclovers.com/forums' ) ) . '" aria-label="' . esc_attr__( 'Visit premium customer support', 'woocommerce' ) . '">' . esc_html__( 'Support', 'woocommerce' ) . '</a>',
-				//'contactus' => '<a href="' . esc_url( apply_filters( 'wcfm_contactus_url', 'http://wclovers.com/contact-us/' ) ) . '" aria-label="' . esc_attr__( 'Any WC help feel free to contact us', 'wc-frontend-manager' ) . '">' . esc_html__( 'Contact US', 'wc-frontend-manager' ) . '</a>'
+				'docs'          => '<a target="_blank" href="' . esc_url( apply_filters( 'wcfm_docs_url', 'https://wclovers.com/knowledgebase/' ) ) . '" aria-label="' . esc_attr__( 'View WCFM documentation', 'wc-frontend-manager' ) . '">' . esc_html__( 'Documentation', 'wc-frontend-manager' ) . '</a>',
+				//'faq'           => '<a target="_blank" href="' . esc_url( apply_filters( 'wcfm_faq_url', 'https://wclovers.com/faq/' ) ) . '" aria-label="' . esc_attr__( 'View WCFM FAQ', 'wc-frontend-manager' ) . '">' . esc_html__( 'FAQ', 'wc-frontend-manager' ) . '</a>',
+				'videotutorial' => '<a target="_blank" href="' . esc_url( apply_filters( 'wcfm_vtutorial_url', 'https://wclovers.com/wcfm-tutorials/' ) ) . '" aria-label="' . esc_attr__( 'View WCFM Video Tutorial', 'wc-frontend-manager' ) . '">' . esc_html__( 'Video Tutorial', 'wc-frontend-manager' ) . '</a>',
+				'support'       => '<a target="_blank" href="' . esc_url( apply_filters( 'wcfm_support_url', 'https://wclovers.com/forums' ) ) . '" aria-label="' . esc_attr__( 'Visit premium customer support', 'woocommerce' ) . '">' . esc_html__( 'Support', 'woocommerce' ) . '</a>',
+				'customization' => '<a target="_blank" href="' . esc_url( apply_filters( 'wcfm_customization_url', 'https://wclovers.com/woocommerce-multivendor-customization/' ) ) . '" aria-label="' . esc_attr__( 'Any WC help feel free to contact us', 'wc-frontend-manager' ) . '">' . esc_html__( 'Customization Help', 'wc-frontend-manager' ) . '</a>'
 			);
 			
 			$ultimate_meta = array();
 			if(!WCFM_Dependencies::wcfmu_plugin_active_check()) {
-				$ultimate_meta = array( 'ultimate' => '<a href="' . esc_url( apply_filters( 'wcfm_ultimate_url', 'https://wclovers.com/product/woocommerce-frontend-manager-ultimate/' ) ) . '" aria-label="' . esc_attr__( 'Add more power to your WCFM', 'wc-frontend-manager' ) . '">' . esc_html__( 'WCFM Ultimate', 'wc-frontend-manager' ) . '</a>' );
+				$ultimate_meta = array( 'ultimate' => '<a target="_blank" href="' . esc_url( apply_filters( 'wcfm_ultimate_url', 'https://wclovers.com/product/woocommerce-frontend-manager-ultimate/' ) ) . '" aria-label="' . esc_attr__( 'Add more power to your WCFM', 'wc-frontend-manager' ) . '">' . esc_html__( 'WCFM Ultimate', 'wc-frontend-manager' ) . '</a>' );
 			}
 
 			return array_merge( $links, $row_meta, $ultimate_meta );
@@ -223,9 +232,14 @@ class WCFM_Non_Ajax {
 		global $WCFM, $wp_admin_bar;
 		
 		$wcfm_menus = $WCFM->get_wcfm_menus();
+		$wcfm_formeted_menus = apply_filters( 'wcfm_formeted_menus', $wcfm_menus );
 		//unset($wcfm_menus['settings']);
 		
-		$title = '<div class="wcfm-admin-menu-head"><img src="' . $WCFM->plugin_url . '/assets/images/wcfm-30x30.png" alt="WCFM Home" /><span class="screen-reader-text">' . __( 'WCFM', 'wordpress-seo' ) . '</span></div>';
+		if( $WCFM->is_marketplace && ( $WCFM->is_marketplace == 'wcfmmarketplace' ) ) {
+			$title = '<div class="wcfm-admin-menu-head"><img src="' .trailingslashit( $WCFM->plugin_url ) . 'assets/images/wcfmmp-30X30.png" alt="WCFM Home" /><span class="screen-reader-text">' . __( 'WCFM', 'wordpress-seo' ) . '</span></div>';
+		} else {
+			$title = '<div class="wcfm-admin-menu-head"><img src="' . trailingslashit( $WCFM->plugin_url ) . 'assets/images/wcfm-30x30.jpg" alt="WCFM Home" /><span class="screen-reader-text">' . __( 'WCFM', 'wordpress-seo' ) . '</span></div>';
+		}
 		
 		$wp_admin_bar->add_menu( array(
 			'id'    => 'wcfm-menu',
@@ -234,33 +248,37 @@ class WCFM_Non_Ajax {
 			'meta'   => array( 'tabindex' => 0 )
 		) );
 		
-		if( !empty($wcfm_menus) ) {
-			foreach( $wcfm_menus as $wcfm_menu_key => $wcfm_menu_data ) {
-				if( !isset( $wcfm_menu_data['capability'] ) || empty( $wcfm_menu_data['capability'] ) || apply_filters( $wcfm_menu_data['capability'], true ) ) {
-					$wp_admin_bar->add_menu( array(
-						'parent'    => 'wcfm-menu',
-						'id' => 'wcfm-menu-'. $wcfm_menu_key,
-						'title' => '<span class="wcfm-admin-menu">' . $wcfm_menu_data['label'] . '</span>',
-						'href'  => $wcfm_menu_data['url'],
-						'meta'   => array( 'tabindex' => 0 )
-					) );
-					
-					if( isset( $wcfm_menu_data['has_new'] ) ) {
-						if( !isset( $wcfm_menu_data['submenu_capability'] ) || empty( $wcfm_menu_data['submenu_capability'] ) || apply_filters( $wcfm_menu_data['submenu_capability'], true ) ) {
-							$wp_admin_bar->add_menu( array(
-								'parent'    => 'wcfm-menu-'. $wcfm_menu_key,
-								'id' => 'wcfm-menu-sub-parent-'. $wcfm_menu_key,
-								'title' => '<span class="wcfm-admin-menu">' . $wcfm_menu_data['label'] . '</span>',
-								'href'  => $wcfm_menu_data['url'],
-								'meta'   => array( 'tabindex' => 0 )
-							) );
-							$wp_admin_bar->add_menu( array(
-								'parent'    => 'wcfm-menu-'. $wcfm_menu_key,
-								'id' => 'wcfm-menu-sub-'. $wcfm_menu_key,
-								'title' => '<span class="wcfm-admin-menu">' . __( 'Add New', 'wc-frontend-manager' ) . '</span>',
-								'href'  => $wcfm_menu_data['new_url'],
-								'meta'   => array( 'tabindex' => 0 )
-							) );
+		$wcfm_page = get_wcfm_page();
+		
+		if( !empty($wcfm_formeted_menus) ) {
+			foreach( $wcfm_formeted_menus as $wcfm_menu_key => $wcfm_menu_data ) {
+				if( !empty( $wcfm_menu_data['label'] ) && !empty( $wcfm_menu_data['url'] ) ) {
+					if( !isset( $wcfm_menu_data['capability'] ) || empty( $wcfm_menu_data['capability'] ) || apply_filters( $wcfm_menu_data['capability'], true ) ) {
+						$wp_admin_bar->add_menu( array(
+							'parent'    => 'wcfm-menu',
+							'id' => 'wcfm-menu-'. $wcfm_menu_key,
+							'title' => '<span class="wcfm-admin-menu">' . __( $wcfm_menu_data['label'], 'wc-frontend-manager' ) . '</span>',
+							'href'  => wcfm_get_endpoint_url( $wcfm_menu_key, '', $wcfm_page ),
+							'meta'   => array( 'tabindex' => 0 )
+						) );
+						
+						if( isset( $wcfm_menu_data['has_new'] ) ) {
+							if( !isset( $wcfm_menu_data['submenu_capability'] ) || empty( $wcfm_menu_data['submenu_capability'] ) || apply_filters( $wcfm_menu_data['submenu_capability'], true ) ) {
+								$wp_admin_bar->add_menu( array(
+									'parent'    => 'wcfm-menu-'. $wcfm_menu_key,
+									'id' => 'wcfm-menu-sub-parent-'. $wcfm_menu_key,
+									'title' => '<span class="wcfm-admin-menu">' . __( $wcfm_menu_data['label'], 'wc-frontend-manager' ) . '</span>',
+									'href'  => wcfm_get_endpoint_url( $wcfm_menu_key, '', $wcfm_page ),
+									'meta'   => array( 'tabindex' => 0 )
+								) );
+								$wp_admin_bar->add_menu( array(
+									'parent'    => 'wcfm-menu-'. $wcfm_menu_key,
+									'id' => 'wcfm-menu-sub-'. $wcfm_menu_key,
+									'title' => '<span class="wcfm-admin-menu">' . __( 'Add New', 'wc-frontend-manager' ) . '</span>',
+									'href'  => wcfm_get_endpoint_url( $wcfm_menu_key, '', $wcfm_page ),
+									'meta'   => array( 'tabindex' => 0 )
+								) );
+							}
 						}
 					}
 				}

@@ -3,11 +3,11 @@
 Plugin Name: Login Widget With Shortcode
 Plugin URI: https://wordpress.org/plugins/login-sidebar-widget/
 Description: This is a simple login form in the widget. just install the plugin and add the login widget in the sidebar. Thats it. :)
-Version: 5.7.1
+Version: 5.8.1
 Text Domain: login-sidebar-widget
 Domain Path: /languages
 Author: aviplugins.com
-Author URI: http://www.aviplugins.com/
+Author URI: https://www.aviplugins.com/
 */
 
 /**
@@ -19,74 +19,45 @@ Author URI: http://www.aviplugins.com/
 
 // CONFIG
 
-// Set email template 
-global $forgot_password_link_mail_subject, $forgot_password_link_mail_body, $new_password_mail_subject, $new_password_mail_body;
+define( 'LSW_DIR_NAME', 'login-sidebar-widget' );
+define( 'LSW_DIR_PATH', dirname( __FILE__ ) );
 
-$forgot_password_link_mail_subject = "Password Reset Request";
-$forgot_password_link_mail_body = "Someone requested that the password be reset for the following account:
-<br>
-#site_url#
-<br>
-Username: #user_name#
-<br>
-If this was a mistake, just ignore this email and nothing will happen.
-<br>
-To reset your password, visit the following address:
-<br>
-#resetlink#";
-
-$new_password_mail_subject = "Password Reset Request";
-$new_password_mail_body = "Your new password for the account at:
-<br>
-#site_url#
-<br>
-Username: #user_name#
-<br>
-Password: #user_password#
-<br>
-You can now login with your new password at:
-#site_url#";
-
-
-// plugin default option data 
-$lsw_default_options_data = array(
-// general
-'redirect_page' => array( 'sanitization' => 'sanitize_text_field' ),
-'redirect_page_url' => array( 'sanitization' => 'sanitize_text_field' ),
-'logout_redirect_page' => array( 'sanitization' => 'sanitize_text_field' ),
-'link_in_username' => array( 'sanitization' => 'sanitize_text_field' ),
-'login_afo_rem' => array( 'sanitization' => 'sanitize_text_field' ),
-'login_afo_forgot_pass_link' => array( 'sanitization' => 'sanitize_text_field' ),
-'login_afo_register_link' => array( 'sanitization' => 'sanitize_text_field' ),
-'lafo_invalid_username' => array( 'sanitization' => 'sanitize_text_field' ),
-'lafo_invalid_email' => array( 'sanitization' => 'sanitize_text_field' ),
-'lafo_invalid_password' => array( 'sanitization' => 'sanitize_text_field' ),
-'captcha_on_admin_login' => array( 'sanitization' => 'sanitize_text_field' ),
-'captcha_on_user_login' => array( 'sanitization' => 'sanitize_text_field' ),
-'login_sidebar_widget_from_email' => array( 'sanitization' => 'sanitize_text_field' ),
-'forgot_password_link_mail_subject' => array( 'sanitization' => 'sanitize_text_field' ),
-'forgot_password_link_mail_body' => array( 'sanitization' => 'esc_html' ),
-'new_password_mail_subject' => array( 'sanitization' => 'sanitize_text_field' ),
-'new_password_mail_body' => array( 'sanitization' => 'esc_html' ),
-);
+include_once LSW_DIR_PATH . '/config/config_emails.php';
+include_once LSW_DIR_PATH . '/config/config_default_fields.php';
 
 // CONFIG
 
-include_once dirname( __FILE__ ) . '/settings.php';
-include_once dirname( __FILE__ ) . '/login_afo_widget.php';
-include_once dirname( __FILE__ ) . '/data.php';
-include_once dirname( __FILE__ ) . '/forgot_pass_class.php';
-include_once dirname( __FILE__ ) . '/login_afo_widget_shortcode.php';
-include_once dirname( __FILE__ ) . '/message_class.php';
-include_once dirname( __FILE__ ) . '/security.php';
-include_once dirname( __FILE__ ) . '/login_log.php';
-include_once dirname( __FILE__ ) . '/paginate_class.php';
-include_once dirname( __FILE__ ) . '/form_class.php';
+function plug_install_lsw(){
+	include_once LSW_DIR_PATH . '/includes/class_settings.php';
+	include_once LSW_DIR_PATH . '/includes/class_scripts.php';
+	include_once LSW_DIR_PATH . '/includes/class_form.php';
+	include_once LSW_DIR_PATH . '/includes/class_forgot_password.php';
+	include_once LSW_DIR_PATH . '/includes/class_message.php';
+	include_once LSW_DIR_PATH . '/includes/class_login_log_adds.php';
+	include_once LSW_DIR_PATH . '/includes/class_security.php';
+	include_once LSW_DIR_PATH . '/includes/class_login_log.php';
+	include_once LSW_DIR_PATH . '/includes/class_paginate.php';
+	include_once LSW_DIR_PATH . '/includes/class_login_form.php';
+	include_once LSW_DIR_PATH . '/login_afo_widget.php';
+	include_once LSW_DIR_PATH . '/process.php';
+	include_once LSW_DIR_PATH . '/login_afo_widget_shortcode.php';
+	include_once LSW_DIR_PATH . '/functions.php';
+	
+	new login_settings;
+	new login_scripts;
+	new afo_login_log;
+	new ap_login_form;
+}
 
-new login_settings;
-new afo_login_log;
+class lsw_init_load {
+	function __construct() {
+		plug_install_lsw();
+	}
+}
 
-add_action( 'widgets_init', create_function( '', 'register_widget( "login_wid" );' ) );
+new lsw_init_load;
+
+add_action( 'widgets_init', function(){ register_widget( 'login_wid' ); } );
 
 add_action( 'init', 'login_validate' );
 add_action( 'init', 'forgot_pass_validate' );
@@ -98,7 +69,9 @@ add_action('admin_init', 'login_log_ip_data');
 
 add_action('plugins_loaded', 'security_init');
 
-function afo_login_setup_init() {
+add_action( 'plugins_loaded', 'login_widget_afo_text_domain' );
+
+function lsw_setup_init() {
 	global $wpdb, $forgot_password_link_mail_subject, $forgot_password_link_mail_body, $new_password_mail_subject, $new_password_mail_body;
 	
 	// log tables //
@@ -125,12 +98,4 @@ function afo_login_setup_init() {
 	
 }
 
-register_activation_hook( __FILE__, 'afo_login_setup_init' );
-
-if(!function_exists( 'start_session_if_not_started' )){
-	function start_session_if_not_started(){
-		if(!session_id()){
-			@session_start();
-		}
-	}
-}
+register_activation_hook( __FILE__, 'lsw_setup_init' );

@@ -1,21 +1,28 @@
 [
     {
         "name": "premmerce/wordpress-sdk",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "v2.0",
+        "version_normalized": "2.0.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Premmerce/wordpress-sdk.git",
-            "reference": "c4c71a80ed677ea4f073333efb329c0aa5d7b033"
+            "reference": "424b120d2b40f2434492c71d3535903e759f1ec7"
         },
-        "time": "2017-10-30T14:25:58+00:00",
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Premmerce/wordpress-sdk/zipball/424b120d2b40f2434492c71d3535903e759f1ec7",
+            "reference": "424b120d2b40f2434492c71d3535903e759f1ec7",
+            "shasum": ""
+        },
+        "time": "2018-06-01T13:18:25+00:00",
         "type": "library",
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
-                "WordpressSDK\\": "src"
+                "Premmerce\\SDK\\": "src"
             }
         },
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "GPL-2.0+"
         ],

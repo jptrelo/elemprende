@@ -53,14 +53,18 @@ class WCFM_Payments_Controller {
 			foreach($wcfm_payments_array as $transaction_id => $wcfm_payments_single) {
 				
 				// Status
-				if( $wcfm_payments_single['status'] == 'wcmp_completed' ) {
+				if( $wcfm_payments_single['status'] == 'Completed' ) {
 					$wcfm_payments_json_arr[$index][] =  '<span class="payment-status tips wcicon-status-completed text_tip" data-tip="' . __('Completed', 'woocommerce') . '"></span>';
 				} else {
 					$wcfm_payments_json_arr[$index][] =  '<span class="payment-status tips wcicon-status-processing text_tip" data-tip="' . __('Processing', 'woocommerce') . '"></span>';
 				}
 				
 				// Transc.ID
-				$wcfm_payments_json_arr[$index][] = '<span class="wcfm_dashboard_item_title"># ' . $transaction_id . '</span>';  
+				if( apply_filters( 'wcfm_is_allow_transaction_details', true ) ) {
+					$wcfm_payments_json_arr[$index][] = '<a href="' . wcfm_transaction_details_url( $transaction_id ) . '" class="wcfm_dashboard_item_title"># ' . $transaction_id . '</a>';
+				} else {
+					$wcfm_payments_json_arr[$index][] = '<span class="wcfm_dashboard_item_title"># ' . $transaction_id . '</span>';
+				}
 				
 				// Commission IDs
 				$wcfm_payments_json_arr[$index][] =  '<span class="wcfm_dashboard_item_title transaction_commission_ids">#'.  implode(', #', $wcfm_payments_single['commission_details'] ) . '</span>';

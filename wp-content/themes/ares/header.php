@@ -65,7 +65,7 @@ endif;
                     <?php if ( function_exists( 'has_custom_logo' ) && has_custom_logo() ) : ?>
 
                         
-                        <a href="/"><img width="290" height="112" src="/wp-content/uploads/2018/05/logo-degrade.png" class="custom-logo" alt="HOME" itemprop="logo"></a>
+                        <a href="<?php echo home_url( '/' ); ?>index.php"><img width="290" height="112" src="<?php echo home_url( '/' ); ?>wp-content/uploads/2018/05/logo-degrade.png" class="custom-logo" alt="HOME" itemprop="logo"></a>
 
                     <?php else : ?>
 

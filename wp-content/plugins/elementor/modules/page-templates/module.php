@@ -10,11 +10,18 @@ use Elementor\Modules\Library\Documents\Page as PageDocument;
 use Elementor\Plugin;
 use Elementor\Utils;
 
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+/**
+ * Elementor page templates module.
+ *
+ * Elementor page templates module handler class is responsible for registering
+ * and managing Elementor page templates modules.
+ *
+ * @since 2.0.0
+ */
 class Module extends BaseModule {
 
 	/**
@@ -28,10 +35,27 @@ class Module extends BaseModule {
 	const TEMPLATE_HEADER_FOOTER = 'elementor_header_footer';
 
 	/**
+	 * Print callback.
+	 *
+	 * Holds the page template callback content.
+	 *
+	 * @since 2.0.0
+	 * @access protected
+	 *
 	 * @var callable
 	 */
 	protected $print_callback;
 
+	/**
+	 * Get module name.
+	 *
+	 * Retrieve the page templates module name.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 *
+	 * @return string Module name.
+	 */
 	public function get_name() {
 		return 'page-templates';
 	}
@@ -43,7 +67,7 @@ class Module extends BaseModule {
 	 *
 	 * Fired by `template_include` filter.
 	 *
-	 * @since 1.6.0
+	 * @since 2.0.0
 	 * @access public
 	 *
 	 * @param string $template The path of the template to include.
@@ -58,6 +82,8 @@ class Module extends BaseModule {
 				$template_path = $this->get_template_path( $document->get_meta( '_wp_page_template' ) );
 				if ( $template_path ) {
 					$template = $template_path;
+
+					Plugin::$instance->inspector->add_log( 'Page Template', Plugin::$instance->inspector->parse_template_path( $template ), $document->get_edit_url() );
 				}
 			}
 		}
@@ -65,6 +91,17 @@ class Module extends BaseModule {
 		return $template;
 	}
 
+	/**
+	 * Add WordPress templates.
+	 *
+	 * Adds Elementor templates to all the post types that support
+	 * Elementor.
+	 *
+	 * Fired by `init` action.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 */
 	public function add_wp_templates_support() {
 		$post_types = get_post_types_by_support( 'elementor' );
 
@@ -76,32 +113,63 @@ class Module extends BaseModule {
 	/**
 	 * Add page templates.
 	 *
-	 * Add the Elementor Canvas page templates to the theme templates.
+	 * Add the Elementor page templates to the theme templates.
 	 *
 	 * Fired by `theme_{$post_type}_templates` filter.
 	 *
-	 * @since 1.6.0
+	 * @since 2.0.0
 	 * @access public
 	 * @static
 	 *
 	 * @param array $page_templates Array of page templates. Keys are filenames,
-	 *                              values are translated names.
+	 *                              checks are translated names.
+	 *
+	 * @param \WP_Theme $wp_theme
+	 * @param \WP_Post $post
 	 *
 	 * @return array Page templates.
 	 */
-	public function add_page_templates( $page_templates ) {
+	public function add_page_templates( $page_templates, $wp_theme, $post ) {
+		if ( $post ) {
+			// FIX ME: Gutenberg not send $post as WP_Post object, just the post ID.
+			$post_id = ! empty( $post->ID ) ? $post->ID : $post;
+
+			$document = Plugin::$instance->documents->get( $post_id );
+			if ( $document && ! $document::get_property( 'support_wp_page_templates' ) ) {
+				return $page_templates;
+			}
+		}
+
 		$page_templates = [
-			self::TEMPLATE_CANVAS => __( 'Elementor', 'elementor' ) . ' ' . __( 'Canvas', 'elementor' ),
-			self::TEMPLATE_HEADER_FOOTER => __( 'Elementor', 'elementor' ) . ' ' . __( 'Full Width', 'elementor' ),
+			self::TEMPLATE_CANVAS => _x( 'Elementor Canvas', 'Page Template', 'elementor' ),
+			self::TEMPLATE_HEADER_FOOTER => _x( 'Elementor Full Width', 'Page Template', 'elementor' ),
 		] + $page_templates;
 
 		return $page_templates;
 	}
 
+	/**
+	 * Set print callback.
+	 *
+	 * Set the page template callback.
+	 *
+	 * @since  2.0.0
+	 * @access public
+	 *
+	 * @param callable $callback
+	 */
 	public function set_print_callback( $callback ) {
 		$this->print_callback = $callback;
 	}
 
+	/**
+	 * Print callback.
+	 *
+	 * Prints the page template content using WordPress loop.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 */
 	public function print_callback() {
 		while ( have_posts() ) :
 			the_post();
@@ -109,6 +177,14 @@ class Module extends BaseModule {
 		endwhile;
 	}
 
+	/**
+	 * Print content.
+	 *
+	 * Prints the page template content.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 */
 	public function print_content() {
 		if ( ! $this->print_callback ) {
 			$this->print_callback = [ $this, 'print_callback' ];
@@ -117,6 +193,18 @@ class Module extends BaseModule {
 		call_user_func( $this->print_callback );
 	}
 
+	/**
+	 * Get page template path.
+	 *
+	 * Retrieve the path for any given page template.
+	 *
+	 * @since  2.0.0
+	 * @access public
+	 *
+	 * @param string $page_template The page template name.
+	 *
+	 * @return string Page template path.
+	 */
 	public function get_template_path( $page_template ) {
 		$template_path = '';
 		switch ( $page_template ) {
@@ -132,7 +220,16 @@ class Module extends BaseModule {
 	}
 
 	/**
-	 * @param Document $document
+	 * Register template control.
+	 *
+	 * Adds custom controls to any given document.
+	 *
+	 * Fired by `update_post_metadata` action.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 *
+	 * @param Document $document The document instance.
 	 */
 	public function action_register_template_control( $document ) {
 		if ( $document instanceof PostDocument || $document instanceof PageDocument ) {
@@ -141,8 +238,15 @@ class Module extends BaseModule {
 	}
 
 	/**
-	 * @param Document $document
-	 * @param string $control_id
+	 * Register template control.
+	 *
+	 * Adds custom controls to any given document.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 *
+	 * @param Document $document   The document instance.
+	 * @param string   $control_id Optional. The control ID. Default is `template`.
 	 */
 	public function register_template_control( $document, $control_id = 'template' ) {
 		if ( ! Utils::is_cpt_custom_templates_supported() ) {
@@ -159,6 +263,9 @@ class Module extends BaseModule {
 
 		$document->start_injection( [
 			'of' => 'post_status',
+			'fallback' => [
+				'of' => 'post_title',
+			],
 		] );
 
 		$document->add_control(
@@ -213,7 +320,26 @@ class Module extends BaseModule {
 		$document->end_injection();
 	}
 
-	public function filter_update_meta( $value, $object_id, $meta_key ) {
+	/**
+	 * Filter metadata update.
+	 *
+	 * Filters whether to update metadata of a specific type.
+	 *
+	 * Elementor don't allow WordPress to update the parent page template
+	 * during `wp_update_post`.
+	 *
+	 * Fired by `update_{$meta_type}_metadata` filter.
+	 *
+	 * @since  2.0.0
+	 * @access public
+	 *
+	 * @param bool   $check     Whether to allow updating metadata for the given type.
+	 * @param int    $object_id Object ID.
+	 * @param string $meta_key  Meta key.
+	 *
+	 * @return bool Whether to allow updating metadata of a specific type.
+	 */
+	public function filter_update_meta( $check, $object_id, $meta_key ) {
 		if ( '_wp_page_template' === $meta_key ) {
 			$ajax_data = Plugin::$instance->ajax->get_current_action_data();
 
@@ -222,17 +348,25 @@ class Module extends BaseModule {
 			// Don't allow WP to update the parent page template.
 			// (during `wp_update_post` from page-settings or save_plain_text).
 			if ( $is_autosave_action && ! wp_is_post_autosave( $object_id ) && DB::STATUS_DRAFT !== get_post_status( $object_id ) ) {
-				$value = false;
+				$check = false;
 			}
 		}
 
-		return $value;
+		return $check;
 	}
 
+	/**
+	 * Page templates module constructor.
+	 *
+	 * Initializing Elementor page templates module.
+	 *
+	 * @since 2.0.0
+	 * @access public
+	 */
 	public function __construct() {
 		add_action( 'init', [ $this, 'add_wp_templates_support' ] );
 
-		add_filter( 'template_include', [ $this, 'template_include' ] );
+		add_filter( 'template_include', [ $this, 'template_include' ], 11 /* After Plugins/WooCommerce */ );
 
 		add_action( 'elementor/documents/register_controls', [ $this, 'action_register_template_control' ] );
 

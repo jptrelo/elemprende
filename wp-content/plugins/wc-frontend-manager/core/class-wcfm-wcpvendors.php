@@ -29,7 +29,8 @@ class WCFM_WCPVendors {
     	add_action( 'woocommerce_before_my_account', array( &$this, 'wcpvendors_add_section' ), 0 );
     	
 			// Allow Vendor user to manage product from catalog
-			add_filter( 'wcfm_allwoed_user_rols', array( &$this, 'allow_wcpvendors_vendor_role' ) );
+			add_filter( 'wcfm_allwoed_user_roles', array( &$this, 'allow_wcpvendors_vendor_role' ) );
+			add_filter( 'wcfm_allwoed_vendor_user_roles', array( &$this, 'allow_wcpvendors_vendor_role' ) );
 			
 			// Filter Vendor Products
 			add_filter( 'wcfm_products_args', array( &$this, 'wcpvendors_products_args' ) );
@@ -41,6 +42,12 @@ class WCFM_WCPVendors {
 			// Listing Filter for specific vendor
 			add_filter( 'wcfm_articles_args', array( &$this, 'wcpvendors_listing_args' ) );
     	add_filter( 'wcfm_listing_args', array( $this, 'wcpvendors_listing_args' ), 20 );
+    	add_filter( "woocommerce_product_export_product_query_args", array( &$this, 'wcpvendors_listing_args' ), 100 );
+    	
+    	// Customers args
+    	if( apply_filters( 'wcfm_is_allow_order_customers_to_vendors', true ) ) {
+    		add_filter( 'wcfm_get_customers_args', array( &$this, 'wcpvendors_filter_customers' ), 20 );
+    	}
     	
     	// Booking Filter
 			add_filter( 'wcfm_wcb_include_bookings', array( &$this, 'wcpvendors_wcb_include_bookings' ) );
@@ -104,7 +111,7 @@ class WCFM_WCPVendors {
   // WCFM wcpvendors Store Name
   function wcpvendors_store_name( $store_name ) {
   	$vendor_data = WC_Product_Vendors_Utils::get_vendor_data_from_user();
-  	$store_name = __( 'My Store', 'wc-frontend-manager' ); //! empty( $vendor_data['shop_name'] ) ? $vendor_data['shop_name'] : '';
+  	$store_name = get_option( 'wcfm_my_store_label', __( 'My Store', 'wc-frontend-manager' ) );
   	$shop_link = get_term_link( apply_filters( 'wcfm_current_vendor_id', WC_Product_Vendors_Utils::get_logged_in_vendor() ), WC_PRODUCT_VENDORS_TAXONOMY );
   	if( !is_wp_error( $shop_link ) ) {
 			if( $store_name ) { $store_name = '<a target="_blank" href="' . apply_filters('wcpv_vendor_shop_permalink', $shop_link) . '">' . $store_name . '</a>'; }
@@ -158,6 +165,44 @@ class WCFM_WCPVendors {
   }
   
   /**
+   * Product Vendors filter customers
+   */
+  function wcpvendors_filter_customers( $args ) {
+  	global $WCFM, $wpdb;
+  	
+  	$vendor_customers  = array();
+  	// Own Customers
+  	$wcfm_customers_array = get_users( $args );
+  	if(!empty($wcfm_customers_array)) {
+			foreach( $wcfm_customers_array as $wcfm_customers_single ) {
+				$vendor_customers[] = $wcfm_customers_single->ID;
+			}
+		}
+  	
+		// Order Customers
+  	$sql = 'SELECT order_id FROM ' . WC_PRODUCT_VENDORS_COMMISSION_TABLE;
+		$sql .= ' WHERE 1=1';
+		$sql .= " AND `vendor_id` = {$this->vendor_id}";
+		$wcfm_orders_array = $wpdb->get_results( $sql );
+		if(!empty($wcfm_orders_array)) {
+			foreach($wcfm_orders_array as $wcfm_orders_single) {
+				$the_order = wc_get_order( $wcfm_orders_single->order_id );
+				if ( $the_order && is_object( $the_order ) && $the_order->get_user_id() ) {
+					$vendor_customers[] = $the_order->get_user_id();
+				}
+			}
+		}
+		if( !empty( $vendor_customers ) ) {
+			$args['include'] = $vendor_customers;
+		} else {
+			$args['include'] = array(0);
+		}
+		if( isset( $args['meta_key'] ) ) unset( $args['meta_key'] );
+		if( isset( $args['meta_value'] ) ) unset( $args['meta_value'] );
+		return $args;
+  }
+  
+  /**
    * WC Product Vendors Bookings
    */
   function wcpvendors_wcb_include_bookings( ) {
@@ -202,9 +247,9 @@ class WCFM_WCPVendors {
 				$product_status = get_post_status( $new_product_id );
 				$author_id = apply_filters( 'wcfm_current_vendor_id', WC_Product_Vendors_Utils::get_logged_in_vendor() );
 				if( $product_status == 'pending' ) {
-					$WCFM->wcfm_vendor_support->wcfm_admin_notification_product_review( $author_id, $new_product_id );
+					$WCFM->wcfm_notification->wcfm_admin_notification_product_review( $author_id, $new_product_id );
 				} else {
-					$WCFM->wcfm_vendor_support->wcfm_admin_notification_new_product( $author_id, $new_product_id );
+					$WCFM->wcfm_notification->wcfm_admin_notification_new_product( $author_id, $new_product_id );
 				}
 			}
 		}
@@ -539,9 +584,8 @@ class WCFM_WCPVendors {
   	global $WCFM, $wpdb, $_POST;
   	
   	$products = $this->WCPV_get_vendor_products();
-		
-		if( !empty($products) )
-		  $query['where'] .= "AND order_item_meta_2.meta_value in (" . implode( ',', $products ) . ")";
+		if( empty($products) ) return array(0);
+		$query['where'] .= "AND order_item_meta_2.meta_value in (" . implode( ',', $products ) . ")";
   	
   	return $query;
   }
@@ -552,32 +596,38 @@ class WCFM_WCPVendors {
   function WCPV_get_vendor_products( $vendor_id = 0 ) {
   	if( !$vendor_id ) $vendor_id = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
   	
-  	$args = array(
-							'posts_per_page'   => -1,
-							'offset'           => 0,
-							'category'         => '',
-							'category_name'    => '',
-							'orderby'          => 'date',
-							'order'            => 'DESC',
-							'include'          => '',
-							'exclude'          => '',
-							'meta_key'         => '',
-							'meta_value'       => '',
-							'post_type'        => 'product',
-							'post_mime_type'   => '',
-							'post_parent'      => '',
-							//'author'	   => get_current_user_id(),
-							'post_status'      => array('draft', 'pending', 'publish'),
-							'suppress_filters' => 0 
-						);
-		
-		$args = apply_filters( 'wcfm_products_args', $args );
-		$products = get_posts( $args );
-		$products_arr = array(0);
-		if(!empty($products)) {
-			foreach($products as $product) {
-				$products_arr[] = $product->ID;
+  	$post_count = count_user_posts( $vendor_id, 'product' );
+  	$post_loop_offset = 0;
+  	$products_arr = array(0);
+  	while( $post_loop_offset < $post_count ) {
+			$args = array(
+								'posts_per_page'   => 10,
+								'offset'           => $post_loop_offset,
+								'category'         => '',
+								'category_name'    => '',
+								'orderby'          => 'date',
+								'order'            => 'DESC',
+								'include'          => '',
+								'exclude'          => '',
+								'meta_key'         => '',
+								'meta_value'       => '',
+								'post_type'        => 'product',
+								'post_mime_type'   => '',
+								'post_parent'      => '',
+								//'author'	       => get_current_user_id(),
+								'post_status'      => array('draft', 'pending', 'publish', 'private'),
+								'suppress_filters' => 0,
+								'fields'           => 'ids'
+							);
+			
+			$args = apply_filters( 'wcfm_products_args', $args );
+			$products = get_posts( $args );
+			if(!empty($products)) {
+				foreach($products as $product) {
+					$products_arr[] = $product;
+				}
 			}
+			$post_loop_offset += 10;
 		}
 		
 		return $products_arr;

@@ -3,6 +3,7 @@
  * WCFMu plugin view
  *
  * WCFM Enquiry view
+ * This template can be overridden by copying it to yourtheme/wcfm/enquiry/
  *
  * @author 		WC Lovers
  * @package 	wcfm/views/enquiry
@@ -84,22 +85,24 @@ $ranges = array(
 				<table id="wcfm-enquiry" class="display" cellspacing="0" width="100%">
 					<thead>
 						<tr>
-							<th><?php _e( 'Query', 'wc-frontend-manager' ); ?></th>
+							<th style="max-width: 250px;"><?php _e( 'Query', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Product', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Customer', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Store', 'wc-frontend-manager' ); ?></th>
-							<th><?php _e( 'Reply', 'wc-frontend-manager' ); ?></th>
+							<th><?php _e( 'Additional Info', 'wc-frontend-manager' ); ?></th>
+							<th style="max-width: 250px;"><?php _e( 'Reply', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Date', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Actions', 'wc-frontend-manager' ); ?></th>
 						</tr>
 					</thead>
 					<tfoot>
 						<tr>
-							<th><?php _e( 'Query', 'wc-frontend-manager' ); ?></th>
+							<th style="max-width: 250px;"><?php _e( 'Query', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Product', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Customer', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Store', 'wc-frontend-manager' ); ?></th>
-							<th><?php _e( 'Reply', 'wc-frontend-manager' ); ?></th>
+							<th><?php _e( 'Additional Info', 'wc-frontend-manager' ); ?></th>
+							<th style="max-width: 250px;"><?php _e( 'Reply', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Date', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Actions', 'wc-frontend-manager' ); ?></th>
 						</tr>

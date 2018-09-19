@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - WooCommerce PDF Invoices &amp; Packing Slips - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2017-12-19 16:59:57+0000\n"
+"PO-Revision-Date: 2018-06-26 16:33:59+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -11,11 +11,31 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: Plugins - WooCommerce PDF Invoices &amp; Packing Slips - Stable (latest release)\n"
 
+#: includes/class-wcpdf-main.php:552
+msgid "Invoice Date"
+msgstr "Fecha de factura"
+
+#: includes/class-wcpdf-settings-debug.php:177
+msgid "<b>Disabled:</b> The PHP functions glob and filemtime are required for automatic cleanup but not enabled on your server."
+msgstr "<b>Desactivado:</b> Las funciones PHP glob y filemtime son obligatorias para la limpieza automática pero no están activas en tu servidor."
+
+#: includes/class-wcpdf-settings-debug.php:176
+msgid "Automatically clean up PDF files stored in the temporary folder (used for email attachments)"
+msgstr "Archivos PDF limpiados automáticamente almacenados en la carpeta temporal (utilizados para los adjuntos por correo electrónico)"
+
+#: includes/class-wcpdf-settings-debug.php:171
+msgid "every %s days"
+msgstr "cada %s días"
+
+#: includes/class-wcpdf-settings-debug.php:164
+msgid "Enable automatic cleanup"
+msgstr "Activar la limpieza automática"
+
 #: includes/class-wcpdf-frontend.php:55
 msgid "Download %s (PDF)"
 msgstr "Descargar %s (PDF)"
 
-#: includes/class-wcpdf-settings-debug.php:176
+#: includes/class-wcpdf-settings-debug.php:195
 msgid "Use alternative HTML5 parser to parse HTML"
 msgstr "Usar el analizador alternativo en HTML5 para analizar el HTML"
 
@@ -107,19 +127,19 @@ msgid "Your logo"
 msgstr "Tu logotipo"
 
 #. translators: %s: email title
-#: includes/class-wcpdf-admin.php:429
+#: includes/class-wcpdf-admin.php:433
 msgid "%s email notification manually sent."
 msgstr "%s correo electrónico de aviso enviado manualmente."
 
-#: includes/class-wcpdf-admin.php:245
+#: includes/class-wcpdf-admin.php:249
 msgid "Send email"
 msgstr "Enviar correo electrónico"
 
-#: includes/class-wcpdf-admin.php:243
+#: includes/class-wcpdf-admin.php:247
 msgid "Save order & send email"
 msgstr "Guardar pedido y enviar correo electrónico"
 
-#: includes/class-wcpdf-admin.php:190
+#: includes/class-wcpdf-admin.php:194
 msgid "Send order email"
 msgstr "Enviar correo electrónico del pedido"
 
@@ -127,23 +147,23 @@ msgstr "Enviar correo electrónico del pedido"
 msgid "It looks like you haven't setup any email attachments yet, check the settings under <b>%sDocuments > Invoice%s</b>"
 msgstr "Parece que aún no has configurado ningún adjunto de correo electrónico, revisa los ajustes en <b>%sDocumentos > Factura%s</b>"
 
-#: includes/class-wcpdf-admin.php:76
+#: includes/class-wcpdf-admin.php:80
 msgid "Actually, I have a complaint..."
 msgstr "En realidad tengo una queja…"
 
-#: includes/class-wcpdf-admin.php:75
+#: includes/class-wcpdf-admin.php:79
 msgid "Already did!"
 msgstr "¡Ya lo hice!"
 
-#: includes/class-wcpdf-admin.php:74
+#: includes/class-wcpdf-admin.php:78
 msgid "Yes you deserve it!"
 msgstr "¡Sí, lo merecéis!"
 
-#: includes/class-wcpdf-admin.php:72
+#: includes/class-wcpdf-admin.php:76
 msgid "It would mean a lot to us if you would quickly give our plugin a 5-star rating. Help us spread the word and boost our motivation!"
 msgstr "Valoraríamos un montón si nos dieses una valoración de 5 estrellas. ¡Ayúdanos a difundir la palabra y refuerza nuestra motivación!"
 
-#: includes/class-wcpdf-admin.php:71
+#: includes/class-wcpdf-admin.php:75
 msgid "Wow, you have created more than %d invoices with our plugin!"
 msgstr "¡Vaya, has creado más de %d facturas con nuestro plugin!"
 
@@ -203,7 +223,7 @@ msgstr "Cómo actualizar tu versión de PHP"
 msgid "WooCommerce PDF Invoices & Packing Slips requires PHP 5.3 or higher (5.6 or higher recommended)."
 msgstr "WooCommerce PDF Invoices & Packing Slips requiere PHP 5.3 o superior (recomendada la versión 5.6 o superior)."
 
-#: includes/class-wcpdf-admin.php:75
+#: includes/class-wcpdf-admin.php:79
 #: includes/views/attachment-settings-hint.php:22
 #: includes/views/wcpdf-extensions.php:128
 msgid "Hide this message"
@@ -316,15 +336,15 @@ msgstr "Adjuntar a:"
 msgid "Enable"
 msgstr "Activar"
 
-#: includes/documents/abstract-wcpdf-order-document.php:645
+#: includes/documents/abstract-wcpdf-order-document.php:654
 msgid "Manual email"
 msgstr "Correo electrónico manual"
 
-#: includes/documents/abstract-wcpdf-order-document.php:642
+#: includes/documents/abstract-wcpdf-order-document.php:651
 msgid "Admin email"
 msgstr "Correo electrónico de administrador"
 
-#: includes/documents/abstract-wcpdf-order-document-methods.php:709
+#: includes/documents/abstract-wcpdf-order-document-methods.php:788
 msgid "(includes %s)"
 msgstr "(incluye %s)"
 
@@ -377,19 +397,19 @@ msgstr "¡Fuentes reinstaladas!"
 msgid "Reinstall fonts"
 msgstr "Reinstalar fuentes"
 
-#: includes/class-wcpdf-settings-callbacks.php:325
+#: includes/class-wcpdf-settings-callbacks.php:372
 msgid "Save"
 msgstr "Guardar"
 
-#: includes/class-wcpdf-main.php:222
+#: includes/class-wcpdf-main.php:228
 msgid "Document of type '%s' for the selected order(s) could not be generated"
 msgstr "No se pudo generar el tipo de documento '%s' para el/los pedido(s) seleccionado(s)"
 
-#: includes/class-wcpdf-main.php:156
+#: includes/class-wcpdf-main.php:162
 msgid "You haven't selected any orders"
 msgstr "No has seleccionado ningún pedido"
 
-#: includes/class-wcpdf-admin.php:319
+#: includes/class-wcpdf-admin.php:323
 msgid "Set invoice number & date"
 msgstr "Configurar número y fecha de factura"
 
@@ -402,10 +422,10 @@ msgid "Create, print & email PDF invoices & packing slips for WooCommerce orders
 msgstr "Crea, imprime y manda por correo electrónico facturas en PDF y comprobantes de envío de los pedidos de WooCommerce."
 
 #. #-#-#-#-#  woocommerce-pdf-invoices-packing-slips-code.pot (WooCommerce PDF
-#. Invoices & Packing Slips 2.1.4)  #-#-#-#-#
+#. Invoices & Packing Slips 2.1.10)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
 #. #-#-#-#-#  woocommerce-pdf-invoices-packing-slips-code.pot (WooCommerce PDF
-#. Invoices & Packing Slips 2.1.4)  #-#-#-#-#
+#. Invoices & Packing Slips 2.1.10)  #-#-#-#-#
 #. Author URI of the plugin/theme
 msgid "http://www.wpovernight.com"
 msgstr "http://www.wpovernight.com"
@@ -414,43 +434,43 @@ msgstr "http://www.wpovernight.com"
 msgid "WooCommerce PDF Invoices & Packing Slips"
 msgstr "WooCommerce PDF Invoices & Packing Slips"
 
-#: includes/documents/abstract-wcpdf-order-document-methods.php:919
+#: includes/documents/abstract-wcpdf-order-document-methods.php:998
 msgid "Total"
 msgstr "Total"
 
-#: includes/documents/abstract-wcpdf-order-document-methods.php:916
+#: includes/documents/abstract-wcpdf-order-document-methods.php:995
 msgid "Total ex. VAT"
 msgstr "Total sin IVA"
 
-#: includes/documents/abstract-wcpdf-order-document-methods.php:872
+#: includes/documents/abstract-wcpdf-order-document-methods.php:951
 msgid "Tax rate"
 msgstr "Tasa de impuestos"
 
-#: includes/documents/abstract-wcpdf-order-document-methods.php:871
+#: includes/documents/abstract-wcpdf-order-document-methods.php:950
 msgid "VAT"
 msgstr "IVA"
 
-#: includes/documents/abstract-wcpdf-order-document-methods.php:830
+#: includes/documents/abstract-wcpdf-order-document-methods.php:909
 msgid "Discount"
 msgstr "Descuento"
 
-#: includes/documents/abstract-wcpdf-order-document-methods.php:767
+#: includes/documents/abstract-wcpdf-order-document-methods.php:846
 msgid "Shipping"
 msgstr "Envío"
 
-#: includes/documents/abstract-wcpdf-order-document-methods.php:742
+#: includes/documents/abstract-wcpdf-order-document-methods.php:821
 msgid "Subtotal"
 msgstr "Subtotal"
 
-#: includes/documents/abstract-wcpdf-order-document-methods.php:712
+#: includes/documents/abstract-wcpdf-order-document-methods.php:791
 msgid "(Includes %s)"
 msgstr "(incluye %s)"
 
-#: includes/documents/abstract-wcpdf-order-document-methods.php:349
+#: includes/documents/abstract-wcpdf-order-document-methods.php:411
 msgid "Shipping method"
 msgstr "Método de envío"
 
-#: includes/documents/abstract-wcpdf-order-document-methods.php:328
+#: includes/documents/abstract-wcpdf-order-document-methods.php:390
 msgid "Payment method"
 msgstr "Método de pago"
 
@@ -463,7 +483,7 @@ msgstr "N/D"
 msgid "WooCommerce PDF Invoices & Packing Slips requires %sWooCommerce%s to be installed & activated!"
 msgstr "¡WooCommerce PDF Invoices & Packing Slips requiere que %sWooCommerce%s esté instalado y activo!"
 
-#: templates/Simple/packing-slip.php:57
+#: templates/Simple/packing-slip.php:61
 msgid "Shipping Method:"
 msgstr "Método de envío:"
 
@@ -471,59 +491,59 @@ msgstr "Método de envío:"
 msgid "Shipping Address:"
 msgstr "Dirección de envío:"
 
-#: templates/Simple/invoice.php:114 templates/Simple/packing-slip.php:101
+#: templates/Simple/invoice.php:118 templates/Simple/packing-slip.php:105
 msgid "Customer Notes"
 msgstr "Notas del cliente"
 
-#: templates/Simple/invoice.php:99 templates/Simple/packing-slip.php:86
+#: templates/Simple/invoice.php:103 templates/Simple/packing-slip.php:90
 msgid "Weight:"
 msgstr "Peso:"
 
-#: templates/Simple/invoice.php:98 templates/Simple/packing-slip.php:85
+#: templates/Simple/invoice.php:102 templates/Simple/packing-slip.php:89
 msgid "SKU:"
 msgstr "SKU:"
 
-#: templates/Simple/invoice.php:97 templates/Simple/packing-slip.php:84
+#: templates/Simple/invoice.php:101 templates/Simple/packing-slip.php:88
 msgid "SKU"
 msgstr "SKU"
 
-#: templates/Simple/invoice.php:92 templates/Simple/packing-slip.php:79
+#: templates/Simple/invoice.php:96 templates/Simple/packing-slip.php:83
 msgid "Description"
 msgstr "Descripción"
 
-#: templates/Simple/invoice.php:85
+#: templates/Simple/invoice.php:89
 msgid "Price"
 msgstr "Precio"
 
-#: templates/Simple/invoice.php:84 templates/Simple/packing-slip.php:72
+#: templates/Simple/invoice.php:88 templates/Simple/packing-slip.php:76
 msgid "Quantity"
 msgstr "Cantidad"
 
-#: templates/Simple/invoice.php:83 templates/Simple/packing-slip.php:71
+#: templates/Simple/invoice.php:87 templates/Simple/packing-slip.php:75
 msgid "Product"
 msgstr "Producto"
 
-#: templates/Simple/invoice.php:69
+#: templates/Simple/invoice.php:73
 msgid "Payment Method:"
 msgstr "Método de pago:"
 
-#: templates/Simple/invoice.php:65 templates/Simple/packing-slip.php:53
+#: templates/Simple/invoice.php:69 templates/Simple/packing-slip.php:57
 msgid "Order Date:"
 msgstr "Fecha de pedido:"
 
-#: templates/Simple/invoice.php:61 templates/Simple/packing-slip.php:49
+#: templates/Simple/invoice.php:65 templates/Simple/packing-slip.php:53
 msgid "Order Number:"
 msgstr "Número de pedido:"
 
-#: templates/Simple/invoice.php:50
+#: templates/Simple/invoice.php:54
 msgid "Invoice Number:"
 msgstr "Número de factura:"
 
-#: templates/Simple/invoice.php:41
+#: templates/Simple/invoice.php:43
 msgid "Ship To:"
 msgstr "Enviar a:"
 
-#: templates/Simple/invoice.php:30 templates/Simple/packing-slip.php:41
+#: templates/Simple/invoice.php:30 templates/Simple/packing-slip.php:43
 msgid "Billing Address:"
 msgstr "Dirección de facturación:"
 
@@ -616,28 +636,28 @@ msgstr "haz clic en los elementos para saber más"
 msgid "Check out these premium extensions!"
 msgstr "¡Echa un vistazo a estas extensiones premium!"
 
-#: includes/class-wcpdf-admin.php:336 includes/class-wcpdf-admin.php:338
+#: includes/class-wcpdf-admin.php:340 includes/class-wcpdf-admin.php:342
 msgid "m"
 msgstr "m"
 
-#: includes/class-wcpdf-admin.php:336 includes/class-wcpdf-admin.php:338
+#: includes/class-wcpdf-admin.php:340 includes/class-wcpdf-admin.php:342
 msgid "h"
 msgstr "h"
 
-#: includes/class-wcpdf-admin.php:313 includes/class-wcpdf-admin.php:334
-#: templates/Simple/invoice.php:56
+#: includes/class-wcpdf-admin.php:317 includes/class-wcpdf-admin.php:338
+#: templates/Simple/invoice.php:60
 msgid "Invoice Date:"
 msgstr "Fecha de factura:"
 
-#: includes/class-wcpdf-admin.php:326
+#: includes/class-wcpdf-admin.php:330
 msgid "Invoice Number (unformatted!)"
 msgstr "Número de factura (sin formato)"
 
-#: includes/class-wcpdf-admin.php:211
+#: includes/class-wcpdf-admin.php:215
 msgid "PDF Invoice data"
 msgstr "Datos de la factura PDF"
 
-#: includes/class-wcpdf-admin.php:201
+#: includes/class-wcpdf-admin.php:205
 msgid "Create PDF"
 msgstr "Crear PDF"
 
@@ -645,7 +665,8 @@ msgstr "Crear PDF"
 msgid "Download invoice (PDF)"
 msgstr "Descargar factura (PDF)"
 
-#: includes/class-wcpdf-admin.php:154 includes/class-wcpdf-admin.php:304
+#: includes/class-wcpdf-admin.php:158 includes/class-wcpdf-admin.php:308
+#: includes/class-wcpdf-main.php:551
 msgid "Invoice Number"
 msgstr "Número de factura"
 
@@ -657,15 +678,15 @@ msgstr "Estos se usan para las columnas del pie de página (opcional) en la plan
 msgid "<b>Warning!</b> The settings below are meant for debugging/development only. Do not use them on a live website!"
 msgstr "<b>¡Advertencia!</b> Los siguientes ajustes solo son para depuración/desarrollo. ¡No los uses en un sitio en directo!"
 
-#: includes/class-wcpdf-settings-callbacks.php:300
+#: includes/class-wcpdf-settings-callbacks.php:347
 msgid "Image resolution"
 msgstr "Resolución de la imagen"
 
-#: includes/class-wcpdf-settings-debug.php:170
+#: includes/class-wcpdf-settings-debug.php:189
 msgid "Send the template output as HTML to the browser instead of creating a PDF."
 msgstr "Envía la plantilla como HTML al navegador en vez de crear un PDF."
 
-#: includes/class-wcpdf-settings-debug.php:164
+#: includes/class-wcpdf-settings-debug.php:183
 msgid "Output to HTML"
 msgstr "Enviar como HTML"
 
@@ -921,10 +942,10 @@ msgid_plural "invoices"
 msgstr[0] "factura"
 msgstr[1] "facturas"
 
-#: includes/class-wcpdf-main.php:160
+#: includes/class-wcpdf-main.php:166
 msgid "Some of the export parameters are missing."
 msgstr "Faltan algunos de los parámetros de exportación."
 
-#: includes/class-wcpdf-main.php:147 includes/class-wcpdf-main.php:199
+#: includes/class-wcpdf-main.php:153 includes/class-wcpdf-main.php:205
 msgid "You do not have sufficient permissions to access this page."
 msgstr "No tienes suficientes permisos para acceder a esta página."

@@ -110,17 +110,20 @@ do_action( 'before_wcfm_bookings_details' );
 				
 				<?php if( WCFM_Dependencies::wcfmu_plugin_active_check() ) { ?>
 					<?php if( apply_filters( 'wcfm_is_allow_booking_status_update', true ) ) { ?>
-						<p class="form-field form-field-wide">
-							<label for="wcfm_booking_status"><?php _e( 'Booking Status:', 'woocommerce-bookings' ); ?></label>
-							<select id="wcfm_booking_status" name="booking_status">
-								<?php
-									foreach ( $statuses as $key => $value ) {
-										echo '<option value="' . esc_attr( $key ) . '" ' . selected( $key, $post->post_status, false ) . '>' . esc_html__( $value, 'woocommerce-bookings' ) . '</option>';
-									}
-								?>
-							</select>
-							<button class="wcfm_modify_booking_status button" id="wcfm_modify_booking_status" data-bookingid="<?php echo $booking_id; ?>"><?php _e( 'Update', 'wc-frontend-manager' ); ?></button>
-						</p>
+						<div id="wcfm_booking_status_update_wrapper" class="wcfm_booking_status_update_wrapper">
+							<p class="form-field form-field-wide">
+								<label for="wcfm_booking_status"><?php _e( 'Booking Status:', 'woocommerce-bookings' ); ?></label>
+								<select id="wcfm_booking_status" name="booking_status">
+									<?php
+										foreach ( $statuses as $key => $value ) {
+											echo '<option value="' . esc_attr( $key ) . '" ' . selected( $key, $post->post_status, false ) . '>' . esc_html__( $value, 'woocommerce-bookings' ) . '</option>';
+										}
+									?>
+								</select>
+								<button class="wcfm_modify_booking_status button" id="wcfm_modify_booking_status" data-bookingid="<?php echo $booking_id; ?>"><?php _e( 'Update', 'wc-frontend-manager' ); ?></button>
+							</p>
+							<div class="wcfm-message" tabindex="-1"></div>
+						</div>
 					<?php } ?>
 				<?php } ?>
 			</div>
@@ -137,7 +140,7 @@ do_action( 'before_wcfm_bookings_details' );
 			<div id="bookings_details_booking_expander" class="wcfm-content">
 				
 				<p class="form-field form-field-wide">
-					<label for="booked_product"><?php _e( 'Booked Product:', 'woocommerce-bookings' ) ?></label>
+					<label for="booked_product"><?php _e( 'Booked product:', 'woocommerce-bookings' ) ?></label>
 					<?php
 					
 					if ( $product ) {
@@ -151,7 +154,7 @@ do_action( 'before_wcfm_bookings_details' );
 				
 				<?php if( $resource_id ) { ?>
 					<p class="form-field form-field-wide">
-						<label for="booked_product"><?php _e( 'Resource:', 'woocommerce-bookings' ) ?></label>
+						<label for="booked_product"><?php _e( 'Resource:', 'wc-frontend-manager' ) ?></label>
 						<?php
 							echo esc_html( $resource->post_title );
 						?>
@@ -182,12 +185,12 @@ do_action( 'before_wcfm_bookings_details' );
 				?>
 				
 				<p class="form-field form-field-wide">
-					<label for="booking_date"><?php _e( 'Booking Start Date:', 'woocommerce-bookings' ) ?></label>
+					<label for="booking_date"><?php _e( 'Start date:', 'woocommerce-bookings' ) ?></label>
 					<?php echo apply_filters( 'wcfm_booking_start_date', date_i18n( wc_date_format() . ' ' . wc_time_format(), $booking->get_start( 'edit' ) ), $booking ); ?>
 				</p>
 				
 				<p class="form-field form-field-wide">
-					<label for="booking_date"><?php _e( 'Booking End Date:', 'woocommerce-bookings' ) ?></label>
+					<label for="booking_date"><?php _e( 'End date:', 'woocommerce-bookings' ) ?></label>
 					<?php echo apply_filters( 'wcfm_booking_end_date', date_i18n( wc_date_format() . ' ' . wc_time_format(), $booking->get_end( 'edit' ) ), $booking ); ?>
 				</p>
 				<p class="form-field form-field-wide">
@@ -267,7 +270,7 @@ do_action( 'before_wcfm_bookings_details' );
 						echo '<tr class="view">';
 							echo '<th>&nbsp;</th>';
 							echo '<td>';
-							echo '<a class="button" target="_blank" href="' . get_wcfm_view_order_url( $order_id ) . '">' . __( 'View Order', 'woocommerce-bookings' ) . '</a>';
+							echo '<a class="button" target="_blank" href="' . get_wcfm_view_order_url( $order_id ) . '">' . __( 'View Order', 'wc-frontend-manager' ) . '</a>';
 							echo '</td>';
 						echo '</tr>';
 					}

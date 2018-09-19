@@ -1,7 +1,7 @@
 <?php
 
 /*
-Widget Name: Livemesh Piecharts
+Widget Name: Piecharts
 Description: Display one or more piecharts depicting a percentage value in a multi-column grid.
 Author: LiveMesh
 Author URI: https://www.livemeshthemes.com
@@ -27,7 +27,7 @@ class LAE_Piecharts_Widget extends Widget_Base {
     }
 
     public function get_title() {
-        return __('Livemesh Piecharts', 'livemesh-el-addons');
+        return __('Piecharts', 'livemesh-el-addons');
     }
 
     public function get_icon() {
@@ -42,7 +42,7 @@ class LAE_Piecharts_Widget extends Widget_Base {
         return [
             'lae-widgets-scripts',
             'lae-frontend-scripts',
-            'waypoints',
+            'lae-waypoints',
             'jquery-stats'
         ];
     }
@@ -56,15 +56,23 @@ class LAE_Piecharts_Widget extends Widget_Base {
             ]
         );
 
-        $this->add_control(
+        $this->add_responsive_control(
             'per_line',
             [
-                'label' => __('Piecharts per row', 'livemesh-el-addons'),
-                'type' => Controls_Manager::NUMBER,
-                'min' => 1,
-                'max' => 5,
-                'step' => 1,
-                'default' => 4,
+                'label' => __( 'Piecharts per row', 'livemesh-el-addons' ),
+                'type' => Controls_Manager::SELECT,
+                'default' => '4',
+                'tablet_default' => '2',
+                'mobile_default' => '1',
+                'options' => [
+                    '1' => '1',
+                    '2' => '2',
+                    '3' => '3',
+                    '4' => '4',
+                    '5' => '5',
+                    '6' => '6',
+                ],
+                'frontend_available' => true,
             ]
         );
 
@@ -96,7 +104,11 @@ class LAE_Piecharts_Widget extends Widget_Base {
                         'name' => 'stats_title',
                         'label' => __('Stats Title', 'livemesh-el-addons'),
                         'type' => Controls_Manager::TEXT,
+                        'default' => __('My stats title', 'livemesh-el-addons'),
                         'description' => __('The title for the piechart', 'livemesh-el-addons'),
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
                     [
                         'name' => 'percentage_value',
@@ -237,46 +249,39 @@ class LAE_Piecharts_Widget extends Widget_Base {
 
     protected function render() {
 
-        $settings = $this->get_settings();
-        ?>
+        $settings = $this->get_settings_for_display();
 
-        <?php $column_style = lae_get_column_class(intval($settings['per_line'])); ?>
-
-        <?php
+        $settings = apply_filters('lae_piecharts_' . $this->get_id() . '_settings', $settings);
 
         $bar_color = ' data-bar-color="' . esc_attr($settings['bar_color']) . '"';
         $track_color = ' data-track-color="' . esc_attr($settings['track_color']) . '"';
 
-        ?>
+        $output = '<div class="lae-piecharts lae-grid-container ' . lae_get_grid_classes($settings) . '">';
 
-        <div class="lae-piecharts lae-grid-container">
+        foreach ($settings['piecharts'] as $piechart):
 
-            <?php foreach ($settings['piecharts'] as $piechart): ?>
+            $child_output = '<div class="lae-grid-item lae-piechart">';
 
-                <div class="lae-piechart <?php echo $column_style; ?>">
+            $child_output .= '<div class="lae-percentage"' . $bar_color . $track_color . ' data-percent="' . round($piechart['percentage_value']) . '">';
 
-                    <div class="lae-percentage" <?php echo $bar_color; ?> <?php echo $track_color; ?>
-                         data-percent="<?php echo round($piechart['percentage_value']); ?>">
+            $child_output .= '<span>' . round($piechart['percentage_value']) . '<sup>%</sup>' . '</span>';
 
-                        <span><?php echo round($piechart['percentage_value']); ?><sup>%</sup></span>
+            $child_output .= '</div>';
 
-                    </div>
+            $child_output .= '<div class="lae-label">' . esc_html($piechart['stats_title']) . '</div>';
 
-                    <div class="lae-label"><?php echo esc_html($piechart['stats_title']); ?></div>
+            $child_output .= '</div><!-- .lae-piechart -->';
 
-                </div>
+            $output .= apply_filters('lae_piechart_output', $child_output, $piechart, $settings);
 
-                <?php
+        endforeach;
 
-            endforeach;
+        $output .= '</div><!-- .lae-piecharts -->';
 
-            ?>
+        $output .= '<div class="lae-clear"></div>';
 
-        </div>
+        echo apply_filters('lae_piecharts_output', $output, $settings);
 
-        <div class="lae-clear"></div>
-
-        <?php
     }
 
     protected function content_template() {

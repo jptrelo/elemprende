@@ -89,6 +89,14 @@ if( isset( $wp->query_vars['wcfm-articles-manage'] ) && !empty( $wp->query_vars[
 
 $current_user_id = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
 $article_categories   = get_terms( 'category', 'orderby=name&hide_empty=0&parent=0' );
+
+$rich_editor = apply_filters( 'wcfm_is_allow_rich_editor', 'rich_editor' );
+$wpeditor = apply_filters( 'wcfm_is_allow_article_wpeditor', 'wpeditor' );
+if( $wpeditor && $rich_editor ) {
+	$rich_editor = 'wcfm_wpeditor';
+} else {
+	$wpeditor = 'textarea';
+}
 ?>
 
 <div class="collapse wcfm-collapse" id="">
@@ -227,10 +235,9 @@ $article_categories   = get_terms( 'category', 'orderby=name&hide_empty=0&parent
 							<div class="wcfm_clearfix"></div><br />
 							<div class="wcfm_article_manager_content_fields">
 								<?php
-								$rich_editor = apply_filters( 'wcfm_is_allow_rich_editor', 'rich_editor' );
 								$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_article_manage_fields_content', array(
-																																																			"excerpt" => array('label' => __('Short Description', 'wc-frontend-manager') , 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele wcfm_full_ele ' . $rich_editor , 'label_class' => 'wcfm_title wcfm_full_ele', 'value' => $excerpt),
-																																																			"description" => array('label' => __('Description', 'wc-frontend-manager') , 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele wcfm_full_ele ' . $rich_editor, 'label_class' => 'wcfm_title wcfm_full_ele', 'value' => $description),
+																																																			"excerpt" => array('label' => __('Short Description', 'wc-frontend-manager') , 'type' => $wpeditor, 'class' => 'wcfm-textarea wcfm_ele wcfm_full_ele ' . $rich_editor, 'label_class' => 'wcfm_title wcfm_full_ele ' . $rich_editor, 'rows' => 5, 'value' => $excerpt),
+																																																			"description" => array('label' => __('Description', 'wc-frontend-manager') , 'type' => $wpeditor, 'class' => 'wcfm-textarea wcfm_ele wcfm_full_ele ' . $rich_editor, 'label_class' => 'wcfm_title wcfm_full_ele ' . $rich_editor, 'value' => $description),
 																																																			"article_id" => array('type' => 'hidden', 'value' => $article_id)
 																																															), $article_id ) );
 								?>
@@ -333,8 +340,8 @@ $article_categories   = get_terms( 'category', 'orderby=name&hide_empty=0&parent
 							<?php
 							$rich_editor = apply_filters( 'wcfm_is_allow_rich_editor', 'rich_editor' );
 							$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_article_manage_fields_content', array(
-																																																		"excerpt" => array('label' => __('Short Description', 'wc-frontend-manager') , 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele wcfm_full_ele ' . $rich_editor , 'label_class' => 'wcfm_title wcfm_full_ele', 'value' => $excerpt),
-																																																		"description" => array('label' => __('Description', 'wc-frontend-manager') , 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele wcfm_full_ele ' . $rich_editor, 'label_class' => 'wcfm_title wcfm_full_ele', 'value' => $description),
+																																																		"excerpt" => array('label' => __('Short Description', 'wc-frontend-manager') , 'type' => $wpeditor, 'class' => 'wcfm-textarea wcfm_ele wcfm_full_ele ' . $rich_editor , 'label_class' => 'wcfm_title wcfm_full_ele ' . $rich_editor, 'rows' => 5, 'value' => $excerpt),
+																																																		"description" => array('label' => __('Description', 'wc-frontend-manager') , 'type' => $wpeditor, 'class' => 'wcfm-textarea wcfm_ele wcfm_full_ele ' . $rich_editor, 'label_class' => 'wcfm_title wcfm_full_ele ' . $rich_editor, 'value' => $description),
 																																																		"article_id" => array('type' => 'hidden', 'value' => $article_id)
 																																														), $article_id ) );
 							?>
@@ -344,6 +351,16 @@ $article_categories   = get_terms( 'category', 'orderby=name&hide_empty=0&parent
 			</div>
 			<!-- end collapsible -->
 			<div class="wcfm_clearfix"></div><br />
+			
+			<!-- wrap -->
+			<div class="wcfm-tabWrap">
+			  <?php do_action( 'after_wcfm_articles_manage_general', $article_id ); ?>
+			
+			  <?php include( 'wcfm-view-articles-manage-tabs.php' ); ?>
+				
+				<?php do_action( 'end_wcfm_articles_manage', $article_id ); ?>
+			
+			</div> <!-- tabwrap -->
 			
 			<div id="wcfm_articles_simple_submit" class="wcfm_form_simple_submit_wrapper">
 			  <div class="wcfm-message" tabindex="-1"></div>

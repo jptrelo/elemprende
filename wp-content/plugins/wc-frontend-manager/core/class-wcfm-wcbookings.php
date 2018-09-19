@@ -30,7 +30,7 @@ class WCFM_WCBookings {
 				add_filter( 'wcfm_product_types', array( &$this, 'wcb_product_types' ), 20 );
 				
 				// Bookable Product Type Capability
-				add_filter( 'wcfm_settings_fields_product_types', array( &$this, 'wcfmcap_product_types' ), 20, 3 );
+				add_filter( 'wcfm_capability_settings_fields_product_types', array( &$this, 'wcfmcap_product_types' ), 20, 3 );
 				
 				// Bookings Load WCFMu Scripts
 				add_action( 'wcfm_load_scripts', array( &$this, 'wcb_load_scripts' ), 30 );
@@ -42,7 +42,6 @@ class WCFM_WCBookings {
 				
 				// Bookings Load WCFMu views
 				add_action( 'wcfm_load_views', array( &$this, 'wcb_load_views' ), 30 );
-				add_action( 'before_wcfm_load_views', array( &$this, 'wcb_load_views' ), 30 );
 				
 				// Bookings Ajax Controllers
 				add_action( 'after_wcfm_ajax_controller', array( &$this, 'wcb_ajax_controller' ) );
@@ -69,14 +68,14 @@ class WCFM_WCBookings {
   	$wcfm_modified_endpoints = (array) get_option( 'wcfm_endpoints' );
   	
 		$query_booking_vars = array(
-			'wcfm-bookings-dashboard'       => ! empty( $wcfm_modified_endpoints['wcfm-bookings-dashboard'] ) ? $wcfm_modified_endpoints['wcfm-bookings-dashboard'] : 'wcfm-bookings-dashboard',
-			'wcfm-bookings'                 => ! empty( $wcfm_modified_endpoints['wcfm-bookings'] ) ? $wcfm_modified_endpoints['wcfm-bookings'] : 'wcfm-bookings',
-			'wcfm-bookings-resources'       => ! empty( $wcfm_modified_endpoints['wcfm-bookings-resources'] ) ? $wcfm_modified_endpoints['wcfm-bookings-resources'] : 'wcfm-bookings-resources',
-			'wcfm-bookings-resources-manage'=> ! empty( $wcfm_modified_endpoints['wcfm-bookings-resources-manage'] ) ? $wcfm_modified_endpoints['wcfm-bookings-resources-manage'] : 'wcfm-bookings-resources-manage',
-			'wcfm-bookings-manual'          => ! empty( $wcfm_modified_endpoints['wcfm-bookings-manual'] ) ? $wcfm_modified_endpoints['wcfm-bookings-manual'] : 'wcfm-bookings-manual',
-			'wcfm-bookings-calendar'        => ! empty( $wcfm_modified_endpoints['wcfm-bookings-calendar'] ) ? $wcfm_modified_endpoints['wcfm-bookings-calendar'] : 'wcfm-bookings-calendar',
-			'wcfm-bookings-details'         => ! empty( $wcfm_modified_endpoints['wcfm-bookings-details'] ) ? $wcfm_modified_endpoints['wcfm-bookings-details'] : 'wcfm-bookings-details',
-			'wcfm-bookings-settings'        => ! empty( $wcfm_modified_endpoints['wcfm-bookings-settings'] ) ? $wcfm_modified_endpoints['wcfm-bookings-settings'] : 'wcfm-bookings-settings',
+			'wcfm-bookings-dashboard'       => ! empty( $wcfm_modified_endpoints['wcfm-bookings-dashboard'] ) ? $wcfm_modified_endpoints['wcfm-bookings-dashboard'] : 'bookings-dashboard',
+			'wcfm-bookings'                 => ! empty( $wcfm_modified_endpoints['wcfm-bookings'] ) ? $wcfm_modified_endpoints['wcfm-bookings'] : 'bookings',
+			'wcfm-bookings-resources'       => ! empty( $wcfm_modified_endpoints['wcfm-bookings-resources'] ) ? $wcfm_modified_endpoints['wcfm-bookings-resources'] : 'bookings-resources',
+			'wcfm-bookings-resources-manage'=> ! empty( $wcfm_modified_endpoints['wcfm-bookings-resources-manage'] ) ? $wcfm_modified_endpoints['wcfm-bookings-resources-manage'] : 'bookings-resources-manage',
+			'wcfm-bookings-manual'          => ! empty( $wcfm_modified_endpoints['wcfm-bookings-manual'] ) ? $wcfm_modified_endpoints['wcfm-bookings-manual'] : 'bookings-manual',
+			'wcfm-bookings-calendar'        => ! empty( $wcfm_modified_endpoints['wcfm-bookings-calendar'] ) ? $wcfm_modified_endpoints['wcfm-bookings-calendar'] : 'bookings-calendar',
+			'wcfm-bookings-details'         => ! empty( $wcfm_modified_endpoints['wcfm-bookings-details'] ) ? $wcfm_modified_endpoints['wcfm-bookings-details'] : 'bookings-details',
+			'wcfm-bookings-settings'        => ! empty( $wcfm_modified_endpoints['wcfm-bookings-settings'] ) ? $wcfm_modified_endpoints['wcfm-bookings-settings'] : 'bookings-settings',
 		);
 		
 		$query_vars = array_merge( $query_vars, $query_booking_vars );
@@ -222,7 +221,9 @@ class WCFM_WCBookings {
 				} else {
 					$wcfm_screen_manager_data = $wcfm_screen_manager_data['admin'];
 				}
-				$wcfm_screen_manager_data[6] = apply_filters( 'wcfm_bookings_additonal_data_hidden', 'yes' );
+				if( apply_filters( 'wcfm_bookings_additonal_data_hidden', true ) ) {
+					$wcfm_screen_manager_data[6] = 'yes';
+				}
 	    	wp_localize_script( 'wcfm_bookings_js', 'wcfm_bookings_screen_manage', $wcfm_screen_manager_data );
       break;
       
@@ -266,15 +267,15 @@ class WCFM_WCBookings {
 	  
 	  switch( $end_point ) {
 	  	case 'wcfm-bookings-dashboard':
-        require_once( $WCFM->library->views_path . 'wc_bookings/wcfm-view-wcbookings-dashboard.php' );
+        $WCFM->template->get_template( 'wc_bookings/wcfm-view-wcbookings-dashboard.php' );
       break;
       
 	  	case 'wcfm-bookings':
-        require_once( $WCFM->library->views_path . 'wc_bookings/wcfm-view-wcbookings.php' );
+        $WCFM->template->get_template( 'wc_bookings/wcfm-view-wcbookings.php' );
       break;
       
       case 'wcfm-bookings-details':
-        require_once( $WCFM->library->views_path . 'wc_bookings/wcfm-view-wcbookings-details.php' );
+        $WCFM->template->get_template( 'wc_bookings/wcfm-view-wcbookings-details.php' );
       break;
 	  }
 	}
@@ -293,7 +294,7 @@ class WCFM_WCBookings {
   		
   		switch( $controller ) {
   			case 'wcfm-bookings':
-					require_once( $controllers_path . 'wcfm-controller-wcbookings.php' );
+					include_once( $controllers_path . 'wcfm-controller-wcbookings.php' );
 					new WCFM_WCBookings_Controller();
 				break;
   		}
@@ -324,17 +325,17 @@ class WCFM_WCBookings {
 		$cancel_limit_unit = $bookable_product->get_cancel_limit_unit( 'edit' );
   	?>
   	<!-- collapsible Booking 1 -->
-	  <div class="page_collapsible products_manage_downloadable booking" id="wcfm_products_manage_form_booking_options_head"><label class="fa fa-calendar"></label><?php _e('Booking Options', 'woocommerce-bookings'); ?><span></span></div>
+	  <div class="page_collapsible products_manage_downloadable booking" id="wcfm_products_manage_form_booking_options_head"><label class="fa fa-calendar"></label><?php _e('Booking Options', 'wc-frontend-manager'); ?><span></span></div>
 		<div class="wcfm-container booking">
 			<div id="wcfm_products_manage_form_downloadable_expander" class="wcfm-content">
 			  <?php
 					$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_wcbokings_general_fields', array(  
 						
 						"_wc_booking_duration_type" => array('label' => __('Booking duration', 'woocommerce-bookings') , 'type' => 'select', 'options' => array( 'fixed' => __( 'Fixed blocks of', 'woocommerce-bookings'), 'customer' => __( 'Customer defined blocks of', 'woocommerce-bookings' ) ), 'class' => 'wcfm-select wcfm_ele booking', 'label_class' => 'wcfm_title booking', 'value' => $duration_type ),
-						"_wc_booking_duration" => array('type' => 'number', 'class' => 'wcfm-text wcfm_ele booking', 'label_class' => 'wcfm_title booking', 'value' => $duration ),
+						"_wc_booking_duration" => array('type' => 'number', 'class' => 'wcfm-text wcfm_ele booking', 'label_class' => 'wcfm_title booking', 'attributes' => array( 'min' => 1, 'step' => 1 ), 'value' => $duration ),
 						"_wc_booking_duration_unit" => array('type' => 'select', 'options' => array( 'month' => __( 'Month(s)', 'woocommerce-bookings'), 'day' => __( 'Day(s)', 'woocommerce-bookings' ), 'hour' => __( 'Hour(s)', 'woocommerce-bookings' ), 'minute' => __( 'Minute(s)', 'woocommerce-bookings' ) ), 'class' => 'wcfm-select wcfm_ele booking', 'label_class' => 'wcfm_title booking', 'value' => $duration_unit ),
-						"_wc_booking_min_duration" => array('label' => __('Minimum duration', 'woocommerce-bookings') , 'type' => 'number', 'class' => 'wcfm-text wcfm_ele duration_type_customer_ele booking', 'label_class' => 'wcfm_title duration_type_customer_ele booking', 'value' => $min_duration, 'hints' => __( 'The minimum allowed duration the user can input.', 'woocommerce-bookings' ), 'attributes' => array( 'min' => '', 'step' => '1' ) ),
-						"_wc_booking_max_duration" => array('label' => __('Maximum duration', 'woocommerce-bookings') , 'type' => 'number', 'class' => 'wcfm-text wcfm_ele duration_type_customer_ele booking', 'label_class' => 'wcfm_title duration_type_customer_ele booking', 'value' => $max_duration, 'hints' => __( 'The maximum allowed duration the user can input.', 'woocommerce-bookings' ), 'attributes' => array( 'min' => '', 'step' => '1' ) ),
+						"_wc_booking_min_duration" => array('label' => __('Minimum duration', 'woocommerce-bookings') , 'type' => 'number', 'class' => 'wcfm-text wcfm_ele duration_type_customer_ele booking', 'label_class' => 'wcfm_title duration_type_customer_ele booking', 'value' => $min_duration, 'hints' => __( 'The minimum allowed duration the user can input.', 'woocommerce-bookings' ), 'attributes' => array( 'min' => '1', 'step' => '1' ) ),
+						"_wc_booking_max_duration" => array('label' => __('Maximum duration', 'woocommerce-bookings') , 'type' => 'number', 'class' => 'wcfm-text wcfm_ele duration_type_customer_ele booking', 'label_class' => 'wcfm_title duration_type_customer_ele booking', 'value' => $max_duration, 'hints' => __( 'The maximum allowed duration the user can input.', 'woocommerce-bookings' ), 'attributes' => array( 'min' => '1', 'step' => '1' ) ),
 						"_wc_booking_enable_range_picker" => array('label' => __('Enable Calendar Range Picker?', 'woocommerce-bookings') , 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele duration_type_customer_ele booking', 'label_class' => 'wcfm_title duration_type_customer_ele booking', 'value' => 'yes', 'dfvalue' => $enable_range_picker, 'hints' => __( 'Lets the user select a start and end date on the calendar - duration will be calculated automatically.', 'woocommerce-bookings' ) ),
 						"_wc_booking_calendar_display_mode" => array('label' => __('Calendar display mode', 'woocommerce-bookings') , 'type' => 'select', 'options' => array( '' => __( 'Display calendar on click', 'woocommerce-bookings'), 'always_visible' => __( 'Calendar always visible', 'woocommerce-bookings' ) ), 'class' => 'wcfm-select wcfm_ele booking', 'label_class' => 'wcfm_title booking', 'value' => $calendar_display_mode ),
 						"_wc_booking_requires_confirmation" => array('label' => __('Requires confirmation?', 'woocommerce-bookings') , 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele booking', 'label_class' => 'wcfm_title checkbox_title booking', 'value' => 'yes', 'dfvalue' => $requires_confirmation, 'hints' => __( 'Check this box if the booking requires admin approval/confirmation. Payment will not be taken during checkout.', 'woocommerce-bookings' ) ),
@@ -358,7 +359,7 @@ class WCFM_WCBookings {
   function wcb_wcfm_products_manage_form_load_views( ) {
 		global $WCFM;
 	  
-	 require_once( $WCFM->library->views_path . 'products-manager/wcfm-view-wcbookings-products-manage.php' );
+	 $WCFM->template->get_template( 'products-manager/wcfm-view-wcbookings-products-manage.php' );
 	}
 	
 	/**
@@ -368,57 +369,14 @@ class WCFM_WCBookings {
 		global $WCFM;
 		if ( ! empty( $this_email ) ) {
 			if( $WCFM->is_marketplace ) {
-				if( $WCFM->is_marketplace == 'wcmarketplace' ) {
-					$vendor = get_wcmp_product_vendors( $this_email->product_id );
-					if( $vendor ) {
-						$vendor_id = $vendor->id;
-						$vendor_data = get_userdata( $vendor_id );
-						if ( ! empty( $vendor_data ) ) {
-							if ( isset( $recipients ) ) {
-								$recipients .= ',' . $vendor_data->user_email;
-							} else {
-								$recipients = $vendor_data->user_email;
-							}
-						}
-					}
-				} elseif( $WCFM->is_marketplace == 'wcvendors' ) {
-					$product = get_post( $this_email->product_id );
-					$vendor_id = $product->post_author;
-					if( WCV_Vendors::is_vendor( $vendor_id ) ) {
-						$vendor_data = get_userdata( $vendor_id );
-						if ( ! empty( $vendor_data ) ) {
-							if ( isset( $recipients ) ) {
-								$recipients .= ',' . $vendor_data->user_email;
-							} else {
-								$recipients = $vendor_data->user_email;
-							}
-						}
-					}
-				} elseif( $WCFM->is_marketplace == 'wcpvendors' ) {
-					$vendor_id = WC_Product_Vendors_Utils::get_vendor_id_from_product( $this_email->product_id );
-					$vendor_data = WC_Product_Vendors_Utils::get_vendor_data_by_id( $vendor_id );
-		
-					if ( ! empty( $vendor_id ) && ! empty( $vendor_data ) ) {
-						if ( isset( $recipients ) ) {
-							$recipients .= ',' . $vendor_data['email'];
-						} else {
-							$recipients = $vendor_data['email'];
-						}
-					}
-				} elseif( $WCFM->is_marketplace == 'dokan' ) {
-					$product = get_post( $this_email->product_id );
-					$vendor_id = $product->post_author;
-					if( dokan_is_user_seller( $vendor_id ) ) {
-						$vendor_data = get_userdata( $vendor_id );
-						if ( ! empty( $vendor_data ) ) {
-							if ( isset( $recipients ) ) {
-								$recipients .= ',' . $vendor_data->user_email;
-							} else {
-								$recipients = $vendor_data->user_email;
-							}
-						}
-					}
+				
+				$vendor_email = $WCFM->wcfm_vendor_support->wcfm_get_vendor_email_from_product( $this_email->product_id );
+				if ( isset( $recipients ) ) {
+					$recipients .= ',' . $vendor_email;
+				} else {
+					$recipients = $vendor_email;
 				}
+		
 			}
 		}
 

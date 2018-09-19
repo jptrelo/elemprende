@@ -8,32 +8,32 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Modern responsive YouTube video gallery. Easy embed videos from YouTube playlist, channel and videos IDs to your WordPress website.
+Modern and mobile responsive video gallery. Easy embed videos from YouTube video playlist, channel and videos IDs to your WordPress website.
 
 == Description ==
->[Home Page](https://www.yotuwp.com/ "YotuWP Landingpage") | [View Demo](https://www.yotuwp.com/demo/ "Demo YotuWP") | [Document](https://www.yotuwp.com/document/) | [Contact & Support](https://www.yotuwp.com/contact/ "Contact & Support")
+>[View Demo](https://www.yotuwp.com/demo/?utm_source=wp-plugin-repo&utm_medium=top-link "Demo YotuWP") | [Document](https://www.yotuwp.com/document/?utm_source=wp-plugin-repo&utm_medium=top-link) | [Contact & Support](https://www.yotuwp.com/contact/?utm_source=wp-plugin-repo&utm_medium=top-link "Contact & Support") | [Home Page](https://www.yotuwp.com/?utm_source=wp-plugin-repo&utm_medium=top-link "YotuWP Landingpage")
 
-Modern responsive video gallery. Easy embed videos from YouTube playlist, Youtube channel and videos IDs to your WordPress website.
+Modern and mobile responsive video gallery. Easy embed videos from YouTube video playlist, channel and videos IDs to your WordPress website.
 
-###Support
+###Support resource from:
 * Videos from playlist
 * Videos from channel
 * Videos from username
 * Videos from list of video ids
 * Embed single video with video url only.
-[View More](https://www.yotuwp.com/demo/ "Demo YotuWP")
+[View More](https://www.yotuwp.com/demo/?utm_source=wp-plugin-repo&utm_medium=resource-section "Demo YotuWP")
 
 ###Layouts
 * Grid : with multi columns videos and vertical video info. You can change number of columns via setting.
 * List : with one column and horizontal video info 
 * Mix : that is combie layout between grid and list layout. You can change number of columns via setting.
-[View More](https://www.yotuwp.com/demo/ "Demo YotuWP")
+[View More](https://www.yotuwp.com/demo/?utm_source=wp-plugin-repo&utm_medium=layout-section "Demo YotuWP")
 
 
 ###Player Mode
 * Large : A big player at head of gallery. Item video played when click on item thumbnail or title of gallery.
 * Modal/Popup/Lightbox : The new youtbe popup/lightbox displayed when click on item thumbnail or title of gallery.
-[View More](https://www.yotuwp.com/demo/ "Demo YotuWP")
+[View More](https://www.yotuwp.com/demo/?utm_source=wp-plugin-repo&utm_medium=player-section "Demo YotuWP")
 
 ###Shortcode Generator
 Allow you generate shortcode YotuWP to use on page builders, widgets, product description...
@@ -50,6 +50,23 @@ Allow you generate shortcode YotuWP to use on page builders, widgets, product de
 * Compability with page builers via Shortcode Generator
 * Styling settings: buttons color, buttons style
 
+###BECOME A PREMIUM USER
+<blockquote>
+<p>YotuWP has Pro version which comes with several additional benefits.</p>
+<ul>
+<li>Carousel Layout</li>
+<li>Masonry Layout</li>
+<li>Big Player Left Layout</li>
+<li>Big Player Right Layout</li>
+<li>Replacement: Replace title, description and video thumbnail by your custom info, image</li>
+<li>Multiple video thumbnails styling</li>
+<li>Meta video data: View, Like, Comments, Published Date</li>
+<li>12+ Hover icons</li>
+<li>Custom text for buttons Next, Prev, Load more</li>
+<li>Color styling for title, description, meta data</li>
+</ul>
+<p><a href="https://yotuwp.com/advanced-demos/?utm_source=wp-plugin-repo&utm_medium=after-features-link">Free Demo</a></p>
+</blockquote>
 
 == Installation ==
 
@@ -77,8 +94,55 @@ Allow you generate shortcode YotuWP to use on page builders, widgets, product de
 3. Go to menu YotuWP to set the default values for layout, player and enter your YouTube API key as well.
 4. Edit your page/post/custom post then click on YotuWP button to start insert shortcode with winzard embed.
 
+= How to get a YouTube Data API Key? =
+Please folllow [get Youtube API](https://www.yotuwp.com/how-to-get-youtube-api-key/) instructions.
+
+= How to turn on popup modal player? =
+Please go to setting tab YotuWP > General > Player > Player Mode
+Then select option Popup then press Save Change and try out it.
+
+= How to display full-width player? =
+Please go to setting tab YotuWP > General > Player > Player width
+Then enter value 0 then press Save Change and try out it.
+
+= How to remove top and bottom black bar on video thumbnail? =
+Please go to setting tab YotuWP > General > Video Thumbnail Ratio
+Then select value 'HD - 16:9' then press Save Change and try out it.
 
 == Changelog ==
+= 1.3.4 - Sep 8th, 2018 =
+* [Add] Clear cache data function - YotuWP > Cache. Allow you clear video data, video list caching when you update new video or content on YouTube
+* [Add] Enable/Disable tracking data - YotuWP > General Settings > API > Enable Tracking
+* [Fix] Layout on mobile
+* [Fix] Carousel popup
+* [Fix] Auto next video
+
+= 1.3.3 - Jul 26th, 2018 =
+* [Fix] Layout bugs
+
+= 1.3.2 - Jul 16th, 2018 =
+* [Add] Player force captions
+* [Add] Player default language
+* [Add] Show or hide annotations
+* [Fix] Description break line
+* [Fix] Grid layout break
+
+
+= 1.3.1 - Jun 24th, 2018 =
+* [New] Save last tab for reopen after save settings.
+* [Add] New layout panel styling.
+* [Fix] Admin level notification actions.
+* [Fix] Other css styling.
+
+
+= 1.3 - May 15th, 2018 =
+* [New] New panel setting layout.
+* [Add] Set 0 for auto center player in screen.
+* [Add] Video thumbnail Styling.
+* [Modify] Set with player auto full container.
+* [Fix] IE play problem.
+* [Fix] Remove Private video
+
 = 1.2.7 - Mar 29th, 2018 =
 * [Fix] Fix videos warning code
 * [Fix] Fix 1 column grid
@@ -87,7 +151,6 @@ Allow you generate shortcode YotuWP to use on page builders, widgets, product de
 
 = 1.2.6 - Feb 24th, 2018 =
 * [Fix] Fix languages support
-* [Add] Presets styling
 * [Add] Auto Next Video settings at Player tab
 * [Add] More pager layout
 

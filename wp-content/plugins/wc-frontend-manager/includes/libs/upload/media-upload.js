@@ -136,7 +136,9 @@ function addWCFMMultiUploaderProperty(wcfmuploader) {
 	  var src = jQuery(this).attr('src');
 	  //if(src.length == 0) jQuery(this).hide();
 	  jQuery(this).parent().find('.upload_button').hide();
-	  jQuery(this).parent().find('.remove_button').hide();
+	  jQuery(this).parent().find('.remove_button').val('x');
+	  if( jQuery(this).hasClass('placeHolder') )
+	  	jQuery(this).parent().find('.remove_button').hide();
 	});
 	
 	wcfmuploader.find('img').click(function(e) {
@@ -169,6 +171,7 @@ function addWCFMMultiUploaderProperty(wcfmuploader) {
 					jQuery("#"+id+'_display').attr('src', attachment.url).removeClass('placeHolder').show();
 					jQuery("#"+id).val(attachment.url);
 					jQuery("#"+id).hide();
+					jQuery("#"+id+'_remove_button').show().val('x');
 				} else {
 					$count = jQuery("#"+id).parent().parent().parent().find('.multi_input_block').length;
 					if( $count < limit ) {
@@ -177,6 +180,7 @@ function addWCFMMultiUploaderProperty(wcfmuploader) {
 						jQuery("#"+$id+'_display').attr('src', attachment.url).removeClass('placeHolder').show();
 						jQuery("#"+$id).val(attachment.url);
 						jQuery("#"+$id).hide();
+						jQuery("#"+$id+'_remove_button').show().val('x');
 					} else {
 						jQuery("#"+id).parent().parent().parent().find('.add_multi_input_block').hide();
 					}
@@ -187,5 +191,34 @@ function addWCFMMultiUploaderProperty(wcfmuploader) {
     wcfmMediaUploader.open();
     
 		return false;
+	});
+	
+	wcfmuploader.find('.remove_button').each(function() {
+		var button = jQuery(this);
+		var mime = jQuery(this).data('mime');
+		var id = button.attr('id').replace('_remove_button', '');
+		if(mime == 'image')
+			var attachment_url = jQuery("#"+id+'_display').attr('src');
+		else
+			var attachment_url = jQuery("#"+id+'_display').attr('href');
+		if(!attachment_url || attachment_url.length == 0) {
+			button.hide();
+			jQuery("#"+id+'_display span').hide();
+		} else {
+			jQuery("#"+id+'_button').hide();
+		}
+		button.click(function(e) {
+			id = jQuery(this).attr('id').replace('_remove_button', '');
+			if(mime == 'image') {
+				jQuery("#"+id+'_display').attr('src', jQuery("#"+id+'_display').data('placeholder')).addClass('placeHolder');
+			} else {
+				jQuery("#"+id+'_display').attr('href', '#');
+				jQuery("#"+id+'_button').show();
+			}
+			jQuery("#"+id+'_display span').hide();
+			jQuery("#"+id).val('');
+			jQuery(this).hide();
+			return false;
+		});
 	});
 }

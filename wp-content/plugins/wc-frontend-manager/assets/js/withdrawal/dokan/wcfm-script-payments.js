@@ -7,23 +7,24 @@ jQuery(document).ready(function($) {
 	$wcfm_payments_table = $('#wcfm-payments').DataTable( {
 		"processing": true,
 		"serverSide": true,
+		"pageLength": dataTables_config.pageLength,
 		"bFilter"   : false,
 		"dom"       : 'Bfrtip',
 		"responsive": true,
 		"language"  : $.parseJSON(dataTables_language),
-		"buttons"   : [
-            				'print', 'pdf', 'excel', 'csv' 
-        					],
+		"buttons"   : $wcfm_datatable_button_args,
 		"columns"   : [
 										{ responsivePriority: 1 },
 										{ responsivePriority: 1 },
 										{ responsivePriority: 3 },
+										{ responsivePriority: 4 },
 										{ responsivePriority: 2 }
 								],
 		"columnDefs": [ { "targets": 0, "orderable" : false }, 
 									  { "targets": 1, "orderable" : false }, 
 										{ "targets": 2, "orderable" : false }, 
-										{ "targets": 3, "orderable" : false }, 
+										{ "targets": 3, "orderable" : false },
+										{ "targets": 3, "orderable" : false },
 									],
 		'ajax': {
 			"type"   : "POST",
@@ -47,7 +48,7 @@ jQuery(document).ready(function($) {
 	$( "#payment_start_date_filter" ).datepicker({
 		changeMonth: true,
 		changeYear: true,
-		dateFormat: 'dd-mm-yy',
+		dateFormat: $( this ).data('date_format'),
 		onClose: function( selectedDate ) {
 			$( "#payment_end_date_filter" ).datepicker( "option", "minDate", selectedDate );
 		}
@@ -59,7 +60,7 @@ jQuery(document).ready(function($) {
 	$( "#payment_end_date_filter" ).datepicker({
 		changeMonth: true,
 		changeYear: true,
-		dateFormat: 'dd-mm-yy',
+		dateFormat: $( this ).data('date_format'),
 		onClose: function( selectedDate ) {
 			$( "#payment_start_date_filter" ).datepicker( "option", "maxDate", selectedDate );
 		}

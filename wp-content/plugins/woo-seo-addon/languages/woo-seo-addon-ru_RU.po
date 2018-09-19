@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce SEO Addon\n"
 "Report-Msgid-Bugs-To: issues\n"
-"POT-Creation-Date: 2017-10-25 15:07+0300\n"
-"PO-Revision-Date: 2017-10-25 15:17+0300\n"
+"POT-Creation-Date: 2018-08-22 20:51+0300\n"
+"PO-Revision-Date: 2018-08-22 20:51+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -20,19 +20,19 @@ msgstr ""
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: src/Admin/Admin.php:74
+#: src/Admin/Admin.php:77
 msgid "Settings"
 msgstr "Настройки"
 
-#: src/Admin/Admin.php:75
+#: src/Admin/Admin.php:80
 msgid "Contact Us"
 msgstr "Свяжитесь с нами"
 
-#: src/Admin/Admin.php:80
+#: src/Admin/Admin.php:83
 msgid "Account"
 msgstr "Аккаунт"
 
-#: src/SeoAddonPlugin.php:86
+#: src/SeoAddonPlugin.php:69
 #, php-format
 msgid "The %s plugin requires %s plugin to be active!"
 msgstr "Для работы плагина %s нужен плагин %s"

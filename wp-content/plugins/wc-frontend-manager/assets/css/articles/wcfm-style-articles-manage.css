@@ -231,7 +231,7 @@ ul.article_taxonomy_checklist li {
 }
 
 .sub_checklist_toggler {
-	color: #00897b;
+	color: #00798b;
 	margin-right: 5px;
 	cursor: pointer;
 	visibility: hidden;
@@ -283,7 +283,7 @@ ul.article_taxonomy_checklist li {
 
 .wcfm_side_tag_cloud { float: none; }
 
-.wcfm_fetch_tag_cloud:hover, .wcfm_fetch_tag_cloud a:hover { color: #00897b;}
+.wcfm_fetch_tag_cloud:hover, .wcfm_fetch_tag_cloud a:hover { color: #00798b;}
 
 .wcfm_fetch_tag_cloud ul {
   margin: 0;
@@ -301,7 +301,7 @@ ul.article_taxonomy_checklist li {
 	text-align: right;
 	cursor: pointer;
 	text-decoration: underline;
-	color: #00897b;
+	color: #00798b;
 	padding: 0px !important;
 }
 
@@ -319,7 +319,7 @@ ul.article_taxonomy_checklist li {
 	font-size: 20px;
 	margin-left: 10px;
 	cursor: pointer;
-	color: #00897b;
+	color: #00798b;
 }
 
 .variations_collapser {
@@ -370,7 +370,7 @@ ul.article_taxonomy_checklist li {
 }
 
 #wcfm_auto_suggest_article_title li a:hover {
-	background-color: #00897b;
+	background-color: #00798b;
 	color: #ffffff;
 	font-weight: 500;
 }

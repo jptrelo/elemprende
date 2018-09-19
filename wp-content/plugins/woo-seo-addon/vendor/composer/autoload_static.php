@@ -9,29 +9,20 @@ class ComposerStaticInit182ba9ae10fd282dba81af1cd3a27204
     public static $prefixLengthsPsr4 = array (
         'P' => 
         array (
-            'Premmerce\\SeoAddon\\WordpressSDK\\' => 32,
             'Premmerce\\SeoAddon\\' => 19,
+            'Premmerce\\SDK\\' => 14,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Premmerce\\SeoAddon\\WordpressSDK\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/sdk',
-        ),
         'Premmerce\\SeoAddon\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
-    );
-
-    public static $classMap = array (
-        'Premmerce\\SeoAddon\\Admin\\Admin' => __DIR__ . '/../..' . '/src/Admin/Admin.php',
-        'Premmerce\\SeoAddon\\Frontend\\Frontend' => __DIR__ . '/../..' . '/src/Frontend/Frontend.php',
-        'Premmerce\\SeoAddon\\SeoAddonPlugin' => __DIR__ . '/../..' . '/src/SeoAddonPlugin.php',
-        'Premmerce\\SeoAddon\\WordpressSDK\\FileManager\\FileManager' => __DIR__ . '/../..' . '/sdk/FileManager/FileManager.php',
-        'Premmerce\\SeoAddon\\WordpressSDK\\Notifications\\AdminNotifier' => __DIR__ . '/../..' . '/sdk/Notifications/AdminNotifier.php',
-        'Premmerce\\SeoAddon\\WordpressSDK\\Plugin\\PluginInterface' => __DIR__ . '/../..' . '/sdk/Plugin/PluginInterface.php',
+        'Premmerce\\SDK\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/premmerce/wordpress-sdk/src',
+        ),
     );
 
     public static function getInitializer(ClassLoader $loader)
@@ -39,7 +30,6 @@ class ComposerStaticInit182ba9ae10fd282dba81af1cd3a27204
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit182ba9ae10fd282dba81af1cd3a27204::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit182ba9ae10fd282dba81af1cd3a27204::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit182ba9ae10fd282dba81af1cd3a27204::$classMap;
 
         }, null, ClassLoader::class);
     }

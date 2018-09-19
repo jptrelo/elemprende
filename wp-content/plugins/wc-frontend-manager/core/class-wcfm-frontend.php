@@ -39,9 +39,13 @@ class WCFM_Frontend {
     
     // WCFM Ultimate Inactive Notice
     add_filter( 'is_wcfmu_inactive_notice_show', array( &$this, 'is_wcfmu_inactive_notice_show') );
-		
+    
+    // WCfM Product Pre-defined Attributes
+    add_action( 'wcfm_products_manage_attributes', array( &$this, 'wcfm_products_manage_select_attributes' ) );
+    
 		//enqueue scripts
 		add_action( 'wp_enqueue_scripts', array( &$this, 'wcfm_scripts' ), 15 );
+		
 		//enqueue styles
 		add_action( 'wp_enqueue_scripts', array( &$this, 'wcfm_styles' ), 15 );
 		
@@ -63,7 +67,9 @@ class WCFM_Frontend {
  	 * WCFM Page template if full screen selected
  	 */
 	function wcfm_dashboard_template( $page_template ) {
-		global $WCFM;
+		global $WCFM, $post;
+		
+		// WCfM Dashboard template
 		if ( wc_post_content_has_shortcode( 'wc_frontend_manager' ) && is_user_logged_in() ) {
 			$wcfm_options = get_option('wcfm_options');
 			$is_dashboard_full_view_disabled = isset( $wcfm_options['dashboard_full_view_disabled'] ) ? $wcfm_options['dashboard_full_view_disabled'] : 'no';
@@ -75,6 +81,32 @@ class WCFM_Frontend {
 				$page_template = wc_locate_template( 'wcfm-content.php', $template_path, $skin_path );
 			}
 		}
+		
+		// Add/Edit Listings page template
+		if( apply_filters( 'wcfm_is_allow_manage_listings_wcfm_wrapper', true ) && wcfm_is_allow_wcfm() ) {
+			if ( WCFM_Dependencies::wcfm_wp_job_manager_plugin_active_check() && is_user_logged_in() ) {
+				$job_dashboard_page = get_option( 'job_manager_job_dashboard_page_id' );
+				$add_listings_page = get_option( 'job_manager_submit_job_form_page_id' );
+				if( ( $add_listings_page && is_object( $post ) && ( $add_listings_page == $post->ID ) ) || ( $job_dashboard_page && is_object( $post ) && ( $job_dashboard_page == $post->ID ) && isset( $_GET['action'] ) && ( $_GET['action'] == 'edit' ) ) ) {
+					$wcfm_options = get_option('wcfm_options');
+					$is_dashboard_full_view_disabled = isset( $wcfm_options['dashboard_full_view_disabled'] ) ? $wcfm_options['dashboard_full_view_disabled'] : 'no';
+					$is_dashboard_theme_header_disabled = isset( $wcfm_options['dashboard_theme_header_disabled'] ) ? $wcfm_options['dashboard_theme_header_disabled'] : 'no';
+					if( $is_dashboard_full_view_disabled != 'yes' ) {
+						$template_path = WC()->template_path();
+						$skin_path     = $WCFM->plugin_path . 'templates/classic/';
+						if( $is_dashboard_theme_header_disabled == 'yes' ) $skin_path     = $WCFM->plugin_path . 'templates/default/';
+						$page_template = wc_locate_template( 'wcfm-content.php', $template_path, $skin_path );
+					}
+				}
+			}
+		}
+		
+		// WCFM Marketplace page template
+		/*if ( $WCFM->is_marketplace && ( $WCFM->is_marketplace == 'wcfmmarketplace' ) && wcfm_is_store_page() ) {
+			$template_path = WC()->template_path();
+			$skin_path     = $WCFM->plugin_path . 'templates/classic/';
+			$page_template = wc_locate_template( 'wcfm-content.php', $template_path, $skin_path );
+		}*/
 
 		return $page_template;
 	}
@@ -105,7 +137,16 @@ class WCFM_Frontend {
 	 * @return void
 	*/
 	function wcfm_template_redirect() {
-		global $WCFM;
+		global $WCFM, $wp;
+		
+		// WCfM old log permalink slug support 
+		if( apply_filters( 'wcfm_is_allow_old_urls_redirect', true ) ) {
+			$is_wcfm = strpos( $wp->request, 'wcfm-' );
+			if( $is_wcfm !== false ) {
+				wp_safe_redirect( home_url( str_replace( 'wcfm-', '', $wp->request ) ) );
+				exit();
+			}
+		}
 		
 		// If user not loggedin then reirect to Home page
 		if( !is_user_logged_in() && is_wcfm_page() ) {
@@ -113,10 +154,27 @@ class WCFM_Frontend {
       exit();
     }
     
+    // If user loggedin and applied for vendor
+    if( is_user_logged_in() && is_wcfm_page() && function_exists( 'get_wcfm_membership_url' ) ) {
+    	$user = wp_get_current_user();
+			$allowed_roles = apply_filters( 'wcfm_allwoed_user_roles',  array( 'administrator', 'shop_manager' ) );
+			if ( !array_intersect( $allowed_roles, (array) $user->roles ) )  {
+				$member_id = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
+				$application_status = get_user_meta( $member_id, 'wcfm_membership_application_status', true );
+				if( $application_status && ( $application_status == 'pending' ) ) {
+					wp_safe_redirect( apply_filters( 'wcfm_change_membership_url', get_wcfm_membership_url() ) );
+					exit;
+				} else {
+					wp_safe_redirect( get_permalink( wc_get_page_id( 'myaccount' ) ) );
+					exit;
+				}
+			}
+		}
+    
     // If user loggedin but not admin or shop manager then reirect to MyAccount page
 		if( is_user_logged_in() && is_wcfm_page() ) {
 			$user = wp_get_current_user();
-			$allowed_roles = apply_filters( 'wcfm_allwoed_user_rols',  array( 'administrator', 'shop_manager' ) );
+			$allowed_roles = apply_filters( 'wcfm_allwoed_user_roles',  array( 'administrator', 'shop_manager' ) );
 			if ( !array_intersect( $allowed_roles, (array) $user->roles ) )  {
 				wp_safe_redirect(  get_permalink( wc_get_page_id( 'myaccount' ) ) );
 				exit();
@@ -129,7 +187,7 @@ class WCFM_Frontend {
 			if( class_exists('WCMp') && function_exists( 'is_vendor_dashboard' ) ) {
 				if( is_user_logged_in() && is_vendor_dashboard() ) {
 					$user = wp_get_current_user();
-					$allowed_roles = apply_filters( 'wcfm_allwoed_user_rols',  array( 'administrator', 'shop_manager' ) );
+					$allowed_roles = apply_filters( 'wcfm_allwoed_user_roles',  array( 'administrator', 'shop_manager' ) );
 					if ( array_intersect( $allowed_roles, (array) $user->roles ) )  {
 						wp_safe_redirect(  get_wcfm_url() );
 						exit();
@@ -140,11 +198,16 @@ class WCFM_Frontend {
 			// WC Vendors
 			if( class_exists('WC_Vendors') ) {
 				if( is_user_logged_in() ) {
-					$vendor_dashboard_page = WC_Vendors::$pv_options->get_option( 'vendor_dashboard_page' );
-					$shop_settings_page    = WC_Vendors::$pv_options->get_option( 'shop_settings_page' );
+					if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+						$vendor_dashboard_page = WC_Vendors::$pv_options->get_option( 'vendor_dashboard_page' );
+						$shop_settings_page    = WC_Vendors::$pv_options->get_option( 'shop_settings_page' );
+					} else {
+						$vendor_dashboard_page = get_option('wcvendors_display_label_sold_by_enable');
+						$shop_settings_page    = get_option('wcvendors_shop_settings_page_id');
+					}
 					if ( $vendor_dashboard_page && is_page( $vendor_dashboard_page ) || $shop_settings_page && is_page( $shop_settings_page ) ) {
 						$user = wp_get_current_user();
-						$allowed_roles = apply_filters( 'wcfm_allwoed_user_rols',  array( 'administrator', 'shop_manager' ) );
+						$allowed_roles = apply_filters( 'wcfm_allwoed_user_roles',  array( 'administrator', 'shop_manager' ) );
 						if ( array_intersect( $allowed_roles, (array) $user->roles ) )  {
 							wp_safe_redirect(  get_wcfm_url() );
 							exit();
@@ -156,10 +219,14 @@ class WCFM_Frontend {
 			// WC Vendors Pro
 			if( class_exists('WCVendors_Pro') ) {
 				if( is_user_logged_in() ) {
-					$pro_dashboard_page 	= WCVendors_Pro::get_option( 'dashboard_page_id' );
+					if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+						$pro_dashboard_page 	= WCVendors_Pro::get_option( 'dashboard_page_id' );
+					} else {
+						$pro_dashboard_page 	= get_option( 'wcvendors_dashboard_page_id' );
+					}
 					if ( $pro_dashboard_page && is_page( $pro_dashboard_page ) ) {
 						$user = wp_get_current_user();
-						$allowed_roles = apply_filters( 'wcfm_allwoed_user_rols',  array( 'administrator', 'shop_manager' ) );
+						$allowed_roles = apply_filters( 'wcfm_allwoed_user_roles',  array( 'administrator', 'shop_manager' ) );
 						if ( array_intersect( $allowed_roles, (array) $user->roles ) )  {
 							wp_safe_redirect(  get_wcfm_url() );
 							exit();
@@ -174,7 +241,7 @@ class WCFM_Frontend {
 					$seller_dashboard = dokan_get_option( 'dashboard', 'dokan_pages' );
 					if ( $seller_dashboard && is_page( $seller_dashboard ) ) {
 						$user = wp_get_current_user();
-						$allowed_roles = apply_filters( 'wcfm_allwoed_user_rols',  array( 'administrator', 'shop_manager' ) );
+						$allowed_roles = apply_filters( 'wcfm_allwoed_user_roles',  array( 'administrator', 'shop_manager' ) );
 						if ( array_intersect( $allowed_roles, (array) $user->roles ) )  {
 							wp_safe_redirect(  get_wcfm_url() );
 							exit();
@@ -197,7 +264,7 @@ class WCFM_Frontend {
  			
  		if( !is_user_logged_in() ) return;
 		$user = wp_get_current_user();
-		$allowed_roles = apply_filters( 'wcfm_allwoed_user_rols',  array( 'administrator', 'shop_manager' ) );
+		$allowed_roles = apply_filters( 'wcfm_allwoed_user_roles',  array( 'administrator', 'shop_manager' ) );
 		if ( !array_intersect( $allowed_roles, (array) $user->roles ) )  return;
 		
 		$quick_access_image_url = isset( $wcfm_options['wcfm_quick_access_icon'] ) ? $wcfm_options['wcfm_quick_access_icon'] : $WCFM->plugin_url . '/assets/images/wcfm-30x30.png';
@@ -210,6 +277,8 @@ class WCFM_Frontend {
 	function wcfm_product_manage() {
 		global $WCFM, $post, $woocommerce_loop;
 		
+		if( !$post || !is_object( $post ) ) return;
+		
 		if( class_exists( 'WCMp' ) ) {
 			global $WCMp;
 			if( $WCMp ) {
@@ -219,9 +288,9 @@ class WCFM_Frontend {
 		}
 
 		if( !is_user_logged_in() ) return;
-		if( !apply_filters( 'wcfm_is_allow_quick_edit_product', true ) ) return;
+		if( !apply_filters( 'wcfm_is_allow_catalog_product_manage', true ) ) return;
 		$user = wp_get_current_user();
-		$allowed_roles = apply_filters( 'wcfm_allwoed_user_rols',  array( 'administrator', 'shop_manager' ) );
+		$allowed_roles = apply_filters( 'wcfm_allwoed_user_roles',  array( 'administrator', 'shop_manager' ) );
 		if ( !array_intersect( $allowed_roles, (array) $user->roles ) )  return;
 				
 		$current_user = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
@@ -252,7 +321,7 @@ class WCFM_Frontend {
 	 */
 	function wcfm_page_heading() {
 		global $WCFM, $wpdb;
-		require_once( $WCFM->library->views_path . 'wcfm-view-header-panels.php' );
+		$WCFM->template->get_template( 'wcfm-view-header-panels.php' );
 	}
 	
 	/**
@@ -265,91 +334,6 @@ class WCFM_Frontend {
 	  if( $is_checklist_view_disabled == 'yes' ) $is_checklist_view = false;
 		
 		return $is_checklist_view;
-	}
-	
-	/**
-	 * WCFM sent messages
-	 *
-	 * @since 3.0.6
-	 */
-	function wcfm_send_direct_message( $author_id, $message_to, $author_is_admin, $author_is_vendor, $wcfm_messages, $wcfm_messages_type = 'direct' ) {
-		global $WCFM, $wpdb;
-		
-		$is_notice = 0;
-		$is_direct_message = 1;
-    		
-		$wcfm_create_message     = "INSERT into {$wpdb->prefix}wcfm_messages 
-																(`message`, `author_id`, `author_is_admin`, `author_is_vendor`, `is_notice`, `is_direct_message`, `message_to`, `message_type`)
-																VALUES
-																('{$wcfm_messages}', {$author_id}, {$author_is_admin}, {$author_is_vendor}, {$is_notice}, {$is_direct_message}, {$message_to}, '{$wcfm_messages_type}')";
-																
-		$wpdb->query($wcfm_create_message);
-		
-		$messageid = $wpdb->insert_id;
-		$todate = date('Y-m-d H:i:s');
-		if( $messageid ) {
-			$wcfm_read_message     = "INSERT into {$wpdb->prefix}wcfm_messages_modifier 
-																	(`message`, `is_read`, `read_by`, `read_on`)
-																	VALUES
-																	({$messageid}, 1, {$author_id}, '{$todate}')";
-			$wpdb->query($wcfm_read_message);
-		}
-	}
-	
-	/**
-	 * WCFM unread message count
-	 *
-	 * @since 2.3.4
-	 */
-	function wcfm_direct_message_count( $message_type = 'notice', $message_status = 'unread' ) {
-		global $WCFM, $wpdb;
-		
-		$message_to = apply_filters( 'wcfm_message_author', get_current_user_id() );
-		$total_mesaages = 0;
-		if( $message_type == 'enquiry' ) {
-			if( apply_filters( 'wcfm_is_pref_enquiry', true ) && apply_filters( 'wcfm_is_allow_enquiry', true ) ) {
-				$sql = "SELECT COUNT(wcfm_enquiries.ID) FROM {$wpdb->prefix}wcfm_enquiries AS wcfm_enquiries";
-				$sql .= " WHERE 1=1";
-				$sql .= " AND `reply` = ''";
-				if( wcfm_is_vendor() ) { 
-					$sql .= " AND `vendor_id` = {$message_to}";
-				}
-				$sql = apply_filters( 'wcfm_enquery_list_query', $sql );
-				$total_mesaages = $wpdb->get_var( $sql );
-			}
-		} else {
-			if( ( ( $message_type == 'message' ) && apply_filters( 'wcfm_is_pref_direct_message', true ) && apply_filters( 'wcfm_is_allow_notifications', true ) ) || ( ( $message_type == 'notice' ) && apply_filters( 'wcfm_is_pref_notice', true ) && apply_filters( 'wcfm_is_allow_notice', true ) ) ) {
-				$sql = 'SELECT COUNT(wcfm_messages.ID) FROM ' . $wpdb->prefix . 'wcfm_messages AS wcfm_messages';
-				$sql .= ' WHERE 1=1';
-				
-				if( $message_type == 'notice' ) {
-					$status_filter = " AND `is_notice` = 1";
-				} elseif( $message_type == 'message' ) {
-					$status_filter = " AND `is_direct_message` = 1";
-				}
-				$sql .= $status_filter;
-				
-				if( wcfm_is_vendor() ) { 
-					//$vendor_filter = " AND `author_is_admin` = 1";
-					$vendor_filter = " AND ( `author_id` = {$message_to} OR `message_to` = -1 OR `message_to` = {$message_to} )";
-					$sql .= $vendor_filter;
-				} else {
-					$group_manager_filter = apply_filters( 'wcfm_notification_group_manager_filter', '' );
-					if( $group_manager_filter ) {
-						$sql .= $group_manager_filter;
-					} else {
-						$sql .= " AND `author_id` != -1";
-					}
-				}
-				
-				$message_status_filter = " AND NOT EXISTS (SELECT * FROM {$wpdb->prefix}wcfm_messages_modifier as wcfm_messages_modifier_2 WHERE wcfm_messages.ID = wcfm_messages_modifier_2.message AND wcfm_messages_modifier_2.read_by={$message_to})";
-				$sql .= $message_status_filter;
-				
-				$total_mesaages = $wpdb->get_var( $sql );
-			}
-		}
-		
-		return  $total_mesaages;
 	}
 	
 	function getIP() {
@@ -369,7 +353,7 @@ class WCFM_Frontend {
 	 * @since 2.2.5
 	 */
 	function wcfm_save_page_analytics_data() {
-		global $WCFM, $_SERVER, $post, $wpdb, $_SESSION;
+		global $WCFM, $_SERVER, $post, $wpdb, $_SESSION, $wp;
 		
 		//$_SESSION['wcfm_pages'] = array( 'shop' => 'no', 'stores' => array(), 'products' => array() );
 		//if( !session_id() ) session_start();
@@ -386,9 +370,15 @@ class WCFM_Frontend {
 				$json = curl_exec($ch);
 				curl_close ($ch);
 				$data = json_decode($json);
-				$_SESSION['location']['country'] = $data->geobytesinternet;
-				$_SESSION['location']['state'] = $data->geobytescode;
-				$_SESSION['location']['city'] = $data->geobytescity;
+				if( $data && is_object( $data ) ) {
+					$_SESSION['location']['country'] = $data->geobytesinternet;
+					$_SESSION['location']['state'] = $data->geobytescode;
+					$_SESSION['location']['city'] = $data->geobytescity;
+				} else {
+					$_SESSION['location']['country'] = '';
+					$_SESSION['location']['state'] = '';
+					$_SESSION['location']['city'] = '';
+				}
 				//echo '<b>'. $this->getIP() .'</b> resolves to: '. $data->geobytesinternet . "::" . $data->geobytescode . "::" . $data->geobytescity . "::" . var_dump($data);
 			} else {
 				$_SESSION['location']['country'] = '';
@@ -602,8 +592,42 @@ class WCFM_Frontend {
 						// Session store
 						$_SESSION['wcfm_pages']['stores'][] = $vendor_id;
 					}
-		  	}
-		  }
+				}
+			} elseif( $is_marketplace == 'wcfmmarketplace' ) {
+				if( wcfm_is_store_page() ) {
+					$custom_store_url = get_option( 'wcfm_store_url', 'store' );
+					$store_name = get_query_var( $custom_store_url );
+					$vendor_id  = 0;
+					if ( !empty( $store_name ) ) {
+						$store_user = get_user_by( 'slug', $store_name );
+					}
+					if( $store_user ) {
+						$vendor_id   		= $store_user->ID;
+					}
+					if( $vendor_id ) {
+						if( !isset( $_SESSION['wcfm_pages'] ) || !isset( $_SESSION['wcfm_pages']['stores'] ) || ( isset( $_SESSION['wcfm_pages'] ) && isset( $_SESSION['wcfm_pages']['stores'] ) && !in_array( $vendor_id, $_SESSION['wcfm_pages']['stores'] ) ) ) {
+							// wcfm_detailed_analysis Query
+							$wcfm_detailed_analysis = "INSERT into {$wpdb->prefix}wcfm_detailed_analysis 
+																				(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `referer`, `ip_address`, `country`, `state`, `city`)
+																				VALUES
+																				(0, 1, 0, -1, {$vendor_id}, '{$_SERVER['HTTP_REFERER']}', '{$_SERVER['REMOTE_ADDR']}', '{$_SESSION['location']['country']}', '{$_SESSION['location']['state']}', '{$_SESSION['location']['city']}')";
+							$wpdb->query($wcfm_detailed_analysis);
+							
+							// wcfm_daily_analysis Query
+							$wcfm_daily_analysis = "INSERT into {$wpdb->prefix}wcfm_daily_analysis 
+																				(`is_shop`, `is_store`, `is_product`, `product_id`, `author_id`, `count`, `visited`)
+																				VALUES
+																				(0, 1, 0, -1, {$vendor_id}, 1, '{$todate}')
+																				ON DUPLICATE KEY UPDATE
+																				count = count+1";
+							$wpdb->query($wcfm_daily_analysis);
+							
+							// Session store
+							$_SESSION['wcfm_pages']['stores'][] = $vendor_id;
+						}
+					}
+				}
+			}
 		}
 		
 		//print_R($_SERVER);
@@ -636,6 +660,90 @@ class WCFM_Frontend {
 		return $show;
 	}
 	
+		/**
+	 * WCFMu Product Select Attributes using WC Taxonomy Attribute
+	 */
+	function wcfm_products_manage_select_attributes( $product_id = 0 ) {
+		global $WCFM, $WCFMu, $wc_product_attributes;
+		
+		$wcfm_attributes = array();
+		if( $product_id ) {
+			$wcfm_attributes = get_post_meta( $product_id, '_product_attributes', true );
+		}
+		
+		$attribute_taxonomies = wc_get_attribute_taxonomies();
+		$attributes = array();
+		$acnt = 0;
+		if ( ! empty( $attribute_taxonomies ) ) {
+			foreach ( $attribute_taxonomies as $attribute_taxonomy ) {
+				if ( ( 'text' !== $attribute_taxonomy->attribute_type ) && $attribute_taxonomy->attribute_name ) {
+					$att_taxonomy = wc_attribute_taxonomy_name( $attribute_taxonomy->attribute_name );
+					$attributes[$acnt]['term_name'] = $att_taxonomy;
+					$attributes[$acnt]['name'] = wc_attribute_label( $att_taxonomy );
+					$attributes[$acnt]['attribute_taxonomy'] = $attribute_taxonomy;
+					$attributes[$acnt]['tax_name'] = $att_taxonomy;
+					$attributes[$acnt]['is_taxonomy'] = 1;
+				
+					$args = array(
+												'orderby'    => 'name',
+												'hide_empty' => 0
+											);
+					$all_terms = get_terms( $att_taxonomy, apply_filters( 'wcfm_product_attribute_terms', $args ) );
+					$attributes_option = array();
+					if ( $all_terms ) {
+						foreach ( $all_terms as $term ) {
+							$attributes_option[$term->term_id] = esc_attr( apply_filters( 'woocommerce_product_attribute_term_name', $term->name, $term ) );
+						}
+					}
+					$attributes[$acnt]['option_values']  = $attributes_option;
+					$attributes[$acnt]['value']          = wp_get_post_terms( $product_id, $att_taxonomy, array( 'fields' => 'ids' ) );
+					$attributes[$acnt]['is_active']      = '';
+					$attributes[$acnt]['is_visible']     = '';
+					$attributes[$acnt]['is_variation']   = '';
+					
+					if( $product_id && !empty( $wcfm_attributes ) ) {
+						foreach( $wcfm_attributes as $wcfm_attribute ) {
+							if ( $wcfm_attribute['is_taxonomy'] ) {
+								if( $att_taxonomy == $wcfm_attribute['name'] ) {
+									$attributes[$acnt]['is_active'] = 'enable';
+									$attributes[$acnt]['is_visible'] = $wcfm_attribute['is_visible'] ? 'enable' : '';
+									$attributes[$acnt]['is_variation'] = $wcfm_attribute['is_variation'] ? 'enable' : '';
+								}
+							}
+						}
+					}
+				
+					// Global Level
+					$allow_add_term = '';
+					if( WCFM_Dependencies::wcfmu_plugin_active_check() && apply_filters( 'wcfm_is_allow_add_attribute_term', true ) ) {
+						$allow_add_term = 'wc_attribute_values allow_add_term';
+					}
+					$attrlimit = apply_filters( 'wcfm_attribute_limit', -1 );
+					
+					// Attribute wise level
+					if( !apply_filters( 'wcfm_is_allow_add_attribute_term_'.$att_taxonomy, true, $att_taxonomy ) ) {
+						$allow_add_term = '';
+					}
+					$attrlimit = apply_filters( 'wcfm_attribute_limit_'.$att_taxonomy, $attrlimit, $att_taxonomy );
+					
+					$attributes = apply_filters( 'wcfm_product_custom_attributes_data', apply_filters( 'wcfm_product_custom_attribute_date_'.$att_taxonomy, $attributes, $att_taxonomy ) );
+					$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_product_custom_attributes', apply_filters( 'wcfm_product_custom_attribute_'.$att_taxonomy, array(  
+																																																	"select_attributes_".$att_taxonomy => array( 'type' => 'multiinput', 'class' => 'wcfm-text wcfm_select_attributes wcfm_ele simple variable external grouped booking', 'label_class' => 'wcfm_title', 'value' => $attributes, 'options' => array(
+																																																			"term_name" => array('type' => 'hidden'),
+																																																			"is_active" => array('label' => __('Active?', 'wc-frontend-manager'), 'type' => 'checkbox', 'value' => 'enable', 'attributes' => array( 'title' => __( 'Check to associate this attribute with the product', 'wc-frontend-manager-ultimate' ) ), 'class' => 'wcfm-checkbox wcfm_ele attribute_ele simple variable external grouped booking', 'label_class' => 'wcfm_title attribute_ele checkbox_title'),
+																																																			"name" => array('label' => __('Name', 'wc-frontend-manager'), 'type' => 'text', 'attributes' => array( 'readonly' => true ), 'class' => 'wcfm-text wcfm_ele attribute_ele simple variable external grouped booking', 'label_class' => 'wcfm_title attribute_ele'),
+																																																			"value" => array('label' => __('Value(s):', 'wc-frontend-manager'), 'type' => 'select', 'custom_attributes' => array( 'attrlimit' => $attrlimit ), 'attributes' => array( 'multiple' => 'multiple', 'style' => 'width: 60%;' ), 'class' => 'wcfm-select wcfm_ele simple variable external grouped booking ' . $allow_add_term, 'label_class' => 'wcfm_title'),
+																																																			"is_visible" => array('label' => __('Visible on the product page', 'wc-frontend-manager'), 'type' => 'checkbox', 'value' => 'enable', 'class' => 'wcfm-checkbox wcfm_ele simple variable external grouped booking', 'label_class' => 'wcfm_title checkbox_title'),
+																																																			"is_variation" => array('label' => __('Use as Variation', 'wc-frontend-manager'), 'type' => 'checkbox', 'value' => 'enable', 'class' => 'wcfm-checkbox wcfm_ele variable variable-subscription', 'label_class' => 'wcfm_title checkbox_title wcfm_ele variable variable-subscription'),
+																																																			"tax_name" => array('type' => 'hidden'),
+																																																			"is_taxonomy" => array('type' => 'hidden')
+																																																	))
+																																												), 'select_attributes_'.$att_taxonomy, $att_taxonomy, $attributes ) ) );
+				}
+			}
+		}
+	}
+	
 	/**
 	 * WCFM Core JS
 	 */
@@ -647,18 +755,40 @@ class WCFM_Frontend {
  		// Libs
 	  $WCFM->library->load_qtip_lib();
 	  
+	  // Block UI
+	  $WCFM->library->load_blockui_lib();
+	  
 	  // Colorbox
 	  $WCFM->library->load_colorbox_lib();
  		
  		// Core JS
 	  wp_enqueue_script( 'wcfm_core_js', $WCFM->library->js_lib_url . 'wcfm-script-core.js', array('jquery', 'wcfm_qtip_js' ), $WCFM->version, true );
 	  
-	  $unread_message = $WCFM->frontend->wcfm_direct_message_count( 'message' );
-		$unread_enquiry = $WCFM->frontend->wcfm_direct_message_count( 'enquiry' );
+	  // Localized Script
+	  if( apply_filters( 'wcfm_is_allow_sound', true ) ) {
+			if( apply_filters( 'wcfm_is_allow_notification_sound', true ) ) {
+				wp_localize_script( 'wcfm_core_js', 'wcfm_notification_sound', apply_filters( 'wcfm_notification_sound', $WCFM->library->lib_url . 'sounds/notification.mp3' ) );
+			} else {
+				wp_localize_script( 'wcfm_core_js', 'wcfm_notification_sound', $WCFM->library->lib_url . 'sounds/empty_audio.mp3' );
+			}
+			if( apply_filters( 'wcfm_is_allow_desktop_notification_sound', true ) ) {
+				wp_localize_script( 'wcfm_core_js', 'wcfm_desktop_notification_sound', apply_filters( 'wcfm_desktop_notification_sound', $WCFM->library->lib_url . 'sounds/desktop_notification.mp3' ) );
+			} else {
+				wp_localize_script( 'wcfm_core_js', 'wcfm_notification_sound', $WCFM->library->lib_url . 'sounds/empty_audio.mp3' );
+			}
+		} else {
+			wp_localize_script( 'wcfm_core_js', 'wcfm_notification_sound', $WCFM->library->lib_url . 'sounds/empty_audio.mp3' );
+		}
+		
+		$wcfm_dashboard_messages = get_wcfm_dashboard_messages();
+		wp_localize_script( 'wcfm_core_js', 'wcfm_core_dashboard_messages', $wcfm_dashboard_messages );
+	  
+	  $unread_message = $WCFM->wcfm_notification->wcfm_direct_message_count( 'message' );
+		$unread_enquiry = $WCFM->wcfm_notification->wcfm_direct_message_count( 'enquiry' );
 	  
 	  // Localize Script
 	  $tinyMCE_toolbar_options = 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify |  bullist numlist outdent indent | link image | ltr rtl';
-	  wp_localize_script( 'wcfm_core_js', 'wcfm_params', array( 'ajax_url'    => WC()->ajax_url(), 'shop_url' => get_permalink( wc_get_page_id( 'shop' ) ), 'wcfm_is_allow_wcfm' => wcfm_is_allow_wcfm(), 'wcfm_allow_tinymce_options' => apply_filters( 'wcfm_allow_tinymce_options', $tinyMCE_toolbar_options ), 'unread_message' => $unread_message, 'unread_enquiry' => $unread_enquiry ) );
+	  wp_localize_script( 'wcfm_core_js', 'wcfm_params', array( 'ajax_url'    => WC()->ajax_url(), 'shop_url' => get_permalink( wc_get_page_id( 'shop' ) ), 'wcfm_is_allow_wcfm' => wcfm_is_allow_wcfm(), 'wcfm_is_vendor' => wcfm_is_vendor(), 'is_user_logged_in' => is_user_logged_in(), 'wcfm_allow_tinymce_options' => apply_filters( 'wcfm_allow_tinymce_options', $tinyMCE_toolbar_options ), 'unread_message' => $unread_message, 'unread_enquiry' => $unread_enquiry, 'wcfm_is_desktop_notification' => apply_filters( 'wcfm_is_allow_desktop_notification', true ) ) );
 	  
 	  // Load End Point Scripts
 	  if( is_wcfm_page() ) {

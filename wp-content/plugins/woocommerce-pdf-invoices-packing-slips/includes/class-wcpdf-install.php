@@ -76,7 +76,7 @@ class Install {
 		$tmp_base = WPO_WCPDF()->main->get_tmp_base();
 
 		// check if tmp folder exists => if not, initialize 
-		if ( !@is_dir( $tmp_base ) ) {
+		if ( $tmp_base !== false && !@is_dir( $tmp_base ) ) {
 			WPO_WCPDF()->main->init_tmp( $tmp_base );
 		}
 
@@ -162,11 +162,14 @@ class Install {
 				// 'display_email'				=> '',
 				// 'display_phone'				=> '',
 			),
-			// 'wpo_wcpdf_settings_debug' => array(
-			// 	'legacy_mode'				=> '',
-			// 	'enable_debug'				=> '',
-			// 	'html_output'				=> '',
-			// ),
+			'wpo_wcpdf_settings_debug' => array(
+				// 'legacy_mode'				=> '',
+				// 'enable_debug'				=> '',
+				// 'html_output'				=> '',
+				// 'html_output'				=> '',
+				'enable_cleanup'				=> 1,
+				'cleanup_days'					=> 7,
+			),
 		);
 		foreach ($settings_defaults as $option => $defaults) {
 			update_option( $option, $defaults );
@@ -188,7 +191,7 @@ class Install {
 		$tmp_base = WPO_WCPDF()->main->get_tmp_base();
 
 		// check if tmp folder exists => if not, initialize 
-		if ( !@is_dir( $tmp_base ) ) {
+		if ( $tmp_base !== false && !@is_dir( $tmp_base ) ) {
 			WPO_WCPDF()->main->init_tmp( $tmp_base );
 		} else {
 			$font_path = WPO_WCPDF()->main->get_tmp_path( 'fonts' );
@@ -331,6 +334,14 @@ class Install {
 			// delete_option( 'wpo_wcpdf_next_invoice_number' ); // clean up after ourselves
 		}
 
+		// 2.1.9: set cleanup defaults
+		if ( $installed_version == 'versionless' || version_compare( $installed_version, '2.1.9', '<' ) ) {
+			$debug_settings = get_option( 'wpo_wcpdf_settings_debug', array() );
+			$debug_settings['enable_cleanup'] = 1;
+			$debug_settings['cleanup_days'] = 7;
+			update_option( 'wpo_wcpdf_settings_debug', $debug_settings );
+		}
+
 	}
 
 	/**
@@ -342,6 +353,11 @@ class Install {
 	protected function downgrade( $installed_version ) {
 		// make sure fonts match with version: copy from plugin folder
 		$tmp_base = WPO_WCPDF()->main->get_tmp_base();
+
+		// don't continue if we don't have an upload dir
+		if ($tmp_base === false) {
+			return false;
+		}
 
 		// check if tmp folder exists => if not, initialize 
 		if ( !@is_dir( $tmp_base ) ) {

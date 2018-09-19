@@ -2,6 +2,10 @@
 	border: 0px !important;
 }
 
+#wcfm-main-contentainer #customers_details_general_expander textarea {
+	resize: vertical;
+}
+
 .order-status, .booking-status, .appointment-status {
   font-size: 20px;	
 }

@@ -27,12 +27,11 @@ jQuery(document).ready(function($) {
 		"processing": true,
 		"serverSide": true,
 		"responsive": true,
+		"pageLength": dataTables_config.pageLength,
 		"bFilter"   : false,
 		"dom"       : 'Bfrtip',
 		"language"  : $.parseJSON(dataTables_language),
-    "buttons"   : [
-            				'print', 'pdf', 'excel', 'csv' 
-        					],
+    "buttons"   : $wcfm_datatable_button_args,
 		"columns"   : [
 										{ responsivePriority: 1 },
 										{ responsivePriority: 1 },
@@ -158,12 +157,11 @@ jQuery(document).ready(function($) {
 		"processing": true,
 		"serverSide": true,
 		"responsive": true,
+		"pageLength": dataTables_config.pageLength,
 		"bFilter"   : false,
 		"dom"       : 'Bfrtip',
 		"language"  : $.parseJSON(dataTables_language),
-    "buttons"   : [
-            				'print', 'pdf', 'excel', 'csv' 
-        					],
+    "buttons"   : $wcfm_datatable_button_args,
 		"columns"   : [
 										{ responsivePriority: 1 },
 										{ responsivePriority: 1 },
@@ -239,12 +237,11 @@ jQuery(document).ready(function($) {
 		"processing": true,
 		"serverSide": true,
 		"responsive": true,
+		"pageLength": dataTables_config.pageLength,
 		"bFilter"   : false,
 		"dom"       : 'Bfrtip',
 		"language"  : $.parseJSON(dataTables_language),
-    "buttons"   : [
-            				'print', 'pdf', 'excel', 'csv' 
-        					],
+    "buttons"   : $wcfm_datatable_button_args,
 		"columns"   : [
 										{ responsivePriority: 1 },
 										{ responsivePriority: 1 },

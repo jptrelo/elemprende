@@ -2,6 +2,22 @@ var $wcfm_product_select_args = {
 			allowClear:  true,
 			placeholder: wcfm_dashboard_messages.search_product_select2,
 			minimumInputLength: '3',
+			language: {
+				inputTooShort: function ( args ) {
+					var remainingChars = args.minimum - args.input.length;
+          var message = wcfm_dashboard_messages.select2_minimum_input + remainingChars;
+          return message;
+				},
+				noResults: function () {
+          return wcfm_dashboard_messages.select2_no_result;
+        },
+        searching: function () {
+          return wcfm_dashboard_messages.select2_searching;
+        },
+        loadingMore: function () {
+          return wcfm_dashboard_messages.select2_loading_more;
+        },
+			},
 			escapeMarkup: function( m ) {
 				return m;
 			},
@@ -37,6 +53,22 @@ var $wcfm_vendor_select_args = {
 			allowClear:  true,
 			placeholder: wcfm_dashboard_messages.choose_vendor_select2,
 			minimumInputLength: '3',
+			language: {
+				inputTooShort: function ( args ) {
+					var remainingChars = args.minimum - args.input.length;
+          var message = wcfm_dashboard_messages.select2_minimum_input + remainingChars;
+          return message;
+				},
+				noResults: function () {
+          return wcfm_dashboard_messages.select2_no_result;
+        },
+        searching: function () {
+          return wcfm_dashboard_messages.select2_searching;
+        },
+        loadingMore: function () {
+          return wcfm_dashboard_messages.select2_loading_more;
+        },
+			},
 			escapeMarkup: function( m ) {
 				return m;
 			},
@@ -67,6 +99,33 @@ var $wcfm_vendor_select_args = {
 				cache: true
 			}
 		};
+		
+$wcfm_datatable_button_args = [
+																{
+																	extend: 'print',
+																	exportOptions: {
+																		columns: ':visible'
+																	}
+																},
+																{
+																	extend: 'pdfHtml5',
+																	exportOptions: {
+																		columns: ':visible'
+																	}
+																},
+																{
+																	extend: 'excelHtml5',
+																	exportOptions: {
+																		columns: ':visible'
+																	}
+																}, 
+																{
+																	extend: 'csv',
+																	exportOptions: {
+																		columns: ':visible'
+																	}
+																}
+															];
 
 
 jQuery( document ).ready( function( $ ) {
@@ -95,9 +154,35 @@ jQuery( document ).ready( function( $ ) {
 	
 	
 	// Responsive
+	// WCFM Responsive Menu Toggler
 	if( $(window).width() <= 768 ) {
-		$('.wcfm_form_simple_submit_wrapper').css( 'bottom', $('#wcfm_menu').height() );
-		$('.wcfm-message').css( 'bottom', ($('#wcfm_menu').height() + 60) );
+		if( $('#wcfm-main-contentainer .wcfm_responsive_menu_toggler').length > 0 ) {
+			$('#wcfm_menu').removeClass('wcfm_menu_toggle');
+			$('#wcfm-main-contentainer .wcfm_responsive_menu_toggler').click(function() {
+				$('#wcfm_menu').addClass('wcfm_responsive_menu_toggle');
+				if( $('#wcfm_menu').hasClass('wcfm_menu_toggle') ) {
+					$('#wcfm_menu').removeClass('wcfm_menu_toggle');
+				} else {
+					$('#wcfm_menu').addClass('wcfm_menu_toggle');
+				}
+			}).click();
+			
+			/*$('#wcfm-main-contentainer .wcfm_responsive_menu_toggler').hover(function() {
+				$('#wcfm_menu').addClass('wcfm_responsive_menu_toggle');
+				if( $('#wcfm_menu').hasClass('wcfm_menu_toggle') ) {
+					$('#wcfm_menu').removeClass('wcfm_menu_toggle');
+				} else {
+					$('#wcfm_menu').addClass('wcfm_menu_toggle');
+				}
+			});*/
+		}
+	}
+	
+	if( $(window).width() <= 768 ) {
+		if( !$('#wcfm_menu').hasClass('wcfm_responsive_menu_toggle') ) {
+			$('.wcfm_form_simple_submit_wrapper').css( 'bottom', $('#wcfm_menu').height() );
+			$('.wcfm-message').css( 'bottom', ($('#wcfm_menu').height() + 60) );
+		}
 	}
 	if ($(window).width() <= 640) {
 		$('#wcfm-main-contentainer').css( 'max-width', $(window).width() );
@@ -123,6 +208,11 @@ jQuery( document ).ready( function( $ ) {
 		$('#wcfm-main-contentainer').find('select').each(function() {
 			if ( $(this).parent().is( "span" ) ) {
 			  $(this).unwrap( "span" );
+			}
+			if ( $(this).parent().hasClass( "select-option" ) || $(this).parent().hasClass( "buddyboss-select-inner" ) || $(this).parent().hasClass( "buddyboss-select" ) ) {
+				$(this).parent().find('.ti-angle-down').remove();
+				$(this).parent().find('span').remove();
+			  $(this).unwrap( "div" );
 			}
 		});
 		setTimeout( function() {  unwrapSelect(); }, 500 );
@@ -197,5 +287,3 @@ jQuery( document ).ready( function( $ ) {
 		});
 	});
 } );
-
-var audio = new Audio(wcfm_notification_sound);

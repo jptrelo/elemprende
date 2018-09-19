@@ -1,31 +1,12 @@
 jQuery(document).ready( function($) {
 	$wcfm_messages_table = '';
 	
-	// TinyMCE intialize - Description
-	if( $('#topic_reply').length > 0 ) {
-		var descTinyMCE = tinymce.init({
-																	selector: '#topic_reply',
-																	height: 75,
-																	menubar: false,
-																	plugins: [
-																		'advlist autolink lists link charmap print preview anchor',
-																		'searchreplace visualblocks code fullscreen',
-																		'insertdatetime table contextmenu paste code directionality',
-																		'autoresize'
-																	],
-																	toolbar: tinyMce_toolbar,
-																	content_css: '//www.tinymce.com/css/codepen.min.css',
-																	statusbar: false,
-																	browser_spellcheck: true,
-																});
-	}
-	
 	// Save Settings
 	$('#wcfm_reply_send_button').click(function(event) {
 	  event.preventDefault();
 	  
-	  var topic_reply = '';
-	  if( typeof tinymce != 'undefined' ) topic_reply = tinymce.get('topic_reply').getContent();
+	  var topic_reply = getWCFMEditorContent( 'topic_reply' );
+		
 	  var topic_id = $('#topic_id').val();
   
 	  // Validations

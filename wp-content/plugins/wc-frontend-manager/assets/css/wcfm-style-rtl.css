@@ -2,10 +2,27 @@
   padding-right: 20px;	
 }
 
+.wcfm_header_panel a.wcfm_header_panel_profile {
+	float: left;
+	margin-left: 12px;
+}
+
+.wcfm_header_panel a {
+	margin-right: 25px;
+	margin-left: 0px;
+}
+
+#wcfm-main-contentainer .wcfm_menu_toggler {
+	float: right;
+}
+
 #wcfm_menu .wcfm_menu_items a.wcfm_menu_item {
 	text-align: right;
 	padding-left: 0px;
-	padding-right: 10px;
+}
+
+#wcfm_menu .wcfm_menu_item span {
+	margin-left: 15px;
 }
 
 #wcfm_menu span.wcfm_sub_menu_items {
@@ -15,37 +32,42 @@
 	margin-right: 2px;
 }
 
-#wcfm_menu .wcfm_menu_items a.active::after {
-	left: 0px;
-	border-left-color: #f7f7f7;
-	border-right: 0px;
-  right: auto;
+#wcfm_menu .wcfm_menu_items a.wcfm_menu_item:hover:after {
+	left: 0px !important;
+	right: auto;
+	border-right-color: transparent;
+	border-left-color: #00798b;
 }
 
 .img_tip {
 	margin-right: 5px;
 }
 
-#wcfm-main-contentainer .wcfm_dashboard_welcome_avatar, #wcfm-main-contentainer .wcfm_dashboard_welcome_content::before, #wcfm-main-contentainer .wcfm-page-headig::before, #wcfm-main-contentainer #wcfm_menu .wcfm_menu_items a.wcfm_menu_item::before {
+.wcfm_form_simple_submit_wrapper .wcfm-info, .wcfm_form_simple_submit_wrapper .wcfm-success, .wcfm_form_simple_submit_wrapper .wcfm-warning, .wcfm_form_simple_submit_wrapper .wcfm-error, .wcfm_form_simple_submit_wrapper .wcfm-validation {
+	margin-right: 20%;
+	margin-left: 0;
+}
+
+#wcfm-main-contentainer .wcfm-page-headig::before, #wcfm-main-contentainer #wcfm_menu .wcfm_menu_items a.wcfm_menu_item::before {
 	right: 0;
 	left: auto;
 }
 
-#wcfm-main-contentainer .wcfm_dashboard_welcome_container {
-	margin-left: 0px;
-	margin-right: 75px;
-}
+.wcfm_menu_logo h4, .wcfm_menu_logo h4 a, .wcfm_menu_no_logo h4, .wcfm_menu_no_logo h4 a{float:right;}
 
-#wcfm-main-contentainer .wcfm_dashboard_welcome_content {
-	padding-left: 0px;
-	padding-right: 80px;
-}
+.wcfm_welcomebox_header .lft{float:right;}
+.wcfm_welcomebox_header .rgt{float:left;}
+.wcfm_welcomebox_user_profile{margin-left:35px;margin-right:0px;}
+.wcfm_welcomebox_last_time span{margin-left:6px;margin-right:0px;}
+.wcfm_welcomebox_membership span{margin-left:6px;margin-right:0px;}
+.wcfm_welcomebox_user_right_box span.fa{margin-left:15px;margin-right:0px;}
+.wcfm_welcomebox_user_right_box{border-left:0px solid #eff1f4;border-right:1px solid #eff1f4;}
 
 #wcfm-main-contentainer div.wcfm-collapse-content h2 {
 	float: right;
 }
 
-#wcfm-main-contentainer .wcfm_header_panel {
+#wcfm-main-contentainer .wcfm_header_panel, #banner_slider {
 	float: left;
 }
 

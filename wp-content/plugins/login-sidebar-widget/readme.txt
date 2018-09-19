@@ -1,10 +1,10 @@
 === Login Widget With Shortcode ===
 Contributors: avimegladon
-Donate link: http://www.aviplugins.com/donate/
+Donate link: https://www.aviplugins.com/donate/
 Tags: login, widget, login widget, widget login, sidebar login, login form, user login, authentication, facebook login, twitter login, google login, google plus, facebook, twitter, social login, social media, facebook comments, fb comment, forgot password, reset password, link
 Requires at least: 2.0.2
-Tested up to: 4.9.4
-Stable tag: 5.7.1
+Tested up to: 4.9.8
+Stable tag: 5.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,9 +31,9 @@ This is a simple login form in the widget. This will allow users to login to the
 * Easy CSS implementation from admin panel.
 
 = Facebook Login Widget (PRO) =
-There is a PRO version of this plugin that supports login with <strong>Facebook</strong>, <strong>Google</strong>, <strong>Twitter</strong>, <strong>LinkedIn</strong>, <strong>Amazon</strong> and <strong>Instagram</strong> accounts. You can get it <a href="http://www.aviplugins.com/fb-login-widget-pro/" target="_blank">here</a> in <strong>USD 4.00</strong>
+There is a PRO version of this plugin that supports login with <strong>Facebook</strong>, <strong>Google</strong>, <strong>Twitter</strong>, <strong>LinkedIn</strong>, <strong>Amazon</strong> and <strong>Instagram</strong> accounts. You can get it <a href="https://www.aviplugins.com/fb-login-widget-pro/" target="_blank">here</a> in <strong>USD 4.00</strong>
 
-<a href="http://www.aviplugins.com/demo/login/" target="_blank">Click here for a Live Demo</a>
+<a href="https://www.aviplugins.com/demo/login/" target="_blank">Click here for a Live Demo</a>
 
 * The PRO version comes with a <strong>FREE Content Restriction Addon</strong>. Partial contents of Pages/ Posts or the complete Page/Post can be hidden from visitors of your site.
 * Compatible with <strong>WooCommerce</strong> plugin.
@@ -47,20 +47,12 @@ There is a PRO version of this plugin that supports login with <strong>Facebook<
 * Change welcome text "Howdy" from plugin settings section.
 * Manage Forgot Password Email Body.
 * Easy CSS implementation from admin panel.
-* And with other useful settings. <a href="http://www.aviplugins.com/fb-login-widget-pro/" target="_blank">Click here for details</a>
+* And with other useful settings. <a href="https://www.aviplugins.com/fb-login-widget-pro/" target="_blank">Click here for details</a>
 
+= Social Login No Setup =
+The plugin supports login with <strong>Facebook, Google, Twitter, LinkedIn, Microsoft, WordPress, Amazon, Github, Tumblr, Vimeo, Reddit, Dribbble, Twitch</strong> and <strong>Instagram</strong> accounts and the most important part is that it requires no Setups, no Maintanance, no need to create any APPs, APIs, Client Ids, Client Secrets or anything. <a href="https://www.aviplugins.com/social-login-no-setup/" target="_blank">Click here for details</a> | <a href="https://www.aviplugins.com/demo/social-login/" target="_blank">Click here for Live Demo</a>
 
-> Check out <strong>Social Login No Setup</strong> that supports login with <strong>Facebook</strong>, <strong>Google</strong>, <strong>Twitter</strong>, <strong>LinkedIn</strong>, <strong>WordPress</strong> and <strong>Microsoft</strong> accounts and the most important part is that it requires no Setups, no Maintanance, no need to create any APPs, APIs, Client Ids, Client Secrets or anything. <a href="http://www.aviplugins.com/social-login-no-setup/" target="_blank">Click here for details</a> | <a href="http://aviplugins.com/demo/social-login/" target="_blank">Click here for Live Demo</a>
-
-= Facebook Comments Extension =
-This Add-on can be used to replace the default Wordpress Comments and insert Facebook or Disqus or Google+ Comments system in your site. You can get it <a href="http://www.aviplugins.com/fb-comments-afo-addon" target="_blank">here</a> in <strong>USD 1.00</strong>
-
-* Facebook Comments.
-* Disqus Comments.
-* Google+ Comments.
-* Globally turn off comments.
-
-> Post your plugin related queries at <a href="http://www.aviplugins.com/support.php">http://www.aviplugins.com/support.php</a>
+> Post your plugin related queries at <a href="https://www.aviplugins.com/support.php">https://www.aviplugins.com/support.php</a>
 
 == Installation ==
 
@@ -100,10 +92,10 @@ exit;<br>
 
 = For any kind of queries =
 
-1. Please email me demoforafo@gmail.com. Contact me at http://www.aviplugins.com/support.php
+1. Please email me demoforafo@gmail.com. Contact me at https://www.aviplugins.com/support.php
 2. Or you can write comments directly to my plugins page. Please visit here http://avifoujdar.wordpress.com/2014/02/13/login-widget/
 
-* If you want to translate the plugin in your language please translate the sample .PO file and mail me the the file at demoforafo@gmail.com and I will include that in the language file. Sample .PO file can be downloaded from <a href="http://www.aviplugins.com/language-sample/login-sidebar-widget-es_ES.po">here</a>
+* If you want to translate the plugin in your language please translate the sample .PO file and mail me the the file at demoforafo@gmail.com and I will include that in the language file. Sample .PO file can be downloaded from <a href="https://www.aviplugins.com/language-sample/login-sidebar-widget-es_ES.po">here</a>
 
 == Screenshots ==
 
@@ -122,6 +114,36 @@ exit;<br>
 
 
 == Changelog ==
+
+= 5.8.1 = 
+* Plugin code structure updated. This will make the plugin faster.
+
+= 5.8.0 = 
+* Option to enter URLs in Forgot Password & Registration links.
+
+= 5.7.9 = 
+* Compatibility added with All In One WP Security and bug fixed.
+
+= 5.7.8 = 
+* Bug Fixed.
+
+= 5.7.7 = 
+* Bug Fixed.
+
+= 5.7.6 = 
+* Bug Fixed after 5.7.5 update. 
+
+= 5.7.5 = 
+* Bug Fixed.
+
+= 5.7.4 = 
+* File structure updated.
+
+= 5.7.3 = 
+* Bug Fixed.
+
+= 5.7.2 = 
+* Bug Fixed.
 
 = 5.7.1 = 
 * Default plugin style updated.
@@ -235,7 +257,7 @@ exit;<br>
 * forms structure is updated.
 
 = 4.2.3 =
-* Language selection bug fixed for <a href="http://www.aviplugins.com/fb-comments-afo-addon/">Facebook Comments Add On</a>
+* Language selection bug fixed for <a href="https://www.aviplugins.com/fb-comments-afo-addon/">Facebook Comments Add On</a>
 
 = 4.2.2 =
 * Login and Logout page redirection modified.

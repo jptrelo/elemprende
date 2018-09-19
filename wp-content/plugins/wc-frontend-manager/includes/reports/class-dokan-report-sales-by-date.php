@@ -102,9 +102,10 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'            => $this->group_by_query,
-			//'order_by'            => 'post_date ASC',
+			'order_by'            => 'post_date ASC',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
+			'nocache'             => true,
 			'order_types'         => wc_get_order_types( 'order-count' ),
 			'order_status'        => $order_status,
 		) );
@@ -141,9 +142,10 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'     => $this->group_by_query . ', order_item_name',
-			//'order_by'     => 'post_date ASC',
+			'order_by'     => 'post_date ASC',
 			'query_type'   => 'get_results',
 			'filter_range' => true,
+			'nocache'      => true,
 			'order_types'  => wc_get_order_types( 'order-count' ),
 			'order_status' => $order_status,
 		) );
@@ -176,9 +178,10 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'            => $this->group_by_query,
-			//'order_by'            => 'post_date ASC',
+			'order_by'            => 'post_date ASC',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
+			'nocache'             => true,
 			'order_types'         => wc_get_order_types( 'order-count' ),
 			'order_status'        => $order_status,
 		) );
@@ -209,6 +212,7 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 			),
 			'query_type'          => 'get_var',
 			'filter_range'        => true,
+			'nocache'             => true,
 			'order_types'         => wc_get_order_types( 'order-count' ),
 			'order_status'        => array( 'refunded' ),
 		) ) );
@@ -252,9 +256,10 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'            => $this->group_by_query,
-			//'order_by'            => 'post_date ASC',
+			'order_by'            => 'post_date ASC',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
+			'nocache'             => true,
 			'order_types'         => wc_get_order_types( 'sales-reports' ),
 			'order_status'        => $order_status,
 		) );
@@ -301,6 +306,7 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 			'group_by'            => 'posts.post_parent',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
+			'nocache'             => true,
 			'order_status'        => false,
 			'parent_order_status' => array( 'refunded' ),
 		) );
@@ -369,9 +375,10 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'            => 'refund_id',
-			//'order_by'            => 'post_date ASC',
+			'order_by'            => 'post_date ASC',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
+			'nocache'             => true,
 			'order_status'        => false,
 			'parent_order_status' => $order_status,
 		) );
@@ -440,9 +447,10 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'            => 'refund_id',
-			//'order_by'            => 'post_date ASC',
+			'order_by'            => 'post_date ASC',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
+			'nocache'             => true,
 			'order_status'        => false,
 			'parent_order_status' => $order_status,
 		) );
@@ -540,16 +548,19 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 			break;
 		}
 
-		$legend[] = array(
-			/* translators: %s: total sales */
-			'title' => sprintf(
-				__( '%s gross sales in this period', 'woocommerce' ),
-				'<strong>' . wc_price( $data->total_sales ) . '</strong>'
-			),
-			'placeholder'      => __( 'This is the sum of the order totals after any refunds and including shipping and taxes.', 'woocommerce' ),
-			'color'            => $this->chart_colours['sales_amount'],
-			'highlight_series' => 6,
-		);
+		if( apply_filters( 'wcfm_sales_report_is_allow_gross_sales', true ) ) {
+			$legend[] = array(
+				/* translators: %s: total sales */
+				'title' => sprintf(
+					__( '%s gross sales in this period', 'woocommerce' ),
+					'<strong>' . wc_price( $data->total_sales ) . '</strong>'
+				),
+				'placeholder'      => __( 'This is the sum of the order totals after any refunds and including shipping and taxes.', 'woocommerce' ),
+				'color'            => $this->chart_colours['sales_amount'],
+				'highlight_series' => 6,
+			);
+		}
+		
 		if ( $data->average_total_sales > 0 ) {
 			$legend[] = array(
 				'title' => $average_total_sales_title,
@@ -776,7 +787,11 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 				var sales_data = <?php echo $chart_data; ?>;
 				var show_legend    = <?php echo $show_legend; ?>;
 				
-				jQuery('.chart-placeholder').css( 'width', jQuery('.chart-placeholder').outerWidth() + 'px' );
+				$show_ticks = true;
+				if( jQuery(window).width() <= 640 ) { $show_ticks = false; }
+				$placeholder_width = jQuery('.chart-placeholder').outerWidth();
+				if( $placeholder_width < 340 ) { $placeholder_width = 340; }
+				jQuery('.chart-placeholder').css( 'width', $placeholder_width + 'px' );
 				
 				var ctx = document.getElementById("chart-placeholder-canvas").getContext("2d");
 				var mySalesReportChart = new Chart(ctx, {
@@ -784,6 +799,7 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 						data: {
 							  labels: sales_data.gross_order_amounts.labels,
 								datasets: [
+								      <?php if( apply_filters( 'wcfm_sales_report_is_allow_gross_sales', true ) ) { ?>
 								      {
 												type: 'line',
 												label: "<?php _e( 'Gross Sales', 'wc-frontend-manager' ); ?>",
@@ -792,6 +808,7 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 												fill: true,
 												data: sales_data.gross_order_amounts.datas,
 											},
+											<?php } ?>
 											{
 												type: 'line',
 												label: "<?php _e( 'Earning', 'wc-frontend-manager' ); ?>",
@@ -874,7 +891,10 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
 										scaleLabel: {
 											display: false,
 											labelString: "<?php _e( 'Date', 'wc-frontend-manager' ); ?>"
-										}
+										},
+										ticks:{
+											display: $show_ticks
+                    }
 									}],
 									yAxes: [{
 										scaleLabel: {
@@ -893,7 +913,7 @@ class Dokan_Report_Sales_By_Date extends WC_Admin_Report {
         });
 				function afterResizing() {
 					var canvasheight = document.getElementById("chart-placeholder-canvas").height;
-					if(canvasheight <= 375) {
+					if(canvasheight <= 370) {
 						mySalesReportChart.options.legend.display=false;
 					} else {
 						if( show_legend ) {

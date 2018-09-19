@@ -1,7 +1,7 @@
 <?php
 
 /*
-Widget Name: Livemesh Heading
+Widget Name: Heading
 Description: Display one or more heading depicting a percentage value in a multi-column grid.
 Author: LiveMesh
 Author URI: https://www.livemeshthemes.com
@@ -26,7 +26,7 @@ class LAE_Heading_Widget extends Widget_Base {
     }
 
     public function get_title() {
-        return __('Livemesh Heading', 'livemesh-el-addons');
+        return __('Heading', 'livemesh-el-addons');
     }
 
     public function get_icon() {
@@ -39,9 +39,8 @@ class LAE_Heading_Widget extends Widget_Base {
 
     public function get_script_depends() {
         return [
-            'lae-widgets-scripts',
             'lae-frontend-scripts',
-            'waypoints'
+            'lae-waypoints'
         ];
     }
 
@@ -77,6 +76,9 @@ class LAE_Heading_Widget extends Widget_Base {
                 'label_block' => true,
                 'separator' => 'before',
                 'default' => __('Heading Title', 'livemesh-el-addons'),
+                'dynamic' => [
+                    'active' => true,
+                ],
             ]
         );
 
@@ -90,6 +92,9 @@ class LAE_Heading_Widget extends Widget_Base {
                 'condition' => [
                     'style' => 'style2',
                 ],
+                'dynamic' => [
+                    'active' => true,
+                ],
             ]
         );
 
@@ -101,6 +106,9 @@ class LAE_Heading_Widget extends Widget_Base {
                 'description' => __('Short text generally displayed below the heading title.', 'livemesh-el-addons'),
                 'condition' => [
                     'style' => ['style1', 'style2']
+                ],
+                'dynamic' => [
+                    'active' => true,
                 ],
             ]
         );
@@ -138,6 +146,16 @@ class LAE_Heading_Widget extends Widget_Base {
                     ],
                 ],
                 'default' => 'center',
+            ]
+        );
+
+        $this->add_control(
+            'widget_animation',
+            [
+                "type" => Controls_Manager::SELECT,
+                "label" => __("Animation Type", "livemesh-el-addons"),
+                'options' => lae_get_animation_options(),
+                'default' => 'none',
             ]
         );
 
@@ -256,29 +274,32 @@ class LAE_Heading_Widget extends Widget_Base {
 
     protected function render() {
 
-        $settings = $this->get_settings();
+        $settings = $this->get_settings_for_display();
 
-        ?>
+        $settings = apply_filters('lae_heading_' . $this->get_id() . '_settings', $settings);
 
-        <div class="lae-heading lae-<?php echo $settings['style']; ?> lae-align<?php echo $settings['align']; ?>">
+        list($animate_class, $animation_attr) = lae_get_animation_atts($settings['widget_animation']);
 
-            <?php if ($settings['style'] == 'style2' && !empty($settings['subtitle'])): ?>
+        $output = '<div class="lae-heading lae-' . $settings['style'] . ' lae-align' . $settings['align'] . ' ' . $animate_class . '" ' . $animation_attr . '>';
 
-                <div class="lae-subtitle"><?php echo esc_html($settings['subtitle']); ?></div>
+        if ($settings['style'] == 'style2' && !empty($settings['subtitle'])):
 
-            <?php endif; ?>
+            $output .= '<div class="lae-subtitle">' . esc_html($settings['subtitle']) . '</div>';
 
-            <<?php echo esc_html($settings['title_tag']); ?> class="lae-title"><?php echo wp_kses_post($settings['heading']); ?></<?php echo esc_html($settings['title_tag']); ?>>
+        endif;
 
-            <?php if ($settings['style'] != 'style3' && !empty($settings['short_text'])): ?>
+        $output .= '<' . esc_html($settings['title_tag']) . ' class="lae-title">' . wp_kses_post($settings['heading']) . '</' . esc_html($settings['title_tag']) . '>';
 
-                <p class="lae-text"><?php echo wp_kses_post($settings['short_text']); ?></p>
+        if ($settings['style'] != 'style3' && !empty($settings['short_text'])):
 
-            <?php endif; ?>
+            $output .= '<p class="lae-text">' . wp_kses_post($settings['short_text']) . '</p>';
 
-        </div>
+        endif;
 
-        <?php
+        $output .= '</div><!-- .lae-heading -->';
+
+        echo apply_filters('lae_heading_output', $output, $settings);
+
     }
 
     protected function content_template() {

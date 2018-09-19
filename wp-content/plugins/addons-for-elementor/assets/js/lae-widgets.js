@@ -43,12 +43,12 @@
 
     var WidgetLAEStatsBarHandlerOnScroll = function ($scope, $) {
 
-        $scope.waypoint(function (direction) {
+        $scope.livemeshWaypoint(function (direction) {
 
-            WidgetLAEStatsBarHandler($(this), $);
+            WidgetLAEStatsBarHandler($(this.element), $);
 
         }, {
-            offset: $.waypoints('viewportHeight') - 150,
+            offset: (window.innerHeight || document.documentElement.clientHeight) - 150,
             triggerOnce: true
         });
 
@@ -78,12 +78,12 @@
 
     var WidgetLAEPiechartsHandlerOnScroll = function ($scope, $) {
 
-        $scope.waypoint(function (direction) {
+        $scope.livemeshWaypoint(function (direction) {
 
-            WidgetLAEPiechartsHandler($(this), $);
+            WidgetLAEPiechartsHandler($(this.element), $);
 
         }, {
-            offset: $.waypoints('viewportHeight') - 100,
+            offset: (window.innerHeight || document.documentElement.clientHeight) - 100,
             triggerOnce: true
         });
 
@@ -107,92 +107,19 @@
 
     var WidgetLAEOdometersHandlerOnScroll = function ($scope, $) {
 
-        $scope.waypoint(function (direction) {
+        $scope.livemeshWaypoint(function (direction) {
 
-            WidgetLAEOdometersHandler($(this), $);
+            WidgetLAEOdometersHandler($(this.element), $);
 
         }, {
-            offset: $.waypoints('viewportHeight') - 100,
+            offset: (window.innerHeight || document.documentElement.clientHeight) - 100,
             triggerOnce: true
         });
     };
 
-    var WidgetLAESliderHandler = function ($scope, $) {
-
-        var slider_elem = $scope.find('.lae-slider').eq(0);
-
-        var settings = slider_elem.data('settings');
-
-        var $slider = slider_elem.find('.lae-flexslider');
-
-        $slider.flexslider({
-            selector: ".lae-slides > .lae-slide",
-            animation: settings['slide_animation'],
-            direction: settings['direction'],
-            slideshowSpeed: settings['slideshow_speed'],
-            animationSpeed: settings['animation_speed'],
-            namespace: "lae-flex-",
-            pauseOnAction: settings['pause_on_action'],
-            pauseOnHover: settings['pause_on_hover'],
-            controlNav: settings['control_nav'],
-            directionNav: settings['direction_nav'],
-            prevText: "Previous<span></span>",
-            nextText: "Next<span></span>",
-            smoothHeight: false,
-            animationLoop: true,
-            slideshow: settings['slideshow'],
-            easing: "swing",
-            randomize: settings['randomize'],
-            animationLoop: settings['loop'],
-            controlsContainer: "lae-slider"
-        });
-
-
-    };
-
-    var WidgetLAEPortfolioHandler = function ($scope, $) {
-
-        if ($().isotope === undefined) {
-            return;
-        }
-
-        var container = $scope.find('.lae-portfolio');
-        if (container.length === 0) {
-            return; // no items to filter or load and hence don't continue
-        }
-
-        // layout Isotope after all images have loaded
-        var htmlContent = $scope.find('.js-isotope');
-
-        var isotopeOptions = htmlContent.data('isotope-options');
-
-        htmlContent.isotope({
-            // options
-            itemSelector: isotopeOptions['itemSelector'],
-            layoutMode: isotopeOptions['layoutMode']
-        });
-
-        htmlContent.imagesLoaded(function () {
-            htmlContent.isotope('layout');
-        });
-
-        /* -------------- Taxonomy Filter --------------- */
-
-        $scope.find('.lae-taxonomy-filter .lae-filter-item a').on('click', function (e) {
-            e.preventDefault();
-
-            var selector = $(this).attr('data-value');
-            container.isotope({filter: selector});
-            $(this).closest('.lae-taxonomy-filter').children().removeClass('lae-active');
-            $(this).closest('.lae-filter-item').addClass('lae-active');
-            return false;
-        });
-
-    };
-
     var WidgetLAECarouselHandler = function ($scope, $) {
 
-        var carousel_elem = $scope.find('.lae-carousel, .lae-posts-carousel').eq(0);
+        var carousel_elem = $scope.find('.lae-carousel, .lae-posts-carousel, .lae-gallery-carousel, .lae-services-carousel').eq(0);
 
         if (carousel_elem.length > 0) {
 
@@ -260,6 +187,46 @@
 
     };
 
+    var WidgetLAEPortfolioHandler = function ($scope, $) {
+
+        if ($().isotope === undefined) {
+            return;
+        }
+
+        var container = $scope.find('.lae-portfolio');
+        if (container.length === 0) {
+            return; // no items to filter or load and hence don't continue
+        }
+
+        // layout Isotope after all images have loaded
+        var htmlContent = $scope.find('.js-isotope');
+
+        var isotopeOptions = htmlContent.data('isotope-options');
+
+        htmlContent.isotope({
+            // options
+            itemSelector: isotopeOptions['itemSelector'],
+            layoutMode: isotopeOptions['layoutMode']
+        });
+
+        htmlContent.imagesLoaded(function () {
+            htmlContent.isotope('layout');
+        });
+
+        /* -------------- Taxonomy Filter --------------- */
+
+        $scope.find('.lae-taxonomy-filter .lae-filter-item a').on('click', function (e) {
+            e.preventDefault();
+
+            var selector = $(this).attr('data-value');
+            container.isotope({filter: selector});
+            $(this).closest('.lae-taxonomy-filter').children().removeClass('lae-active');
+            $(this).closest('.lae-filter-item').addClass('lae-active');
+            return false;
+        });
+
+    };
+
     // Make sure you run this code under Elementor..
     $(window).on('elementor/frontend/init', function () {
 
@@ -282,13 +249,11 @@
             elementorFrontend.hooks.addAction('frontend/element_ready/lae-odometers.default', WidgetLAEOdometersHandlerOnScroll);
         }
 
-        elementorFrontend.hooks.addAction('frontend/element_ready/lae-slider.default', WidgetLAESliderHandler);
+        elementorFrontend.hooks.addAction('frontend/element_ready/lae-posts-carousel.default', WidgetLAECarouselHandler);
 
         elementorFrontend.hooks.addAction('frontend/element_ready/lae-portfolio.default', WidgetLAEPortfolioHandler);
 
         elementorFrontend.hooks.addAction('frontend/element_ready/lae-carousel.default', WidgetLAECarouselHandler);
-
-        elementorFrontend.hooks.addAction('frontend/element_ready/lae-posts-carousel.default', WidgetLAECarouselHandler);
 
     });
 

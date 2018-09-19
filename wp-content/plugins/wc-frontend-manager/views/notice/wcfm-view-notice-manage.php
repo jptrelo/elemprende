@@ -68,10 +68,17 @@ do_action( 'before_wcfm_notice_manage' );
 			<div class="wcfm-container">
 				<div id="notice_manage_general_expander" class="wcfm-content">
 						<?php
+						  $rich_editor = apply_filters( 'wcfm_is_allow_rich_editor', 'rich_editor' );
+							$wpeditor = apply_filters( 'wcfm_is_allow_profile_wpeditor', 'wpeditor' );
+							if( $wpeditor && $rich_editor ) {
+								$rich_editor = 'wcfm_wpeditor';
+							} else {
+								$wpeditor = 'textarea';
+							}
 							$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'notice_manager_fields_general', array(  "title" => array('label' => __('Title', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $title),
 																																															"allow_reply" => array('label' => __('Allow Reply', 'wc-frontend-manager') , 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele', 'label_class' => 'wcfm_title checkbox-title', 'value' => 'yes', 'dfvalue' => $allow_reply),
 																																															"close_new_reply" => array('label' => __('Close for New Reply', 'wc-frontend-manager') , 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele', 'label_class' => 'wcfm_title checkbox_title', 'value' => 'yes', 'dfvalue' => $close_new_reply),
-																																															"wcfm_notice" => array('label' => __('Content', 'wc-frontend-manager') , 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele', 'label_class' => 'wcfm_title', 'value' => $content),
+																																															"wcfm_notice" => array('label' => __('Content', 'wc-frontend-manager') , 'type' => $wpeditor, 'class' => 'wcfm-textarea wcfm_ele ' . $rich_editor, 'label_class' => 'wcfm_title', 'value' => $content),
 																																															"notice_id" => array('type' => 'hidden', 'value' => $notice_id)
 																																					) ) );
 						?>

@@ -189,8 +189,8 @@ abstract class Order_Document_Methods extends Order_Document {
 		if ( !$this->is_order_prop( $field_name ) ) {
 			$custom_field = WCX_Order::get_meta( $this->order, $field_name, true );
 		}
-		// if not found, try prefixed with underscore
-		if ( !$custom_field && substr( $field_name, 0, 1 ) !== '_' && !$this->is_order_prop( "_{$field_name}" ) ) {
+		// if not found, try prefixed with underscore (not when ACF is active!)
+		if ( !$custom_field && substr( $field_name, 0, 1 ) !== '_' && !$this->is_order_prop( "_{$field_name}" ) && !class_exists('ACF') ) {
 			$custom_field = WCX_Order::get_meta( $this->order, "_{$field_name}", true );
 		}
 
@@ -488,7 +488,8 @@ abstract class Order_Document_Methods extends Order_Document {
 				$data['single_line_tax'] = $this->format_price( $item['line_tax'] / max( 1, abs( $item['qty'] ) ) );
 				
 				$line_tax_data = maybe_unserialize( isset( $item['line_tax_data'] ) ? $item['line_tax_data'] : '' );
-				$data['tax_rates'] = $this->get_tax_rate( $item['tax_class'], $item['line_total'], $item['line_tax'], $line_tax_data );
+				$data['tax_rates'] = $this->get_tax_rate( $item['tax_class'], $item['line_total'], $item['line_tax'], $line_tax_data, true );
+				$data['calculated_tax_rates'] = $this->get_tax_rate( $item['tax_class'], $item['line_total'], $item['line_tax'], $line_tax_data, false );
 				
 				// Set the line subtotal (=before discount)
 				$data['line_subtotal'] = $this->format_price( $item['line_subtotal'] );
@@ -555,7 +556,7 @@ abstract class Order_Document_Methods extends Order_Document {
 	 * @param  string $tax_class tax class slug
 	 * @return string $tax_rates imploded list of tax rates
 	 */
-	public function get_tax_rate( $tax_class, $line_total, $line_tax, $line_tax_data = '' ) {
+	public function get_tax_rate( $tax_class, $line_total, $line_tax, $line_tax_data = '', $force_calculation = false ) {
 		// first try the easy wc2.2+ way, using line_tax_data
 		if ( !empty( $line_tax_data ) && isset($line_tax_data['total']) ) {
 			$tax_rates = array();
@@ -564,7 +565,7 @@ abstract class Order_Document_Methods extends Order_Document {
 			foreach ( $line_taxes as $tax_id => $tax ) {
 				if ( isset($tax) && $tax !== '' ) {
 					$tax_rate = $this->get_tax_rate_by_id( $tax_id );
-					if ( $tax_rate !== false ) {
+					if ( $tax_rate !== false && $force_calculation !== false ) {
 						$tax_rates[] = $tax_rate . ' %';
 					} else {
 						$tax_rates[] = $this->calculate_tax_rate( $line_total, $line_tax );
@@ -727,8 +728,8 @@ abstract class Order_Document_Methods extends Order_Document {
 			if ( substr( $thumbnail_url, 0, 2 ) === "//" ) {
 				$prefix = is_ssl() ? 'https://' : 'http://';
 				$https_thumbnail_url = $prefix . ltrim( $thumbnail_url, '/' );
+				$thumbnail_img_tag_url = str_replace($thumbnail_url, $https_thumbnail_url, $thumbnail_img_tag_url);
 			}
-			$thumbnail_img_tag_url = str_replace($thumbnail_url, $https_thumbnail_url, $thumbnail_img_tag_url);
 			$thumbnail = $thumbnail_img_tag_url;
 		} else {
 			// load img with http url when filtered

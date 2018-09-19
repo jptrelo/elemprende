@@ -7,6 +7,7 @@ jQuery(document).ready(function($) {
 		"processing": true,
 		"serverSide": true,
 		"responsive": true,
+		"pageLength": dataTables_config.pageLength,
 		"language"  : $.parseJSON(dataTables_language),
 		"columns"   : [
 			              { responsivePriority: 2 },

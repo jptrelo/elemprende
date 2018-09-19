@@ -5,7 +5,7 @@
 
 #wcfm-main-contentainer #wcfm_modify_booking_status {
 	float: right;
-	margin-top: 2px;
+	margin-top: 0px;
 	margin-left: 10px;
 	
 	background: #1a1a1a none repeat scroll 0 0;
@@ -25,7 +25,7 @@
 }
 
 #wcfm-main-contentainer #wcfm_modify_booking_status:hover {
-	background: #00897b none repeat scroll 0 0;
+	background: #00798b none repeat scroll 0 0;
 }
 
 .booking-orderno {

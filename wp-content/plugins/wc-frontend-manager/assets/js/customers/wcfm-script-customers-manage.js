@@ -66,7 +66,7 @@ jQuery(document).ready(function($) {
 	  $is_valid = wcfm_customers_manage_form_validate();
 	  if( $is_valid ) {
 			$wcfm_is_valid_form = true;
-			$( document.body ).trigger( 'wcfm_form_validate' );
+			$( document.body ).trigger( 'wcfm_form_validate', $('#wcfm_customers_manage_form') );
 			$is_valid = $wcfm_is_valid_form;
 		}
 	  
@@ -87,17 +87,17 @@ jQuery(document).ready(function($) {
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
 					$response_json = $.parseJSON(response);
+					$('.wcfm-message').html('').removeClass('wcfm-success').removeClass('wcfm-error').slideUp();
+					wcfm_notification_sound.play();
 					if($response_json.redirect) {
-						audio.play();
 						$('#wcfm_customers_manage_form .wcfm-message').html('<span class="wcicon-status-completed"></span>' + $response_json.message).addClass('wcfm-success').slideDown( "slow", function() {
 						  if( $response_json.redirect ) window.location = $response_json.redirect;	
 						} );
 					} else {
-						audio.play();
-						$('.wcfm-message').html('').removeClass('wcfm-success').slideUp();
 						$('#wcfm_customers_manage_form .wcfm-message').html('<span class="wcicon-status-cancelled"></span>' + $response_json.message).addClass('wcfm-error').slideDown();
 					}
 					if($response_json.id) $('#customer_id').val($response_json.id);
+					wcfmMessageHide();
 					$('#wcfm-content').unblock();
 				}
 			});

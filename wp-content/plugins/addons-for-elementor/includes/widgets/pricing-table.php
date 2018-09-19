@@ -1,7 +1,7 @@
 <?php
 
 /*
-Widget Name: Livemesh Pricing Table
+Widget Name: Pricing Table
 Description: Display pricing plans in a multi-column grid.
 Author: LiveMesh
 Author URI: https://www.livemeshthemes.com
@@ -39,34 +39,21 @@ class LAE_Pricing_Table_Widget extends Widget_Base {
 
         ), $atts));
 
-        ob_start();
+        $output = '<div class="lae-pricing-item">';
 
-        ?>
+        $output .= '<div class="lae-title">' . htmlspecialchars_decode(wp_kses_post($title)) . '</div>';
 
-        <div class="lae-pricing-item">
+        $output .= '<div class="lae-value-wrap">';
 
-            <div class="lae-title">
+        $output .= '<div class="lae-value">';
 
-                <?php echo htmlspecialchars_decode(wp_kses_post($title)); ?>
+        $output .= htmlspecialchars_decode(wp_kses_post($value));
 
-            </div>
+        $output .= '</div>';
 
-            <div class="lae-value-wrap">
+        $output .= '</div>';
 
-                <div class="lae-value">
-
-                    <?php echo htmlspecialchars_decode(wp_kses_post($value)); ?>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <?php
-
-
-        $output = ob_get_clean();
+        $output .= '</div>';
 
         return $output;
     }
@@ -76,7 +63,7 @@ class LAE_Pricing_Table_Widget extends Widget_Base {
     }
 
     public function get_title() {
-        return __('Livemesh Pricing Table', 'livemesh-el-addons');
+        return __('Pricing Table', 'livemesh-el-addons');
     }
 
     public function get_icon() {
@@ -89,9 +76,9 @@ class LAE_Pricing_Table_Widget extends Widget_Base {
 
     public function get_script_depends() {
         return [
-            'lae-widgets-scripts',
             'lae-frontend-scripts',
-            'jquery-flexslider'
+            'jquery-flexslider',
+            'lae-waypoints'
         ];
     }
 
@@ -104,15 +91,23 @@ class LAE_Pricing_Table_Widget extends Widget_Base {
             ]
         );
 
-        $this->add_control(
+        $this->add_responsive_control(
             'per_line',
             [
-                'label' => __('Pricing plans in a row', 'livemesh-el-addons'),
-                'type' => Controls_Manager::NUMBER,
-                'min' => 1,
-                'max' => 5,
-                'step' => 1,
-                'default' => 4,
+                'label' => __( 'Pricing plans in a row', 'livemesh-el-addons' ),
+                'type' => Controls_Manager::SELECT,
+                'default' => '4',
+                'tablet_default' => '2',
+                'mobile_default' => '1',
+                'options' => [
+                    '1' => '1',
+                    '2' => '2',
+                    '3' => '3',
+                    '4' => '4',
+                    '5' => '5',
+                    '6' => '6',
+                ],
+                'frontend_available' => true,
             ]
         );
 
@@ -133,13 +128,20 @@ class LAE_Pricing_Table_Widget extends Widget_Base {
                         'name' => 'pricing_title',
                         'type' => Controls_Manager::TEXT,
                         'label' => __('Pricing Plan Title', 'livemesh-el-addons'),
+                        'default' => __('My pricing plan title', 'livemesh-el-addons'),
                         'label_block' => true,
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
                     [
                         'name' => 'tagline',
                         'type' => Controls_Manager::TEXT,
                         'label' => __('Tagline Text', 'livemesh-el-addons'),
                         'description' => __('Provide any subtitle or taglines like "Most Popular", "Best Value", "Best Selling", "Most Flexible" etc. that you would like to use for this pricing plan.', 'livemesh-el-addons'),
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
 
                     [
@@ -150,6 +152,9 @@ class LAE_Pricing_Table_Widget extends Widget_Base {
                             'url' => Utils::get_placeholder_image_src(),
                         ],
                         'label_block' => true,
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
 
                     [
@@ -157,12 +162,18 @@ class LAE_Pricing_Table_Widget extends Widget_Base {
                         'type' => Controls_Manager::TEXT,
                         'label' => __('Price Tag', 'livemesh-el-addons'),
                         'description' => __('Enter the price tag for the pricing plan. HTML is accepted.', 'livemesh-el-addons'),
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
 
                     [
                         'name' => 'button_text',
                         'type' => Controls_Manager::TEXT,
                         'label' => __('Text for Pricing Link/Button', 'livemesh-el-addons'),
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
 
                     [
@@ -175,6 +186,9 @@ class LAE_Pricing_Table_Widget extends Widget_Base {
                             'is_external' => 'true',
                         ],
                         'placeholder' => __('http://your-link.com', 'livemesh-el-addons'),
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
 
 
@@ -194,7 +208,18 @@ class LAE_Pricing_Table_Widget extends Widget_Base {
                         'label' => __('Pricing Plan Details', 'livemesh-el-addons'),
                         'description' => __('Enter the content for the pricing plan that include information about individual features of the pricing plan. For prebuilt styling, enter shortcodes content like - [lae_pricing_item title="Storage Space" value="50 GB"] [lae_pricing_item title="Video Uploads" value="50"][lae_pricing_item title="Portfolio Items" value="20"]', 'livemesh-el-addons'),
                         'show_label' => true,
-                        'rows' => 10
+                        'rows' => 10,
+                        'dynamic' => [
+                            'active' => true,
+                        ],
+                    ],
+
+                    [
+                        "type" => Controls_Manager::SELECT,
+                        "name" => "widget_animation",
+                        "label" => __("Animation Type", "livemesh-el-addons"),
+                        'options' => lae_get_animation_options(),
+                        'default' => 'none',
                     ],
 
                 ],
@@ -485,91 +510,76 @@ class LAE_Pricing_Table_Widget extends Widget_Base {
 
     protected function render() {
 
-        $settings = $this->get_settings();
+        $settings = $this->get_settings_for_display();
+
+        $settings = apply_filters('lae_pricing_table_' . $this->get_id() . '_settings', $settings);
 
         if (empty($settings['pricing_plans']))
             return;
 
-        ?>
+        $output = '<div class="lae-pricing-table lae-grid-container ' . lae_get_grid_classes($settings) . '">';
 
-        <?php $column_style = lae_get_column_class(intval($settings['per_line'])); ?>
+        foreach ($settings['pricing_plans'] as $pricing_plan) :
 
-        <div class="lae-pricing-table lae-grid-container">
+            $pricing_title = esc_html($pricing_plan['pricing_title']);
+            $tagline = esc_html($pricing_plan['tagline']);
+            $price_tag = htmlspecialchars_decode(wp_kses_post($pricing_plan['price_tag']));
+            $pricing_img = $pricing_plan['pricing_image'];
+            $pricing_url = (empty($pricing_plan['button_url']['url'])) ? '#' : esc_url($pricing_plan['button_url']['url']);
+            $pricing_button_text = esc_html($pricing_plan['button_text']);
+            $button_new_window = esc_html($pricing_plan['button_url']['is_external']);
+            $highlight = ($pricing_plan['highlight'] == 'yes');
 
-            <?php
+            $price_tag = (empty($price_tag)) ? '' : $price_tag;
 
-            foreach ($settings['pricing_plans'] as $pricing_plan) :
+            list($animate_class, $animation_attr) = lae_get_animation_atts($pricing_plan['widget_animation']);
 
-                $pricing_title = esc_html($pricing_plan['pricing_title']);
-                $tagline = esc_html($pricing_plan['tagline']);
-                $price_tag = htmlspecialchars_decode(wp_kses_post($pricing_plan['price_tag']));
-                $pricing_img = $pricing_plan['pricing_image'];
-                $pricing_url = (empty($pricing_plan['button_url']['url'])) ? '#' : esc_url($pricing_plan['button_url']['url']);
-                $pricing_button_text = esc_html($pricing_plan['button_text']);
-                $button_new_window = esc_html($pricing_plan['button_url']['is_external']);
-                $highlight = ($pricing_plan['highlight'] == 'yes');
+            $child_output = '<div class="lae-grid-item lae-pricing-plan ' . ($highlight ? ' lae-highlight' : '') . ' ' . $animate_class . '" ' . $animation_attr . '>';
 
-                $price_tag = (empty($price_tag)) ? '' : $price_tag;
+            $child_output .= '<div class="lae-top-header">';
 
-                ?>
+            if (!empty($tagline))
+                $child_output .= '<p class="lae-tagline center">' . $tagline . '</p>';
 
-                <div class="lae-pricing-plan <?php echo ($highlight ? ' lae-highlight' : ''); ?> <?php echo $column_style; ?>">
+            $child_output .= '<' . $settings['plan_name_tag'] . ' class="lae-plan-name lae-center">' . $pricing_title . '</' . $settings['plan_name_tag'] . '>';
 
-                    <div class="lae-top-header">
+            if (!empty($pricing_img)) :
+                $child_output .= wp_get_attachment_image($pricing_img['id'], 'full', false, array('class' => 'lae-image full', 'alt' => $pricing_title));
 
-                        <?php if (!empty($tagline))
-                            echo '<p class="lae-tagline center">' . $tagline . '</p>'; ?>
+            endif;
 
-                        <<?php echo $settings['plan_name_tag']; ?> class="lae-plan-name lae-center"><?php echo $pricing_title; ?></<?php echo $settings['plan_name_tag']; ?>>
+            $child_output .= '</div>';
 
-                        <?php
+            $child_output .= '<' . $settings['plan_price_tag'] . ' class="lae-plan-price lae-plan-header lae-center">';
 
-                        if (!empty($pricing_img)) :
-                            echo wp_get_attachment_image($pricing_img['id'], 'full', false, array('class' => 'lae-image full', 'alt' => $pricing_title));
-                        endif;
+            $child_output .= '<span class="lae-text">' . wp_kses_post($price_tag) .'</span>';
 
-                        ?>
+            $child_output .= '</' . $settings['plan_price_tag'] . '>';
 
-                    </div>
+            $child_output .= '<div class="lae-plan-details">';
 
-                    <<?php echo $settings['plan_price_tag']; ?> class="lae-plan-price lae-plan-header lae-center">
+            $child_output .= $this->parse_text_editor($pricing_plan['pricing_content']);
 
-                        <span class="lae-text">
+            $child_output .= '</div><!-- .lae-plan-details -->';
 
-                            <?php echo wp_kses_post($price_tag); ?>
+            $child_output .= '<div class="lae-purchase">';
 
-                        </span>
+            $child_output .= '<a class="lae-button default" href="' . esc_url($pricing_url) . '"' . (!empty($button_new_window) ? ' target="_blank"' : '') . '>' . esc_html($pricing_button_text) . '</a>';
 
-                    </<?php echo $settings['plan_price_tag']; ?>>
+            $child_output .= '</div>';
 
-                    <div class="lae-plan-details">
+            $child_output .= '</div><!-- .lae-pricing-plan -->';
 
-                        <?php echo $this->parse_text_editor($pricing_plan['pricing_content']) ?>
+            $output .= apply_filters('lae_pricing_plan_output', $child_output, $pricing_plan, $settings);
 
-                    </div><!-- .lae-plan-details -->
+        endforeach;
 
-                    <div class="lae-purchase">
+        $output .= '</div><!-- .lae-pricing-table -->';
 
-                        <a class="lae-button default" href="<?php echo esc_url($pricing_url); ?>"
-                            <?php if (!empty($button_new_window))
-                                echo 'target="_blank"'; ?>><?php echo esc_html($pricing_button_text); ?></a>
+        $output .= '<div class="lae-clear"></div>';
 
-                    </div>
+        echo apply_filters('lae_pricing_table_output', $output, $settings);
 
-                </div>
-                <!-- .lae-pricing-plan -->
-
-                <?php
-
-            endforeach;
-
-            ?>
-
-        </div><!-- .lae-pricing-table -->
-
-        <div class="lae-clear"></div>
-
-        <?php
     }
 
     protected function content_template() {

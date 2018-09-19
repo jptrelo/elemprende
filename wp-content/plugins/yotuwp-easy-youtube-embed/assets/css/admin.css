@@ -1,13 +1,28 @@
 .yotu-wrap{
 	max-width: 100%;
+	margin-top: 20px;
+	
 }
 .yotu-body{
 	margin-right: 300px;
 	min-width: 600px;
 	box-sizing: border-box;
+	background: #fff;
 }
 .yotu-logo{
-	float: right;
+	float: left;
+}
+.yotu-settings-title {
+    width: 100%;
+    display: block;
+	float: left;
+	background: #f7f7f7;
+	padding: 15px 20px;
+	box-sizing: border-box;
+}
+.yotu-tabs ul{
+	margin: 0;
+	padding: 0;
 }
 .yotu-tabs{
 	width: 100%;
@@ -44,6 +59,89 @@
 .yotu-tabs li:hover a{
 	color: #fff;
 }
+/*SETINGS PANEL*/
+.yotu-settings-title span{
+	line-height: 80px;
+    font-size: 27px;
+    padding: 0 10px;
+    font-weight: 500;
+}
+.yotu-body-form{
+	float: left;
+	width: 100%;
+	border: none;
+	box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s cubic-bezier(.35,0,.25,1);
+}
+.yotuwp-settings form{
+	float: left;
+	background: #0a3d62;
+	width: 100%;
+}
+.yotuwp-settings .yotu-tabs{
+	width: 100px;
+	float: left;
+	margin: 0!important;
+	background: #fff;
+}
+
+/* .yotuwp-settings .yotu-body form{
+	border: 1px solid #DEDBD1;
+	border-radius: 7px;
+	overflow: hidden;
+	background-color: #3b5998;
+} */
+
+.yotuwp-settings .yotu-tabs li{
+	display: inline-block;
+	border: none;
+	border-bottom: none;
+	border-right: none;
+	background-color: #0a3d62;
+	-webkit-transition: .2s;
+	transition: .2s;
+	margin: 0!important;
+	width: 100%;
+	overflow: hidden;
+	float: left;
+	border-radius: 0;
+}
+.yotuwp-settings .yotu-tabs li a{
+	display: block;
+    padding: 16px 20px;
+    text-decoration: none;
+    color: #b1afaf;
+    outline: none!important;
+    box-shadow: none;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    position: relative;
+	font-weight: 500;
+	text-align: center;
+	font-size: 11px;
+}
+
+.yotuwp-settings .yotu-tabs li a span{
+	display: block;
+	margin: 0 auto 3px;
+	font-size: 24px;
+    height: 24px;
+}
+
+.yotuwp-settings .yotu-tabs li:hover a{
+	color: #fff;
+}
+.yotuwp-settings .yotu-tabs li.yotu-active a{
+	color: #272727;
+}
+.yotuwp-settings .yotu-tabs li.nextactive{
+	border-top-right-radius: 7px;
+}
+.yotuwp-settings .yotu-tabs li.prevactive{
+	border-bottom-right-radius: 7px;
+}
+/** end setting **/
+
 .yotu-hidden{
 	display: none!important;
 }
@@ -54,42 +152,47 @@
 .yotu-tabs li.yotu-active a{
 	color: #272727;
 }
+.yotuwp-settings .yotu-tabs li.yotu-active a span{
+	color: #dc472e;
+}
 
 .yotu-tabs-content{
-	padding: 20px;
-	background: #fff;
-	clear: both;
+	padding: 0px 30px 20px;
+    background: #fff;
+    box-sizing: border-box;
+	display: block;
 	float: left;
-	width: 100%;
-	box-sizing: border-box;
-	border: 1px solid #DEDBD1;
+    width: calc( 100% - 100px);
 }
 
 .yotu-tab-content{
 	display: none;
+	min-height: 550px;
 }
 
 .yotu-submit {
 	width: 100%;
-	float: left;
-	padding-top: 40px;
-	padding-bottom: 20px;
+    float: left;
+    padding: 20px 40px;
+    background: #f7f7f7;
+    box-sizing: border-box;
 }
 
 .yotu-submit p{
 	margin: 0;
 	padding: 0;
+	text-align: right;
 }
 
 .yotu-field{
 	float: left;
 	width: 100%;
 	clear: both;
-	padding: 14px 0;
+	padding: 24px 0;
 	border-bottom: 1px dashed #e1e1e1;
 }
 .yotu-field label{
-	width: 150px;
+	width: 140px;
 	float: left;
 	font-size: 13px;
 	font-weight: 500;
@@ -109,6 +212,7 @@
 
 .yotu-field-input{
 	margin-left: 150px;
+	position: relative;
 }
 
 .yotu-field .yotu-field-input label{
@@ -125,49 +229,84 @@
 	line-height: 18px;
 }
 
+.yotuwp-field-checkbox-item{
+	margin-bottom: 5px;
+}
+
 #yotu-api_key{
 	width: 300px;
 }
 
 .yotu-insert-popup .yotu-tab-content{
 	text-align: left;
+	min-height: 0;
 }
 .yotu-input-url input[type=text]{
 	width: 400px;
 	height: 36px;
 	line-height: 36px;
 	display: inline-block;
+	border-radius: 3px;
 }
-.yotu-button, .yotu-submit .button.button-primary{
-	height: 36px;
-	line-height: 36px;
-	display: inline-block;
-	text-decoration: none;
-	font-size: 13px;
+.yotu-button, .yotu-submit .button.button-primary,
+.yotu-settings-title .button.button-primary{
+	padding: 11px 24px;
+	line-height: 1.5;
+    display: inline-block;
+    text-decoration: none;
+    font-size: 12px;
 	margin: 0;
-	padding: 0 2rem;
 	cursor: pointer;
 	border: none;
 	-webkit-appearance: none;
 	-webkit-border-radius: 4px;
-	border-radius: 4px;
+	border-radius: 2px;
 	white-space: nowrap;
 	color: #fff;
-	background: #2b59c3;
+	background: #e55039;
 	vertical-align: top;
 	text-align: center;
 	text-transform: uppercase;
 	-webkit-transition: .2s ease-out;
     letter-spacing: .5px;
-    transition: .2s ease-out;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+	transition: .2s ease-out;
+	box-shadow: none;
+	height: auto;
+    /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); */
     text-shadow: none;
 }
 
-.yotu-button:hover, .yotu-submit .button.button-primary:hover, .yotu-button:active, .yotu-button:focus, .yotu-submit .button.button-primary:active, .yotu-submit .button.button-primary:focus{
+.yotu_insert_popup .yotu-button-primary{
+	line-height: 20px;
+	font-size: 12px;
+}
+
+.yotu-search-action{
+	line-height: 36px;
+	height: 36px;
+	font-size: 12px;
+	background-color: #0085ba;
+	padding: 0 20px;
+}
+
+.yotu-button:hover, .yotu-submit .button.button-primary:hover,
+.yotu-button:active, .yotu-button:focus, 
+.yotu-submit .button.button-primary:active, 
+.yotu-submit .button.button-primary:focus,
+.yotu-settings-title .button.button-primary:active, 
+.yotu-settings-title .button.button-primary:focus
+{
 	background-color: #dc472e;
 	color: #fff;
-	box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 7px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -1px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.yotu-button-s{
+	padding: 7px 18px;
+}
+
+.yotu-settings-title p.submit{
+	float: right;
 }
 
 .yotu-result{
@@ -203,7 +342,7 @@
 }
 
 .yotu-tabs.yotu-tabs-insert li{
-	border-radius: 4px;
+	border-radius: 2px;
 	border: none;
 	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
 }
@@ -305,6 +444,11 @@ body.toplevel_page_yotuwp #message, body.toplevel_page_yotuwp #setting-error-set
 	float: left;
 	width: 100%;
 }
+.yotu-field.yotu-field-type-radios .yotu-radios-img .yotu-field-input label{
+	width: 100%;
+    display: block;
+    float: left;
+}
 /* toggle */
 .yotu-field .yotu-switch {
   position: relative;
@@ -352,12 +496,12 @@ body.toplevel_page_yotuwp #message, body.toplevel_page_yotuwp #setting-error-set
 }
 
 .yotu-switch input:checked + .yotu-slider {
-	background-color: #0085ba;
+	background-color: #0a3d62;
 }
 
 
 .yotu-switch input:focus + .yotu-slider {
-	box-shadow: 0 0 1px #0085ba;
+	box-shadow: 0 0 1px #0a3d62;
 }
 
 .yotu-switch input:checked + .yotu-slider:before {
@@ -391,10 +535,12 @@ body.toplevel_page_yotuwp #message, body.toplevel_page_yotuwp #setting-error-set
 	border-bottom: 1px solid #e1e1e1;
 }
 .yotu-sidebar-box{
-	border: 1px solid #DEDBD1;
-	background: rgba(238, 249, 129, 0.4);
-	padding: 15px 10px;
+	border: none;
+	background: #fff;
+	padding: 15px 16px;
 	margin-bottom: 15px;
+	box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s cubic-bezier(.35,0,.25,1);
 }
 .yotu-changelog{
 	max-height: 250px;
@@ -480,6 +626,14 @@ body.toplevel_page_yotuwp #message, body.toplevel_page_yotuwp #setting-error-set
 }
 .shortcode_gen{
 	float: left;
+	background: none!important;
+}
+.yotuwp_page_yotuwp-shortcode .yotu-logo{
+	display: none;
+}
+
+.yotu_insert_popup .yotu-tabs-content{
+	margin-left: 0;
 }
 
 .shortcode_gen .yotu_insert_popup{
@@ -498,12 +652,12 @@ body.toplevel_page_yotuwp #message, body.toplevel_page_yotuwp #setting-error-set
 	width: 100%;
 }
 .yotu-radios-img{
-	max-height: 250px;
-    overflow-y: scroll;
+	max-height: 300px;
     border: 1px solid #ebebeb;
     border-radius: 3px;
-    padding: 10px 15px;
-    box-sizing: border-box;
+	box-sizing: border-box;
+	overflow-y: scroll;
+	padding: 5px;
 }
 .yotu-radios-img-half{
 	max-width: 70%;
@@ -512,17 +666,21 @@ body.toplevel_page_yotuwp #message, body.toplevel_page_yotuwp #setting-error-set
 	display: none;
 }
 .yotu-radios-img label.yotu-field-radios{
-	float: none;
+	float: left;
     font-weight: 300;
     color: #9e9e9e;
     border: 1px solid #ebebeb;
     margin-bottom: 10px;
-    width: 100%;
+    width: 48%;
     display: block;
     padding: 10px;
     box-sizing: border-box; 
     background: #f8f8f8;
-    color: #6d6d6d;
+	color: #6d6d6d;
+	margin-right: 4%;
+}
+.yotu-radios-img label.yotu-field-radios:nth-child(2n){
+	margin-right: 0;
 }
 .yotu-radios-img label span{
 	padding: 10px 0 5px 0;
@@ -534,12 +692,14 @@ body.toplevel_page_yotuwp #message, body.toplevel_page_yotuwp #setting-error-set
 }
 .yotu-radios-img label:hover{
 	background: #f1f1f1;
-	border: 1px dashed #0372aa;
+	outline: 1px dashed #0372aa;
 }
-.yotu-radios-img label.yotu-field-radios-selected{
-	background: #0372aa;
-	color: #fff;
+.yotu-radios-img label:hover img{
+	outline: 1px solid #ccc;
+	position: relative;
+	z-index: 9999;
 }
+
 .yotu-radios-img-buttons label.yotu-field-radios{
     width: 214px;
     float: left;
@@ -553,15 +713,35 @@ body.toplevel_page_yotuwp #message, body.toplevel_page_yotuwp #setting-error-set
 	position: absolute;
 	bottom: 5px;
 }
+.yotu-radios-img label.yotu-field-radios-selected{
+	background: #0372aa!important;
+	color: #fff!important;
+}
 .yotu-radios-img-buttons label:hover{
 	
-	border: 1px dashed #0372aa;
+	outline: 1px dashed #0372aa;
 }
 .yotu-radios-img-buttons label.yotu-field-radios-selected{
 	color: #6d6d6d;
 	border: 1px solid #0372aa;
 }
 
+.yotu-radios-img-buttons label div{
+	background: #fff!important;
+    padding: 8px 0px;
+    border-radius: 2px;
+}
+.yotu-field label.yotu-field-description {
+    width: 100%;
+    float: left;
+}
+.yotu-radios-img-full .yotu-field-radios{
+	width: 100%!important;
+}
+.yotu-radios-img-3-cols .yotu-field-radios{
+	width: 30%!important;
+	margin-right: 10px!important;
+}
 /**buttons**/
 .yotu-button-prs{
     font-weight: 500;
@@ -630,4 +810,254 @@ body.toplevel_page_yotuwp #message, body.toplevel_page_yotuwp #setting-error-set
 .yotu-banner{
     margin-bottom: 10px;
     display: block;
+}
+a[data-tab=pro]::after{
+	content: "*";
+    width: 14px;
+    height: 14px;
+    padding: 0;
+    margin: 0;
+    background: #ca4a1f;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    color: #fff;
+    font-size: 16px;
+    font-family: serif;
+}
+.yotu-field-type-pro img{
+	max-width: 100%;
+	position: relative;
+}
+.yotu-field-pro .yotu-field-input::after{
+	display: block;
+    color: #fff;
+    font-weight: 500;
+    position: absolute;
+    text-align: center;
+    background: #e65039;
+    padding: 2px 5px;
+    top: 0;
+	right: 0px;
+	content: "pro";
+	border-radius: 3px;
+	text-transform: uppercase;
+	font-size: 9px;
+	font-weight: 300;
+}
+
+.yotu-field-type-intro{
+	border-bottom: none;
+}
+
+.yotu-field-type-intro .yotu-field-input{
+	margin: 0;
+}
+
+input#yotu-license-key {
+	width: 300px;
+	height: 34px;
+}
+.yotu-field-type-license>label{
+	line-height: 34px;
+}
+.yotu-license-verified{
+	background: #8bc34a;
+    color: #fff;
+    padding: 0 10px 0 28px;
+    line-height: 34px;
+    height: 34px;
+	border-radius: 3px;
+	position: relative;
+	display: none;
+	font-weight: 500;
+	margin-right: 10px;
+}
+.yotu-license-verified.yotu-license-activated{
+	display: inline-block;
+}
+.yotu-license-verified:after {
+    content: "L";
+    font-family: arial;
+    -ms-transform: scaleX(-1) rotate(-35deg);
+    -webkit-transform: scaleX(-1) rotate(-35deg);
+    transform: scaleX(-1) rotate(-35deg);
+    position: absolute;
+    color: #fff;
+    width: 34px;
+    display: inline-block;
+    height: 34px;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 34px;
+    top: 0;
+	left: 0;
+	font-weight: 500;
+}
+#yotuwp-license-action[data-func=activate]{
+	background: #8BC34A;
+    color: #fff;
+    padding: 0 20px;
+    line-height: 34px;
+    height: 34px;
+	border-radius: 3px;
+	position: relative;
+	display: inline-block;
+	text-decoration: none;
+	font-weight: 500;
+}
+#yotuwp-license-action[data-func=activate]:hover{
+	text-decoration: underline;
+}
+.yotu-license-status{
+	line-height: 24px;
+    padding: 10px 0px;
+}
+
+/*Popup presets*/
+.yotuwp-presets-popup{
+	position: fixed;
+	width: 100%;
+	height: 100%;
+    z-index: 9999999;
+	top: 0;
+	left: 0;
+	display: none;
+}
+.yotuwp-presets-popup.yotuwp-active{
+	display: block;
+}
+.yotuwp-presets-popup::before{
+	position: fixed;
+	content: "";
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	background: rgba(0, 0, 0, 0.7);
+	top: 0;
+	left: 0;
+}
+.yotuwp-presets-popup .yotuwp-popup-wrp-content{
+	width: 900px;
+	height: calc(100vh - 80px);
+	top: 50%;
+	left: 50%;
+	background: #fff;
+	z-index: 2;
+	transform: translate(-50%, -50%);
+	position: fixed;
+	border-radius: 4px;
+	overflow: hidden;
+}
+.yotuwp-popup-title{
+	float: left;
+    font-weight: 600;
+    line-height: 29px;
+    overflow: hidden;
+    padding: 0 29px 0 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+	width: calc( 100% - 59px );
+	background: #fcfcfc;
+    border-bottom: 1px solid #ddd;
+}
+.yotuwp-popup-close{
+	position: absolute;
+    left: auto;
+    right: 0;
+    width: 49px;
+    height: 29px;
+    border: 0;
+    padding: 0;
+    background: none;
+    cursor: pointer;
+    outline: none;
+    -webkit-transition: color .1s ease-in-out, background .1s ease-in-out;
+	transition: color .1s ease-in-out, background .1s ease-in-out;
+	text-align: center;
+    line-height: 29px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.yotuwp-field-radios-text-option{
+    width: 100%;
+    background: #fff;
+    padding: 20px;
+    box-sizing: border-box;
+    color: #0a3d61;
+}
+.yotuwp-popup-content{
+	position: fixed;
+	top: 30px;
+	width: 100%;
+	height: calc(100% - 30px);
+}
+.yotuwp-popup-content iframe{
+	width: 100%;
+	height: 100%;
+}
+
+.yotu-field [data-func=preset]{
+	background: #0272aa;
+    padding: 7px 15px;
+    margin: 16px auto 0;
+    float: right;
+    color: #fff;
+    text-decoration: none;
+    line-height: 20px;
+	border-radius: 3px;
+	transition: all ease-in-out 0.2s;
+}
+.yotu-field [data-func=preset]:hover{
+	background: #0a3d61;
+}
+
+.yotu-field [data-func=preset] span{
+	margin-right: 5px;
+}
+.ytwp-skip{
+	font-size: 11px;
+	color: #bdbdbd;
+	text-decoration: none;
+}
+.yotu-field.yotu-field-type-icons .yotu-field-radios i{
+	font-size: 40px;
+}
+.yotu-field.yotu-field-type-icons .yotu-radios-img-buttons label div{
+	background: none!important;
+}
+
+.yotu-field.yotu-field-type-icons .yotu-field-radios{
+	background: #f1f1f1;
+}
+.yotuwp-youtube-link{
+	width: 100%;
+	line-height: 30px;
+}
+.yotu-sidebar-box ul li{
+	list-style: disc;
+}
+.yotu-sidebar-box ul{
+	padding-left: 20px;
+}
+
+.yotuwp-button-sidebar{
+	background: #e55039;
+    padding: 10px 15px;
+    border-radius: 20px;
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 12px;
+    margin: 10px auto;
+    display: inline-block;
+}
+.yotuwp-button-sidebar:hover{
+	background: #0a3d62;
+	color: #fff;
 }

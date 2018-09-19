@@ -16,7 +16,7 @@ class Premium_Pricing_Table_Widget extends Widget_Base
     }
 
     public function get_title() {
-        return esc_html__('Premium Pricing Table', 'premium-addons-for-elementor');
+        return \PremiumAddons\Helper_Functions::get_prefix() . ' Pricing Table';
     }
 
     public function get_icon() {
@@ -67,6 +67,7 @@ class Premium_Pricing_Table_Widget extends Widget_Base
                     'label'         => esc_html__('Text', 'premium-addons-for-elementor'),
                     'default'       => 'Pricing Table',
                     'type'          => Controls_Manager::TEXT,
+                    'dynamic'       => [ 'active' => true ],
                     'label_block'   => true,
                 ]
                 );
@@ -102,6 +103,15 @@ class Premium_Pricing_Table_Widget extends Widget_Base
                         ]
                     ]
                 );
+
+        /*Price Value*/ 
+        $this->add_control('premium_pricing_table_slashed_price_value',
+                [
+                    'label'         => esc_html__('Slashed Price', 'premium-addons-for-elementor'),
+                    'type'          => Controls_Manager::TEXT,
+                    'label_block'   => true,
+                ]
+            );
         
         /*Price Currency*/ 
         $this->add_control('premium_pricing_table_price_currency',
@@ -155,6 +165,24 @@ class Premium_Pricing_Table_Widget extends Widget_Base
                     ]
                 );
         
+        $repeater = new REPEATER();
+        
+        $repeater->add_control('premium_pricing_list_item_text',
+            [
+                'label'       => esc_html__( 'Text', 'premium-addons-for-elementor' ),
+                'type'        => Controls_Manager::TEXT,
+                'dynamic'     => [ 'active' => true ],
+                'label_block' => true,
+            ]
+        );
+        
+        $repeater->add_control('premium_pricing_list_item_icon',
+            [
+                'label'       => esc_html__( 'Icon', 'premium-addons-for-elementor' ),
+                'type'        => Controls_Manager::ICON,
+            ]
+        );
+        
          $this->add_control('premium_fancy_text_list_items',
                 [
                     'label'         => esc_html__( 'Features', 'premium-addons-for-elementor' ),
@@ -173,37 +201,25 @@ class Premium_Pricing_Table_Widget extends Widget_Base
                             'premium_pricing_list_item_text' => esc_html__( 'List Item #3', 'premium-addons-for-elementor' ),
                             ],
                         ],
-                    'fields'        => [
-                        [
-                                'name'        => 'premium_pricing_list_item_text',
-                                'label'       => esc_html__( 'Text', 'premium-addons-for-elementor' ),
-                                'type'        => Controls_Manager::TEXT,
-                                'label_block' => true,
-                            ],
-                            [
-                                'name'        => 'premium_pricing_list_item_icon',
-                                'label'       => esc_html__( 'Icon', 'premium-addons-for-elementor' ),
-                                'type'        => Controls_Manager::ICON,
-                            ],
-                        ],
+                    'fields'        => array_values( $repeater->get_controls() ),
                     ]
                 );
 
          $this->add_responsive_control('premium_pricing_table_list_align',
             [
-                'label'             => __( 'Alignment', 'elementor' ),
+                'label'             => __( 'Alignment', 'premium-addons-for-elementor' ),
                 'type'              => Controls_Manager::CHOOSE,
                 'options'           => [
                     'left'    => [
-                        'title' => __( 'Left', 'elementor' ),
+                        'title' => __( 'Left', 'premium-addons-for-elementor' ),
                         'icon'  => 'fa fa-align-left',
                     ],
                     'center' => [
-                        'title' => __( 'Center', 'elementor' ),
+                        'title' => __( 'Center', 'premium-addons-for-elementor' ),
                         'icon'  => 'fa fa-align-center',
                     ],
                     'right' => [
-                        'title' => __( 'Right', 'elementor' ),
+                        'title' => __( 'Right', 'premium-addons-for-elementor' ),
                         'icon'  => 'fa fa-align-right',
                     ],
                 ],
@@ -255,6 +271,7 @@ class Premium_Pricing_Table_Widget extends Widget_Base
                     'label'         => esc_html__('Text', 'premium-addons-for-elementor'),
                     'default'       => esc_html__('Get Started' , 'premium-addons-for-elementor'),
                     'type'          => Controls_Manager::TEXT,
+                    'dynamic'       => [ 'active' => true ],
                     'label_block'   => true,
                 ]
                 );
@@ -290,11 +307,12 @@ class Premium_Pricing_Table_Widget extends Widget_Base
         $this->add_control('premium_pricing_table_button_link_existing_content',
                 [
                     'label'         => esc_html__('Existing Page', 'premium-addons-for-elementor'),
-                    'type'          => Controls_Manager::SELECT,
+                    'type'          => Controls_Manager::SELECT2,
                     'options'       => $this->getTemplateInstance()->get_all_post(),
                     'condition'     => [
                         'premium_pricing_table_button_url_type'     => 'link',
                     ],
+                    'multiple'      => false,
                     'label_block'   => true,
                 ]
                 );
@@ -335,6 +353,7 @@ class Premium_Pricing_Table_Widget extends Widget_Base
                     'label'         => esc_html__('Text', 'premium-addons-for-elementor'),
                     'default'       => esc_html__('Popular', 'premium-addons-for-elementor'),
                     'type'          => Controls_Manager::TEXT,
+                    'dynamic'       => [ 'active' => true ],
                     'label_block'   => true,
                 ]
                 );
@@ -596,7 +615,7 @@ class Premium_Pricing_Table_Widget extends Widget_Base
                         'right' => 0,
                         'bottom'=> 20,
                         'left'  => 0,
-                        'unit'	=> 'px',
+                        'unit'  => 'px',
                     ],
                     'selectors'     => [
                         '{{WRAPPER}} .premium-pricing-icon-container' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'
@@ -615,7 +634,7 @@ class Premium_Pricing_Table_Widget extends Widget_Base
                         'right' => 0,
                         'bottom'=> 0,
                         'left'  => 0,
-                        'unit'	=> 'px',
+                        'unit'  => 'px',
                     ],
                     'selectors'     => [
                         '{{WRAPPER}} .premium-pricing-icon-container' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'
@@ -683,7 +702,7 @@ class Premium_Pricing_Table_Widget extends Widget_Base
                         'right' => 0,
                         'bottom'=> 0,
                         'left'  => 0,
-                        'unit'	=> 'px',
+                        'unit'  => 'px',
                     ],
                     'selectors'     => [
                         '{{WRAPPER}} .premium-pricing-table-title' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'
@@ -702,7 +721,7 @@ class Premium_Pricing_Table_Widget extends Widget_Base
                         'right' => 0,
                         'bottom'=> 20,
                         'left'  => 0,
-                        'unit'	=> 'px',
+                        'unit'  => 'px',
                     ],
                     'selectors'     => [
                         '{{WRAPPER}} .premium-pricing-table-title' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'
@@ -723,6 +742,50 @@ class Premium_Pricing_Table_Widget extends Widget_Base
                         ]
                 ]
                 );
+
+        $this->add_control('premium_pricing_slashed_price_heading',
+                [
+                    'label'         => esc_html__('Slashed Price', 'premium-addons-for-elementor'),
+                    'type'          => Controls_Manager::HEADING,
+                ]
+                );
+        
+        /*Slashed Price Color*/
+        $this->add_control('premium_pricing_slashed_price_color',
+                [
+                    'label'         => esc_html__('Color', 'premium-addons-for-elementor'),
+                    'type'          => Controls_Manager::COLOR,
+                    'scheme'        => [
+                        'type'  => Scheme_Color::get_type(),
+                        'value' => Scheme_Color::COLOR_1,
+                    ],
+                    'selectors'     => [
+                        '{{WRAPPER}} .premium-pricing-slashed-price-value'  => 'color: {{VALUE}};'
+                        ],
+                    ]
+                );
+        
+        /*Slashed Price Typo*/
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+                [
+                    'name'          => 'slashed_price_typo',
+                    'scheme'        => Scheme_Typography::TYPOGRAPHY_1,
+                    'selector'      => '{{WRAPPER}} .premium-pricing-slashed-price-value',
+                    ]
+                );
+        
+        /*Slashed Price Margin*/
+        $this->add_responsive_control('premium_pricing_slashed_price_margin',
+                [
+                    'label'             => esc_html__('Margin', 'premium-addons-for-elementor'),
+                    'type'              => Controls_Manager::DIMENSIONS,
+                    'size_units'        => ['px', 'em', '%'],
+                    'selectors'         => [
+                    '{{WRAPPER}} .premium-pricing--slashed-price-value' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ]
+            ]      
+        );
         
         $this->add_control('premium_pricing_currency_heading',
                 [
@@ -759,19 +822,19 @@ class Premium_Pricing_Table_Widget extends Widget_Base
         
         $this->add_responsive_control('premium_pricing_currency_align',
                 [
-                    'label'         => esc_html__( 'Vertical Align', 'elementor' ),
+                    'label'         => esc_html__( 'Vertical Align', 'premium-addons-for-elementor' ),
                     'type'          => Controls_Manager::CHOOSE,
                     'options'       => [
                         'top'      => [
-                            'title'=> esc_html__( 'Top', 'elementor' ),
+                            'title'=> esc_html__( 'Top', 'premium-addons-for-elementor' ),
                             'icon' => 'fa fa-long-arrow-up',
                             ],
                         'unset'    => [
-                            'title'=> esc_html__( 'Unset', 'elementor' ),
+                            'title'=> esc_html__( 'Unset', 'premium-addons-for-elementor' ),
                             'icon' => 'fa fa-align-justify',
                             ],
                         'bottom'     => [
-                            'title'=> esc_html__( 'Bottom', 'elementor' ),
+                            'title'=> esc_html__( 'Bottom', 'premium-addons-for-elementor' ),
                             'icon' => 'fa fa-long-arrow-down',
                             ],
                         ],
@@ -794,6 +857,7 @@ class Premium_Pricing_Table_Widget extends Widget_Base
                 ]
             ]      
         );
+        
         
         $this->add_control('premium_pricing_price_heading',
                 [
@@ -884,7 +948,7 @@ class Premium_Pricing_Table_Widget extends Widget_Base
                         'right' => 0,
                         'bottom'=> 20,
                         'left'  => -15,
-                        'unit'	=> 'px',
+                        'unit'  => 'px',
                     ],
                     'selectors'         => [
                     '{{WRAPPER}} .premium-pricing-price-separator' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
@@ -1671,7 +1735,7 @@ class Premium_Pricing_Table_Widget extends Widget_Base
         $this->start_controls_tab('premium_pricing_table_box_style_hover',
         [
             'label'         => esc_html__('Hover', 'premium-addons-for-elementor'),
-	        ]
+            ]
         );
         
         $this->add_group_control(
@@ -1754,10 +1818,9 @@ class Premium_Pricing_Table_Widget extends Widget_Base
         
     }
 
-    protected function render($instance = [])
-    {
+    protected function render() {
         // get our input from the widget settings.
-        $settings = $this->get_settings();
+        $settings = $this->get_settings_for_display();
         $this->add_inline_editing_attributes('premium_pricing_table_title_text');
         $this->add_inline_editing_attributes('premium_pricing_table_description_text', 'advanced');
         $this->add_inline_editing_attributes('premium_pricing_table_button_text');
@@ -1774,8 +1837,8 @@ class Premium_Pricing_Table_Widget extends Widget_Base
 <div class="premium-pricing-table-container">
     <?php if($settings['premium_pricing_table_badge_switcher']) : ?>
     <div class="premium-pricing-badge-container <?php echo esc_attr($badge_position); ?>">
-		  <div class="corner"><span><?php echo $settings['premium_pricing_table_badge_text']; ?></span></div>
-		</div>
+          <div class="corner"><span><?php echo $settings['premium_pricing_table_badge_text']; ?></span></div>
+        </div>
     <?php endif; ?>
     <?php if($settings['premium_pricing_table_icon_switcher'] == 'yes') : ?>
     <div class="premium-pricing-icon-container"><i class="<?php echo esc_attr( $settings['premium_pricing_table_icon_selection'] ); ?>"></i></div>
@@ -1784,6 +1847,9 @@ class Premium_Pricing_Table_Widget extends Widget_Base
     <<?php echo $title_tag;?> class="premium-pricing-table-title"><span <?php echo $this->get_render_attribute_string('premium_pricing_table_title_text'); ?>><?php echo $settings['premium_pricing_table_title_text'];?></span></<?php echo $title_tag;?>><?php endif; ?>
     <?php if($settings['premium_pricing_table_price_switcher'] == 'yes') : ?>
     <div class="premium-pricing-price-container">
+        <strike class="premium-pricing-slashed-price-value">
+            <?php echo $settings['premium_pricing_table_slashed_price_value']; ?>
+        </strike>
         <span class="premium-pricing-price-currency">
             <?php echo $settings['premium_pricing_table_price_currency']; ?>
         </span>
@@ -1823,6 +1889,75 @@ class Premium_Pricing_Table_Widget extends Widget_Base
 </div>
 
     <?php
+    }
+    
+    protected function _content_template() {
+        ?>
+        <#
+            
+        view.addInlineEditingAttributes('premium_pricing_table_title_text');
+        
+        view.addInlineEditingAttributes('premium_pricing_table_description_text', 'advanced');
+        
+        view.addInlineEditingAttributes('premium_pricing_table_button_text');
+        
+        var titleTag = settings.premium_pricing_table_title_size,
+            linkType = settings.premium_pricing_table_button_url_type,
+            badgePosition = 'premium-badge-'  + settings.premium_pricing_table_badge_position,
+            linkURL = 'link' === linkType ? settings.premium_pricing_table_button_link_existing_content : settings.premium_pricing_table_button_link;
+        
+        #>
+        
+        <div class="premium-pricing-table-container">
+            <# if('yes' === settings.premium_pricing_table_badge_switcher ) { #>
+                <div class="premium-pricing-badge-container {{ badgePosition }}">
+                    <div class="corner"><span>{{{ settings.premium_pricing_table_badge_text }}}</span></div>
+                </div>
+            <# } #>
+            <# if('yes' === settings.premium_pricing_table_icon_switcher ) { #>
+            <div class="premium-pricing-icon-container"><i class="{{ settings.premium_pricing_table_icon_selection }}"></i></div>
+            <# } #>
+            <# if('yes' === settings.premium_pricing_table_title_switcher ) { #>
+                <{{{titleTag}}} class="premium-pricing-table-title"><span {{{ view.getRenderAttributeString('premium_pricing_table_title_text') }}}>{{{ settings.premium_pricing_table_title_text }}}</span></{{{titleTag}}}>
+            <# } #>
+            
+            <# if('yes' === settings.premium_pricing_table_price_switcher ) { #>
+                <div class="premium-pricing-price-container">
+                        <strike class="premium-pricing-slashed-price-value">{{{ settings.premium_pricing_table_slashed_price_value }}}</strike>
+                        <span class="premium-pricing-price-currency">{{{ settings.premium_pricing_table_price_currency }}}</span>
+                        <span class="premium-pricing-price-value">{{{ settings.premium_pricing_table_price_value }}}</span>
+                        <span class="premium-pricing-price-separator">{{{ settings.premium_pricing_table_price_separator }}}</span>
+                        <span class="premium-pricing-price-duration">{{{ settings.premium_pricing_table_price_duration }}}</span>
+                </div>
+            <# } #>
+            <# if('yes' === settings.premium_pricing_table_list_switcher ) { #>
+                <div class="premium-pricing-list-container">
+                    <ul class="premium-pricing-list">
+                    <# _.each( settings.premium_fancy_text_list_items, function( item ) { #>
+                        <li>
+                            <i class="{{ item.premium_pricing_list_item_icon }}"></i>
+                            <span class="premium-pricing-list-span">{{{ item.premium_pricing_list_item_text }}}</span>
+                        </li>
+                    <# } ); #>
+                    </ul>
+                </div>
+            <# } #>
+            <# if('yes' === settings.premium_pricing_table_description_switcher ) { #>
+                <div class="premium-pricing-description-container">
+                    <div {{{ view.getRenderAttributeString('premium_pricing_table_description_text') }}}>
+                        {{{ settings.premium_pricing_table_description_text }}}
+                    </div>
+                </div>
+            <# } #>
+            <# if('yes' === settings.premium_pricing_table_button_switcher ) { #>
+                <div class="premium-pricing-button-container">
+                    <a class="premium-pricing-price-button" target="_{{ settings.premium_pricing_table_button_link_target }}" href="{{ linkURL }}">
+                        <span {{{ view.getRenderAttributeString('premium_pricing_table_button_text') }}}>{{{ settings.premium_pricing_table_button_text }}}</span>
+                    </a>
+                </div>
+            <# } #>
+        </div>
+        <?php
     }
 }
 Plugin::instance()->widgets_manager->register_widget_type(new Premium_Pricing_Table_Widget());

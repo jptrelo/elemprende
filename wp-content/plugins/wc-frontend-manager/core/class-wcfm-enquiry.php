@@ -10,9 +10,16 @@
  */
  
 class WCFM_Enquiry {
+	
+	public $wcfm_myaccount_inquiry_endpoint = 'inquiry';
+	public $wcfm_myaccount_view_inquiry_endpoint = 'view-inquiry';
 
 	public function __construct() {
 		global $WCFM;
+		
+		$wcfm_myac_modified_endpoints = get_option( 'wcfm_myac_endpoints', array() );
+		$this->wcfm_myaccount_inquiry_endpoint = ! empty( $wcfm_myac_modified_endpoints['inquiry'] ) ? $wcfm_myac_modified_endpoints['inquiry'] : 'inquiry';
+		$this->wcfm_myaccount_view_inquiry_endpoint = ! empty( $wcfm_myac_modified_endpoints['view-inquiry'] ) ? $wcfm_myac_modified_endpoints['view-inquiry'] : 'view-inquiry';
 		
 		add_filter( 'wcfm_query_vars', array( &$this, 'wcfm_enquiry_query_vars' ), 20 );
 		add_filter( 'wcfm_endpoint_title', array( &$this, 'wcfm_enquiry_endpoint_title' ), 20, 2 );
@@ -31,11 +38,30 @@ class WCFM_Enquiry {
 		
 		// Enquiry Load views
 		add_action( 'wcfm_load_views', array( &$this, 'load_views' ), 30 );
-		add_action( 'before_wcfm_load_views', array( &$this, 'load_views' ), 30 );
 		
 		// Enquiry Ajax Controllers
 		add_action( 'after_wcfm_ajax_controller', array( &$this, 'ajax_controller' ) );
 		add_action( 'wp_ajax_nopriv_wcfm_ajax_controller', array( &$this, 'ajax_controller' ) );
+		
+		// My Account Support End Point
+		add_action( 'init', array( &$this, 'wcfm_enquiry_my_account_endpoints' ) );
+		
+		// My Account Support Query Vars
+		add_filter( 'query_vars', array( &$this, 'wcfm_enquiry_my_account_query_vars' ), 0 );
+		
+		// My Account Support Rule Flush
+		register_activation_hook( $WCFM->file, array( &$this,'wcfm_enquiry_my_account_flush_rewrite_rules' ) );
+		register_deactivation_hook( $WCFM->file, array( &$this, 'wcfm_enquiry_my_account_flush_rewrite_rules' ) );
+		
+		// My Account Support Menu
+		add_filter( 'woocommerce_account_menu_items', array( &$this, 'wcfm_enquiry_my_account_menu_items' ), 200 );
+		
+		// My Account Support End Point Title
+		add_filter( 'the_title', array( &$this, 'wcfm_enquiry_my_account_endpoint_title' ) );
+		
+		// My Account Support End Point Content
+		add_action( 'woocommerce_account_'.$this->wcfm_myaccount_inquiry_endpoint.'_endpoint', array( &$this, 'wcfm_enquiry_my_account_endpoint_content' ) );
+		add_action( 'woocommerce_account_'.$this->wcfm_myaccount_view_inquiry_endpoint.'_endpoint', array( &$this, 'wcfm_enquiry_view_my_account_endpoint_content' ) );
 		
 		// Delete Enquiry
 		add_action( 'wp_ajax_delete_wcfm_enquiry', array( &$this, 'delete_wcfm_enquiry' ) );
@@ -44,6 +70,12 @@ class WCFM_Enquiry {
 		if( apply_filters( 'wcfm_is_pref_enquiry_tab', true ) ) {
 			//add_filter( 'woocommerce_product_tabs', array( &$this, 'wcfm_enquiry_product_tab' ) );
 		}
+		
+		// Single Product page enquiry button
+		add_action( 'woocommerce_single_product_summary',	array( &$this, 'wcfm_enquiry_button' ), 35 );
+		
+		// WCFM Marketplace Store enquiry button
+		add_action( 'wcfmmp_store_enquiry',	array( &$this, 'wcfmmp_store_enquiry_button' ), 35 );
 		
 		// Enquiry list in WCFM Dashboard
 		add_action( 'after_wcfm_dashboard_zone_analytics', array( $this, 'wcfm_dashboard_enquiry_list' ) );
@@ -64,8 +96,8 @@ class WCFM_Enquiry {
   	$wcfm_modified_endpoints = (array) get_option( 'wcfm_endpoints' );
   	
 		$query_enquiry_vars = array(
-			'wcfm-enquiry'                 => ! empty( $wcfm_modified_endpoints['wcfm-enquiry'] ) ? $wcfm_modified_endpoints['wcfm-enquiry'] : 'wcfm-enquiry',
-			'wcfm-enquiry-manage'          => ! empty( $wcfm_modified_endpoints['wcfm-enquiry-manage'] ) ? $wcfm_modified_endpoints['wcfm-enquiry-manage'] : 'wcfm-enquiry-manage'
+			'wcfm-enquiry'                 => ! empty( $wcfm_modified_endpoints['wcfm-enquiry'] ) ? $wcfm_modified_endpoints['wcfm-enquiry'] : 'enquiry',
+			'wcfm-enquiry-manage'          => ! empty( $wcfm_modified_endpoints['wcfm-enquiry-manage'] ) ? $wcfm_modified_endpoints['wcfm-enquiry-manage'] : 'enquiry-manage'
 		);
 		
 		$query_vars = array_merge( $query_vars, $query_enquiry_vars );
@@ -100,6 +132,9 @@ class WCFM_Enquiry {
 		$WCFM_Query->init_query_vars();
 		$WCFM_Query->add_endpoints();
 		
+		add_rewrite_endpoint( $this->wcfm_myaccount_inquiry_endpoint, EP_ROOT | EP_PAGES );
+		add_rewrite_endpoint( $this->wcfm_myaccount_view_inquiry_endpoint, EP_ROOT | EP_PAGES );
+		
 		if( !get_option( 'wcfm_updated_end_point_Enquiry' ) ) {
 			// Flush rules after endpoint update
 			flush_rewrite_rules();
@@ -113,8 +148,8 @@ class WCFM_Enquiry {
 	function enquiry_wcfm_endpoints_slug( $endpoints ) {
 		
 		$enquiry_endpoints = array(
-													'wcfm-enquiry'          => 'wcfm-enquiry',
-													'wcfm-enquiry-manage'   => 'wcfm-enquiry-manage',
+													'wcfm-enquiry'          => 'enquiry',
+													'wcfm-enquiry-manage'   => 'enquiry-manage',
 													);
 		
 		$endpoints = array_merge( $endpoints, $enquiry_endpoints );
@@ -143,7 +178,6 @@ class WCFM_Enquiry {
       break;
       
       case 'wcfm-enquiry-manage':
-      	$WCFM->library->load_tinymce_lib();
       	wp_enqueue_script( 'wcfm_enquiry_manage_js', $WCFM->library->js_lib_url . 'enquiry/wcfm-script-enquiry-manage.js', array('jquery'), $WCFM->version, true );
       	// Localized Script
         $wcfm_messages = get_wcfm_enquiry_manage_messages();
@@ -178,11 +212,11 @@ class WCFM_Enquiry {
 	  
 	  switch( $end_point ) {
 	  	case 'wcfm-enquiry':
-        require_once( $WCFM->library->views_path . 'enquiry/wcfm-view-enquiry.php' );
+        $WCFM->template->get_template( 'enquiry/wcfm-view-enquiry.php' );
       break;
       
       case 'wcfm-enquiry-manage':
-        require_once( $WCFM->library->views_path . 'enquiry/wcfm-view-enquiry-manage.php' );
+        $WCFM->template->get_template( 'enquiry/wcfm-view-enquiry-manage.php' );
       break;
 	  }
 	}
@@ -201,22 +235,90 @@ class WCFM_Enquiry {
   		
   		switch( $controller ) {
   			case 'wcfm-enquiry':
-					require_once( $controllers_path . 'wcfm-controller-enquiry.php' );
+					include_once( $controllers_path . 'wcfm-controller-enquiry.php' );
 					new WCFM_Enquiry_Controller();
 				break;
 				
 				case 'wcfm-enquiry-manage':
-					require_once( $controllers_path . 'wcfm-controller-enquiry-manage.php' );
+					include_once( $controllers_path . 'wcfm-controller-enquiry-manage.php' );
 					new WCFM_Enquiry_Manage_Controller();
 				break;
 				
 				case 'wcfm-enquiry-tab':
-					require_once( $controllers_path . 'wcfm-controller-enquiry-tab.php' );
+					include_once( $controllers_path . 'wcfm-controller-enquiry-tab.php' );
 					new WCFM_Enquiry_Tab_Controller();
+				break;
+				
+				case 'wcfm-my-account-enquiry-manage':
+					include_once( $controllers_path . 'wcfm-controller-enquiry-manage.php' );
+					new WCFM_My_Account_Enquiry_Manage_Controller();
 				break;
   		}
   	}
   }
+  
+  
+  function wcfm_enquiry_my_account_endpoints() {
+		add_rewrite_endpoint( $this->wcfm_myaccount_inquiry_endpoint, EP_ROOT | EP_PAGES );
+		add_rewrite_endpoint( $this->wcfm_myaccount_view_inquiry_endpoint, EP_ROOT | EP_PAGES );
+	}
+	
+	function wcfm_enquiry_my_account_query_vars( $vars ) {
+		$vars[] = $this->wcfm_myaccount_inquiry_endpoint;
+		$vars[] = $this->wcfm_myaccount_view_inquiry_endpoint;
+	
+		return $vars;
+	}
+	
+	function wcfm_enquiry_my_account_flush_rewrite_rules() {
+		add_rewrite_endpoint( $this->wcfm_myaccount_inquiry_endpoint, EP_ROOT | EP_PAGES );
+		add_rewrite_endpoint( $this->wcfm_myaccount_view_inquiry_endpoint, EP_ROOT | EP_PAGES );
+		flush_rewrite_rules();
+	}
+	
+	function wcfm_enquiry_my_account_menu_items( $items ) {
+		// Insert your custom endpoint.
+		$items = array_slice($items, 0, count($items) - 2, true) +
+																	array(
+																				$this->wcfm_myaccount_inquiry_endpoint => __( 'Inquiries', 'wc-frontend-manager' )
+																				) +
+																	array_slice($items, count($items) - 2, count($items) - 1, true) ;
+		return $items;
+	}
+	
+	function wcfm_enquiry_my_account_endpoint_title( $title ) {
+		global $wp_query;
+	
+		if( !defined( 'WCFM_ENQUERY_LOOP') ) {
+			$is_endpoint = isset( $wp_query->query_vars[$this->wcfm_myaccount_inquiry_endpoint] );
+		
+			if ( $is_endpoint && ! is_admin() && is_main_query() && in_the_loop() && is_account_page() ) {
+				// New page title.
+				$title = __( 'Inquiries', 'wc-frontend-manager' );
+				remove_filter( 'the_title', array( $this, 'wcfm_enquiry_my_account_endpoint_title' ) );
+			}
+			
+			$is_endpoint = isset( $wp_query->query_vars[$this->wcfm_myaccount_view_inquiry_endpoint] );
+		
+			if ( $is_endpoint && ! is_admin() && is_main_query() && in_the_loop() && is_account_page() ) {
+				// New page title.
+				$title = __( 'Inquiry', 'wc-frontend-manager' ) . ' #' . sprintf( '%06u', $wp_query->query_vars[$this->wcfm_myaccount_view_inquiry_endpoint] );
+				remove_filter( 'the_title', array( $this, 'wcfm_enquiry_my_account_endpoint_title' ) );
+			}
+		}
+	
+		return $title;
+	}
+	
+	function wcfm_enquiry_my_account_endpoint_content() {
+		global $WCFM, $wpdb;
+		$WCFM->template->get_template( 'enquiry/wcfm-view-my-account-enquiry.php' );
+	}
+	
+	function wcfm_enquiry_view_my_account_endpoint_content() {
+		global $_POST, $wp_query, $wp, $WCFM;
+		$WCFM->template->get_template( 'enquiry/wcfm-view-my-account-enquiry-manage.php' );
+	}
   
   /**
    * Delete Enquiry 
@@ -249,6 +351,56 @@ class WCFM_Enquiry {
 	}
 	
 	/**
+   * Enquiry Button on Single Product Page
+   *
+   * @since 3.3.5
+   */
+	function wcfm_enquiry_button() {
+		global $WCFM;
+		if( apply_filters( 'wcfm_is_pref_enquiry_button', true ) ) {
+			
+			$button_style = '';
+			$wcfm_options = get_option( 'wcfm_options', array() );
+			if( isset( $wcfm_options['wc_frontend_manager_button_background_color_settings'] ) ) { $button_style .= 'background: ' . $wcfm_options['wc_frontend_manager_button_background_color_settings'] . ';border-bottom-color: ' . $wcfm_options['wc_frontend_manager_button_background_color_settings'] . ';'; }
+			if( isset( $wcfm_options['wc_frontend_manager_button_text_color_settings'] ) ) { $button_style .= 'color: ' . $wcfm_options['wc_frontend_manager_button_text_color_settings'] . ';'; }
+			
+			$wcfm_enquiry_button_label  = isset( $wcfm_options['wcfm_enquiry_button_label'] ) ? $wcfm_options['wcfm_enquiry_button_label'] : __( 'Ask a Question', 'wc-frontend-manager' );
+			
+			$base_color = '';
+			if( isset( $wcfm_options['wc_frontend_manager_base_highlight_color_settings'] ) ) { $base_color = $wcfm_options['wc_frontend_manager_base_highlight_color_settings']; }
+			?>
+			<div class="wcfm_ele_wrapper wcfm_catalog_enquiry_button_wrapper">
+				<div class="wcfm-clearfix"></div>
+				<a href="#" class="wcfm_catalog_enquiry" style="<?php echo $button_style; ?>"><span class="fa fa-question-circle-o"></span>&nbsp;&nbsp;<span class="add_enquiry_label"><?php _e( $wcfm_enquiry_button_label, 'wc-frontend-manager' ); ?></span></a>
+				<?php if( $base_color ) { ?>
+					<style>a.wcfm_catalog_enquiry:hover{background: <?php echo $base_color; ?> !important;border-bottom-color: <?php echo $base_color; ?> !important;}</style>
+				<?php } ?>
+				<div class="wcfm-clearfix"></div>
+			</div>
+			<?php
+			if( !apply_filters( 'wcfm_is_pref_enquiry_tab', true ) ) {
+				$this->wcfm_enquiry_product_tab_content();
+			}
+		}
+	}
+	
+	/**
+   * Enquiry Button on WCFM Marketplace Store Page
+   *
+   * @since 5.0.0
+   */
+	function wcfmmp_store_enquiry_button() {
+		global $WCFM, $WCFMmp;
+		if( apply_filters( 'wcfm_is_pref_enquiry_button', true ) ) {
+			?>
+			<div class="lft bd_icon_box"><a class="wcfm_catalog_enquiry" href="#"><div class="bd_icon"><i class="fa fa-question" aria-hidden="true"></i></div><span><?php _e( 'Inquiry', 'wc-frontend-manager' ); ?></span></a></div>
+			<?php
+			add_filter( 'wcfm_is_pref_enquiry_tab', '__return_false' );
+			$this->wcfm_enquiry_form_content();
+		}
+	}
+	
+	/**
    * Enquiry List on WCFM Dashboard
    *
    * @since 3.3.5
@@ -265,7 +417,7 @@ class WCFM_Enquiry {
 			if( wcfm_is_vendor() ) { 
 				$enquiry_query .= " AND `vendor_id` = {$vendor_id}";
 			}
-			$enquiry_query = apply_filters( 'wcfm_enquery_list_query', $enquiry_query );
+			$enquiry_query = apply_filters( 'wcfm_enquiry_list_query', $enquiry_query );
 			$enquiry_query .= " ORDER BY wcfm_enquiries.`ID` DESC";
 			$enquiry_query .= " LIMIT 8";
 			$enquiry_query .= " OFFSET 0";
@@ -281,11 +433,11 @@ class WCFM_Enquiry {
 					  if( !empty( $wcfm_enquirys_array ) ) {
 					  	$counter = 0;
 							foreach($wcfm_enquirys_array as $wcfm_enquirys_single) {
-								if( $counter == 6 ) break;
-								echo '<div class="wcfm_dashboard_enquiry"><a href="' . get_wcfm_enquiry_manage_url($wcfm_enquirys_single->ID) . '" class="wcfm_dashboard_item_title"><span class="fa fa-question-circle-o"></span>' . substr( $wcfm_enquirys_single->enquiry, 0, 80 ) . ' ...</a></div>';
+								if( $counter == 5 ) break;
+								echo '<div class="wcfm_dashboard_enquiry"><a href="' . get_wcfm_enquiry_manage_url($wcfm_enquirys_single->ID) . '" class="wcfm_dashboard_item_title"><span class="fa fa-question-circle-o"></span>' . substr( $wcfm_enquirys_single->enquiry, 0, 60 ) . ' ...</a></div>';
 								$counter++;
 							}
-							if( count( $wcfm_enquirys_array ) > 6 ) {
+							if( count( $wcfm_enquirys_array ) > 5 ) {
 								echo '<div class="wcfm_dashboard_enquiry_show_all"><a class="wcfm_submit_button" href="' . get_wcfm_enquiry_url() . '">' . __( 'Show All', 'wc-frontend-manager' ) . ' >></a></div>';
 							}
 						} else {
@@ -300,11 +452,19 @@ class WCFM_Enquiry {
 	}
 	
 	/**
+   * Enquiry Form content
+   */
+	function wcfm_enquiry_form_content() {
+		global $WCFM, $wp;
+		$WCFM->template->get_template( 'enquiry/wcfm-view-enquiry-form.php' );
+	}
+	
+	/**
    * Enquiry Tab content on Single Product
    */
 	function wcfm_enquiry_product_tab_content() {
 		global $WCFM, $wp;
-		require_once( $WCFM->library->views_path . 'enquiry/wcfm-view-enquiry-tab.php' );
+		$WCFM->template->get_template( 'enquiry/wcfm-view-enquiry-tab.php' );
 	}
 	
 	function wcfm_enquiry_message_types( $message_types ) {
@@ -318,11 +478,25 @@ class WCFM_Enquiry {
 	function wcfm_enquiry_scripts() {
  		global $WCFM, $wp, $WCFM_Query;
  		
- 		if( is_product() ) {
+ 		if( is_product() || ( function_exists( 'wcfmmp_is_store_page' ) && wcfmmp_is_store_page() ) ) {
+ 			$WCFM->library->load_blockui_lib();
+ 			
  			wp_enqueue_script( 'wcfm_enquiry_js', $WCFM->library->js_lib_url . 'enquiry/wcfm-script-enquiry-tab.js', array('jquery' ), $WCFM->version, true );
  			// Localized Script
 			$wcfm_messages = get_wcfm_enquiry_manage_messages();
 			wp_localize_script( 'wcfm_enquiry_js', 'wcfm_enquiry_manage_messages', $wcfm_messages );
+ 		}
+ 		
+ 		if( is_account_page() ) {
+ 			if( is_user_logged_in() ) {
+				if( isset( $wp->query_vars[$this->wcfm_myaccount_view_inquiry_endpoint] ) && !empty( $wp->query_vars[$this->wcfm_myaccount_view_inquiry_endpoint] ) ) {
+					$WCFM->library->load_blockui_lib();
+					wp_enqueue_script( 'wcfm_enquiry_manage_js', $WCFM->library->js_lib_url . 'enquiry/wcfm-script-my-account-enquiry-manage.js', array('jquery'), $WCFM->version, true );
+					// Localized Script
+					$wcfm_messages = get_wcfm_enquiry_manage_messages();
+					wp_localize_script( 'wcfm_enquiry_manage_js', 'wcfm_enquiry_manage_messages', $wcfm_messages );
+				}
+			}
  		}
  	}
  	
@@ -334,6 +508,17 @@ class WCFM_Enquiry {
  		
  		if( is_product() ) {
  			wp_enqueue_style( 'wcfm_enquiry_css',  $WCFM->library->css_lib_url . 'enquiry/wcfm-style-enquiry-tab.css', array(), $WCFM->version );
+ 		}
+ 		
+ 		if( is_account_page() ) {
+ 			if( is_user_logged_in() ) {
+ 				if( isset( $wp->query_vars[$this->wcfm_myaccount_view_inquiry_endpoint] ) && !empty( $wp->query_vars[$this->wcfm_myaccount_view_inquiry_endpoint] ) ) {
+ 					wp_enqueue_style( 'collapsible_css',  $WCFM->library->css_lib_url . 'wcfm-style-collapsible.css', array(), $WCFM->version );
+ 					wp_enqueue_style( 'wcfm_menu_css',  $WCFM->library->css_lib_url . 'menu/wcfm-style-menu.css', array(), $WCFM->version );
+ 					wp_enqueue_style( 'wcfm_enquiry_manage_css',  $WCFM->library->css_lib_url . 'enquiry/wcfm-style-enquiry-manage.css', array(), $WCFM->version );
+ 					wp_enqueue_style( 'wcfm_my_account_enquiry_manage_css',  $WCFM->library->css_lib_url . 'enquiry/wcfm-style-my-account-enquiry-manage.css', array(), $WCFM->version );
+ 				}
+ 			}
  		}
  	}
 }

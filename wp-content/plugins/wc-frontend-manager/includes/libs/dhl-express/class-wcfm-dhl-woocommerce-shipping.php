@@ -182,25 +182,25 @@ class wf_dhl_woocommerce_shipping_method extends WC_Shipping_Method {
                     case "general":
                         echo '<div class="table-box table-box-main" id="general_section" style="margin-top: 0px;
     border: 1px solid #ccc;border-top: unset !important;padding: 5px;">';
-                        require_once('settings/dhl_general_settings.php');
+                        include_once('settings/dhl_general_settings.php');
                         echo '</div>';
                         break;
                     case "rates":
                         echo '<div class="table-box table-box-main" id="rates_section" style="margin-top: 0px;
     border: 1px solid #ccc;border-top: unset !important;padding: 5px;">';
-                        require_once('settings/dhl_rates_settings.php');
+                        include_once('settings/dhl_rates_settings.php');
                         echo '</div>';
                         break;
                     case "labels":
                         echo '<div class="table-box table-box-main" id="labels_section" style="margin-top: 0px;
     border: 1px solid #ccc;border-top: unset !important;padding: 5px;">';
-                        require_once('settings/dhl_labels_settings.php');
+                        include_once('settings/dhl_labels_settings.php');
                         echo '</div>';
                         break;
                     case "packing":
                         echo '<div class="table-box table-box-main" id="packing_section" style="margin-top: 0px;
     border: 1px solid #ccc;border-top: unset !important;padding: 5px;">';
-                        require_once('settings/dhl_packing_settings.php');
+                        include_once('settings/dhl_packing_settings.php');
                         echo '</div>';
                         break;
                     case "licence":

@@ -16,8 +16,8 @@ class Premium_Image_Separator_Widget extends Widget_Base
     }
 
     public function get_title() {
-        return esc_html__('Premium Image Separator', 'premium-addons-for-elementor');
-    }
+		return \PremiumAddons\Helper_Functions::get_prefix() . ' Image Separator';
+	}
 
     public function get_icon() {
         return 'pa-image-separator';
@@ -142,12 +142,13 @@ class Premium_Image_Separator_Widget extends Widget_Base
         $this->add_control('premium_image_separator_existing_page', 
                 [
                     'label'         => esc_html__('Existing Page', 'premium-addons-for-elementor'),
-                    'type'          => Controls_Manager::SELECT,
+                    'type'          => Controls_Manager::SELECT2,
                     'options'       => $this->getTemplateInstance()->get_all_post(),
                     'condition'     => [
                        'premium_image_separator_link_switcher'  => 'yes',
                         'premium_image_separator_link_type'     => 'link',
                     ],
+                    'multiple'      => false,
                     'label_block'   => true,
                 ]
                 );
@@ -203,29 +204,54 @@ class Premium_Image_Separator_Widget extends Widget_Base
        
     }
 
-    protected function render($instance = [])
-    {
+    protected function render($instance = []) {
         // get our input from the widget settings.
         $settings = $this->get_settings();
         
         $link_type = $settings['premium_image_separator_link_type'];
         
-        if ($link_type == 'url') {
-            $link_url = $settings['premium_image_separator_image_link'];
-        } elseif ($link_type == 'link') {
-            $link_url = get_permalink($settings['premium_image_separator_existing_page']);
-        }
-?>
+        $link_url = ( 'url' == $link_type ) ? $settings['premium_image_separator_image_link'] : get_permalink( $settings['premium_image_separator_existing_page'] );
+    ?>
 
-<div class="premium-image-separator-container">
+    <div class="premium-image-separator-container">
     
-    <img alt="image separator" class="img-responsive" src="<?php echo $settings['premium_image_separator_image']['url']; ?>">
+        <img alt="image separator" class="img-responsive" src="<?php echo $settings['premium_image_separator_image']['url']; ?>">
             <?php if (  $settings['premium_image_separator_link_switcher'] == 'yes' ) : ?>
                 <a class="premium-image-separator-link" href="<?php echo $link_url; ?>" target="_<?php echo $settings['premium_image_separator_link_target']; ?>" title="<?php echo $settings['premium_image_separator_image_link_text']; ?>">
                 </a>
             <?php endif;?>
-</div>
+    </div>
     <?php
+    }
+    
+    protected function _content_template() {
+        ?>
+        <#
+            var linkType = settings.premium_image_separator_link_type,
+            
+                imgUrl = settings.premium_image_separator_image.url,
+                
+                linkSwitch = settings.premium_image_separator_link_switcher,
+                
+                linkTarget = settings.premium_image_separator_link_target,
+                
+                linkTitle = settings.premium_image_separator_image_link_text,
+            
+                linkUrl = ( 'url' == linkType ) ? settings.premium_image_separator_image_link : settings.premium_image_separator_existing_page;
+        #>
+
+        <div class="premium-image-separator-container">
+            <img alt="image separator" class="img-responsive" src="{{ imgUrl }}">
+            <#
+                if( 'yes' == linkSwitch ) { #>
+                
+                <a class="premium-image-separator-link" href="{{ linkUrl }}" target="_{{ linkTarget }}" title="{{ linkTitle }}"></a>
+                    
+                <# }
+            #>
+        </div>
+        
+        <?php  
     }
 }
 Plugin::instance()->widgets_manager->register_widget_type(new Premium_Image_Separator_Widget());

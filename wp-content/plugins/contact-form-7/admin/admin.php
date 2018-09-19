@@ -251,7 +251,8 @@ function wpcf7_load_contact_form_admin() {
 
 	if ( 'wpcf7-new' == $plugin_page ) {
 		$post = WPCF7_ContactForm::get_template( array(
-			'locale' => isset( $_GET['locale'] ) ? $_GET['locale'] : null ) );
+			'locale' => isset( $_GET['locale'] ) ? $_GET['locale'] : null,
+		) );
 	} elseif ( ! empty( $_GET['post'] ) ) {
 		$post = WPCF7_ContactForm::get_instance( $_GET['post'] );
 	}
@@ -612,7 +613,7 @@ function wpcf7_notice_bulk_validate_config() {
 	}
 
 	$result = WPCF7::get_option( 'bulk_validate' );
-	$last_important_update = '4.9';
+	$last_important_update = '5.0.4';
 
 	if ( ! empty( $result['version'] )
 	&& version_compare( $last_important_update, $result['version'], '<=' ) ) {
@@ -621,12 +622,20 @@ function wpcf7_notice_bulk_validate_config() {
 
 	$link = add_query_arg(
 		array( 'action' => 'validate' ),
-		menu_page_url( 'wpcf7', false ) );
+		menu_page_url( 'wpcf7', false )
+	);
 
-	$link = sprintf( '<a href="%s">%s</a>', $link, esc_html( __( 'Validate Contact Form 7 Configuration', 'contact-form-7' ) ) );
+	$link = sprintf(
+		'<a href="%1$s">%2$s</a>',
+		esc_url( $link ),
+		esc_html( __( 'Validate Contact Form 7 Configuration', 'contact-form-7' ) )
+	);
 
 	$message = __( "Misconfiguration leads to mail delivery failure or other troubles. Validate your contact forms now.", 'contact-form-7' );
 
-	echo sprintf( '<div class="notice notice-warning"><p>%s &raquo; %s</p></div>',
-		esc_html( $message ), $link );
+	echo sprintf(
+		'<div class="notice notice-warning"><p>%1$s &raquo; %2$s</p></div>',
+		esc_html( $message ),
+		$link
+	);
 }

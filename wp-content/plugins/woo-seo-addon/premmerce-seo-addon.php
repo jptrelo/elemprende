@@ -11,7 +11,7 @@ use Premmerce\SeoAddon\SeoAddonPlugin;
  * Plugin Name:       WooCommerce SEO Addon
  * Plugin URI:        https://premmerce.com/woocommerce-seo-addon-yoast/
  * Description:       Premmerce WooCommerce SEO Addon plugin extends the functionality of Yoast SEO for microdata management.
- * Version:           1.1.4
+ * Version:           1.1.5
  * Author:            premmerce
  * Author URI:        https://premmerce.com/
  * License:           GPL-2.0+
@@ -20,7 +20,7 @@ use Premmerce\SeoAddon\SeoAddonPlugin;
  * Domain Path:       /languages
  *
  * WC requires at least: 3.0.0
- * WC tested up to: 3.2.5
+ * WC tested up to: 3.4
  */
 
 // If this file is called directly, abort.

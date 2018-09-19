@@ -1,5 +1,6 @@
 <?php 
 
+if (!defined('ABSPATH')) exit;
 
 function premium_blog_get_post_data($args, $paged, $new_offset){
     $defaults = array(
@@ -23,7 +24,7 @@ function premium_blog_get_post_settings($settings){
         return $post_args;
 } 
 
-function premium_addons_get_excerpt_by_id($post_id,$excerpt_length){
+function premium_addons_get_excerpt_by_id($post_id,$excerpt_length,$excerpt_type,$exceprt_text){
     $the_post = get_post($post_id); //Gets post ID
 
     $the_excerpt = null;
@@ -37,7 +38,12 @@ function premium_addons_get_excerpt_by_id($post_id,$excerpt_length){
 
      if(count($words) > $excerpt_length) :
          array_pop($words);
-         array_push($words, '…');
+         if( 'dots' == $excerpt_type){
+            array_push($words, '…');
+         } else {
+            array_push($words, ' <a href="' . get_permalink($post_id) .'" class="premium-blog-excerpt-link">' . $exceprt_text . '</a>'); 
+         }
+         
          $the_excerpt = implode(' ', $words);
      endif;
 
@@ -50,6 +56,7 @@ function premium_addons_post_type_categories(){
         'hide_empty' => true,
     ));
     
+    $options = array();
     if ( ! empty( $terms ) && ! is_wp_error( $terms ) ){
     foreach ( $terms as $term ) {
         $options[ $term->term_id ] = $term->name;

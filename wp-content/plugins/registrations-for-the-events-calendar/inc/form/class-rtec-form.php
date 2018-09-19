@@ -469,6 +469,29 @@ class RTEC_Form
 
 			}
 
+			// terms_conditions checkbox
+			if ( isset( $rtec_options['terms_conditions_require'] ) && $rtec_options['terms_conditions_require'] )  {
+				$i++;
+				$link = isset( $rtec_options[ 'terms_conditions_link' ] ) ? $rtec_options[ 'terms_conditions_link' ] :  '';
+				$link_label = isset( $rtec_options[ 'terms_conditions_link_label' ] ) ? $rtec_options[ 'terms_conditions_link_label' ] :  __( 'Terms and Conditions Page', 'registrations-for-the-events-calendar' );
+                $html = ! empty( $link ) ? '<a href="'.esc_url( $link ).'" target="_blank">'.esc_html( rtec_get_text( $link_label, __( 'Terms and Conditions Page', 'registrations-for-the-events-calendar' ) ) ) . '</a>' : '';
+				$fields_data[ $i ]['field_name'] = 'terms_conditions';
+				$fields_data[ $i ]['label'] = __( 'Terms and Conditions', 'registrations-for-the-events-calendar' );
+				$fields_data[ $i ]['field_type'] = 'checkbox';
+				$fields_data[ $i ]['valid_type'] = 'length';
+				$fields_data[ $i ]['valid_params'] = array();
+				$fields_data[ $i ]['placeholder'] = '';
+				$fields_data[ $i ]['meta'] = array(
+				        'options' => array(
+				                array( $rtec_options['terms_conditions_label'] . '&#42;', __( 'I accept the terms and conditions', 'registrations-for-the-events-calendar' ), false )
+                        ),
+                        'html' => $html
+                );
+				$fields_data[ $i ]['default_value'] = '';
+				$fields_data[ $i ]['is_required'] = true;
+				$fields_data[ $i ]['error_text'] = rtec_get_text( $rtec_options[ 'terms_conditions_error' ], __( 'This is required', 'registrations-for-the-events-calendar' ) );
+			}
+
 			// recaptcha field calculations for spam check
 			if ( isset( $rtec_options['recaptcha_require'] ) && $rtec_options['recaptcha_require'] )  {
 				$i++;
@@ -816,7 +839,13 @@ class RTEC_Form
         $html .= wp_nonce_field( 'rtec_form_nonce', '_wpnonce', true, false );
         $html .= '<input type="hidden" name="rtec_email_submission" value="1" />';
         $html .= '<input type="hidden" name="rtec_event_id" value="' . esc_attr( $event_meta['post_id'] ) . '" />';
-
+	    if ( ! empty( $GLOBALS['sitepress'] ) && $GLOBALS['sitepress'] instanceof SitePress ) {
+		    ob_start();
+		    do_action( 'wpml_add_language_form_field' );
+		    $lang_field = ob_get_contents();
+		    ob_get_clean();
+		    $html .= $lang_field;
+	    }
         return $html;
     }
 
@@ -929,6 +958,50 @@ class RTEC_Form
 		return $html;
 	}
 
+	public function already_registered_visitor_html() {
+		global $rtec_options;
+
+		$show_unregister_link = isset( $rtec_options['visitors_can_edit_what_status'] ) ? $rtec_options['visitors_can_edit_what_status'] : false;
+		?>
+		<?php if ( $show_unregister_link ) :
+			$already_registered_question = isset( $rtec_options['already_registered_question'] ) ? $rtec_options['already_registered_question'] : __( 'Already registered?', 'registrations-for-the-events-calendar' );
+			$already_registered_question = rtec_get_text( $already_registered_question, __( 'Already registered?', 'registrations-for-the-events-calendar' ) );
+			$already_registered_directions = isset( $rtec_options['already_registered_directions'] ) ? $rtec_options['already_registered_directions'] : __( 'Use this tool to manage your registration.', 'registrations-for-the-events-calendar' );
+			$already_registered_directions = rtec_get_text( $already_registered_directions, __( 'Use this tool to manage your registration.', 'registrations-for-the-events-calendar' ) );
+			$enter_your_email_text = isset( $rtec_options['enter_your_email_text'] ) ? $rtec_options['enter_your_email_text'] : __( 'Enter your registered email address', 'registrations-for-the-events-calendar' );
+			$enter_your_email_text = rtec_get_text( $enter_your_email_text, __( 'Enter your registered email address', 'registrations-for-the-events-calendar' ) );
+			$send_unregister_link_text = isset( $rtec_options['send_unregister_link_text'] ) ? $rtec_options['send_unregister_link_text'] : __( 'Send unregister link', 'registrations-for-the-events-calendar' );
+			$send_unregister_link_text = rtec_get_text( $send_unregister_link_text, __( 'Send unregister link', 'registrations-for-the-events-calendar' ) );
+            ?>
+
+            <span class="rtec-already-registered-reveal" style="display: none;"><a href="JavaScript:void(0);"><?php echo esc_html( $already_registered_question ); ?></a></span>
+            <p class="rtec-already-registered-js-remove"><strong><?php echo esc_html( $already_registered_question ); ?></strong></p>
+
+            <div class="rtec-already-registered-options rtec-is-visitor">
+                <p><?php echo esc_html( $already_registered_directions ); ?></p>
+                <div class="tribe-events-event-meta rtec-event-meta">
+
+                    <form id="rtec-options-form" action="" method="post">
+                        <div class="rtec-form-field rtec-field-text" data-rtec-error-message="<?php esc_attr_e( 'required', 'registrations-for-the-events-calendar' ); ?>" data-rtec-type="text">
+                            <label for="rtec-visitor_email" class="rtec-field-label" aria-label="<?php echo esc_html( $enter_your_email_text ); ?>"><?php echo esc_html( $enter_your_email_text ); ?>*</label>
+                            <div class="rtec-input-wrapper">
+                                <input name="rtec-visitor_email" value="" class="rtec-field-input" id="rtec-visitor_email" data-rtec-min="0" data-rtec-max="no-max" aria-required="true" aria-invalid="false" type="text">
+                            </div>
+                        </div>
+						<?php wp_nonce_field( 'rtec_visitor_submit', 'rtec_nonce' ); ?>
+                        <input type="hidden" name="event_id" value="<?php echo esc_attr( $this->event_meta['post_id'] ); ?>">
+						<?php if ( $show_unregister_link ) : ?>
+                            <input type="submit" name="rtec_visitor_submit" value="<?php esc_attr_e( $send_unregister_link_text ); ?>">
+						<?php endif; ?>
+                    </form>
+                </div>
+            </div>
+		<?php endif; ?>
+
+		<?php
+
+	}
+
 	/**
 	 * @param $type
 	 * @param $params
@@ -977,7 +1050,16 @@ class RTEC_Form
 				<option id="<?php echo esc_attr( $field_settings['field_name'] ) . $option[1]; ?>"<?php echo $field_settings['data_atts_string']; ?> value="<?php echo $option[1]; ?>"<?php if ( $option[2] ) { echo ' selected="selected"'; } ?> ><?php echo esc_html( $option[0] ); ?></option>
 			<?php endforeach; ?>
 		</select>
-	<?php else : ?>
+	<?php elseif ( $field_settings['type'] === 'checkbox' ) :
+        $i = 1;
+		foreach ( $field_settings['meta']['options'] as $option ) : ?>
+            <div class="rtec-checkbox-option-wrap">
+                <input type="checkbox" name="<?php echo esc_attr( $field_settings['field_name'] ); ?>" class="rtec-field-input" id="<?php echo esc_attr( $field_settings['field_name']  . '-' . $i ); ?>"<?php echo $field_settings['data_atts_string']; ?> value="<?php esc_attr_e( $option[1] ); ?>"<?php if ( $option[2] ) { echo ' checked="checked"'; } ?> /><label for="<?php echo esc_attr( $field_settings['field_name'] . '-' . $i ); ?>"><?php echo esc_html( $option[0] ); ?></label>
+            </div>
+		<?php $i++;
+		endforeach;
+		else : ?>
+
 		<?php do_action( 'rtec_field_html_' . $field_settings['type'], $field_settings ); ?>
 	<?php endif;
 	}
@@ -1106,6 +1188,11 @@ class RTEC_Form
                     $html .= '<img title="Tribe Loading Animation Image" alt="Tribe Loading Animation Image" class="tribe-events-spinner-medium" src="' . plugins_url() . '/the-events-calendar/src/resources/images/tribe-loading.gif' . '">';
                 $html .= '</div>';
             $html .= '</div>'; // rtec-form-wrapper
+	    ob_start();
+	    $this->already_registered_visitor_html();
+	    $already_html = ob_get_contents();
+	    ob_get_clean();
+            $html .= $already_html;
         $html .= '</div>'; // rtec
 
         return $html;

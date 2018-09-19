@@ -16,23 +16,29 @@ class WCFM_Capability {
 	public function __construct() {
 		global $WCFM;
 		
-		$this->wcfm_capability_options = apply_filters( 'wcfm_capability_options_rules', (array) get_option( 'wcfm_capability_options' ) );
+		$this->wcfm_capability_options = apply_filters( 'wcfm_capability_options_rules', get_option( 'wcfm_capability_options', array() ) );
 		
 		// Menu Filter
 		add_filter( 'wcfm_menus', array( &$this, 'wcfmcap_wcfm_menus' ), 500 );
 		add_filter( 'wcfm_product_menu', array( &$this, 'wcfmcap_product_menu' ), 500 );
-		add_filter( 'wcfm_add_new_product_sub_menu', array( &$this, 'wcfmcap_is_allow_add_products' ), 500 );
-		add_filter( 'wcfm_is_allow_add_products', array( &$this, 'wcfmcap_is_allow_add_products' ), 500 );
 		
 		
 		// Manage Product Permission
+		add_filter( 'wcfm_is_allow_manage_products', array( &$this, 'wcfmcap_is_allow_manage_products' ), 500 );
+		add_filter( 'wcfm_add_new_product_sub_menu', array( &$this, 'wcfmcap_is_allow_add_products' ), 500 );
+		add_filter( 'wcfm_is_allow_add_products', array( &$this, 'wcfmcap_is_allow_add_products' ), 500 );
+		add_filter( 'wcfm_is_allow_publish_products', array( &$this, 'wcfmcap_is_allow_publish_products' ), 500 );
+		add_filter( 'wcfm_is_allow_edit_products', array( &$this, 'wcfmcap_is_allow_edit_products' ), 500 );
 		add_filter( 'wcfm_is_allow_publish_live_products', array( &$this, 'wcfmcap_is_allow_publish_live_products' ), 500 );
+		add_filter( 'wcfm_is_allow_delete_products', array( &$this, 'wcfmcap_is_allow_delete_products' ), 500 );
+		add_filter( 'wcfm_is_allow_space_limit', array( &$this, 'wcfmcap_is_allow_space_limit' ), 500 );
 		add_filter( 'wcfm_is_allow_product_limit', array( &$this, 'wcfmcap_is_allow_product_limit' ), 500 );
 		add_filter( 'wcfm_products_limit_label', array( &$this, 'wcfmcap_products_limit_label' ), 50 );
 		add_filter( 'wcfm_product_types', array( &$this, 'wcfmcap_is_allow_product_types'), 500 );
 		add_filter( 'product_type_selector', array( &$this, 'wcfmcap_is_allow_product_types'), 500 ); // WC Product Types
 		add_filter( 'wcfm_is_allow_job_package', array( &$this, 'wcfmcap_is_allow_job_package'), 500 );
 		add_filter( 'wcfm_product_manage_fields_general', array( &$this, 'wcfmcap_is_allow_fields_general' ), 500 );
+		add_filter( 'wcfm_product_manage_fields_images', array( &$this, 'wcfmcap_is_allow_fields_images' ), 500 );
 		add_filter( 'wcfm_is_allow_inventory', array( &$this, 'wcfmcap_is_allow_inventory' ), 500 );
 		add_filter( 'wcfm_is_allow_shipping', array( &$this, 'wcfmcap_is_allow_shipping' ), 500 );
 		add_filter( 'wcfm_is_allow_tax', array( &$this, 'wcfmcap_is_allow_tax' ), 500 );
@@ -50,12 +56,18 @@ class WCFM_Capability {
 		add_filter( 'wcfm_is_allow_publish_articles', array( &$this, 'wcfmcap_is_allow_publish_articles' ), 500 );
 		add_filter( 'wcfm_is_allow_publish_live_articles', array( &$this, 'wcfmcap_is_allow_publish_live_articles' ), 500 );
 		add_filter( 'wcfm_is_allow_delete_articles', array( &$this, 'wcfmcap_is_allow_delete_articles' ), 500 );
+		add_filter( 'wcfm_is_allow_article_limit', array( &$this, 'wcfmcap_is_allow_article_limit' ), 500 );
+		add_filter( 'wcfm_articles_limit_label', array( &$this, 'wcfmcap_articles_limit_label' ), 50 );
 		
 		// Manage Coupon Permission
+		add_filter( 'wcfm_is_allow_manage_coupons', array( &$this, 'wcfmcap_is_allow_manage_coupons' ), 500 );
 		add_filter( 'wcfm_coupon_menu', array( &$this, 'wcfmcap_coupon_menu' ), 500 );
 		add_filter( 'wcfm_add_new_coupon_sub_menu', array( &$this, 'wcfmcap_is_allow_add_coupons' ),500 );
 		add_filter( 'wcfm_is_allow_add_coupons', array( &$this, 'wcfmcap_is_allow_add_coupons' ), 500 );
+		add_filter( 'wcfm_is_allow_publish_coupons', array( &$this, 'wcfmcap_is_allow_publish_coupons' ), 500 );
+		add_filter( 'wcfm_is_allow_edit_coupons', array( &$this, 'wcfmcap_is_allow_edit_coupons' ), 500 );
 		add_filter( 'wcfm_is_allow_publish_live_coupons', array( &$this, 'wcfmcap_is_allow_publish_live_coupons' ), 500 );
+		add_filter( 'wcfm_is_allow_delete_coupons', array( &$this, 'wcfmcap_is_allow_delete_coupons' ), 500 );
 		add_filter( 'wcfm_is_allow_free_shipping_coupons', array( &$this, 'wcfmcap_is_allow_free_shipping_coupons' ), 500 );
 		
 		// Manage Listings Permission
@@ -77,6 +89,8 @@ class WCFM_Capability {
 		add_filter( 'show_customer_billing_address_in_export_orders', array( &$this, 'wcfmcap_is_allow_customer_billing_details' ), 500 ); // WC Marketplace
 		add_filter( 'show_customer_shipping_address_in_export_orders', array( &$this, 'wcfmcap_is_allow_customer_shipping_details' ), 500 ); // WC Marketplace
 		add_filter( 'wcfm_is_allow_export_csv', array( &$this, 'wcfmcap_is_allow_export_csv' ), 500 );
+		
+		add_filter( 'wcfm_is_allow_store_invoice', array( &$this, 'wcfmcap_is_allow_store_invoice' ), 500 );
 		add_filter( 'wcfm_is_allow_pdf_invoice', array( &$this, 'wcfmcap_is_allow_pdf_invoice' ), 500 );
 		add_filter( 'wcfm_is_allow_pdf_packing_slip', array( &$this, 'wcfmcap_is_allow_pdf_packing_slip' ), 500 );
 		
@@ -92,6 +106,38 @@ class WCFM_Capability {
 		add_filter( 'show_customer_details_in_export_orders', array( &$this, 'wcfmcap_is_allow_customer_details_orders' ), 500 ); // WC Marketplace
 		add_filter( 'wcfm_allow_order_customer_details', array( &$this, 'wcfmcap_is_allow_view_customer_email' ), 500 );
 		add_filter( 'wcfm_allow_view_customer_email', array( &$this, 'wcfmcap_is_allow_view_customer_email' ), 500 );
+		add_filter( 'wcfm_allow_view_customer_name', array( &$this, 'wcfmcap_is_allow_view_customer_name' ), 500 );
+		add_filter( 'wcfm_is_allow_customer_limit', array( &$this, 'wcfmcap_is_allow_customer_limit' ), 500 );
+		add_filter( 'wcfm_customers_limit_label', array( &$this, 'wcfmcap_customers_limit_label' ), 50 );
+		
+		// Marketplace Permission
+		add_filter( 'wcfm_is_allow_show_email', array( &$this, 'wcfmcap_is_allow_show_email' ), 500 );
+		add_filter( 'wcfm_is_allow_show_phone', array( &$this, 'wcfmcap_is_allow_show_phone' ), 500 );
+		add_filter( 'wcfm_is_allow_show_address', array( &$this, 'wcfmcap_is_allow_show_address' ), 500 );
+		add_filter( 'wcfm_is_allow_show_map', array( &$this, 'wcfmcap_is_allow_show_map' ), 500 );
+		add_filter( 'wcfm_is_allow_show_social', array( &$this, 'wcfmcap_is_allow_show_social' ), 500 );
+		add_filter( 'wcfm_is_allow_show_follower', array( &$this, 'wcfmcap_is_allow_show_follower' ), 500 );
+		add_filter( 'wcfm_is_allow_show_policy', array( &$this, 'wcfmcap_is_allow_show_policy' ), 500 );
+		add_filter( 'wcfm_is_allow_policy_settings', array( &$this, 'wcfmcap_is_allow_show_policy' ), 500 );
+		add_filter( 'wcfm_is_allow_customer_support', array( &$this, 'wcfmcap_is_allow_customer_support' ), 500 );
+		add_filter( 'wcfm_is_allow_customer_support_settings', array( &$this, 'wcfmcap_is_allow_customer_support' ), 500 );
+		add_filter( 'wcfm_is_allow_refund_requests', array( &$this, 'wcfmcap_is_allow_refund_requests' ), 500 );
+		add_filter( 'wcfm_is_allow_reviews', array( &$this, 'wcfmcap_is_allow_reviews' ), 500 );
+		add_filter( 'wcfm_is_allow_manage_review', array( &$this, 'wcfmcap_is_allow_manage_review' ), 500 );
+		add_filter( 'wcfm_is_allow_ledger', array( &$this, 'wcfmcap_is_allow_ledger_book' ), 500 );
+		
+		// Settings Inside
+		add_filter( 'wcfm_is_allow_store_logo', array( &$this, 'wcfmcap_is_allow_store_logo' ), 500 );
+		add_filter( 'wcfm_is_allow_store_banner', array( &$this, 'wcfmcap_is_allow_store_banner' ), 500 );
+		add_filter( 'wcfm_is_allow_store_name', array( &$this, 'wcfmcap_is_allow_store_name' ), 500 );
+		add_filter( 'wcfm_is_allow_store_description', array( &$this, 'wcfmcap_is_allow_store_description' ), 500 );
+		add_filter( 'wcfm_is_allow_store_phone', array( &$this, 'wcfmcap_is_allow_store_phone' ), 500 );
+		add_filter( 'wcfm_is_allow_store_address', array( &$this, 'wcfmcap_is_allow_store_address' ), 500 );
+		
+		// Withdrwal Permission
+		add_filter( 'wcfm_is_allow_withdrawal', array( &$this, 'wcfmcap_is_allow_withdrawal' ), 500 );
+		add_filter( 'wcfm_is_allow_payments', array( &$this, 'wcfmcap_is_allow_payments' ), 500 );
+		add_filter( 'wcfm_is_allow_transaction_details', array( &$this, 'wcfmcap_is_allow_transaction_details' ), 500 );
 		
 		// Manage Reports Permission
 		add_filter( 'wcfm_is_allow_reports', array( &$this, 'wcfmcap_is_allow_reports' ), 500 );
@@ -99,10 +145,6 @@ class WCFM_Capability {
 		// Custom Caps
 		add_filter( 'wcfm_is_allow_commission_manage', array( &$this, 'wcfmcap_is_allow_commission_manage' ), 500 );
 		add_filter( 'wcfm_allow_wp_admin_view', array( &$this, 'wcfmcap_is_allow_wp_admin_view' ), 500 );
-		
-		// Support Ticket
-		add_filter( 'wcfm_is_allow_support', array( &$this, 'wcfmcap_is_allow_support' ), 500 );
-		add_filter( 'wcfm_is_allow_manage_support', array( &$this, 'wcfmcap_is_allow_manage_support' ), 500 );
 	}
 	
 	// WCFM wcfmcap Menu
@@ -134,6 +176,14 @@ class WCFM_Capability {
   	return $has_new;
   }
   
+  // WCFM wcfmcap Manage Products
+  function wcfmcap_is_allow_manage_products( $allow ) {
+  	$manage_products = ( isset( $this->wcfm_capability_options['manage_products'] ) ) ? $this->wcfm_capability_options['manage_products'] : 'no';
+  	if( $manage_products == 'yes' ) return false;
+  	if( !current_user_can( 'edit_products' ) ) return false;
+  	return $allow;
+  }
+  
   // WCFM wcfmcap Add Products
   function wcfmcap_is_allow_add_products( $allow ) {
   	$manage_products = ( isset( $this->wcfm_capability_options['manage_products'] ) ) ? $this->wcfm_capability_options['manage_products'] : 'no';
@@ -144,6 +194,26 @@ class WCFM_Capability {
   	return $allow;
   }
   
+  // WCFM wcfmcap Publish Products
+  function wcfmcap_is_allow_publish_products( $allow ) {
+  	$manage_products = ( isset( $this->wcfm_capability_options['manage_products'] ) ) ? $this->wcfm_capability_options['manage_products'] : 'no';
+  	if( $manage_products == 'yes' ) return false;
+  	$publish_products = ( isset( $this->wcfm_capability_options['publish_products'] ) ) ? $this->wcfm_capability_options['publish_products'] : 'no';
+  	if( $publish_products == 'yes' ) return false;
+  	if( !current_user_can( 'publish_products' ) ) return false;
+  	return $allow;
+  }
+  
+  // WCFM wcfmcap Edit Products
+  function wcfmcap_is_allow_edit_products( $allow ) {
+  	$manage_products = ( isset( $this->wcfm_capability_options['manage_products'] ) ) ? $this->wcfm_capability_options['manage_products'] : 'no';
+  	if( $manage_products == 'yes' ) return false;
+  	$edit_products = ( isset( $this->wcfm_capability_options['edit_products'] ) ) ? $this->wcfm_capability_options['edit_products'] : 'no';
+  	if( $edit_products == 'yes' ) return false;
+  	if( !current_user_can( 'edit_published_products' ) ) return false;
+  	return $allow;
+  }
+  
   // WCFM auto publish live products
   function wcfmcap_is_allow_publish_live_products( $allow ) {
   	$publish_live_products = ( isset( $this->wcfm_capability_options['publish_live_products'] ) ) ? $this->wcfm_capability_options['publish_live_products'] : 'no';
@@ -151,7 +221,45 @@ class WCFM_Capability {
   	return $allow;
   }
   
-  // WCFM wcfmcap Add Products
+  // WCFM wcfmcap Delete Products
+  function wcfmcap_is_allow_delete_products( $allow ) {
+  	$manage_products = ( isset( $this->wcfm_capability_options['manage_products'] ) ) ? $this->wcfm_capability_options['manage_products'] : 'no';
+  	if( $manage_products == 'yes' ) return false;
+  	$delete_products = ( isset( $this->wcfm_capability_options['delete_products'] ) ) ? $this->wcfm_capability_options['delete_products'] : 'no';
+  	if( $delete_products == 'yes' ) return false;
+  	if( !current_user_can( 'delete_published_products' ) ) return false;
+  	return $allow;
+  }
+  
+  // WCFM wcfmcap Add Products by Space Limit
+  function wcfmcap_is_allow_space_limit( $allow ) {
+  	global $WCFM;
+  	$manage_products = ( isset( $this->wcfm_capability_options['manage_products'] ) ) ? $this->wcfm_capability_options['manage_products'] : 'no';
+  	if( $manage_products == 'yes' ) return false;
+  	$add_products = ( isset( $this->wcfm_capability_options['add_products'] ) ) ? $this->wcfm_capability_options['add_products'] : 'no';
+  	if( $add_products == 'yes' ) return false;
+  	
+  	// Limit Restriction
+  	$current_user_id = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
+  	$spacelimit = ( isset( $this->wcfm_capability_options['spacelimit'] ) ) ? $this->wcfm_capability_options['spacelimit'] : '';
+  	if( ( $spacelimit == -1 ) || ( $spacelimit == '-1' ) ) $spacelimit = -1;
+  	elseif( $spacelimit ) $spacelimit = absint($spacelimit);
+  	$spacelimit = apply_filters( 'wcfm_vendor_verification_space_limit', $spacelimit, $current_user_id );
+  	$spacelimit = apply_filters( 'wcfm_vendor_space_limit', $spacelimit, $current_user_id );
+  	if( ( $spacelimit == -1 ) || ( $spacelimit == '-1' ) ) {
+  		return false;
+  	} else {
+			if( $spacelimit ) $spacelimit = absint($spacelimit);
+			if( $spacelimit && ( $spacelimit >= 0 ) ) {
+				if( $spacelimit == 1989 ) return false;
+				$used_space  = $WCFM->wcfm_vendor_support->wcfm_get_used_space_by_vendor( $current_user_id );
+				if( $spacelimit <= $used_space ) return false;
+			}
+		}
+  	return $allow;
+  }
+  
+  // WCFM wcfmcap Add Products by Product Limit
   function wcfmcap_is_allow_product_limit( $allow ) {
   	$manage_products = ( isset( $this->wcfm_capability_options['manage_products'] ) ) ? $this->wcfm_capability_options['manage_products'] : 'no';
   	if( $manage_products == 'yes' ) return false;
@@ -159,30 +267,50 @@ class WCFM_Capability {
   	if( $add_products == 'yes' ) return false;
   	
   	// Limit Restriction
+  	$current_user_id = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
   	$productlimit = ( isset( $this->wcfm_capability_options['productlimit'] ) ) ? $this->wcfm_capability_options['productlimit'] : '';
-  	if( $productlimit ) $productlimit = absint($productlimit);
-  	if( $productlimit && ( $productlimit >= 0 ) ) {
-  		$current_user_id = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
-			$count_products  = wcfm_get_user_posts_count( $current_user_id, 'product', 'any' );
-			if( $productlimit <= $count_products ) return false;
-  	}
+  	if( ( $productlimit == -1 ) || ( $productlimit == '-1' ) ) $productlimit = -1;
+  	elseif( $productlimit ) $productlimit = absint($productlimit);
+  	$productlimit = apply_filters( 'wcfm_vendor_verification_product_limit', $productlimit, $current_user_id );
+  	$productlimit = apply_filters( 'wcfm_vendor_product_limit', $productlimit, $current_user_id );
+  	if( ( $productlimit == -1 ) || ( $productlimit == '-1' ) ) {
+  		return false;
+  	} else {
+			if( $productlimit ) $productlimit = absint($productlimit);
+			if( $productlimit && ( $productlimit >= 0 ) ) {
+				if( $productlimit == 1989 ) return false;
+				$count_products  = wcfm_get_user_posts_count( $current_user_id, 'product', apply_filters( 'wcfm_limit_check_status', 'any' ), array( 'suppress_filters' => 1 ) );
+				if( $productlimit <= $count_products ) return false;
+			}
+		}
   	return $allow;
   }
   
   // WCFM Product Limit Label
   function wcfmcap_products_limit_label( $label ) {
-  	
+  	$current_user_id = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
   	$label = __( 'Products Limit: ', 'wc-frontend-manager' );
   	
   	$productlimit = ( isset( $this->wcfm_capability_options['productlimit'] ) ) ? $this->wcfm_capability_options['productlimit'] : '';
-  	if( $productlimit ) $productlimit = absint($productlimit);
-  	if( $productlimit && ( $productlimit >= 0 ) ) {
-  		$current_user_id = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
-			$count_products  = wcfm_get_user_posts_count( $current_user_id, 'product', 'any' );
-			$label .= ' ' . ( $productlimit - $count_products ) . ' ' . __( 'remaining', 'wc-frontend-manager' );
-  	} else {
-  		$label .= __( 'Unlimited', 'wc-frontend-manager' );
-  	}
+  	if( ( $productlimit == -1 ) || ( $productlimit == '-1' ) ) $productlimit = 1;
+  	elseif( $productlimit ) $productlimit = absint($productlimit);
+  	$productlimit = apply_filters( 'wcfm_vendor_verification_product_limit', $productlimit, $current_user_id );
+  	$productlimit = apply_filters( 'wcfm_vendor_product_limit', $productlimit, $current_user_id );
+  	if( ( $productlimit == -1 ) || ( $productlimit == '-1' ) ) {
+			$label .= ' 0 ' . __( 'remaining', 'wc-frontend-manager' );
+		} else {
+			if( $productlimit ) $productlimit = absint($productlimit);
+			if( $productlimit && ( $productlimit >= 0 ) ) {
+				if( $productlimit == 1989 ) {
+					$label .= ' 0 ' . __( 'remaining', 'wc-frontend-manager' );
+				} else {
+					$count_products  = wcfm_get_user_posts_count( $current_user_id, 'product', apply_filters( 'wcfm_limit_check_status', 'any' ), array( 'suppress_filters' => 1 ) );
+					$label .= ' ' . ( $productlimit - $count_products ) . ' ' . __( 'remaining', 'wc-frontend-manager' );
+				}
+			} else {
+				$label .= __( 'Unlimited', 'wc-frontend-manager' );
+			}
+		}
   	
   	$label = '<span class="wcfm_products_limit_label">' . $label . '</span>';
   	
@@ -224,6 +352,8 @@ class WCFM_Capability {
   	if( $variable_subscription == 'yes' ) unset( $product_types[ 'variable-subscription' ] );
   	if( $attributes == 'yes' ) unset( $product_types[ 'variable' ] );
   	if( $attributes == 'yes' ) unset( $product_types[ 'variable-subscription' ] );
+  	
+  	$product_types = apply_filters( 'wcfm_allowed_product_types', $product_types, $this->wcfm_capability_options );
 		
 		return $product_types;
   }
@@ -237,10 +367,20 @@ class WCFM_Capability {
   
   // General Fields
   function wcfmcap_is_allow_fields_general( $general_fields ) {
-  	//$product_misc = (array) WC_Vendors::$pv_options->get_option( 'hide_product_misc' );
-  	//if( !empty( $product_misc['sku'] ) ) unset( $general_fields['sku'] );
-  		
+  	$virtual = ( isset( $this->wcfm_capability_options['virtual'] ) ) ? $this->wcfm_capability_options['virtual'] : 'no';
+  	$downloadable = ( isset( $this->wcfm_capability_options['downloadable'] ) ) ? $this->wcfm_capability_options['downloadable'] : 'no';
+  	if( $virtual == 'yes' ) unset( $general_fields['is_virtual'] );
+  	if( $downloadable == 'yes' ) unset( $general_fields['is_downloadable'] );
   	return $general_fields;
+  }
+  
+  // Image Fields
+  function wcfmcap_is_allow_fields_images( $image_fields ) {
+  	$gallery_img = ( isset( $this->wcfm_capability_options['gallery_img'] ) ) ? $this->wcfm_capability_options['gallery_img'] : 'no';
+  	if( $gallery_img == 'yes' ) {
+  		if( isset( $image_fields['gallery_img'] ) ) unset( $image_fields['gallery_img'] );
+  	}
+  	return $image_fields;
   }
   
   // Inventory
@@ -347,6 +487,64 @@ class WCFM_Capability {
   	return $allow;
   }
   
+  // WCFM wcfmcap Add Article Limit
+  function wcfmcap_is_allow_article_limit( $allow ) {
+  	$submit_articles = ( isset( $this->wcfm_capability_options['submit_articles'] ) ) ? $this->wcfm_capability_options['submit_articles'] : 'no';
+  	if( $submit_articles == 'yes' ) return false;
+  	$add_articles = ( isset( $this->wcfm_capability_options['add_articles'] ) ) ? $this->wcfm_capability_options['add_articles'] : 'no';
+  	if( $add_articles == 'yes' ) return false;
+  	
+  	// Limit Restriction
+  	$articlelimit = ( isset( $this->wcfm_capability_options['articlelimit'] ) ) ? $this->wcfm_capability_options['articlelimit'] : '';
+  	if( ( $articlelimit == -1 ) || ( $articlelimit == '-1' ) ) {
+  		return false;
+  	} else {
+			if( $articlelimit ) $articlelimit = absint($articlelimit);
+			if( $articlelimit && ( $articlelimit >= 0 ) ) {
+				$current_user_id = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
+				$count_articles  = wcfm_get_user_posts_count( $current_user_id, 'post', apply_filters( 'wcfm_limit_check_status', 'any' ), array( 'suppress_filters' => 1 ) );
+				if( $articlelimit <= $count_articles ) return false;
+			}
+		}
+  	return $allow;
+  }
+  
+  // WCFM Article Limit Label
+  function wcfmcap_articles_limit_label( $label ) {
+  	
+  	$label = __( 'Articles Limit: ', 'wc-frontend-manager' );
+  	
+  	$articlelimit = ( isset( $this->wcfm_capability_options['articlelimit'] ) ) ? $this->wcfm_capability_options['articlelimit'] : '';
+  	if( ( $articlelimit == -1 ) || ( $articlelimit == '-1' ) ) {
+  		$label .= ' 0 ' . __( 'remaining', 'wc-frontend-manager' );
+  	} else {
+			if( $articlelimit ) $articlelimit = absint($articlelimit);
+			if( $articlelimit && ( $articlelimit >= 0 ) ) {
+				if( $articlelimit == 1989 ) {
+					$label .= ' 0 ' . __( 'remaining', 'wc-frontend-manager' );
+				} else {
+					$current_user_id = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
+					$count_articles  = wcfm_get_user_posts_count( $current_user_id, 'post', apply_filters( 'wcfm_limit_check_status', 'any' ), array( 'suppress_filters' => 1 ) );
+					$label .= ' ' . ( $articlelimit - $count_articles ) . ' ' . __( 'remaining', 'wc-frontend-manager' );
+				}
+			} else {
+				$label .= __( 'Unlimited', 'wc-frontend-manager' );
+			}
+		}
+  	
+  	$label = '<span class="wcfm_articles_limit_label">' . $label . '</span>';
+  	
+  	return $label;
+  }
+  
+  // WCFM wcfmcap Manage Coupon
+  function wcfmcap_is_allow_manage_coupons( $allow ) {
+  	$manage_coupons = ( isset( $this->wcfm_capability_options['manage_coupons'] ) ) ? $this->wcfm_capability_options['manage_coupons'] : 'no';
+  	if( $manage_coupons == 'yes' ) return false;
+  	if( !current_user_can( 'edit_shop_coupons' ) ) return false;
+  	return $allow;
+  }
+  
   // WCFM Coupon Menu
   function wcfmcap_coupon_menu( $has_new ) {
   	$manage_coupons = ( isset( $this->wcfm_capability_options['manage_coupons'] ) ) ? $this->wcfm_capability_options['manage_coupons'] : 'no';
@@ -365,10 +563,40 @@ class WCFM_Capability {
   	return $allow;
   }
   
+  // WCFM wcfmcap Publish Coupon
+  function wcfmcap_is_allow_publish_coupons( $allow ) {
+  	$manage_coupons = ( isset( $this->wcfm_capability_options['manage_coupons'] ) ) ? $this->wcfm_capability_options['manage_coupons'] : 'no';
+  	if( $manage_coupons == 'yes' ) return false;
+  	$publish_coupons = ( isset( $this->wcfm_capability_options['publish_coupons'] ) ) ? $this->wcfm_capability_options['publish_coupons'] : 'no';
+  	if( $publish_coupons == 'yes' ) return false;
+  	if( !current_user_can( 'publish_shop_coupons' ) ) return false;
+  	return $allow;
+  }
+  
+  // WCFM wcfmcap Edit Coupon
+  function wcfmcap_is_allow_edit_coupons( $allow ) {
+  	$manage_coupons = ( isset( $this->wcfm_capability_options['manage_coupons'] ) ) ? $this->wcfm_capability_options['manage_coupons'] : 'no';
+  	if( $manage_coupons == 'yes' ) return false;
+  	$edit_coupons = ( isset( $this->wcfm_capability_options['edit_coupons'] ) ) ? $this->wcfm_capability_options['edit_coupons'] : 'no';
+  	if( $edit_coupons == 'yes' ) return false;
+  	if( !current_user_can( 'edit_published_shop_coupons' ) ) return false;
+  	return $allow;
+  }
+  
   // WCFM auto publish live coupons
   function wcfmcap_is_allow_publish_live_coupons( $allow ) {
   	$publish_live_coupons = ( isset( $this->wcfm_capability_options['publish_live_coupons'] ) ) ? $this->wcfm_capability_options['publish_live_coupons'] : 'no';
   	if( $publish_live_coupons == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // WCFM wcfmcap Delete Coupon
+  function wcfmcap_is_allow_delete_coupons( $allow ) {
+  	$manage_coupons = ( isset( $this->wcfm_capability_options['manage_coupons'] ) ) ? $this->wcfm_capability_options['manage_coupons'] : 'no';
+  	if( $manage_coupons == 'yes' ) return false;
+  	$delete_coupons = ( isset( $this->wcfm_capability_options['delete_coupons'] ) ) ? $this->wcfm_capability_options['delete_coupons'] : 'no';
+  	if( $delete_coupons == 'yes' ) return false;
+  	if( !current_user_can( 'delete_published_shop_coupons' ) ) return false;
   	return $allow;
   }
   
@@ -483,6 +711,13 @@ class WCFM_Capability {
   	return $allow;
   }
   
+  // Vendor Store Invoice
+  function wcfmcap_is_allow_store_invoice( $allow ) {
+  	$store_invoice = ( isset( $this->wcfm_capability_options['store_invoice'] ) ) ? $this->wcfm_capability_options['store_invoice'] : 'no';
+  	if( $store_invoice == 'yes' ) return false;
+  	return $allow;
+  }
+  
   // Order PDF Invoice
   function wcfmcap_is_allow_pdf_invoice( $allow ) {
   	$pdf_invoice = ( isset( $this->wcfm_capability_options['pdf_invoice'] ) ) ? $this->wcfm_capability_options['pdf_invoice'] : 'no';
@@ -553,6 +788,239 @@ class WCFM_Capability {
   	return $allow;
   }
   
+  // WCFM wcfmcap View Customers Name
+  function wcfmcap_is_allow_view_customer_name( $allow ) {
+  	$manage_customers = ( isset( $this->wcfm_capability_options['manage_customers'] ) ) ? $this->wcfm_capability_options['manage_customers'] : 'no';
+  	if( $manage_customers == 'yes' ) return false;
+  	$view_customers = ( isset( $this->wcfm_capability_options['view_customers'] ) ) ? $this->wcfm_capability_options['view_customers'] : 'no';
+  	if( $view_customers == 'yes' ) return false;
+  	$view_customers_name = ( isset( $this->wcfm_capability_options['view_name'] ) ) ? $this->wcfm_capability_options['view_name'] : 'no';
+  	if( $view_customers_name == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // WCFM wcfmcap Add Customer Limit
+  function wcfmcap_is_allow_customer_limit( $allow ) {
+  	$manage_customers = ( isset( $this->wcfm_capability_options['manage_customers'] ) ) ? $this->wcfm_capability_options['manage_customers'] : 'no';
+  	if( $manage_customers == 'yes' ) return false;
+  	$add_customers = ( isset( $this->wcfm_capability_options['add_customers'] ) ) ? $this->wcfm_capability_options['add_customers'] : 'no';
+  	if( $add_customers == 'yes' ) return false;
+  	
+  	// Limit Restriction
+  	$customerlimit = ( isset( $this->wcfm_capability_options['customerlimit'] ) ) ? $this->wcfm_capability_options['customerlimit'] : '';
+  	
+  	if( ( $customerlimit == -1 ) || ( $customerlimit == '-1' ) ) {
+  		return false;
+  	} else {
+			if( $customerlimit ) $customerlimit = absint($customerlimit);
+			if( $customerlimit && ( $customerlimit >= 0 ) ) {
+				$current_user_id = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
+				$customer_user_role = apply_filters( 'wcfm_customer_user_role', 'customer' );
+				$args = array(
+											'role__in'     => array( $customer_user_role ),
+											'orderby'      => 'ID',
+											'order'        => 'ASC',
+											'offset'       => 0,
+											'number'       => -1,
+											'count_total'  => false,
+											'meta_key'     => '_wcfm_vendor',
+											'meta_value'   => $current_user_id
+										 );
+				$wcfm_customers_array = get_users( $args );
+				$count_customers  = count($wcfm_customers_array);
+				if( $customerlimit <= $count_customers ) return false;
+			}
+		}
+  	return $allow;
+  }
+  
+  // WCFM Customer Limit Label
+  function wcfmcap_customers_limit_label( $label ) {
+  	
+  	$label = __( 'Customers Limit: ', 'wc-frontend-manager' );
+  	
+  	$customerlimit = ( isset( $this->wcfm_capability_options['customerlimit'] ) ) ? $this->wcfm_capability_options['customerlimit'] : '';
+  	if( ( $customerlimit == -1 ) || ( $customerlimit == '-1' ) ) {
+  		$label .= ' 0 ' . __( 'remaining', 'wc-frontend-manager' );
+  	} else {
+			if( $customerlimit ) $customerlimit = absint($customerlimit);
+			if( $customerlimit && ( $customerlimit >= 0 ) ) {
+				if( $customerlimit == 1989 ) {
+					$label .= ' 0 ' . __( 'remaining', 'wc-frontend-manager' );
+				} else {
+					$current_user_id = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
+					$customer_user_role = apply_filters( 'wcfm_customer_user_role', 'customer' );
+					$args = array(
+												'role__in'     => array( $customer_user_role ),
+												'orderby'      => 'ID',
+												'order'        => 'ASC',
+												'offset'       => 0,
+												'number'       => -1,
+												'count_total'  => false,
+												'meta_key'     => '_wcfm_vendor',
+												'meta_value'   => $current_user_id
+											 );
+					$wcfm_customers_array = get_users( $args );
+					$count_customers  = count($wcfm_customers_array);
+					$label .= ' ' . ( $customerlimit - $count_customers ) . ' ' . __( 'remaining', 'wc-frontend-manager' );
+				}
+			} else {
+				$label .= __( 'Unlimited', 'wc-frontend-manager' );
+			}
+		}
+  	
+  	$label = '<span class="wcfm_customers_limit_label">' . $label . '</span>';
+  	
+  	return $label;
+  }
+  
+  // Show Vendor Email
+  function wcfmcap_is_allow_show_email( $allow ) {
+  	$vendor_email = ( isset( $this->wcfm_capability_options['vendor_email'] ) ) ? $this->wcfm_capability_options['vendor_email'] : 'no';
+  	if( $vendor_email == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // Show Vendor Phone
+  function wcfmcap_is_allow_show_phone( $allow ) {
+  	$vendor_phone = ( isset( $this->wcfm_capability_options['vendor_phone'] ) ) ? $this->wcfm_capability_options['vendor_phone'] : 'no';
+  	if( $vendor_phone == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // Show Vendor Address
+  function wcfmcap_is_allow_show_address( $allow ) {
+  	$vendor_address = ( isset( $this->wcfm_capability_options['vendor_address'] ) ) ? $this->wcfm_capability_options['vendor_address'] : 'no';
+  	if( $vendor_address == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // Show Vendor Map
+  function wcfmcap_is_allow_show_map( $allow ) {
+  	$vendor_map = ( isset( $this->wcfm_capability_options['vendor_map'] ) ) ? $this->wcfm_capability_options['vendor_map'] : 'no';
+  	if( $vendor_map == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // Show Vendor Social
+  function wcfmcap_is_allow_show_social( $allow ) {
+  	$vendor_social = ( isset( $this->wcfm_capability_options['vendor_social'] ) ) ? $this->wcfm_capability_options['vendor_social'] : 'no';
+  	if( $vendor_social == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // Show Vendor Follower
+  function wcfmcap_is_allow_show_follower( $allow ) {
+  	$vendor_follower = ( isset( $this->wcfm_capability_options['vendor_follower'] ) ) ? $this->wcfm_capability_options['vendor_follower'] : 'no';
+  	if( $vendor_follower == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // Show Vendor Policy
+  function wcfmcap_is_allow_show_policy( $allow ) {
+  	$vendor_policy = ( isset( $this->wcfm_capability_options['vendor_policy'] ) ) ? $this->wcfm_capability_options['vendor_policy'] : 'no';
+  	if( $vendor_policy == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // Show Vendor Customer Support
+  function wcfmcap_is_allow_customer_support( $allow ) {
+  	$customer_support = ( isset( $this->wcfm_capability_options['customer_support'] ) ) ? $this->wcfm_capability_options['customer_support'] : 'no';
+  	if( $customer_support == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // Allow Refund Request
+  function wcfmcap_is_allow_refund_requests( $allow ) {
+  	$refund_requests = ( isset( $this->wcfm_capability_options['refund_requests'] ) ) ? $this->wcfm_capability_options['refund_requests'] : 'no';
+  	if( $refund_requests == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // Allow Reviews
+  function wcfmcap_is_allow_reviews( $allow ) {
+  	$review_manage = ( isset( $this->wcfm_capability_options['review_manage'] ) ) ? $this->wcfm_capability_options['review_manage'] : 'no';
+  	if( $review_manage == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // Allow Review Request
+  function wcfmcap_is_allow_manage_review( $allow ) {
+  	$review_manage = ( isset( $this->wcfm_capability_options['review_manage'] ) ) ? $this->wcfm_capability_options['review_manage'] : 'no';
+  	if( $review_manage == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // Allow Ledger Book
+  function wcfmcap_is_allow_ledger_book( $allow ) {
+  	$ledger_book = ( isset( $this->wcfm_capability_options['ledger_book'] ) ) ? $this->wcfm_capability_options['ledger_book'] : 'no';
+  	if( $ledger_book == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // WCFM wcfmcap Store Logo
+  function wcfmcap_is_allow_store_logo( $allow ) {
+  	$store_logo = ( isset( $this->wcfm_capability_options['store_logo'] ) ) ? $this->wcfm_capability_options['store_logo'] : 'no';
+  	if( $store_logo == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // WCFM wcfmcap Store Banner
+  function wcfmcap_is_allow_store_banner( $allow ) {
+  	$store_banner = ( isset( $this->wcfm_capability_options['store_banner'] ) ) ? $this->wcfm_capability_options['store_banner'] : 'no';
+  	if( $store_banner == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // WCFM wcfmcap Store Name
+  function wcfmcap_is_allow_store_name( $allow ) {
+  	$store_name = ( isset( $this->wcfm_capability_options['store_name'] ) ) ? $this->wcfm_capability_options['store_name'] : 'no';
+  	if( $store_name == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // WCFM wcfmcap Store Description
+  function wcfmcap_is_allow_store_description( $allow ) {
+  	$store_description = ( isset( $this->wcfm_capability_options['store_description'] ) ) ? $this->wcfm_capability_options['store_description'] : 'no';
+  	if( $store_description == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // WCFM wcfmcap Store Phone
+  function wcfmcap_is_allow_store_phone( $allow ) {
+  	$store_phone = ( isset( $this->wcfm_capability_options['store_phone'] ) ) ? $this->wcfm_capability_options['store_phone'] : 'no';
+  	if( $store_phone == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // WCFM wcfmcap Store Address
+  function wcfmcap_is_allow_store_address( $allow ) {
+  	$store_address = ( isset( $this->wcfm_capability_options['store_address'] ) ) ? $this->wcfm_capability_options['store_address'] : 'no';
+  	if( $store_address == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // Allow Withdrwal Request
+  function wcfmcap_is_allow_withdrawal( $allow ) {
+  	$vendor_withdrwal = ( isset( $this->wcfm_capability_options['vendor_withdrwal'] ) ) ? $this->wcfm_capability_options['vendor_withdrwal'] : 'no';
+  	if( $vendor_withdrwal == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // Allow View Transactions
+  function wcfmcap_is_allow_payments( $allow ) {
+  	$vendor_transactions = ( isset( $this->wcfm_capability_options['vendor_transactions'] ) ) ? $this->wcfm_capability_options['vendor_transactions'] : 'no';
+  	if( $vendor_transactions == 'yes' ) return false;
+  	return $allow;
+  }
+  
+  // Allow View Transaction Details
+  function wcfmcap_is_allow_transaction_details( $allow ) {
+  	$vendor_transaction_details = ( isset( $this->wcfm_capability_options['vendor_transaction_details'] ) ) ? $this->wcfm_capability_options['vendor_transaction_details'] : 'no';
+  	if( $vendor_transaction_details == 'yes' ) return false;
+  	return $allow;
+  }
+  
   // Allow View Reports
   function wcfmcap_is_allow_reports( $allow ) {
   	$view_reports = ( isset( $this->wcfm_capability_options['view_reports'] ) ) ? $this->wcfm_capability_options['view_reports'] : 'no';
@@ -575,20 +1043,6 @@ class WCFM_Capability {
   	if( $sm_wpadmin == 'yes' ) return false;
   	$ss_wpadmin = ( isset( $this->wcfm_capability_options['ss_wpadmin'] ) ) ? $this->wcfm_capability_options['ss_wpadmin'] : 'no';
   	if( $ss_wpadmin == 'yes' ) return false;
-  	return $allow;
-  }
-  
-  // Allow View / Manage Support Tickets
-  function wcfmcap_is_allow_support( $allow ) {
-  	$support_ticket = ( isset( $this->wcfm_capability_options['support_ticket'] ) ) ? $this->wcfm_capability_options['support_ticket'] : 'no';
-  	if( $support_ticket == 'yes' ) return false;
-  	return $allow;
-  }
-  
-  // Allow Support Ticket Reply
-  function wcfmcap_is_allow_manage_support( $allow ) {
-  	$support_ticket_manage = ( isset( $this->wcfm_capability_options['support_ticket_manage'] ) ) ? $this->wcfm_capability_options['support_ticket_manage'] : 'no';
-  	if( $support_ticket_manage == 'yes' ) return false;
   	return $allow;
   }
 }

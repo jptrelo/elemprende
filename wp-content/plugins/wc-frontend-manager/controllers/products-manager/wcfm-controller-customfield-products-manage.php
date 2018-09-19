@@ -44,7 +44,7 @@ class WCFM_Custom_Field_Products_Manage_Controller {
 					if( !empty( $wcfm_product_custom_block_fields ) ) {
 						foreach( $wcfm_product_custom_block_fields as $wcfm_product_custom_block_field ) {
 							$field_name = $wcfm_product_custom_block_field['name'];
-							if(isset($wcfm_products_manage_form_data[$field_name]) && !empty($wcfm_products_manage_form_data[$field_name])) {
+							if(isset($wcfm_products_manage_form_data[$field_name])) {
 								update_post_meta( $new_product_id, $field_name, $wcfm_products_manage_form_data[$field_name] );
 							} else {
 								if( $wcfm_product_custom_block_field['type'] == 'checkbox' ) {

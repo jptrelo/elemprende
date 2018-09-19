@@ -96,7 +96,8 @@ if ( ! class_exists( 'WC_Connect_API_Client' ) ) {
 					if ( ! $product->has_weight() ) {
 						return new WP_Error(
 							'product_missing_weight',
-							sprintf( "Product ( ID: %d ) did not include a weight. Shipping rates cannot be calculated.", $product->get_id() )
+							sprintf( "Product ( ID: %d ) did not include a weight. Shipping rates cannot be calculated.", $product->get_id() ),
+							array( 'product_id' => $product->get_id() )
 						);
 					}
 
@@ -248,6 +249,16 @@ if ( ! class_exists( 'WC_Connect_API_Client' ) ) {
 		 */
 		public function get_label_status( $label_id ) {
 			return $this->request( 'GET', '/shipping/label/' . $label_id . '?get_refund=true' );
+		}
+
+		/**
+		 * Gets the shipping label status (refund status, tracking code, etc)
+		 *
+		 * @param $order_id integer
+		 * @return object|WP_Error
+		 */
+		public function anonymize_order( $order_id ) {
+			return $this->request( 'POST', '/privacy/order/' . $order_id . '/anonymize' );
 		}
 
 		/**

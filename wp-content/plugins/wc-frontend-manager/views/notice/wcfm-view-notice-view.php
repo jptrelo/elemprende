@@ -9,7 +9,7 @@
  * @version   3.0.6
  */
  
-global $wp, $WCFM, $WCFMu, $wcfm;
+global $wp, $WCFM, $WCFMu, $wpdb, $blog_id;
 
 if( !apply_filters( 'wcfm_is_pref_notice', true ) || !apply_filters( 'wcfm_is_allow_notice', true ) || !apply_filters( 'wcfm_is_allow_view_notice', true ) ) {
 	wcfm_restriction_message_show( "View Topic" );
@@ -112,7 +112,7 @@ do_action( 'before_wcfm_notice_manage' );
 						  <div class="topic_reply_author">
 						    <?php
 						    $author_id = $wcfm_notice_reply->post_author;
-								$wp_user_avatar_id = get_user_meta( $author_id, 'wp_user_avatar', true );
+								$wp_user_avatar_id = get_user_meta( $author_id, $wpdb->get_blog_prefix($blog_id).'user_avatar', true );
 								$wp_user_avatar = wp_get_attachment_url( $wp_user_avatar_id );
 								if ( !$wp_user_avatar ) {
 									$wp_user_avatar = $WCFM->plugin_url . 'assets/images/user.png';
@@ -154,8 +154,15 @@ do_action( 'before_wcfm_notice_manage' );
 						<div class="wcfm-container">
 							<div id="wcfm_new_reply_listing_expander" class="wcfm-content">
 								<?php
+								$rich_editor = apply_filters( 'wcfm_is_allow_rich_editor', 'rich_editor' );
+								$wpeditor = apply_filters( 'wcfm_is_allow_profile_wpeditor', 'wpeditor' );
+								if( $wpeditor && $rich_editor ) {
+									$rich_editor = 'wcfm_wpeditor';
+								} else {
+									$wpeditor = 'textarea';
+								}
 								$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_topic_reply_fields', array(
-																																																				"topic_reply" => array( 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele', 'label_class' => 'wcfm_title' ),
+																																																				"topic_reply" => array( 'type' => $wpeditor, 'class' => 'wcfm-textarea wcfm_ele ' . $rich_editor, 'label_class' => 'wcfm_title' ),
 																																																				"topic_id"    => array( 'type' => 'hidden', 'value' => $notice_id )
 																																																				) ) );
 								?>

@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Elementor global settings model class.
+ * Elementor global settings model.
  *
  * Elementor global settings model handler class is responsible for registering
  * and managing Elementor global settings models.
@@ -84,7 +84,6 @@ class Model extends BaseModel {
 	 * @return array Controls list.
 	 */
 	public static function get_controls_list() {
-
 		return [
 			Controls_Manager::TAB_STYLE => [
 				'style' => [

@@ -29,18 +29,15 @@ class WCFM_Article {
 				
 				// Articles Load WCFMu Scripts
 				add_action( 'wcfm_load_scripts', array( &$this, 'wcfm_articles_load_scripts' ), 30 );
-				add_action( 'after_wcfm_load_scripts', array( &$this, 'wcfm_articles_load_scripts' ), 30 );
 				
 				// Articles Load WCFMu Styles
 				add_action( 'wcfm_load_styles', array( &$this, 'wcfm_articles_load_styles' ), 30 );
-				add_action( 'after_wcfm_load_styles', array( &$this, 'wcfm_articles_load_styles' ), 30 );
 				
 				// Articles Load WCFMu views
 				add_action( 'wcfm_load_views', array( &$this, 'wcfm_articles_load_views' ), 30 );
-				add_action( 'before_wcfm_load_views', array( &$this, 'wcfm_articles_load_views' ), 30 );
 				
 				// Articles Ajax Controllers
-				add_action( 'after_wcfm_ajax_controller', array( &$this, 'wcfm_articles_ajax_controller' ) );
+				add_action( 'after_wcfm_ajax_controller', array( &$this, 'wcfm_articles_ajax_controller' ), 30 );
 				
 				// Article Delete
 				add_action( 'wp_ajax_delete_wcfm_article', array( &$this, 'delete_wcfm_article' ) );
@@ -55,8 +52,8 @@ class WCFM_Article {
   	$wcfm_modified_endpoints = (array) get_option( 'wcfm_endpoints' );
   	
 		$query_articles_vars = array(
-			'wcfm-articles'                 => ! empty( $wcfm_modified_endpoints['wcfm-articles'] ) ? $wcfm_modified_endpoints['wcfm-articles'] : 'wcfm-articles',
-			'wcfm-articles-manage'          => ! empty( $wcfm_modified_endpoints['wcfm-articles-manage'] ) ? $wcfm_modified_endpoints['wcfm-articles-manage'] : 'wcfm-articles-manage',
+			'wcfm-articles'                 => ! empty( $wcfm_modified_endpoints['wcfm-articles'] ) ? $wcfm_modified_endpoints['wcfm-articles'] : 'articles',
+			'wcfm-articles-manage'          => ! empty( $wcfm_modified_endpoints['wcfm-articles-manage'] ) ? $wcfm_modified_endpoints['wcfm-articles-manage'] : 'articles-manage',
 		);
 		
 		$query_vars = array_merge( $query_vars, $query_articles_vars );
@@ -104,8 +101,8 @@ class WCFM_Article {
   function wcfm_articles_endpoints_slug( $endpoints ) {
 		
 		$articles_endpoints = array(
-													'wcfm-articles'  		      => 'wcfm-articles',
-													'wcfm-articles-manage'  	=> 'wcfm-articles-manage',
+													'wcfm-articles'  		      => 'articles',
+													'wcfm-articles-manage'  	=> 'articles-manage',
 													);
 		$endpoints = array_merge( $endpoints, $articles_endpoints );
 		
@@ -121,7 +118,7 @@ class WCFM_Article {
 		$articles_menus = array( 'wcfm-articles' => array(   'label'  => __( 'Articles', 'wc-frontend-manager'),
 																												 'url'       => get_wcfm_articles_url(),
 																												 'icon'      => 'codepen',
-																												 'has_new'    => true,
+																												 'has_new'    => 'yes',
 																												 'new_class'  => 'wcfm_sub_menu_items_article_manage',
 																												 'new_url'    => get_wcfm_articles_manage_url(),
 																												 'capability' => 'wcfm_article_menu',
@@ -163,9 +160,12 @@ class WCFM_Article {
       break;
       
       case 'wcfm-articles-manage':
-      	$WCFM->library->load_tinymce_lib();
+      	if( !apply_filters( 'wcfm_is_allow_article_wpeditor', 'wpeditor' ) ) {
+      		$WCFM->library->load_tinymce_lib();
+      	}
       	$WCFM->library->load_upload_lib();
       	$WCFM->library->load_select2_lib();
+      	$WCFM->library->load_collapsible_lib();
 	  		wp_enqueue_script( 'wcfm_articles_manage_js', $WCFM->library->js_lib_url . 'articles/wcfm-script-articles-manage.js', array('jquery'), $WCFM->version, true );
 	  		
 	  		// Localized Script
@@ -201,11 +201,11 @@ class WCFM_Article {
 	  
 	  switch( $end_point ) {
 	  	case 'wcfm-articles':
-        require_once( $WCFM->library->views_path . 'articles/wcfm-view-articles.php' );
+        $WCFM->template->get_template( 'articles/wcfm-view-articles.php' );
       break;
       
       case 'wcfm-articles-manage':
-        require_once( $WCFM->library->views_path . 'articles/wcfm-view-articles-manage.php' );
+        $WCFM->template->get_template( 'articles/wcfm-view-articles-manage.php' );
       break;
 	  }
 	}
@@ -224,12 +224,12 @@ class WCFM_Article {
   		
   		switch( $controller ) {
   			case 'wcfm-articles':
-					require_once( $controllers_path . 'wcfm-controller-articles.php' );
+					include_once( $controllers_path . 'wcfm-controller-articles.php' );
 					new WCFM_Articles_Controller();
 				break;
 				
 				case 'wcfm-articles-manage':
-					require_once( $controllers_path . 'wcfm-controller-articles-manage.php' );
+					include_once( $controllers_path . 'wcfm-controller-articles-manage.php' );
 					new WCFM_Articles_Manage_Controller();
 				break;
   		}
@@ -245,9 +245,17 @@ class WCFM_Article {
   	$articleid = $_POST['articleid'];
 		
 		if( $articleid ) {
-			if(wp_delete_post($articleid)) {
-				echo 'success';
-				die;
+			do_action( 'wcfm_before_article_delete', $articleid );
+			if( apply_filters( 'wcfm_is_allow_article_delete' , false ) ) {
+				if(wp_delete_post($articleid)) {
+					echo 'success';
+					die;
+				}
+			} else {
+				if(wp_trash_post($articleid)) {
+					echo 'success';
+					die;
+				}
 			}
 			die;
 		}

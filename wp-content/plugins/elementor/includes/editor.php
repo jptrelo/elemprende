@@ -1,14 +1,16 @@
 <?php
 namespace Elementor;
 
+use Elementor\Core\Responsive\Responsive;
 use Elementor\Core\Settings\Manager as SettingsManager;
+use Elementor\TemplateLibrary\Source_Local;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
 /**
- * Elementor editor class.
+ * Elementor editor.
  *
  * Elementor editor handler class is responsible for initializing Elementor
  * editor and register all the actions needed to display the editor.
@@ -121,6 +123,9 @@ class Editor {
 		// Handle `wp_enqueue_scripts`
 		remove_all_actions( 'wp_enqueue_scripts' );
 
+		// Also remove all scripts hooked into after_wp_tiny_mce.
+		remove_all_actions( 'after_wp_tiny_mce' );
+
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ], 999999 );
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_styles' ], 999999 );
 
@@ -141,8 +146,7 @@ class Editor {
 		// Tell to WP Cache plugins do not cache this request.
 		Utils::do_not_cache();
 
-		// Print the panel
-		$this->print_panel_html();
+		$this->print_editor_template();
 
 		// From the action it's an empty string, from tests its `false`
 		if ( false !== $die ) {
@@ -206,6 +210,10 @@ class Editor {
 	public function is_edit_mode( $post_id = null ) {
 		if ( null !== $this->_is_edit_mode ) {
 			return $this->_is_edit_mode;
+		}
+
+		if ( empty( $post_id ) ) {
+			$post_id = $this->_post_id;
 		}
 
 		if ( ! User::is_current_user_can_edit( $post_id ) ) {
@@ -281,9 +289,24 @@ class Editor {
 	 * Include the wrapper template of the editor.
 	 *
 	 * @since 1.0.0
+	 * @deprecated 2.2.0 Use `Editor::print_editor_template` instead
 	 * @access public
 	 */
 	public function print_panel_html() {
+		_deprecated_function( __METHOD__, '2.2.0', 'Editor::print_editor_template' );
+
+		$this->print_editor_template();
+	}
+
+	/**
+	 * Print Editor Template.
+	 *
+	 * Include the wrapper template of the editor.
+	 *
+	 * @since 2.2.0
+	 * @access public
+	 */
+	public function print_editor_template() {
 		include( 'editor-templates/editor-wrapper.php' );
 	}
 
@@ -381,12 +404,12 @@ class Editor {
 		);
 
 		wp_register_script(
-			'jquery-select2',
-			ELEMENTOR_ASSETS_URL . 'lib/select2/js/select2' . $suffix . '.js',
+			'jquery-elementor-select2',
+			ELEMENTOR_ASSETS_URL . 'lib/e-select2/js/e-select2.full' . $suffix . '.js',
 			[
 				'jquery',
 			],
-			'4.0.5',
+			'4.0.6-rc.1',
 			true
 		);
 
@@ -432,7 +455,7 @@ class Editor {
 			[
 				'jquery-ui-position',
 			],
-			'4.2.1',
+			'4.5.0',
 			true
 		);
 
@@ -450,7 +473,7 @@ class Editor {
 				'tipsy',
 				'imagesloaded',
 				'heartbeat',
-				'jquery-select2',
+				'jquery-elementor-select2',
 				'flatpickr',
 				'elementor-dialog',
 				'ace',
@@ -506,7 +529,6 @@ class Editor {
 			'document' => $document->get_config(),
 			'autosave_interval' => AUTOSAVE_INTERVAL,
 			'current_user_can_publish' => $current_user_can_publish,
-			'elements_categories' => $plugin->elements_manager->get_categories(),
 			'controls' => $plugin->controls_manager->get_controls_data(),
 			'elements' => $plugin->elements_manager->get_element_types_config(),
 			'widgets' => $plugin->widgets_manager->get_widget_types_config(),
@@ -523,15 +545,16 @@ class Editor {
 			'docs_elementor_site' => 'https://go.elementor.com/docs/',
 			'help_the_content_url' => 'https://go.elementor.com/the-content-missing/',
 			'help_preview_error_url' => 'https://go.elementor.com/preview-not-loaded/',
+			'help_right_click_url' => 'https://go.elementor.com/meet-right-click/',
 			'assets_url' => ELEMENTOR_ASSETS_URL,
 			'locked_user' => $locked_user,
 			'user' => [
 				'restrictions' => $plugin->role_manager->get_user_restrictions_array(),
 				'is_administrator' => current_user_can( 'manage_options' ),
+				'introduction' => User::is_should_view_introduction(),
 			],
 			'is_rtl' => is_rtl(),
 			'locale' => get_locale(),
-			'viewportBreakpoints' => Responsive::get_breakpoints(),
 			'rich_editing_enabled' => filter_var( get_user_meta( get_current_user_id(), 'rich_editing', true ), FILTER_VALIDATE_BOOLEAN ),
 			'page_title_selector' => $page_title_selector,
 			'tinymceHasCustomConfig' => class_exists( 'Tinymce_Advanced' ),
@@ -554,7 +577,7 @@ class Editor {
 				'settings' => __( 'Settings', 'elementor' ),
 
 				// Elements.
-				'inner_section' => __( 'Columns', 'elementor' ),
+				'inner_section' => __( 'Inner Section', 'elementor' ),
 
 				// Control Order.
 				'asc' => __( 'Ascending order', 'elementor' ),
@@ -647,6 +670,25 @@ class Editor {
 				'server_connection_lost' => __( 'Connection Lost', 'elementor' ),
 				'unknown_error' => __( 'Unknown Error', 'elementor' ),
 
+				// Context Menu
+				'duplicate' => __( 'Duplicate', 'elementor' ),
+				'copy' => __( 'Copy', 'elementor' ),
+				'paste' => __( 'Paste', 'elementor' ),
+				'copy_style' => __( 'Copy Style', 'elementor' ),
+				'paste_style' => __( 'Paste Style', 'elementor' ),
+				'reset_style' => __( 'Reset Style', 'elementor' ),
+				'save_as_global' => __( 'Save as a Global', 'elementor' ),
+				'save_as_block' => __( 'Save as Template', 'elementor' ),
+				'new_column' => __( 'Add New Column', 'elementor' ),
+				'copy_all_content' => __( 'Copy All Content', 'elementor' ),
+				'delete_all_content' => __( 'Delete All Content', 'elementor' ),
+				'navigator' => __( 'Navigator', 'elementor' ),
+
+				// Right Click Introduction
+				'meet_right_click_header' => __( 'Meet Right Click', 'elementor' ),
+				'meet_right_click_message' => __( 'Now you can access all editing actions using right click.', 'elementor' ),
+				'got_it' => __( 'Got It', 'elementor' ),
+
 				// TODO: Remove.
 				'autosave' => __( 'Autosave', 'elementor' ),
 				'elementor_docs' => __( 'Documentation', 'elementor' ),
@@ -667,8 +709,8 @@ class Editor {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param string $localized_settings Localized settings.
-		 * @param int    $post_id            The ID of the current post being edited.
+		 * @param array $localized_settings Localized settings.
+		 * @param int   $post_id            The ID of the current post being edited.
 		 */
 		$localized_settings = apply_filters( 'elementor/editor/localize_settings', $localized_settings, $this->_post_id );
 
@@ -732,17 +774,17 @@ class Editor {
 		);
 
 		wp_register_style(
-			'select2',
-			ELEMENTOR_ASSETS_URL . 'lib/select2/css/select2' . $suffix . '.css',
+			'elementor-select2',
+			ELEMENTOR_ASSETS_URL . 'lib/e-select2/css/e-select2' . $suffix . '.css',
 			[],
-			'4.0.5'
+			'4.0.6-rc.1'
 		);
 
 		wp_register_style(
 			'elementor-icons',
 			ELEMENTOR_ASSETS_URL . 'lib/eicons/css/elementor-icons' . $suffix . '.css',
 			[],
-			'3.2.0'
+			'3.8.0'
 		);
 
 		wp_register_style(
@@ -764,7 +806,7 @@ class Editor {
 			ELEMENTOR_ASSETS_URL . 'css/editor' . $direction_suffix . $suffix . '.css',
 			[
 				'font-awesome',
-				'select2',
+				'elementor-select2',
 				'elementor-icons',
 				'wp-auth-check',
 				'google-font-roboto',
@@ -774,6 +816,12 @@ class Editor {
 		);
 
 		wp_enqueue_style( 'elementor-editor' );
+
+		if ( Responsive::has_custom_breakpoints() ) {
+			$breakpoints = Responsive::get_breakpoints();
+
+			wp_add_inline_style( 'elementor-editor', '.elementor-device-tablet #elementor-preview-responsive-wrapper { width: ' . $breakpoints['md'] . 'px; }' );
+		}
 
 		/**
 		 * After editor enqueue styles.
@@ -943,6 +991,34 @@ class Editor {
 	public function __construct() {
 		add_action( 'admin_action_elementor', [ $this, 'init' ] );
 		add_action( 'template_redirect', [ $this, 'redirect_to_new_url' ] );
+
+		// Handle autocomplete feature for URL control.
+		add_filter( 'wp_link_query_args', [ $this, 'filter_wp_link_query_args' ] );
+		add_filter( 'wp_link_query', [ $this, 'filter_wp_link_query' ] );
+	}
+
+	public function filter_wp_link_query_args( $query ) {
+		$library_cpt_key = array_search( Source_Local::CPT, $query['post_type'], true );
+		if ( false !== $library_cpt_key ) {
+			unset( $query['post_type'][ $library_cpt_key ] );
+		}
+
+		return $query;
+	}
+
+	public function filter_wp_link_query( $results ) {
+		if ( isset( $_POST['editor'] ) && 'elementor' === $_POST['editor'] ) {
+			$post_type_object = get_post_type_object( 'post' );
+			$post_label = $post_type_object->labels->singular_name;
+
+			foreach ( $results as & $result ) {
+				if ( 'post' === get_post_type( $result['ID'] ) ) {
+					$result['info'] = $post_label;
+				}
+			}
+		}
+
+		return $results;
 	}
 
 	/**
@@ -1035,7 +1111,9 @@ class Editor {
 			'panel',
 			'panel-elements',
 			'repeater',
+			'library-layout',
 			'templates',
+			'navigator',
 		];
 
 		foreach ( $template_names as $template_name ) {

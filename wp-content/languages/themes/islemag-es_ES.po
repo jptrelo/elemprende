@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Themes - IsleMag package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2017-10-03 17:26:06+0000\n"
+"PO-Revision-Date: 2018-09-19 15:41:49+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,11 +19,59 @@ msgstr "Un tema gratuito moderno y limpio para WordPress para revistas de tecnol
 msgid "IsleMag"
 msgstr "IsleMag"
 
+#: template-parts/content-template2.php:88
+#: template-parts/content-template3.php:174
+#: template-parts/content-template3.php:251
+#: template-parts/content-template3.php:325
+#: template-parts/content-template4.php:91
+#: template-parts/content-template4.php:165
+msgid "1 Comment"
+msgstr "1 comentario"
+
+#: template-parts/content-template2.php:88
+#: template-parts/content-template3.php:174
+#: template-parts/content-template3.php:251
+#: template-parts/content-template3.php:325
+#: template-parts/content-template4.php:91
+#: template-parts/content-template4.php:165
+msgid "0 Comments"
+msgstr "0 comentarios"
+
+#: inc/customizer.php:625
+msgid "Footer copyright"
+msgstr "Copyright del pie"
+
+#: inc/customizer.php:495
+msgid "Display randomly the posts"
+msgstr "Mostrar entradas aleatoriamente"
+
+#. translators: %s: post title
+#: inc/extras.php:80
+msgctxt "comments title"
+msgid "One thought on &ldquo;%s&rdquo;"
+msgstr "Un comentario en &ldquo;%s&rdquo;"
+
+#: inc/customizer.php:35
+msgid "Use a different custom template as frontpage?"
+msgstr "¿Usar una plantilla personalizada distinta como página de inicio?"
+
+#: inc/class/islemag-info.php:54
+msgid "Leave a review"
+msgstr "Deja una reseña"
+
+#: inc/class/islemag-info.php:46
+msgid "Demo"
+msgstr "Demo"
+
+#: inc/class/islemag-info.php:42
+msgid "Documentation"
+msgstr "Documentación"
+
 #: inc/customizer.php:476 inc/customizer.php:519
 msgid "Disable section"
 msgstr "Desactivar Sección"
 
-#: template-parts/content-single.php:138
+#: template-parts/content-single.php:140
 msgid "Post Author:"
 msgstr "Autor entrada:"
 
@@ -46,6 +94,14 @@ msgstr "Ver Información del tema"
 #: inc/admin/welcome-screen/welcome-screen.php:68
 msgid "Get started with %s"
 msgstr "Comenzar con %s"
+
+#: inc/admin/welcome-screen/welcome-screen.php:67
+msgid "Welcome! Thank you for choosing %1$s! To fully take advantage of the best our theme can offer please make sure you visit our %2$swelcome page%3$s."
+msgstr "¡Bienvenido! ¡Gracias por elegir %1$s! Asegúrate de visitar nuestra %2$spágina de bienvenida%3$s para sacarle todo el partido posible a nuestro tema."
+
+#: inc/admin/welcome-screen/sections/github.php:38
+msgid "Rate our theme on %1$sWordPress.org%2$s. We'd really appreciate it!"
+msgstr "Valora nuestro tema en %1$sWordPress.org%2$s. ¡¡Te lo agradeciríamos mucho!!"
 
 #: inc/admin/welcome-screen/sections/github.php:36
 msgid "Are you enjoying %s?"
@@ -253,6 +309,10 @@ msgstr "Personaliza todo en un solo lugar."
 msgid "Getting started"
 msgstr "Comenzando"
 
+#: inc/admin/welcome-screen/sections/getting-started.php:20
+msgid "We want to make sure you have the best experience using %1$s and that is why we gathered here all the necessary informations for you. We hope you will enjoy using %2$s, as much as we enjoy creating great products."
+msgstr "Queremos asegurarnos de que tengas la mejor experiencia posible utilizando %1$s y para eso hemos recogido aquí toda la información que puedes necesitar. Deseamos que disfrutes usando %2$s, tanto como nosotros disfrutamos creando productos geniales."
+
 #: inc/admin/welcome-screen/sections/getting-started.php:19
 msgid "Our best free one page magazine WordPress theme, %s!"
 msgstr "Nuestro mejor tema gratuito para revista de una sola página para WordPress, %s!"
@@ -300,51 +360,51 @@ msgstr "Sobre "
 msgid "Read more %s ..."
 msgstr "Leer más %s ..."
 
-#: template-parts/content-template2.php:89
-#: template-parts/content-template3.php:173
-#: template-parts/content-template3.php:248
-#: template-parts/content-template3.php:320
-#: template-parts/content-template4.php:92
-#: template-parts/content-template4.php:164
+#: template-parts/content-template2.php:91
+#: template-parts/content-template3.php:177
+#: template-parts/content-template3.php:254
+#: template-parts/content-template3.php:328
+#: template-parts/content-template4.php:94
+#: template-parts/content-template4.php:168
 msgid "Posted By"
 msgstr "Publicado Por"
 
-#: template-parts/content-template1.php:72
+#: template-parts/content-template1.php:74
 #: template-parts/content-template2.php:63
-#: template-parts/content-template3.php:84
-#: template-parts/content-template3.php:149
-#: template-parts/content-template3.php:224
-#: template-parts/content-template3.php:296
+#: template-parts/content-template3.php:86
+#: template-parts/content-template3.php:151
+#: template-parts/content-template3.php:228
+#: template-parts/content-template3.php:302
 #: template-parts/content-template4.php:68
-#: template-parts/content-template4.php:141
+#: template-parts/content-template4.php:143
 msgid "Rating:"
 msgstr "Valoración:"
 
-#: template-parts/content-single.php:284
+#: template-parts/content-single.php:286
 msgid "Read More"
 msgstr "Leer Más"
 
-#: template-parts/content-single.php:268
+#: template-parts/content-single.php:270
 msgid "Show more categories"
 msgstr "Mostrar más categorías"
 
-#: template-parts/content-single.php:165
+#: template-parts/content-single.php:167
 msgid "Related Posts"
 msgstr "Entradas relacionadas"
 
-#: template-parts/content-single.php:123
+#: template-parts/content-single.php:125
 msgid "by"
 msgstr "por"
 
-#: template-parts/content-single.php:121
+#: template-parts/content-single.php:122
 msgid "% Responses"
 msgstr "% Respuestas"
 
-#: template-parts/content-single.php:121
+#: template-parts/content-single.php:122
 msgid "One Response"
 msgstr "Una respuesta"
 
-#: template-parts/content-single.php:121
+#: template-parts/content-single.php:122
 msgid "No Responses"
 msgstr "Sin respuestas"
 
@@ -414,12 +474,12 @@ msgstr "Resultados de búsqueda: %s"
 msgid "Edit %s"
 msgstr "Editar %s"
 
-#: inc/template-tags.php:70 template-parts/content-template2.php:87
-#: template-parts/content-template3.php:171
-#: template-parts/content-template3.php:246
-#: template-parts/content-template3.php:318
-#: template-parts/content-template4.php:90
-#: template-parts/content-template4.php:162
+#: inc/template-tags.php:70 template-parts/content-template2.php:88
+#: template-parts/content-template3.php:174
+#: template-parts/content-template3.php:251
+#: template-parts/content-template3.php:325
+#: template-parts/content-template4.php:91
+#: template-parts/content-template4.php:165
 msgid "% Comments"
 msgstr "% Comentarios"
 
@@ -528,11 +588,11 @@ msgstr "Número de entradas en esta sección"
 
 #: inc/customizer.php:485 inc/customizer.php:546
 #: template-parts/content-template3.php:43
-#: template-parts/content-template3.php:124
-#: template-parts/content-template3.php:198
-#: template-parts/content-template3.php:270
+#: template-parts/content-template3.php:126
+#: template-parts/content-template3.php:202
+#: template-parts/content-template3.php:276
 #: template-parts/content-template4.php:42
-#: template-parts/content-template4.php:115
+#: template-parts/content-template4.php:117
 msgid "Category"
 msgstr "Categoría"
 
@@ -972,6 +1032,14 @@ msgstr "Comentarios anteriores"
 #: comments.php:32 comments.php:61
 msgid "Comment navigation"
 msgstr "Navegación de comentarios"
+
+#. translators: 1: number of comments, 2: post title
+#: inc/extras.php:84
+msgctxt "comments title"
+msgid "%1$s thought on &ldquo;%2$s&rdquo;"
+msgid_plural "%1$s thoughts on &ldquo;%2$s&rdquo;"
+msgstr[0] "%1$s comentario sobre &ldquo;%2$s&rdquo;"
+msgstr[1] "%1$s comentarios sobre &ldquo;%2$s&rdquo;"
 
 #: 404.php:18
 msgid "It looks like nothing was found at this location. Maybe try one of the links below or a search?"

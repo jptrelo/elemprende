@@ -208,13 +208,6 @@ jQuery(document).ready(function($){
         });
     });
 
-    // time picker
-    if (typeof $().timepicker !== 'undefined') {
-        $('.rtec-time-picker').each(function() {
-            $(this).timepicker();
-        });
-    }
-
     // search registrants
     var $rtecSearchInput = $('#rtec-search-input');
 
@@ -229,6 +222,68 @@ jQuery(document).ready(function($){
                 successFunc = function (data) {
                     $('.rtec-overview').html(data);
                     $rtecSearchInput.removeAttr('disabled');
+
+                    $('.rtec-manage-match').click(function(event) {
+                        event.preventDefault();
+                        if ($(this).next('.rtec-manage-match-actions').is(':visible')) {
+                            $(this).next('.rtec-manage-match-actions').slideUp();
+                        } else {
+                            $(this).next('.rtec-manage-match-actions').slideDown();
+                        }
+                    });
+                    $('.rtec-manage-match-actions button').click(function(event){
+                        var $self = $(this),
+                            $context = $self.closest('.rtec-manage-match-actions'),
+                            entry_id = $context.attr('data-entry-id'),
+                            email = $context.attr('data-email'),
+                            action = typeof $self.attr('data-rtec-action') !== 'undefined' ? $self.attr('data-rtec-action') : 'none';
+                        if ( action !== 'none' ) {
+                            event.preventDefault();
+                            var message = action === 'delete-all' ? 'Delete all records with the email address '+email+'? This cannot be undone.' : 'Delete this record? This cannot be undone.';
+                            // start spinner to show user that request is processing
+                            if (confirm(message)) {
+                                $self
+                                    .after('<div class="rtec-table-changing spinner is-active"></div>')
+                                    .fadeTo("slow", .5).attr('disabled',true);
+
+                                var edit_action = 'delete';
+                                if ( action === 'delete-all' ) {
+                                    edit_action = 'delete-all';
+                                }
+                                var submitData = {
+                                        action : 'rtec_records_edit',
+                                        edit_action : edit_action,
+                                        registrations_to_be_deleted : [entry_id],
+                                        event_id : 0,
+                                        venue: '',
+                                        email: email,
+                                        rtec_nonce : rtecAdminScript.rtec_nonce
+                                    },
+                                    successFunc = function (data) {
+                                        // remove deleted entries
+                                        $('.rtec-being-removed').each(function () {
+                                            $(this).remove();
+                                        });
+                                        // remove spinner
+                                        $('.rtec-table-changing').remove();
+                                        if ( action === 'delete-single' ) {
+                                            $context.closest('tr').fadeOut();
+                                        } else {
+                                            $('.rtec-registrations-data').find('tbody tr').each(function() {
+                                                if ($(this).attr('data-email') === email) {
+                                                    $(this).fadeOut();
+                                                }
+                                            });
+                                        }
+                                        //location.reload();
+
+                                    };
+                                rtecRegistrationAjax(submitData,successFunc);
+                            }
+
+
+                        }
+                    });
                     // remove spinner
                     //$targetForm.find('.rtec-table-changing').remove();
                     //$targetForm.find('.rtec-update-event-options').removeAttr('disabled');
@@ -487,7 +542,6 @@ jQuery(document).ready(function($){
             }
         };
     }
-
 
     function rtecRegistrationAjax(submitData,successFunc) {
         $.ajax({

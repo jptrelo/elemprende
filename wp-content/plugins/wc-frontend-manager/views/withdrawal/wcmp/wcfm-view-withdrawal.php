@@ -39,7 +39,7 @@ if (isset($WCMp->vendor_caps->payment_cap['commission_threshold']) && $WCMp->ven
 			
 			<?php
 			if( $wcfm_is_allow_payments = apply_filters( 'wcfm_is_allow_payments', true ) ) {
-				echo '<a class="add_new_wcfm_ele_dashboard text_tip" href="'.wcfm_payments_url().'" data-tip="'. __('Transaction History', 'wc-frontend-manager') .'"><span class="fa fa-credit-card"></span><span class="text">' . __('Transactions', 'dc-woocommerce-multi-vendor' ) . '</span></a>';
+				echo '<a class="add_new_wcfm_ele_dashboard text_tip" href="'.wcfm_payments_url().'" data-tip="'. __('Transaction History', 'wc-frontend-manager') .'"><span class="fa fa-credit-card"></span><span class="text">' . __('Transactions', 'wc-frontend-manager' ) . '</span></a>';
 			}
 			?>
 			<div class="wcfm-clearfix"></div>
@@ -55,7 +55,7 @@ if (isset($WCMp->vendor_caps->payment_cap['commission_threshold']) && $WCMp->ven
 						<thead>
 							<tr>
 								<th><span class="wcicon-status-processing text_tip" data-tip="<?php _e( 'Send Request', 'wc-frontend-manager' ); ?>"></span></th>
-								<th><?php _e( 'Order ID', 'wc-frontend-manager' ); ?></th>
+								<th><?php printf( apply_filters( 'wcfm_commission_order_label', __( 'Order ID', 'wc-frontend-manager' ) ) ); ?></th>
 								<th><?php _e( 'Commission ID', 'wc-frontend-manager' ); ?></th>
 								<th><?php _e( 'My Earnings', 'wc-frontend-manager' ); ?></th>
 								<th><?php _e( 'Date', 'wc-frontend-manager' ); ?></th>
@@ -64,7 +64,7 @@ if (isset($WCMp->vendor_caps->payment_cap['commission_threshold']) && $WCMp->ven
 						<tfoot>
 							<tr>
 								<th><span class="wcicon-status-processing text_tip" data-tip="<?php _e( 'Send Request', 'wc-frontend-manager' ); ?>"></span></th>
-								<th><?php _e( 'Order ID', 'wc-frontend-manager' ); ?></th>
+								<th><?php printf( apply_filters( 'wcfm_commission_order_label', __( 'Order ID', 'wc-frontend-manager' ) ) ); ?></th>
 								<th><?php _e( 'Commission ID', 'wc-frontend-manager' ); ?></th>
 								<th><?php _e( 'My Earnings', 'wc-frontend-manager' ); ?></th>
 								<th><?php _e( 'Date', 'wc-frontend-manager' ); ?></th>

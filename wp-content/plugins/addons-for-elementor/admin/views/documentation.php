@@ -68,6 +68,7 @@ else {
                     <li><a href="#install-plugins">Installing Recommended/Required Plugins</a></li>
                     <li><a href="#demo-data">Installing Demo Data</a></li>
                     <li><a href="#plugin-elements">Working with plugin elements</a></li>
+                    <li><a href="#customization">How to customize addons output</a></li>
 
                     <li><a href="#heading-element">Heading Addon</a></li>
                     <li><a href="#services-element">Services Addon</a></li>
@@ -76,7 +77,7 @@ else {
                     <li><a href="#testimonials-elements">Testimonials Addons</a></li>
                     <li><a href="#posts-carousel">Posts Carousel</a></li>
                     <li><a href="#carousel-element">Carousel Addon</a></li>
-                    <li><a href="#grid-element">Livemesh Grid</a></li>
+                    <li><a href="#grid-element">Posts Grid</a></li>
                     <li><a href="#clients-element">Clients</a></li>
                     <li><a href="#pricing-table">Pricing Table</a></li>
                     <li><a href="#tabs-accordions">Tabs and Accordions – <span class="pro-feature">Pro!</span></a></li>
@@ -91,14 +92,14 @@ else {
                 </ul>
                 <h3 id="getting-started">Getting Started<a class="back-to-top" href="#panel"><span
                                 class="dashicons dashicons-arrow-up-alt2"></span> Back to top</a></h3>
-                <p>Thanks for choosing Addons for Elementor plugin. This help file aims to provide you with all the information you need to make the best use of this powerful plugin. The aim of the plugin to make the task of building a website effortless and pleasurable. Towards that end, we have built a number of elements most commonly used across most of the websites of small businesses, corporates, design agencies, freelancers, artists etc.</p>
+                <p>Thanks for choosing Livemesh Addons for Elementor plugin. This help file aims to provide you with all the information you need to make the best use of this powerful plugin. The aim of the plugin to make the task of building a website effortless and pleasurable. Towards that end, we have built a number of elements most commonly used across most of the websites of small businesses, corporates, design agencies, freelancers, artists etc.</p>
                 <p>Do follow the steps below to get started - </p>
                 <ol>
                     <li>Install and activate the <strong>required plugin</strong> <a
                                 href="https://wordpress.org/plugins/elementor/" rel="nofollow" target="_blank">Elementor</a>.
                         Elementor is one of the most popular WordPress page builder plugins powering more than 100,000 websites.
                     </li>
-                    <li><strong>Make sure you deactivate the free plugin</strong> <a href="https://wordpress.org/plugins/addons-for-elementor/" rel="nofollow">Addons for Elementor</a> upon installing the premium version.
+                    <li><strong>Make sure you deactivate the free plugin</strong> <a href="https://wordpress.org/plugins/addons-for-elementor/" rel="nofollow">Livemesh Addons for Elementor</a> upon installing the premium version.
                     </li>
                     <li>Unzip the downloaded addons-for-elementor.zip file and upload to the <code>/wp-content/plugins/</code>
                         directory or upload the plugin zip with the help of Plugins→Installed Plugins→Add New button.<br>
@@ -116,14 +117,14 @@ else {
                                         target="_blank"><?php echo __('Settings->Page Builder', 'livemesh-el-addons') ?></a></strong>
                             page. This will ensure that scripts and files relating to the deactivated elements do not load on your site.</p>
                     </li>
-                    <li>If you plan to build a portfolio site and plan to use Livemesh Grid element for the same, install
+                    <li>If you plan to build a portfolio site and plan to use Posts Grid element for the same, install
                         and activate the optional plugin <a
                                 href="https://wordpress.org/plugins/portfolio-post-type/" rel="nofollow" target="_blank">Portfolio
                             Post Type</a>.
-                        The portfolio examples of Livemesh Grid element is built using custom post type registered by
+                        The portfolio examples of Posts Grid element is built using custom post type registered by
                         this plugin.
                     </li>
-                    <li>Optionally, if you have <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Addons for Elementor Pro" target="_blank">premium version</a> of the plugin installed, you can import the sample data
+                    <li>Optionally, if you have <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Livemesh Addons for Elementor Pro" target="_blank">premium version</a> of the plugin installed, you can import the sample data
                         that replicates the demo site for you by importing the
                         file sample-data.xml file located in the plugin directory. The import option is available under
                         <strong> <a href="<?php echo admin_url() . 'import.php'; ?>"
@@ -140,7 +141,7 @@ else {
                     Although some of these plugins are optional, we recommend that you install these popular plugins if
                     you plan to install the demo data and get most out of this plugin. The demo site and the sample data
                     provided with the <a href="https://www.livemeshthemes.com/elementor-addons/pricing/"
-                                         title="Addons for Elementor Pro" target="_blank">premium version</a> of
+                                         title="Livemesh Addons for Elementor Pro" target="_blank">premium version</a> of
                     the plugin utilizes all of these plugins including the Portfolio Post type plugin.</p>
                 <p>These plugins are also listed in the Plugins tab of this help file under Elementor Addons →
                     Documentation, and you can install the plugins directly from there.</p>
@@ -148,7 +149,7 @@ else {
                     <li><p><strong>Elementor</strong> is perhaps the most loved page builder tool for WordPress powering
                             over 100,000+ sites. You can build any layout you can imagine with intuitive drag and drop builder
                             with little or no programming knowledge.</p>
-                        <p>All of the elements part of Addons for Elementor plugin were built using the API provided
+                        <p>All of the elements part of Livemesh Addons for Elementor plugin were built using the API provided
                             by the Elementor plugin and hence this plugin must be installed and activated on the site prior
                             to using our plugin.</p>
                         <p>All of the pages of our demo site for
@@ -166,7 +167,7 @@ else {
                 <hr>
                 <h3 id="demo-data">Installing Demo Data<a class="back-to-top" href="#panel"><span
                                 class="dashicons dashicons-arrow-up-alt2"></span> Back to top</a></h3>
-                <p>If you have <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Addons for Elementor Pro" target="_blank">premium version</a> of the plugin installed, you can install the demo data to replicate the
+                <p>If you have <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Livemesh Addons for Elementor Pro" target="_blank">premium version</a> of the plugin installed, you can install the demo data to replicate the
                     plugin demo site to get a head start on building your site. Installing demo data reduces the
                     learning curve associated with trying out the powerful elements part of this plugin.</p>
                 <p>The sample data imports the pages, posts and portfolio items part of the demo site. Once you are done with playing around the
@@ -191,7 +192,7 @@ else {
                         get a head start on using the plugin.
                     </li>
 
-                    <li>Once the Addons for Elementor plugin is activated, you should see a menu item <strong> <a href="<?php echo admin_url() . 'admin.php?page=livemesh_el_addons'; ?>"
+                    <li>Once the Livemesh Addons for Elementor plugin is activated, you should see a menu item <strong> <a href="<?php echo admin_url() . 'admin.php?page=livemesh_el_addons'; ?>"
                                                                                                                        target="_blank"><?php echo __('Elementor Addons', 'livemesh-el-addons') ?></a></strong> in WordPress admin with five sections - Settings, Elements, Custom CSS, Debugging and Premium Upgrade.
                         <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/plugin-settings.png" alt="Elementor Addons Settings"></p>
 
@@ -201,7 +202,7 @@ else {
 
                     </li>
 
-                    <li>Once the Addons for Elementor plugin is activated, all of the elements built by the plugin become available
+                    <li>Once the Livemesh Addons for Elementor plugin is activated, all of the elements built by the plugin become available
                         for drag and drop in the frontend Elementor page builder. In the Page edit window, click on the <strong>'Edit with Elementor'</strong>
                         button below the title field of the page edit window to invoke the frontend page builder controls
                         of Elementor with the frontend page displayed on the right of the controls sidebar window.
@@ -243,7 +244,51 @@ else {
                 </ul>
 
 
-                <p>The below sections provide help on each of the elements built as part of Addons for Elementor
+                <hr>
+                <h3 id="customization">How to customize output generated by addons<a class="back-to-top" href="#panel"><span
+                                class="dashicons dashicons-arrow-up-alt2"></span> Back to top</a></h3>
+                <p>The strength of this plugin over many others is that this plugin lets you customize almost any piece of HTML
+                    generated by an addon part of the plugin. You can move around or modify the output elements to suit your
+                    needs - change HTML tags, change sequence of information (e.g., place image at the bottom of the post in a
+                    grid), add new CSS classes of your own, add branding material, delete unneeded output element (e.g. remove
+                    post meta information), modify information (e.g., truncate description or excerpt generated) etc. with the
+                    help of templates and filters provided by the plugin. </p>
+                <p>Following are the two ways to customize the output of an addon part of the plugin.</p>
+                <ul>
+                    <li><p><strong>Templates</strong> let you modify the HTML generated by an addon by placing an appropriately
+                            named PHP file in a folder named 'elementor-addons' in your child theme (or parent theme).</p>
+                        <p>Following are the names of the files that plugin looks for to customize the <i>respective</i> addon
+                            rendering - <code> clients.php, carousel.php, heading.php, odometers.php, piecharts.php, posts-grid.php,
+                            posts-carousel.php, pricing-table.php, services.php, stats-bars.php, team-members.php, testimonials.php,
+                            testimonials-slider.php, accordion.php, button.php, faq.php, features.php, gallery.php, gallery-carousel.php,
+                            icon-list.php, image-slider.php, posts-block.php, services-carousel.php, slider.php, tabs.php. </code></p>
+                        <p>Once a particular template file is found in the theme folder, the corresponding addon rendering code is
+                            replaced with that in the template PHP file. The template files are provided with <code>$settings</code> variable to
+                        help read the addon settings and then display the output. The current output generated by the plugin addon can
+                        be seen in the <code>render()</code> function of the addons PHP file located in <code>includes/widgets/</code> folder.<strong> In
+                        most cases, it is recommended to copy over the rendering code from the <code>render()</code> function to the template
+                        file and modify the same to achieve the desired customization</strong>. A basic knowledge of PHP and HTML is all that is
+                        required to customize an addon.</p>
+                    <li><strong>Module Templates </strong>(<span class="pro-feature">Pro Feature</span>) are PHP files which can be placed in the <code>elementor-addons/modules/</code> of
+                        the child theme to customize the posts grid item information part of posts grid/block addons output by module files located in <code>includes/blocks/modules/</code> folder
+                        of the premium version of the plugin. The template files should be named as <code>module-1.php, module-2.php .... , module-12.php, module-13.php</code> to
+                        match the corresponding files located in the <code>includes/blocks/modules</code> folder. Only HTML part of <code>render()</code> function needs to
+                        be customized in the module template files. The users are recommended to copy over the rendering code part of this function to the corresponding
+                        template file and then customize it to their needs. </code>
+                    </li>
+                    <li><p><strong>Filters</strong> are hooks that are provided at almost every customization opportunity that presents itself
+                        as the addon renders the widgets by parsing the settings input by the user in the Elementor panel. <strong>About 200+ filters have been
+                        provided</strong> to help users customize almost any information output by the addons of this plugin.</p>
+                        <p>To locate the filters, the users are encouraged to have a look at the PHP code located in the <code>render()</code> function of
+                        the respective addon file located in <code>includes/widgets/</code> folder.</p>
+
+                        <p><a href="https://docs.presscustomizr.com/article/26-wordpress-actions-filters-and-hooks-a-guide-for-non-developers"
+                              target="_blank">More about Filters - a guide for non-developers →</a></p>
+                    </li>
+                </ul>
+
+                <hr>
+                <p>The below sections provide help on each of the elements/addons built as part of Livemesh Addons for Elementor
                     plugin.</p>
 
                 <hr>
@@ -260,7 +305,7 @@ else {
                     allow you to input a subtitle which is usually displayed on top of the main heading title.</p>
                 <p>You can choose to align the heading left, right or center with center being the default
                     alignment.</p>
-                <p>The <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Addons for Elementor Pro" target="_blank">premium version</a> of the plugin allows selection of a custom font for the heading title. You may
+                <p>The <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Livemesh Addons for Elementor Pro" target="_blank">premium version</a> of the plugin allows selection of a custom font for the heading title. You may
                     choose one of 500+ custom fonts hosted in the Google Fonts library. By default, the heading font
                     used by the theme is used for main heading title.</p>
 
@@ -274,7 +319,7 @@ else {
                 <p>Many agencies, freelancers, corporates, products/apps require capturing the services provided by the
                     agency or the features of a product. The services element is designed to help users capture these
                     services or features in a multi-column grid.</p>
-                <p>The element supports about 3 different styles (with 2 additional styles in <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Addons for Elementor Pro" target="_blank">premium version</a> of the
+                <p>The element supports about 3 different styles (with 2 additional styles in <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Livemesh Addons for Elementor Pro" target="_blank">premium version</a> of the
                     plugin) and each of these styles can be customized further by choosing the type of icon desired to
                     represent the service – a font icon or an custom image icon. While the choice of font icons is huge
                     in number and perhaps sufficient for most common services, the icon images can help present the
@@ -282,7 +327,7 @@ else {
                 <p>Each of the service requires you to input a title for the service/feature and a short description of
                     the service offered or the product feature. Additionally, each service allows you to enter a font
                     icon or an icon image file to represent that service.</p>
-                <p>The <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Addons for Elementor Pro" target="_blank">premium version</a> of the plugin allows you specify a custom font size, font color and and hover
+                <p>The <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Livemesh Addons for Elementor Pro" target="_blank">premium version</a> of the plugin allows you specify a custom font size, font color and and hover
                     color for the font icon along with providing two additional styles of services/features.</p>
                 <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/services-widget-edit1.png" alt="Services Element Edit Window"></p>
                 <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/services-widget-edit2.png" alt="Services Element Edit Window"></p>
@@ -305,7 +350,7 @@ else {
                 <p>This element provides an easy way to capture the team members of your organization or an agency. The
                     details captured include team member name, position, a short description and the email plus social
                     profile of the individual team members.</p>
-                <p>Two different styles are provided with more styles planned in the <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Addons for Elementor Pro" target="_blank">premium version</a> of the plugin. Most
+                <p>Two different styles are provided with more styles planned in the <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Livemesh Addons for Elementor Pro" target="_blank">premium version</a> of the plugin. Most
                     of the styles display the team members in a multi-column grid. The option to specify the number of
                     columns is provided that helps to control the number of team members displayed per row of the team
                     members.</p>
@@ -317,7 +362,7 @@ else {
 
                 <p>The plugin features a number of elements that help display statistical information in the form of
                     odometers, piecharts and stats bars.</p>
-                <p>Most of these elements are designed to animate the display of the statistical information or numbers
+                <p>Most of these addons are designed to animate the display of the statistical information or numbers
                     when the users scroll down to the section containing the widget.</p>
                 <p><strong>Odometers</strong></p>
                 <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/odometers2.png" alt="Odometer Element"></p>
@@ -353,7 +398,7 @@ else {
                 <h3 id="testimonials-elements">Testimonials Elements<a class="back-to-top" href="#panel"> Back to top</a></h3>
                 <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/testimonials.png" alt="Testimonials Element"></p>
 
-                <p>The plugin features two elements for capturing testimonials received for your product or business or
+                <p>The plugin features two addon elements for capturing testimonials received for your product or business or
                     services. Most agencies, corporates, small businesses, freelancers and products/apps require
                     testimonials to displayed prominently on the site to help convert visitors to customers. The two
                     elements provided are elegantly designed to achieve greater conversion rate.</p>
@@ -406,7 +451,7 @@ else {
                     <li><strong>Posts Per Page</strong> – Set the number of posts you wish you display in the widget. If
                         the element does not support pagination, the number of posts chosen by the limited by the number
                         specified here. This is also the number of posts to display per page when the element supports
-                        pagination as is the case with Livemesh Grid widget. Choosing the value zero makes the widget
+                        pagination as is the case with Posts Grid widget. Choosing the value zero makes the widget
                         all the selected posts.
                     </li>
                     <li><strong>Order By</strong> – Lets you decide on how you want the posts to be ordered – by
@@ -497,26 +542,26 @@ else {
                     for carousel, number of columns or items to display before making the user to scroll for additional
                     items etc. The carousel settings are explained in the help section above for Posts Carousel.</p>
                 <hr>
-                <h3 id="grid-element">Livemesh Grid<a class="back-to-top" href="#panel"> Back to top</a></h3>
-                <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/livemesh-grid.jpg" alt="Livemesh Grid Element"></p>
+                <h3 id="grid-element">Posts Grid<a class="back-to-top" href="#panel"> Back to top</a></h3>
+                <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/livemesh-grid.jpg" alt="Posts Grid Element"></p>
 
                 <p>Perhaps the most popular and most important of all addons part of this plugin,
-                    Livemesh Grid helps you build a multi-column grid of posts or custom post types. The posts displayed
+                    Posts Grid helps you build a multi-column grid of posts or custom post types. The posts displayed
                     are filterable by taxonomy terms.</p>
 
-                <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/livemesh-grid2.jpg" alt="Livemesh Grid Element"></p>
+                <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/livemesh-grid2.jpg" alt="Posts Grid Element"></p>
                 <p>Using the Grid widget, you can construct a portfolio of your work/services/products. We recommend you
                     use the popular plugin – <a title="Portfolio Post Type Plugin"
                                                 href="https://wordpress.org/plugins/portfolio-post-type/">https://wordpress.org/plugins/portfolio-post-type/</a>
                     for building a collection of portfolio entries. Once the portfolio entries are in place, make sure
                     you select Portfolio Post type under Post Type entry in Build Tools window as explained below.</p>
 
-                <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/livemesh-grid-pagination.jpg" alt="Livemesh Grid Pagination"></p>
-                <p>The <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Addons for Elementor Pro" target="_blank">premium version</a> of the plugin has support for pagination, lazy load with load more button and
+                <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/livemesh-grid-pagination.jpg" alt="Posts Grid Pagination"></p>
+                <p>The <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Livemesh Addons for Elementor Pro" target="_blank">premium version</a> of the plugin has support for pagination, lazy load with load more button and
                     lightbox option for images. The additional posts are loaded via AJAX when the user navigates through
                     the pages populated or when the user hits the Load More button.</p>
 
-                <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/livemesh-grid-loadmore.jpg" alt="Livemesh Grid AJAX Load More"></p>
+                <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/livemesh-grid-loadmore.jpg" alt="Posts Grid AJAX Load More"></p>
 
                 <p>The element features a Posts Query window to help choose posts or custom posts to display. This
                     powerful tool has number of fields to control what gets displayed and in what order with an
@@ -539,7 +584,7 @@ else {
                     <li><strong>Posts Per Page</strong> – Set the number of posts you wish you display in the widget. If
                         the element does not support pagination, the number of posts chosen by the limited by the number
                         specified here. This is also the number of posts to display per page when the element supports
-                        pagination as is the case with Livemesh Grid widget. Choosing the value zero makes the widget
+                        pagination as is the case with Posts Grid widget. Choosing the value zero makes the widget
                         all the selected posts.
                     </li>
                     <li><strong>Order By</strong> – Lets you decide on how you want the posts to be ordered – by
@@ -549,9 +594,9 @@ else {
                     <li><strong>Order</strong> – Can be ascending or descending sort order applied to the Order By paramter above.
                     </li>
                 </ol>
-                <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/livemesh-grid-edit1.png" alt="Livemesh Grid Edit Window"></p>
-                <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/livemesh-grid-edit2.png" alt="Livemesh Grid Edit Window"></p>
-                <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/livemesh-grid-edit3.png" alt="Livemesh Grid Edit Window"></p>
+                <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/livemesh-grid-edit1.png" alt="Posts Grid Edit Window"></p>
+                <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/livemesh-grid-edit2.png" alt="Posts Grid Edit Window"></p>
+                <p><img class="alignnone size-large" src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/livemesh-grid-edit3.png" alt="Posts Grid Edit Window"></p>
 
                 <p>The grid element has numerous other options to control the display of posts or custom post types. Some
                     of these are –</p>
@@ -1052,7 +1097,7 @@ else {
                 <p><strong>Elementor</strong> is one of the most popular frontend page builder tool for WordPress powering
                     over 100,000+ sites. You can build any layout you can imagine with intuitive drag and drop builder
                     with little or no programming knowledge.</p>
-                <p>All of the elements part of Addons for Elementor plugin were built using the API provided
+                <p>All of the elements part of Livemesh Addons for Elementor plugin were built using the API provided
                     by the Elementor plugin and hence this plugin must be installed and activated on the site prior
                     to using our plugin.</p>
                 <p>All of the pages of our demo site for
@@ -1123,61 +1168,206 @@ else {
 
             <!-- Updates panel -->
             <div id="updates-panel" class="panel-left">
-                <h3>1.5.4</h3>
+
+                <h2>Change Log for the Premium Version</h2>
+                <h3>2.3.3</h3>
                 <ul>
-                    <li>Fixed – Livemesh Grid columns can break in certain resolutions in FireFox.</li>
-                    <li>Fixed - The piechart value is not being rounded.</li>
-                    <li>Fixed - The post grid and posts carousel date format not reflecting the user preference specified in Settings page.</li>
+                    <li>Fixed - Social media icons not showing up for team profiles.</li>
+                    <li>Added - Filters for settings object employed for rendering the addons.</li>
                 </ul>
-                <h3>1.5.3</h3>
+                <h3>2.3.2</h3>
                 <ul>
+                    <li>Fixed - Gallery pagination would break when number of items crosses 140.</li>
+                    <li>Added - Pagination with dotted navigation for galleries when number of pages exceeds 5.</li>
+                </ul>
+                <h3>2.3.1</h3>
+                <ul>
+                    <li>Fixed - Incompatibility with some themes which load waypoints JS script.</li>
+                </ul>
+                <br><h3>2.3</h3>
+                <ul>
+                    <li>Added - Extensive support for filters and templates to enable users to customize the output generated by the addons. You can now create a template file in elementor-addons folder in your child theme to customize the addons html or use filters to customize output generated by the addons. </li>
+                    <li>Updated - Documentation providing information on how to use templates and filters to customize the plugin addons.</li>
+                    <li>Fixed - The fancybox lightbox would not display share, thumbnail, slideshow options for image/video gallery, posts grid and posts blocks.</li>
+                    <li>Fixed - Tooltips are displaying for icon list items.</li>
+                </ul>
+                <h3>2.2</h3>
+                <ul>
+                    <li>Fixed - Incompatibility with certain themes due to different versions of waypoints scripts being used.</li>
+                    <li>Fixed - The tabs would leave a large space after the footer.</li>
+                </ul>
+                <h3>2.1</h3>
+                <ul>
+                    <li>Fixed - Certain widgets/addons like pricing, carousel, gallery and services raised errors when 'Add Item' button was pressed to add items. Error seen with latest version of Elementor.</li>
+                    <li>Fixed - Leaving tags empty in the gallery lead to addition of an empty filter in the filter list</li>
+                    <li>Fixed - Deprecated warning on checkbox control.</li>
+                </ul>
+                <h3>2.0.1</h3>
+                <ul>
+                    <li>Fixed - Bug fixes related to Freemius integration.</li>
+                </ul>
+                <h3>2.0</h3>
+                <ul>
+                    <li>Added – Freemius integration for easy upgrade, quick support/feedback and opt-in usage tracking with GDPR compliance.</li>
+                </ul>
+                <h3>1.9.2</h3>
+                <ul>
+                    <li>Fixed - The URLs specified for the gallery items not preserved across pagination or load more calls.</li>
+                    <li>Fixed – Translation issues due to presence of additional language domains.</li>
+                    <li>Fixed - Some sites had issues rendering tabs with disappearing tab labels and extra spaces at the bottom.</li>
+                </ul>
+                <h3>1.9.1</h3>
+                <ul>
+                    <li>Added – Compatibility with Elementor and Elementor PRO 2.</li>
+                    <li>Added - Dynamic field connections for most widgets supported by Elementor 2.</li>
+                    <li>Updated - Removed Livemesh prefix from all elements. For example, Livemesh Services is now named Services, Livemesh Tabs is now Tabs, Livemesh Grid is now Posts Grid etc.</li>
+                    <li>Added - Ability to specify client name in HTML for additional formatting.</li>
+                </ul>
+                <h3>1.9.0</h3>
+                <ul>
+                    <li>Added – New simpler grid system for all elements that use grid.</li>
+                    <li>Added – Seamless control of number of columns at all device resolutions for all those elements that involve grid – posts/portfolio grid, posts block, image/video gallery, clients, services, testimonials, team, charts, pricing table, faq etc.</li>
+                    <li>Added - Option to preserve shortcodes and HTML tags in excerpt. Option is disabled by default.</li>
+                </ul>
+                <h3>1.8.8</h3>
+                <ul>
+                    <li>Fixed – Pagination and Load More for gallery would break when special characters are present in title or description.</li>
+                    <li>Fixed - Duplicate tags filters generated in gallery when tags have spaces around them.</li>
+                </ul>
+                <h3>1.8.7</h3>
+                <ul>
+                    <li>Fixed - Warning for image slider widget in Elementor 2.0</li>
+                    <li>Fixed - Grid layout for video gallery can break at times when user expands an inline video full screen</li>
+                    <li>Tweak - Increased the taxonomy terms limit to 500 to help taxonomy field display all terms in installations where there are large number of terms</li>
+                </ul>
+                <h3>1.8.6</h3>
+                <ul>
+                    <li>Fixed - Broken wide image support for masonry grid in media gallery</li>
+                </ul>
+                <h3>1.8.5</h3>
+                <ul>
+                    <li>Added - Support for multiple url formats for YouTube and Vimeo videos in video gallery</li>
+                    <li>Added - Support for inline responsive videos of YouTube, Vimeo and self-hosted MP4/WebM video formats</li>
+                    <li>Added - If no custom thumbnail is set, the thumbnails for YouTube/Vimeo videos automatically set from the service provider</li>
+                    <li>Fixed - Next/Prev navigation for gallery not working</li>
+                </ul>
+                <h3>1.8.3</h3>
+                <ul>
+                    <li>Updated - Waypoints script with new API for handling events on scroll</li>
+                    <li>Fixed - Some themes can break animations and report script errors for elements like piecharts, odometers, progress bars etc.</li>
+                </ul>
+                <h3>1.8.2</h3>
+                <ul>
+                    <li>Improved – License activation page with less confusing interface.</li>
+                    <li>Added - The license code entered is now masked upon activation.</li>
+                </ul>
+                <h3>1.8.1</h3>
+                <ul>
+                    <li>Added – Ability to display description for the image/video element in the gallery and gallery carousel lightbox window.</li>
+                    <li>Added – The lightbox for posts grid and posts block now displays post summary and a link to the post in the lightbox.</li>
+                    <li>Added – Option to disable display of post summary/excerpt in the lightbox window of posts block or posts grid.</li>
+                </ul>
+                <h3>1.8.0</h3>
+                <ul>
+                    <li>Added – Fancybox lightbox integration for grid, posts block, image gallery, video gallery and gallery carousel modules.</li>
+                    <li>Added – Advanced features like touch/swipe controls, pinch out/in, double tap, keyboard navigation, full screen, thumbnails, social media sharing, hardware accelerated animations, direct linking now supported with lightbox.</li>
+                    <li>Added – HTML5 video support in video gallery and video carousel modules. Support for MP4 and WebM formats.</li>
+                </ul>
+                <h3>1.7.6</h3>
+                <ul>
+                    <li>Fixed – Posts Grid columns can break in certain resolutions in FireFox.</li>
+                    <li>Fixed - Posts Grid excerpt would not display shortcodes or HTML content</li>
+                    <li>Fixed - Livemesh Gallery styling controls not taking effect for thumbnail hover and titles</li>
+                </ul>
+                <h3>1.7.5</h3>
+                <ul>
+                    <li>Added - Support for creating stunning masonry gallery layouts using flexible widths and heights for images.</li>
+                    <li>Added - Ability to specify wide width for images in masonry layout of gallery.</li>
+                    <li>Added - Options to enable/disable display of image/video titles and image/video tags in gallery and gallery carousel addons.</li>
                     <li>Fixed - Next Previous buttons of carousels would not show up in certain installations due to conflicts with base slick carousel styles</li>
                 </ul>
-                <h3>1.5.2</h3>
+                <h3>1.7.3</h3>
                 <ul>
-                    <li>Fixed – Categories or taxonomy terms repeat when specific taxonomy terms/categories are chosen in query window</li>
+                    <li>Fixed - Undefined index warning on the gallery addon.</li>
+                    <li>Fixed - Pagination/load more on the gallery addon.</li>
                 </ul>
-                <h3>1.5.1</h3>
+                <h3>1.7.2</h3>
                 <ul>
-                    <li>Fixed – Some themes have trouble rendering grid columns</li>
-                    <li>Fixed - Comma shows up in category list for the image hover in grid</li>
+                    <li>Fixed - Lightbox conflict with Elementor for gallery, gallery carousel, posts/portfolio grid and posts blocks modules.</li>
+                    <li>Added - Option to choose either Elementor or Magnific Popup as lightbox lib for gallery and gallery carousel addons.</li>
+                    <li>Added - Made Elementor lightbox lib as default for gallery and gallery carousel addons with slideshow function.</li>
+                    <li>Fixed - The categories/taxonomy terms of the posts/portfolio grid and posts blocks would display a comma character on the post image when multiple terms/categories were present.</li>
                 </ul>
-                <h3>1.5</h3>
+                <h3>1.7.1</h3>
+                <ul>
+                    <li>Added - Advanced tab and accordion functions that help directly link to Tabs and Accordion panels from external pages. On page load, the corresponding tab/panel opens upon auto-scrolling to the tab or accordion panel.</li>
+                    <li>Added - Smooth scroll to tabs and accordion panels from internal links within a page.</li>
+                    <li>Added - Open tab or accordion panels by clicking the internal links within a page.</li>
+                </ul>
+                <h3>1.7</h3>
                 <ul>
                     <li>Upgrade – Simpler grid system based on NEAT 2.1 version</li>
                     <li>Updated - The CSS is now optimized for vendor prefixes with reduced properties and file size.</li>
+                    <li>Added - Scroll to the top of the posts block to display new posts during paged navigation (when new posts are not visible).</li>
+                </ul>
+
+                <h3>1.6</h3>
+                <ul>
+                    <li>Added – Image size option for all major addons including grid, gallery and carousels.</li>
+                    <li>Added – Ability to crop images and specify custom image sizes for all major addons including grid, gallery and carousels.</li>
+                    <li>Added - Bulk upload option for image gallery. The title of the image attachments is displayed on hover.</li>
+                    <li>Added - The lightbox now opens on clicking anywhere on the image if no destination URL is specified for gallery item</li>
+                    <li>Fixed – The gallery image was not clickable to the link specified</li>
+                    <li>Fixed – The gallery filters would not center when a heading was not specified.</li>
+                    <li>Fixed – The gallery filters will not display multi-line on devices of lower resolutions like mobile devices.</li>
+                </ul>
+
+                <h3>1.5</h3>
+                <ul>
+                    <li>Added – Moved the Posts Grid widget to new framework based on reusable blocks. Pls note that the class names have changed to keep it consistent with the new framework.</li>
+                    <li>Added – 6 different styles for grid items plus 7 header styles too</li>
+                    <li>Added – Next Prev pagination options for Posts Grid widget</li>
+                    <li>Added – Ability to handle large number of grid pages by providing dotted navigation</li>
+                    <li>Added – AJAX Category or taxonomy filtering for Grid widget. No more empty grid on category/taxonomy filtering</li>
+                    <li>Added – Read More option for the grid items</li>
+                    <li>Added – Open in new window option for links to posts in the grid</li>
+                    <li>Added – Two more header styles to posts blocks</li>
+                    <li>Fixed – The grid image was not clickable to the post</li>
+                    <li>Fixed – The filters would not center when a heading was not specified.</li>
+                    <li>Fixed – The grid filters will not display multi-line on devices of lower resolutions like mobile devices.</li>
                 </ul>
                 <h3>1.4.1</h3>
                 <ul>
-                    <li>Added - Ability to rate plugin from admin screen</li>
+                    <li>Fixed - Fatal error on installations running below PHP 5.5 versions</li>
                 </ul>
                 <h3>1.4</h3>
                 <ul>
-                    <li>Fixed – The post image in a grid or posts carousel was not clickable to the link specified</li>
-                    <li>Fixed – The grid filters would not center when a heading was not specified.</li>
-                    <li>Fixed – The grid filters will not display multi-line on devices of lower resolutions like mobile devices.</li>
-                    <li>Updated - Compatibility with WordPress 4.9 version.</li>
+                    <li>Added - Brand new Post Blocks Widget with more than a dozen styles and options to present your posts or custom post types</li>
+                    <li>Added - AJAX Pagination, Next Prev and Load More options for Post Blocks widget</li>
+                    <li>Added - AJAX Category or taxonomy filtering for Post Blocks widget</li>
                 </ul>
                 <h3>1.3</h3>
                 <ul>
                     <li>Added - Extensive customization options including typography, color and other styling options for all addons/modules</li>
                     <li>Fixed - The lightbox image was smaller than uploaded size</li>
                     <li>Fixed - Service icons would show up even when 'None' option was chosen</li>
+                    <li>Fixed - Translations not working with default files provided by plugin</li>
                 </ul>
                 <h3>1.2.1</h3>
                 <ul>
-                    <li>Fixed - Translations not working with default files provided by plugin</li>
-                    <li>Fixed - The client images would show up misaligned and with additional padding in certain sites</li>
+                    <li>Added - Automatic plugin updates and license key activation</li>
                 </ul>
                 <h3>1.2</h3>
                 <ul>
                     <li>Fixed - The portfolio grid addon leaves an empty space on the top when no heading is specified and when no taxonomy filters are specified</li>
                     <li>Fixed - In a few installations, the grid elements may not occupy full width between 769px to 800px device resolutions</li>
                     <li>Fixed - The grid raised an warning when when certain taxonomies are chosen in the grid settings.</li>
+                    <li>Fixed - The isotope and magnific popup libraries were not being loaded for image/video gallery addon.</li>
                     <li>Credit - Big thanks to user Axel for finding ALL these bugs that I could not have found myself.</li>
                 </ul>
                 <h3>1.1</h3>
                 <ul>
+                    <li>Fixed - Plugin animations mixing up with elementor animations making the addons to disappear on frontend</li>
                     <li>Fixed - Links in a few widgets were showing even when no link URL was specified</li>
                     <li>Fixed - A few addons would wrap around and move outside of the editor container</li>
                     <li>Fixed - Odometers, Piecharts and Bar Charts addons would not show up in the editor preview</li>
@@ -1197,21 +1387,58 @@ else {
 
                 <div class="panel-inner">
 
-                    <div class="panel-aside banner">
-                        <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Purchase Now"><img class="dashboard-image"
-                                                                                                                           src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/dashboard/purchase-banner1.jpg"
-                                                                                                                           alt="Sale Banner"></a>
-                    </div>
-                    
-                    <!-- Knowledge base -->
-                    <div class="panel-aside">
-                        <h4><?php _e('Why upgrade to Premium version?', 'livemesh-el-addons'); ?></h4>
-                        <p><?php _e('Premium version offers multiple benefits - more addon elements, advanced features for addons including those part of the free plugin and priority support through a dedicated support forum.', 'livemesh-el-addons'); ?></p>
+                    <?php if (lae_fs()->is_not_paying()): ?>
 
-                        <a class="button button-primary"
-                           href="<?php echo admin_url() . 'admin.php?page=livemesh_el_addons_pro_upgrade'; ?>"
-                           title="<?php esc_attr_e('Know More', 'livemesh-el-addons'); ?>"><?php _e('Know More Details', 'livemesh-el-addons'); ?></a>
-                    </div><!-- .panel-aside knowledge base -->
+                        <div class="panel-aside banner">
+                            <a href="<?php echo lae_fs()->get_upgrade_url(); ?>" title="Purchase Now"><img
+                                        class="dashboard-image"
+                                        src="https://www.livemeshthemes.com/wp-content/uploads/plugin-doc/elementor-addons/dashboard/purchase-banner1.jpg"
+                                        alt="Sale Banner"></a>
+                        </div>
+
+                        <!-- Knowledge base -->
+                        <div class="panel-aside">
+                            <h4><?php _e('Why upgrade to Premium version?', 'livemesh-el-addons'); ?></h4>
+                            <p><?php _e('Premium version offers multiple benefits - more addon elements, advanced features for addons including those part of the free plugin and priority support through a dedicated support forum.', 'livemesh-el-addons'); ?></p>
+
+                            <a class="button button-primary"
+                               href="https://www.livemeshthemes.com/elementor-addons/addons-demo/#why-upgrade"
+                               title="<?php esc_attr_e('Know More', 'livemesh-el-addons'); ?>"><?php _e('Know More Details', 'livemesh-el-addons'); ?></a>
+                        </div><!-- .panel-aside knowledge base -->
+
+
+                    <?php else: ?>
+
+                        <!-- Knowledge base -->
+                        <div class="panel-aside">
+                            <h4>Need support for the plugin?</h4>
+
+                            <p>The premium version of the plugin entitles you to quick support with replies posted within 24 hours (on week days). </p>
+
+                            <p>Please submit your support query through our <a href="https://www.livemeshthemes.com/elementor-addons/contact-us/" title="Livemesh Contact form">website contact form</a>. This will create a support ticket in our support portal.</p>
+
+                            <a class="button button-primary"
+                               href="https://www.livemeshthemes.com/elementor-addons/contact-us/"
+                               title="<?php esc_attr_e('Contact Us', 'livemesh-el-addons'); ?>"><?php _e('Contact Us', 'livemesh-el-addons'); ?></a>
+                        </div><!-- .panel-aside knowledge base -->
+
+                              <!-- Knowledge base -->
+                        <div class="panel-aside">
+                            <h4>Have questions or want to leave feedback?</h4>
+                            <p>If you need to leave your feedback or have a query regarding one of our <a
+                                        href="https://www.livemeshthemes.com/" title="WordPress Themes and Plugins">WordPress
+                                    plugins or themes</a>, feel free to leave us a message through our contact form and
+                                we will get back to you promptly.</p>
+
+                            <a class="button button-primary"
+                               href="https://www.livemeshthemes.com/elementor-addons/contact-us/"
+                               title="<?php esc_attr_e('Write to Us', 'livemesh-el-addons'); ?>"><?php _e('Write to Us', 'livemesh-el-addons'); ?></a>
+                        </div><!-- .panel-aside knowledge base -->
+
+                    <?php endif; ?>
+
+
+
 
                 </div><!-- .panel-inner -->
             </div><!-- .panel-right -->

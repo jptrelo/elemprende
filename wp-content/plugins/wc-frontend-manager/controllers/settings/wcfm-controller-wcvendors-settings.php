@@ -39,7 +39,7 @@ class WCFM_Settings_WCVendors_Controller {
 		//$wcfm_settings_form = array_map( 'stripslashes', $wcfm_settings_form );
 		
 		// sanitize html editor content
-		$wcfm_settings_form['shop_description'] = ! empty( $_POST['profile'] ) ? wp_kses_post( stripslashes( $_POST['profile'] ) ) : '';
+		$wcfm_settings_form['shop_description'] = ! empty( $_POST['profile'] ) ? apply_filters( 'wcfm_editor_content_before_save', stripslashes( html_entity_decode( $_POST['profile'], ENT_QUOTES, 'UTF-8' ) ) ) : '';
 		
 		if( apply_filters( 'wcfm_is_allow_store_name', true ) ) {
 			update_user_meta( $user_id, 'pv_shop_name', $wcfm_settings_form['shop_name'] );
@@ -62,6 +62,23 @@ class WCFM_Settings_WCVendors_Controller {
 				$wcfm_settings_form['wcfm_logo'] = '';
 			}
 			update_user_meta( $user_id, '_wcv_store_icon_id', $wcfm_settings_form['wcfm_logo'] );
+		}
+		
+		// Bank Details Support - 4.1.0 
+		if ( apply_filters( 'wcfm_is_allow_billing_bank_settings', true ) && apply_filters( 'wcvendors_vendor_dashboard_bank_details_enable', true ) ) {
+			$wcfm_mangopay_setting_fields = array( 
+																						'wcv_bank_account_name'      => 'wcv_bank_account_name',
+																						'wcv_bank_account_number'    => 'wcv_bank_account_number',
+																						'wcv_bank_name'              => 'wcv_bank_name',
+																						'wcv_bank_routing_number'    => 'wcv_bank_routing_number',
+																						'wcv_bank_iban'              => 'wcv_bank_iban',
+																						'wcv_bank_bic_swift'         => 'wcv_bank_bic_swift',
+																					);
+			foreach( $wcfm_mangopay_setting_fields as $wcfm_setting_store_key => $wcfm_setting_store_field ) {
+				if( isset( $wcfm_settings_form[$wcfm_setting_store_field] ) ) {
+					update_user_meta( $user_id, $wcfm_setting_store_key, $wcfm_settings_form[$wcfm_setting_store_field] );
+				}
+			}
 		}
 		
 		// MangoPay Support - 3.4.3 
@@ -99,6 +116,7 @@ class WCFM_Settings_WCVendors_Controller {
 			}
 		}
 		
+		do_action( 'wcfm_vendor_settings_update', $user_id, $wcfm_settings_form );
 		do_action( 'wcfm_wcvendors_settings_update', $user_id, $wcfm_settings_form );
 		
 		echo '{"status": true, "message": "' . __( 'Settings saved successfully', 'wc-frontend-manager' ) . '"}';

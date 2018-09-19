@@ -1,3 +1,8 @@
+<?php
+if ( ! defined('WPINC')) {
+    die;
+}
+?>
 <div class="wrap">
     <h2>WooCommerce Seo Addon</h2>
     <h2 class="nav-tab-wrapper">

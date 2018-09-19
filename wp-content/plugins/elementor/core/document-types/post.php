@@ -3,7 +3,6 @@ namespace Elementor\Core\DocumentTypes;
 
 use Elementor\Controls_Manager;
 use Elementor\Core\Base\Document;
-use Elementor\Modules\PageTemplates\Module as PageTemplatesModule;
 use Elementor\Group_Control_Background;
 use Elementor\Plugin;
 use Elementor\Settings;
@@ -16,18 +15,56 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Post extends Document {
 
+	public static function get_properties() {
+		$properties = parent::get_properties();
+
+		$properties['support_wp_page_templates'] = true;
+
+		return $properties;
+	}
+
+	protected static function get_editor_panel_categories() {
+		return Utils::array_inject(
+			parent::get_editor_panel_categories(),
+			'theme-elements',
+			[
+				'theme-elements-single' => [
+					'title' => __( 'Single', 'elementor' ),
+					'active' => false,
+				],
+			]
+		);
+	}
+
+	/**
+	 * @since 2.0.0
+	 * @access public
+	 */
 	public function get_name() {
 		return 'post';
 	}
 
+	/**
+	 * @since 2.0.0
+	 * @access public
+	 * @static
+	 */
 	public static function get_title() {
 		return __( 'Page', 'elementor' );
 	}
 
+	/**
+	 * @since 2.0.0
+	 * @access public
+	 */
 	public function get_css_wrapper_selector() {
 		return 'body.elementor-page-' . $this->get_main_id();
 	}
 
+	/**
+	 * @since 2.0.0
+	 * @access protected
+	 */
 	protected function _register_controls() {
 		parent::_register_controls();
 
@@ -39,6 +76,9 @@ class Post extends Document {
 	}
 
 	/**
+	 * @since 2.0.0
+	 * @access public
+	 * @static
 	 * @param Document $document
 	 */
 	public static function register_hide_title_control( $document ) {
@@ -48,8 +88,13 @@ class Post extends Document {
 			$page_title_selector = 'h1.entry-title';
 		}
 
+		$page_title_selector .= ', .elementor-page-title';
+
 		$document->start_injection( [
 			'of' => 'post_status',
+			'fallback' => [
+				'of' => 'post_title',
+			],
 		] );
 
 		$document->add_control(
@@ -57,8 +102,6 @@ class Post extends Document {
 			[
 				'label' => __( 'Hide Title', 'elementor' ),
 				'type' => Controls_Manager::SWITCHER,
-				'label_off' => __( 'No', 'elementor' ),
-				'label_on' => __( 'Yes', 'elementor' ),
 				'description' => sprintf(
 					/* translators: %s: Setting page link */
 					__( 'Not working? You can set a different selector for the title in the <a href="%s" target="_blank">Settings page</a>.', 'elementor' ),
@@ -74,6 +117,9 @@ class Post extends Document {
 	}
 
 	/**
+	 * @since 2.0.0
+	 * @access public
+	 * @static
 	 * @param Document $document
 	 */
 	public static function register_style_controls( $document ) {
@@ -89,6 +135,14 @@ class Post extends Document {
 			Group_Control_Background::get_type(),
 			[
 				'name'  => 'background',
+				'fields_options' => [
+					'image' => [
+						// Currently isn't supported.
+						'dynamic' => [
+							'active' => false,
+						],
+					],
+				],
 			]
 		);
 
@@ -110,11 +164,17 @@ class Post extends Document {
 	}
 
 	/**
+	 * @since 2.0.0
+	 * @access public
+	 * @static
 	 * @param Document $document
 	 */
 	public static function register_post_fields_control( $document ) {
 		$document->start_injection( [
 			'of' => 'post_status',
+			'fallback' => [
+				'of' => 'post_title',
+			],
 		] );
 
 		if ( post_type_supports( $document->post->post_type, 'excerpt' ) ) {
@@ -146,6 +206,12 @@ class Post extends Document {
 		$document->end_injection();
 	}
 
+	/**
+	 * @since 2.0.0
+	 * @access public
+	 *
+	 * @param array $data
+	 */
 	public function __construct( array $data = [] ) {
 		if ( $data ) {
 			$template = get_post_meta( $data['post_id'], '_wp_page_template', true );

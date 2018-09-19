@@ -57,6 +57,9 @@ class WCFM_Withdrawal_Controller {
 			$wcfm_withdrawals_json_arr = array();
 			foreach($wcfm_withdrawals_array as $wcfm_withdrawals_single) {
 				$order_id = get_post_meta( $wcfm_withdrawals_single->ID, '_commission_order_id', true );
+				
+				if( apply_filters( 'wcfm_is_show_commission_restrict_check', false, $order_id, $wcfm_withdrawals_single ) ) continue;
+				
 				$order_obj = wc_get_order($order_id);
         $commission_create_date = get_the_date('U', $wcfm_withdrawals_single->ID);
         $current_date = date('U');
@@ -66,10 +69,14 @@ class WCFM_Withdrawal_Controller {
         }
 				
 				// Status
-				$wcfm_withdrawals_json_arr[$index][] =  '<input name="commissions[]" value="' . $wcfm_withdrawals_single->ID . '" class="wcfm-checkbox select_withdrawal" type="checkbox" >';
+				if ( is_commission_requested_for_withdrawals( $wcfm_withdrawals_single->ID ) ) {
+					$wcfm_withdrawals_json_arr[$index][] =  '<input name="requested_commissions[]" value="' . $wcfm_withdrawals_single->ID . '" class="wcfm-checkbox requested_select_withdrawal text_tip" data-tip="' . __( 'Already Requested', '' ) . '" type="checkbox" onclick="return false;" >';
+				} else {
+					$wcfm_withdrawals_json_arr[$index][] =  '<input name="commissions[]" value="' . $wcfm_withdrawals_single->ID . '" class="wcfm-checkbox select_withdrawal" type="checkbox" >';
+				}
 				
 				// Order ID
-				$wcfm_withdrawals_json_arr[$index][] = '<span class="wcfm_dashboard_item_title"># ' . $order_id . '</span>';
+				$wcfm_withdrawals_json_arr[$index][] = apply_filters( 'wcfm_commission_order_label_display', '<span class="wcfm_dashboard_item_title"># ' . $order_id . '</span>', $order_id, $wcfm_withdrawals_single );
 				
 				// Commission ID
 				$wcfm_withdrawals_json_arr[$index][] = '<span class="wcfm_dashboard_item_title withdrawal_order_ids"># ' . $wcfm_withdrawals_single->ID . '</span>'; 
@@ -79,10 +86,11 @@ class WCFM_Withdrawal_Controller {
 				if (!isset($vendor_share['total'])) {
 						$vendor_share['total'] = 0;
 				}
+				$vendor_share['total'] = apply_filters( 'wcfm_commission_share_total', $vendor_share['total'], $order_id, $wcfm_withdrawals_single );
 				$wcfm_withdrawals_json_arr[$index][] = wc_price( $vendor_share['total'] );  
 				
 				// Date
-				$wcfm_withdrawals_json_arr[$index][] = date( 'Y-m-d H:i A', strtotime( $wcfm_withdrawals_single->post_date ) );
+				$wcfm_withdrawals_json_arr[$index][] = apply_filters( 'wcfm_commission_date_display', date( 'Y-m-d H:i A', strtotime( $wcfm_withdrawals_single->post_date ) ), $order_id, $wcfm_withdrawals_single );
 				
 				$index++;
 			}												

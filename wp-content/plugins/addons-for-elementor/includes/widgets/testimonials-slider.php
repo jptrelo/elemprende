@@ -1,7 +1,7 @@
 <?php
 
 /*
-Widget Name: Livemesh Testimonials Slider
+Widget Name: Testimonials Slider
 Description: Display responsive touch friendly slider of testimonials from clients/customers.
 Author: LiveMesh
 Author URI: https://www.livemeshthemes.com
@@ -27,7 +27,7 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
     }
 
     public function get_title() {
-        return __('Livemesh Testimonials Slider', 'livemesh-el-addons');
+        return __('Testimonials Slider', 'livemesh-el-addons');
     }
 
     public function get_icon() {
@@ -82,13 +82,20 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
                         'name' => 'client_name',
                         'label' => __('Name', 'livemesh-el-addons'),
                         'type' => Controls_Manager::TEXT,
+                        'default' => __('My client name', 'livemesh-el-addons'),
                         'description' => __('The client or customer name for the testimonial', 'livemesh-el-addons'),
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
                     [
                         'name' => 'credentials',
                         'label' => __('Client Details', 'livemesh-el-addons'),
                         'type' => Controls_Manager::TEXT,
                         'description' => __('The details of the client/customer like company name, position held, company URL etc. HTML accepted.', 'livemesh-el-addons'),
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
 
                     [
@@ -99,6 +106,9 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
                             'url' => Utils::get_placeholder_image_src(),
                         ],
                         'label_block' => true,
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
 
                     [
@@ -107,6 +117,9 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
                         'type' => Controls_Manager::WYSIWYG,
                         'description' => __('What your customer/client had to say', 'livemesh-el-addons'),
                         'show_label' => false,
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
 
                 ],
@@ -127,12 +140,12 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
         $this->add_control(
             'slide_animation',
             [
-                'label' => __( 'Animation', 'livemesh-el-addons' ),
+                'label' => __('Animation', 'livemesh-el-addons'),
                 'type' => Controls_Manager::SELECT,
                 'default' => 'slide',
                 'options' => [
-                    'slide' => __( 'Slide', 'livemesh-el-addons' ),
-                    'fade' => __( 'Fade', 'livemesh-el-addons' ),
+                    'slide' => __('Slide', 'livemesh-el-addons'),
+                    'fade' => __('Fade', 'livemesh-el-addons'),
                 ],
             ]
         );
@@ -140,12 +153,12 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
         $this->add_control(
             'direction',
             [
-                'label' => __( 'Direction', 'livemesh-el-addons' ),
+                'label' => __('Direction', 'livemesh-el-addons'),
                 'type' => Controls_Manager::SELECT,
                 'default' => 'horizontal',
                 'options' => [
-                    'horizontal' => __( 'Horizontal', 'livemesh-el-addons' ),
-                    'vertical' => __( 'Vertical', 'livemesh-el-addons' ),
+                    'horizontal' => __('Horizontal', 'livemesh-el-addons'),
+                    'vertical' => __('Vertical', 'livemesh-el-addons'),
                 ],
             ]
         );
@@ -153,7 +166,7 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
         $this->add_control(
             'slideshow_speed',
             [
-                'label' => __( 'Slideshow Speed', 'livemesh-el-addons' ),
+                'label' => __('Slideshow Speed', 'livemesh-el-addons'),
                 'type' => Controls_Manager::NUMBER,
                 'default' => 5000,
             ]
@@ -163,7 +176,7 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
         $this->add_control(
             'animation_speed',
             [
-                'label' => __( 'Animation Speed', 'livemesh-el-addons' ),
+                'label' => __('Animation Speed', 'livemesh-el-addons'),
                 'type' => Controls_Manager::NUMBER,
                 'default' => 600,
             ]
@@ -229,7 +242,7 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
         $this->start_controls_section(
             'section_testimonials_thumbnail',
             [
-                'label' => __( 'Author Thumbnail', 'livemesh-el-addons' ),
+                'label' => __('Author Thumbnail', 'livemesh-el-addons'),
                 'tab' => Controls_Manager::TAB_STYLE,
                 'show_label' => false,
             ]
@@ -240,7 +253,7 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
             [
                 'label' => __('Author Thumbnail Border Radius', 'livemesh-el-addons'),
                 'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => [ 'px', '%' ],
+                'size_units' => ['px', '%'],
                 'selectors' => [
                     '{{WRAPPER}} .lae-testimonials-slider .lae-testimonial-user .lae-image-wrapper img' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
@@ -252,7 +265,7 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
             [
                 'label' => __('Author Thumbnail Size', 'livemesh-el-addons'),
                 'type' => Controls_Manager::SLIDER,
-                'size_units' => [ '%', 'px' ],
+                'size_units' => ['%', 'px'],
                 'range' => [
                     '%' => [
                         'min' => 10,
@@ -282,7 +295,7 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
         $this->add_control(
             'text_color',
             [
-                'label' => __( 'Color', 'livemesh-el-addons' ),
+                'label' => __('Color', 'livemesh-el-addons'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .lae-testimonials-slider .lae-testimonial-text' => 'color: {{VALUE}};',
@@ -303,7 +316,7 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
         $this->start_controls_section(
             'section_testimonials_author_name',
             [
-                'label' => __( 'Author Name', 'livemesh-el-addons' ),
+                'label' => __('Author Name', 'livemesh-el-addons'),
                 'tab' => Controls_Manager::TAB_STYLE,
             ]
         );
@@ -312,16 +325,16 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
         $this->add_control(
             'title_tag',
             [
-                'label' => __( 'Title HTML Tag', 'livemesh-el-addons' ),
+                'label' => __('Title HTML Tag', 'livemesh-el-addons'),
                 'type' => Controls_Manager::SELECT,
                 'options' => [
-                    'h1' => __( 'H1', 'livemesh-el-addons' ),
-                    'h2' => __( 'H2', 'livemesh-el-addons' ),
-                    'h3' => __( 'H3', 'livemesh-el-addons' ),
-                    'h4' => __( 'H4', 'livemesh-el-addons' ),
-                    'h5' => __( 'H5', 'livemesh-el-addons' ),
-                    'h6' => __( 'H6', 'livemesh-el-addons' ),
-                    'div' => __( 'div', 'livemesh-el-addons' ),
+                    'h1' => __('H1', 'livemesh-el-addons'),
+                    'h2' => __('H2', 'livemesh-el-addons'),
+                    'h3' => __('H3', 'livemesh-el-addons'),
+                    'h4' => __('H4', 'livemesh-el-addons'),
+                    'h5' => __('H5', 'livemesh-el-addons'),
+                    'h6' => __('H6', 'livemesh-el-addons'),
+                    'div' => __('div', 'livemesh-el-addons'),
                 ],
                 'default' => 'h4',
             ]
@@ -330,7 +343,7 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
         $this->add_control(
             'title_color',
             [
-                'label' => __( 'Color', 'livemesh-el-addons' ),
+                'label' => __('Color', 'livemesh-el-addons'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .lae-testimonials-slider .lae-testimonial-user .lae-text .lae-author-name' => 'color: {{VALUE}};',
@@ -359,7 +372,7 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
         $this->add_control(
             'credential_color',
             [
-                'label' => __( 'Color', 'livemesh-el-addons' ),
+                'label' => __('Color', 'livemesh-el-addons'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .lae-testimonials-slider .lae-testimonial-user .lae-text' => 'color: {{VALUE}};',
@@ -391,7 +404,7 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
             [
                 'label' => __('Icon size in pixels', 'livemesh-el-addons'),
                 'type' => Controls_Manager::SLIDER,
-                'size_units' => [ 'px', '%', 'em' ],
+                'size_units' => ['px', '%', 'em'],
                 'range' => [
                     'px' => [
                         'min' => 10,
@@ -423,73 +436,77 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
 
     protected function render() {
 
-        $settings = $this->get_settings();
+        $settings = $this->get_settings_for_display();
+
+        $settings = apply_filters('lae_testimonials_slider_' . $this->get_id() . '_settings', $settings);
 
         $slider_options = [
             'slide_animation' => $settings['slide_animation'],
             'direction' => $settings['direction'],
-            'slideshow_speed' => absint( $settings['slideshow_speed'] ),
-            'animation_speed' => absint( $settings['animation_speed'] ),
-            'control_nav' => ( 'yes' === $settings['control_nav'] ),
-            'direction_nav' => ( 'yes' === $settings['direction_nav'] ),
-            'pause_on_hover' => ( 'yes' === $settings['pause_on_hover'] ),
-            'pause_on_action' => ( 'yes' === $settings['pause_on_action'] )
+            'slideshow_speed' => absint($settings['slideshow_speed']),
+            'animation_speed' => absint($settings['animation_speed']),
+            'control_nav' => ('yes' === $settings['control_nav']),
+            'direction_nav' => ('yes' === $settings['direction_nav']),
+            'pause_on_hover' => ('yes' === $settings['pause_on_hover']),
+            'pause_on_action' => ('yes' === $settings['pause_on_action'])
         ];
-        ?>
 
-        <div class="lae-testimonials-slider lae-flexslider lae-container"  data-settings='<?php echo wp_json_encode($slider_options); ?>'>
+        $output = '<div class="lae-testimonials-slider lae-flexslider lae-container" data-settings=\'' . wp_json_encode($slider_options) . '\'>';
 
-            <div class="lae-slides">
+        $output .= '<div class="lae-slides">';
 
-                <?php foreach ($settings['testimonials'] as $testimonial) : ?>
+        foreach ($settings['testimonials'] as $testimonial) :
 
-                <div class="lae-slide lae-testimonial-wrapper">
+            $child_output = '<div class="lae-slide lae-testimonial-wrapper">';
 
-                    <div class="lae-testimonial">
+            $child_output .= '<div class="lae-testimonial">';
 
-                        <div class="lae-testimonial-text">
+            $child_output .= '<div class="lae-testimonial-text">';
 
-                            <i class="lae-icon-quote"></i>
+            $child_output .= '<i class="lae-icon-quote"></i>';
 
-                            <?php echo $this->parse_text_editor($testimonial['testimonial_text']); ?>
+            $child_output .= $this->parse_text_editor($testimonial['testimonial_text']);
 
-                        </div>
+            $child_output .= '</div>';
 
-                        <div class="lae-testimonial-user">
+            $child_output .= '<div class="lae-testimonial-user">';
 
-                            <div class="lae-image-wrapper">
+            $child_output .= '<div class="lae-image-wrapper">';
 
-                                <?php $client_image = $testimonial['client_image']; ?>
+            $client_image = $testimonial['client_image'];
 
-                                <?php if (!empty($client_image)): ?>
+            if (!empty($client_image)):
 
-                                    <?php echo wp_get_attachment_image($client_image['id'], 'thumbnail', false, array('class' => 'lae-image full')); ?>
+                $child_output .= wp_get_attachment_image($client_image['id'], 'thumbnail', false, array('class' => 'lae-image full'));
 
-                                <?php endif; ?>
+            endif;
 
-                            </div>
+            $child_output .= '</div><!-- .lae-image-wrapper -->';
 
-                            <div class="lae-text">
+            $child_output .= '<div class="lae-text">';
 
-                                <<?php echo $settings['title_tag']; ?> class="lae-author-name"><?php echo esc_html($testimonial['client_name']) ?></<?php echo $settings['title_tag']; ?>>
+            $child_output .= '<' . $settings['title_tag'] . ' class="lae-author-name">' . esc_html($testimonial['client_name']) . '</' . $settings['title_tag'] . '>';
 
-                            <div class="lae-author-credentials"><?php echo wp_kses_post($testimonial['credentials']); ?></div>
+            $child_output .= '<div class="lae-author-credentials">' . wp_kses_post($testimonial['credentials']) . '</div>';
 
-                        </div>
+            $child_output .= '</div>';
 
-                    </div>
+            $child_output .= '</div><!-- .lae-testimonial-user -->';
 
-                </div>
+            $child_output .= '</div><!-- .lae-testimonial -->';
 
-            </div>
+            $child_output .= '</div><!-- .lae-testimonial-wrapper.lae-slide -->';
 
-            <?php endforeach; ?>
+            $output .= apply_filters('lae_testimonials_slide_output', $child_output, $testimonial, $settings);
 
-        </div>
+        endforeach;
 
-        </div>
+        $output .= '</div><!-- .lae-slides -->';
 
-        <?php
+        $output .= '</div><!-- .lae-testimonials-slider -->';
+
+        echo apply_filters('lae_testimonials_slider_output', $output, $settings);
+
     }
 
     protected function content_template() {

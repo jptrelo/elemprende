@@ -4,7 +4,6 @@
 
 @import "../../../assets/css/lae-lib";
 
-
 /* =============== Common Styles ===================== */
 
 .lae-icon {
@@ -365,4 +364,11 @@ input.lae-checkbox:checked + label:after {
     width: 280px;
     margin-bottom: 15px;
     }
+  }
+
+.wrap.lae-license-wrap form.lae-license-box {
+  max-width: 700px;
+  background: white;
+  margin: 20px 0;
+  padding: 20px 30px;
   }

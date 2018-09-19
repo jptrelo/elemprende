@@ -51,6 +51,9 @@ class WCFM_Orders_WCMarketplace_Controller {
 		} else {
 			$sql .= " AND `vendor_id` = {$this->vendor_id}";
 		}
+		$sql .= ' AND `is_trashed` != 1';
+		
+		$sql = apply_filters( 'wcfm_wcmp_order_query', $sql );
 
 		// check if it is a search
 		if ( ! empty( $_POST['search']['value'] ) ) {
@@ -82,6 +85,7 @@ class WCFM_Orders_WCMarketplace_Controller {
 		
 		$total_items = $wpdb->get_var( $sql );
 		if( !$total_items ) $total_items = 0;
+		$total_items = apply_filters( 'wcfm_orders_total_count', $total_items, $this->vendor_id );
 
 		$sql = 'SELECT * FROM ' . $wpdb->prefix . 'wcmp_vendor_orders AS commission';
 
@@ -92,6 +96,9 @@ class WCFM_Orders_WCMarketplace_Controller {
 		} else {
 			$sql .= " AND `vendor_id` = {$this->vendor_id}";
 		}
+		$sql .= ' AND `is_trashed` != 1';
+		
+		$sql = apply_filters( 'wcfm_wcmp_order_query', $sql );
 
 		// check if it is a search
 		if ( ! empty( $_POST['search']['value'] ) ) {
@@ -140,6 +147,8 @@ class WCFM_Orders_WCMarketplace_Controller {
 				// Order exists check
 				$order_post_title = get_the_title( $order->order_id );
 				if( !$order_post_title ) continue;
+				
+				if( apply_filters( 'wcfm_is_show_order_restrict_check', false, $order->order_id, $order->product_id, $order ) ) continue;
 	
 				$the_order = wc_get_order( $order->order_id );
 				$order_currency = $the_order->get_currency();
@@ -164,7 +173,7 @@ class WCFM_Orders_WCMarketplace_Controller {
 				$wcfm_orders_json_arr[$index][] =  apply_filters( 'wcfm_order_status_display', '<span class="order-status tips wcicon-status-' . sanitize_title( $the_order->get_status() ) . ' text_tip" data-tip="' . wc_get_order_status_name( $the_order->get_status() ) . '"></span>', $the_order );
 				
 				// Order
-				if( apply_filters( 'wcfm_allow_order_customer_details', true ) ) {
+				if( apply_filters( 'wcfm_allow_view_customer_name', true ) ) {
 					$user_info = array();
 					if ( $the_order->get_user_id() ) {
 						$user_info = get_userdata( $the_order->get_user_id() );
@@ -196,9 +205,9 @@ class WCFM_Orders_WCMarketplace_Controller {
 				}
 	
 				if( $can_view_orders )
-					$wcfm_orders_json_arr[$index][] =  '<a href="' . get_wcfm_view_order_url($the_order->get_id(), $the_order) . '" class="wcfm_order_title">#' . esc_attr( $the_order->get_order_number() ) . '</a>' . ' ' . __( 'by', 'wc-frontend-manager' ) . ' ' . $username;
+					$wcfm_orders_json_arr[$index][] =  apply_filters( 'wcfm_order_label_display', '<a href="' . get_wcfm_view_order_url($the_order->get_id(), $the_order) . '" class="wcfm_order_title">#' . esc_attr( $the_order->get_order_number() ) . '</a>' . ' ' . __( 'by', 'wc-frontend-manager' ) . ' ' . $username, $the_order->get_id(), $order->product_id, $order, $username );
 				else
-					$wcfm_orders_json_arr[$index][] =  '#' . esc_attr( $the_order->get_order_number() ) . ' ' . __( 'by', 'wc-frontend-manager' ) . ' ' . $username;
+					$wcfm_orders_json_arr[$index][] =  apply_filters( 'wcfm_order_label_display', '<span class="wcfm_order_title">#' . esc_attr( $the_order->get_order_number() ) . '</span> ' . __( 'by', 'wc-frontend-manager' ) . ' ' . $username, $the_order->get_id(), $order->product_id, $order, $username );
 				
 				// Purchased
 				$order_item_details = '<div class="order_items" cellspacing="0">';
@@ -214,8 +223,8 @@ class WCFM_Orders_WCMarketplace_Controller {
 					if($WCMp->vendor_caps->vendor_payment_settings('give_shipping')) {
 						$gross_sales += (float) $order->shipping;
 					}
-					$item_qty = $line_item->get_quantity();
-					$order_item_details .= '<div class=""><span class="qty">' . $line_item->get_quantity() . 'x</span><span class="name">' . $line_item->get_name();
+					$item_qty = $order->quantity; //$line_item->get_quantity();
+					$order_item_details .= '<div class=""><span class="qty">' . $order->quantity . 'x</span><span class="name">' . $line_item->get_name();
 					if ( ! empty( $line_item->get_variation_id() ) ) {
 						$item_meta      = new WC_Order_Item_Meta( $line_item, $line_item->get_product() );
 						$item_meta_html = $item_meta->display( true, true );
@@ -230,8 +239,26 @@ class WCFM_Orders_WCMarketplace_Controller {
 				
 				$wcfm_orders_json_arr[$index][] = '<a href="#" class="show_order_items">' . sprintf( _n( '%d item', '%d items', $item_qty, 'wc-frontend-manager' ), $item_qty ) . '</a>' . $order_item_details;
 				
+				// Billing Address
+				$billing_address = '&ndash;';
+				if( apply_filters( 'wcfm_allow_customer_billing_details', true ) ) {
+					if ( $the_order->get_formatted_billing_address() ) {
+						$billing_address = wp_kses( $the_order->get_formatted_billing_address(), array( 'br' => array() ) );
+					}
+				}
+				$wcfm_orders_json_arr[$index][] = $billing_address; 
+				
+				// Shipping Address
+				$shipping_address = '&ndash;';
+				if( apply_filters( 'wcfm_allow_customer_shipping_details', true ) ) {
+					if ( $the_order->get_formatted_shipping_address() ) {
+						$shipping_address = wp_kses( $the_order->get_formatted_shipping_address(), array( 'br' => array() ) );
+					}
+				}
+				$wcfm_orders_json_arr[$index][] = $shipping_address; 
+				
 				// Gross Sales
-				$wcfm_orders_json_arr[$index][] =  wc_price( $gross_sales, array( 'currency' => $order_currency ) );
+				$wcfm_orders_json_arr[$index][] =  apply_filters( 'wcfm_vendor_order_gross_total', wc_price( $gross_sales, array( 'currency' => $order_currency ) ), $order->order_id, $order->product_id, $order->order_item_id, $order->quantity, $gross_sales, $order_currency );
 				
 				// Commision
 				$status = __( 'N/A', 'wc-frontend-manager' );
@@ -260,17 +287,17 @@ class WCFM_Orders_WCMarketplace_Controller {
 					if( $admin_fee_mode ) {
 						$total = $gross_sales - $total;
 					}
-					$wcfm_orders_json_arr[$index][] =  apply_filters( 'wcfm_vendor_order_total', wc_price( $total, array( 'currency' => $order_currency ) ) . '<br />' . $status, $order->order_id, $order->product_id, $total, $status );
+					$wcfm_orders_json_arr[$index][] =  apply_filters( 'wcfm_vendor_order_total', wc_price( $total, array( 'currency' => $order_currency ) ) . '<br />' . $status, $order->order_id, $order->product_id, $total, $status, $order_currency );
 				} else {
 					$wcfm_orders_json_arr[$index][] =  $status;
 				}
 				
-				// Date
-				$order_date = ( version_compare( WC_VERSION, '2.7', '<' ) ) ? $the_order->order_date : $the_order->get_date_created();
-				$wcfm_orders_json_arr[$index][] = date_i18n( wc_date_format(), strtotime( $order_date ) );
-				
 				// Additional Info
 				$wcfm_orders_json_arr[$index][] = apply_filters( 'wcfm_orders_additonal_data', '&ndash;', $the_order->get_id() );
+				
+				// Date
+				$order_date = ( version_compare( WC_VERSION, '2.7', '<' ) ) ? $the_order->order_date : $the_order->get_date_created();
+				$wcfm_orders_json_arr[$index][] = apply_filters( 'wcfm_order_date_display', date_i18n( wc_date_format(), strtotime( $order_date ) ), $order->order_id, $order );
 				
 				// Action
 				$actions = '';
@@ -289,22 +316,9 @@ class WCFM_Orders_WCMarketplace_Controller {
 					}
 				}
 				  
-				if( apply_filters( 'wcfm_is_allow_pdf_invoice', true ) || apply_filters( 'wcfm_is_allow_pdf_packing_slip', true ) ) {
-					if( WCFM_Dependencies::wcfmu_plugin_active_check() && WCFM_Dependencies::wcfm_wc_pdf_invoices_packing_slips_plugin_active_check() ) {
-						if( apply_filters( 'wcfm_is_allow_pdf_invoice', true ) ) {
-							$actions .= '<a class="wcfm_pdf_invoice wcfm-action-icon" href="#" data-orderid="' . $the_order->get_id() . '"><span class="fa fa-file-pdf-o text_tip" data-tip="' . esc_attr__( 'PDF Invoice', 'wc-frontend-manager' ) . '"></span></a>';
-						}
-						if( apply_filters( 'wcfm_is_allow_pdf_packing_slip', true ) ) {
-							$actions .= '<a class="wcfm_pdf_packing_slip wcfm-action-icon" href="#" data-orderid="' . $the_order->get_id() . '"><span class="fa fa-file-powerpoint-o text_tip" data-tip="' . esc_attr__( 'PDF Packing Slip', 'wc-frontend-manager' ) . '"></span></a>';
-						}
-					} else {
-						if( $is_wcfmu_inactive_notice_show = apply_filters( 'is_wcfmu_inactive_notice_show', true ) ) {
-							$actions .= '<a class="wcfm_pdf_invoice_vendor_dummy wcfm-action-icon" href="#" data-orderid="' . $order->order_id . '"><span class="fa fa-file-pdf-o text_tip" data-tip="' . esc_attr__( 'PDF Invoice', 'wc-frontend-manager' ) . '"></span></a>';
-						}
-					}
-				}
+				$actions = apply_filters ( 'wcfm_orders_module_actions', $actions, $order->order_id, $the_order );
 				
-				$wcfm_orders_json_arr[$index][] =  apply_filters ( 'wcmarketplace_orders_actions', $actions, $user_id, $order );
+				$wcfm_orders_json_arr[$index][] =  apply_filters ( 'wcmarketplace_orders_actions', $actions, $user_id, $order, $the_order );
 				
 				$index++;
 			}

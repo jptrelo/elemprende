@@ -41,14 +41,15 @@ class PA_Beta_Testers {
 			$response->new_version = $beta_version;
 			$response->url = 'https://premiumaddons.com/';
 			$response->package = sprintf( 'https://downloads.wordpress.org/plugin/premium-addons-for-elementor.%s.zip', $beta_version );
+            echo $response->package;
 			$transient->response[ PREMIUM_ADDONS_BASENAME ] = $response;
 		}
 
 		return $transient;
 	}
 	public function __construct() {
-        $check_component_active = get_option( 'pa_save_settings' );
-		if ( 0 !== $check_component_active['is-beta-tester'] ) {
+        $check_component_active = isset(get_option( 'pa_beta_save_settings' )['is-beta-tester']) ? get_option( 'pa_beta_save_settings' )['is-beta-tester'] : 1;
+		if ( 0 !== $check_component_active ) {
 			return;
 		}
 

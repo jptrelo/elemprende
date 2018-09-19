@@ -24,6 +24,7 @@ $has_custom_capability = 'no';
 
 $bfirst_name = '';
 $blast_name  = '';
+$bphone = '';
 $baddr_1 = '';
 $baddr_2 = '';
 $bcountry = '';
@@ -40,6 +41,17 @@ $scity = '';
 $sstate = '';
 $szip = '';
 
+if( isset( $wp->query_vars['wcfm-customers-manage'] ) && empty( $wp->query_vars['wcfm-customers-manage'] ) ) {
+	if( !apply_filters( 'wcfm_is_allow_add_customer', true ) ) {
+		wcfm_restriction_message_show( "Add Customer" );
+		return;
+	}
+	if( !apply_filters( 'wcfm_is_allow_customer_limit', true ) ) {
+		wcfm_restriction_message_show( "Customer Limit Reached" );
+		return;
+	}
+}
+
 if( isset( $wp->query_vars['wcfm-customers-manage'] ) && !empty( $wp->query_vars['wcfm-customers-manage'] ) ) {
 	$customer_user = get_userdata( $wp->query_vars['wcfm-customers-manage'] );
 	// Fetching Customer Data
@@ -52,6 +64,7 @@ if( isset( $wp->query_vars['wcfm-customers-manage'] ) && !empty( $wp->query_vars
 		
 		$bfirst_name = get_user_meta( $customer_id, 'billing_first_name', true );
 		$blast_name  = get_user_meta( $customer_id, 'billing_last_name', true );
+		$bphone  = get_user_meta( $customer_id, 'billing_phone', true );
 		$baddr_1  = get_user_meta( $customer_id, 'billing_address_1', true );
 		$baddr_2  = get_user_meta( $customer_id, 'billing_address_2', true );
 		$bcountry  = get_user_meta( $customer_id, 'billing_country', true );
@@ -145,6 +158,7 @@ do_action( 'before_wcfm_customers_manage' );
 								$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_customer_fields_billing', array(
 																																																	"bfirst_name" => array('label' => __('First Name', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $bfirst_name ),
 																																																	"blast_name" => array('label' => __('Last Name', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $blast_name ),
+																																																	"bphone" => array('label' => __('Phone', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $bphone ),
 																																																	"baddr_1" => array('label' => __('Address 1', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $baddr_1 ),
 																																																	"baddr_2" => array('label' => __('Address 2', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $baddr_2 ),
 																																																	"bcountry" => array('label' => __('Country', 'wc-frontend-manager') , 'type' => 'country', 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'attributes' => array( 'style' => 'width: 60%;' ), 'value' => $bcountry ),

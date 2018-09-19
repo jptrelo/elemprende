@@ -1,7 +1,10 @@
 .wcfm-admin-menu-head {
-	background: #f1f1f1;
 	padding: 0 2px 0 2px !important;
 	height: 32px !important;
+}
+
+.wcfm-admin-menu-head img {
+	width:30px !important;
 }
 
 .wcfm-admin-menu span {
@@ -157,14 +160,14 @@
 }
 
 .wcfm_admin_message .primary {
-	background: #00897b;
+	background: #00798b;
 	padding: 5px;
 	padding-left: 10px;
 	padding-right: 10px;
 	margin-left: 6px;
 	border-radius: 5px;
 	color: #fff;
-	border: 1px solid #00897b;
+	border: 1px solid #00798b;
 	text-decoration: none;
 	font-weight: 500;
 	letter-spacing: 1px;
@@ -182,6 +185,11 @@
 .wcfm_admin_message .primary:hover {
 	border: 1px solid #2a3344;
   background: #2a3344; 
+}
+
+/** Marketplace Double Menu Fix **/
+#adminmenu li.toplevel_page_wcfm_settings_form_marketplace_head {
+  display: none !important;
 }
 
 @media only screen and (max-width: 782px) {

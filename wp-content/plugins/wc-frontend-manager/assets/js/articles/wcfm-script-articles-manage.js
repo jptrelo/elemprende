@@ -1,5 +1,39 @@
 var article_form_is_valid = true;
 jQuery( document ).ready( function( $ ) {
+		
+	// Collapsible
+  $('.wcfm-tabWrap .page_collapsible').collapsible({
+		defaultOpen: 'wcfm_products_manage_form_inventory_head',
+		speed: 'slow',
+		loadOpen: function (elem) { //replace the standard open state with custom function
+			//console.log(elem);
+		  elem.next().show();
+		},
+		loadClose: function (elem, opts) { //replace the close state with custom function
+			//console.log(elem);
+			elem.next().hide();
+		},
+		animateOpen: function(elem, opts) {
+			$('.collapse-open').addClass('collapse-close').removeClass('collapse-open');
+			elem.addClass('collapse-open');
+			$('.collapse-close').find('span').removeClass('fa-arrow-circle-o-right block-indicator');
+			elem.find('span').addClass('fa-arrow-circle-o-right block-indicator');
+			$('.wcfm-tabWrap').find('.wcfm-container').stop(true, true).slideUp(opts.speed);
+			elem.next().stop(true, true).slideDown(opts.speed);
+		},
+		animateClose: function(elem, opts) {
+			elem.find('span').removeClass('fa-arrow-circle-o-up block-indicator');
+			elem.next().stop(true, true).slideUp(opts.speed);
+		}
+	});
+	$('.wcfm-tabWrap .page_collapsible').each(function() {
+		$(this).html('<div class="page_collapsible_content_holder">' + $(this).html() + '</div>');
+		$(this).find('.page_collapsible_content_holder').after( $(this).find('span') );
+	});
+	$('.wcfm-tabWrap .page_collapsible').find('span').addClass('fa');
+	$('.collapse-open').addClass('collapse-close').removeClass('collapse-open');
+	$('.wcfm-tabWrap').find('.wcfm-container').hide();
+	$('.wcfm-tabWrap').find('.page_collapsible:first').click();
 	
 	if( $("#article_cats").length > 0 ) {
 		$("#article_cats").select2({
@@ -68,107 +102,121 @@ jQuery( document ).ready( function( $ ) {
 	
 	if( typeof gmw_forms != 'undefined' ) {
 		// Geo my WP Support
-		tinymce.PluginManager.add('geomywp', function(editor, url) {
-			// Add a button that opens a window
-			editor.addButton('geomywp', {
-				text: 'GMW Form',
-				icon: false,
-				onclick: function() {
-					// Open window
-					editor.windowManager.open({
-						title: 'GMW Form',
-						body: [
-							{type: 'listbox', name: 'form_type', label: 'Form Type', values: [{text: 'Form', value: 'form'}, {text: 'Map', value: 'map'}, {text: 'Results', value: 'results'}]},
-							{type: 'listbox', name: 'gmw_forms', label: 'Select Form', values: gmw_forms}
-						],
-						onsubmit: function(e) {
-							// Insert content when the window form is submitted
-							if(e.data.form_type == 'results') {
-								editor.insertContent('[gmw form="results"]');
-							} else if(e.data.form_type == 'map') {
-								editor.insertContent('[gmw map="' + e.data.gmw_forms + '"]');
-							} else {
-								editor.insertContent('[gmw form="' + e.data.gmw_forms + '"]');
+		if( typeof tinymce != 'undefined' ) {
+			tinymce.PluginManager.add('geomywp', function(editor, url) {
+				// Add a button that opens a window
+				editor.addButton('geomywp', {
+					text: 'GMW Form',
+					icon: false,
+					onclick: function() {
+						// Open window
+						editor.windowManager.open({
+							title: 'GMW Form',
+							body: [
+								{type: 'listbox', name: 'form_type', label: 'Form Type', values: [{text: 'Form', value: 'form'}, {text: 'Map', value: 'map'}, {text: 'Results', value: 'results'}]},
+								{type: 'listbox', name: 'gmw_forms', label: 'Select Form', values: gmw_forms}
+							],
+							onsubmit: function(e) {
+								// Insert content when the window form is submitted
+								if(e.data.form_type == 'results') {
+									editor.insertContent('[gmw form="results"]');
+								} else if(e.data.form_type == 'map') {
+									editor.insertContent('[gmw map="' + e.data.gmw_forms + '"]');
+								} else {
+									editor.insertContent('[gmw form="' + e.data.gmw_forms + '"]');
+								}
 							}
-						}
-					});
-				}
+						});
+					}
+				});
 			});
-		});
+		}
 		
 		tinyMce_toolbar += ' | geomywp';
 		// TinyMCE intialize - Short description
-		var shdescTinyMCE = tinymce.init({
-																	selector: '#excerpt',
-																	height: 75,
-																	menubar: false,
-																	plugins: [
-																		'advlist autolink lists link charmap print preview anchor',
-																		'searchreplace visualblocks code fullscreen',
-																		'insertdatetime image media table contextmenu paste code geomywp directionality'
-																	],
-																	toolbar: tinyMce_toolbar,
-																	content_css: '//www.tinymce.com/css/codepen.min.css',
-																	statusbar: false,
-																	browser_spellcheck: true,
-																	entity_encoding: "raw"
-																});
-		
-		// TinyMCE intialize - Description
-		var descTinyMCE = tinymce.init({
-																	selector: '#description',
-																	height: 75,
-																	menubar: false,
-																	plugins: [
-																		'advlist autolink lists link charmap print preview anchor',
-																		'searchreplace visualblocks code fullscreen',
-																		'insertdatetime image media table contextmenu paste code geomywp directionality',
-																		'autoresize'
-																	],
-																	toolbar: tinyMce_toolbar,
-																	content_css: '//www.tinymce.com/css/codepen.min.css',
-																	statusbar: false,
-																	browser_spellcheck: true,
-																	entity_encoding: "raw"
-																});
-	} else {
-		// TinyMCE intialize - Short description
 		if( $('#excerpt').hasClass('rich_editor') ) {
-			var shdescTinyMCE = tinymce.init({
-																		selector: '#excerpt',
-																		height: 75,
-																		menubar: false,
-																		plugins: [
-																			'advlist autolink lists link charmap print preview anchor',
-																			'searchreplace visualblocks code fullscreen',
-																			'insertdatetime image media table contextmenu paste code directionality'
-																		],
-																		toolbar: tinyMce_toolbar,
-																		content_css: '//www.tinymce.com/css/codepen.min.css',
-																		statusbar: false,
-																		browser_spellcheck: true,
-																		entity_encoding: "raw"
-																	});
+			if( typeof tinymce != 'undefined' ) {
+				var shdescTinyMCE = tinymce.init({
+																			selector: '#excerpt',
+																			height: 75,
+																			menubar: false,
+																			plugins: [
+																				'advlist autolink lists link charmap print preview anchor',
+																				'searchreplace visualblocks code fullscreen',
+																				'insertdatetime image media table paste code geomywp directionality'
+																			],
+																			toolbar: tinyMce_toolbar,
+																			content_css: '//www.tinymce.com/css/codepen.min.css',
+																			statusbar: false,
+																			browser_spellcheck: true,
+																			entity_encoding: "raw"
+																		});
+			}
 		}
 		
 		// TinyMCE intialize - Description
 		if( $('#description').hasClass('rich_editor') ) {
-			var descTinyMCE = tinymce.init({
-																		selector: '#description',
-																		//height: 75,
-																		menubar: false,
-																		plugins: [
-																			'advlist autolink lists link charmap print preview anchor',
-																			'searchreplace visualblocks code fullscreen',
-																			'insertdatetime image media table contextmenu paste code directionality',
-																			'autoresize'
-																		],
-																		toolbar: tinyMce_toolbar,
-																		content_css: '//www.tinymce.com/css/codepen.min.css',
-																		statusbar: false,
-																		browser_spellcheck: true,
-																		entity_encoding: "raw"
-																	});
+			if( typeof tinymce != 'undefined' ) {
+				var descTinyMCE = tinymce.init({
+																			selector: '#description',
+																			height: 75,
+																			menubar: false,
+																			plugins: [
+																				'advlist autolink lists link charmap print preview anchor',
+																				'searchreplace visualblocks code fullscreen',
+																				'insertdatetime image media table paste code geomywp directionality',
+																				'autoresize'
+																			],
+																			toolbar: tinyMce_toolbar,
+																			content_css: '//www.tinymce.com/css/codepen.min.css',
+																			statusbar: false,
+																			browser_spellcheck: true,
+																			entity_encoding: "raw"
+																		});
+			}
+		}
+	} else {
+		// TinyMCE intialize - Short description
+		if( $('#excerpt').hasClass('rich_editor') ) {
+			if( typeof tinymce != 'undefined' ) {
+				var shdescTinyMCE = tinymce.init({
+																			selector: '#excerpt',
+																			height: 75,
+																			menubar: false,
+																			plugins: [
+																				'advlist autolink lists link charmap print preview anchor',
+																				'searchreplace visualblocks code fullscreen',
+																				'insertdatetime image media table paste code directionality'
+																			],
+																			toolbar: tinyMce_toolbar,
+																			content_css: '//www.tinymce.com/css/codepen.min.css',
+																			statusbar: false,
+																			browser_spellcheck: true,
+																			entity_encoding: "raw"
+																		});
+			}
+		}
+		
+		// TinyMCE intialize - Description
+		if( $('#description').hasClass('rich_editor') ) {
+			if( typeof tinymce != 'undefined' ) {
+				var descTinyMCE = tinymce.init({
+																			selector: '#description',
+																			//height: 75,
+																			menubar: false,
+																			plugins: [
+																				'advlist autolink lists link charmap print preview anchor',
+																				'searchreplace visualblocks code fullscreen',
+																				'insertdatetime image media table paste code directionality',
+																				'autoresize'
+																			],
+																			toolbar: tinyMce_toolbar,
+																			content_css: '//www.tinymce.com/css/codepen.min.css',
+																			statusbar: false,
+																			browser_spellcheck: true,
+																			entity_encoding: "raw"
+																		});
+			}
 		}
 	}
 	
@@ -187,7 +235,7 @@ jQuery( document ).ready( function( $ ) {
 		$( document.body ).trigger( 'wcfm_articles_manage_form_validate' );
 		
 		$wcfm_is_valid_form = article_form_is_valid;
-		$( document.body ).trigger( 'wcfm_form_validate' );
+		$( document.body ).trigger( 'wcfm_form_validate', $('#wcfm_articles_manage_form') );
 		article_form_is_valid = $wcfm_is_valid_form;
 		
 		return article_form_is_valid;
@@ -209,19 +257,9 @@ jQuery( document ).ready( function( $ ) {
 				}
 			});
 			
-			var excerpt = '';
-			if( $('#excerpt').hasClass('rich_editor') ) {
-				if( tinymce.get('excerpt') != null ) excerpt = tinymce.get('excerpt').getContent({format: 'raw'});
-			} else {
-				excerpt = $('#excerpt').val();
-			}
+			var excerpt = getWCFMEditorContent( 'excerpt' );
 			
-			var description = '';
-			if( $('#description').hasClass('rich_editor') ) {
-				if( tinymce.get('description') != null ) description = tinymce.get('description').getContent({format: 'raw'});
-			} else {
-				description = $('#description').val();
-			}
+			var description = getWCFMEditorContent( 'description' );
 			
 			var data = {
 				action : 'wcfm_ajax_controller',
@@ -267,19 +305,9 @@ jQuery( document ).ready( function( $ ) {
 				}
 			});
 			
-			var excerpt = '';
-			if( $('#excerpt').hasClass('rich_editor') ) {
-				if( tinymce.get('excerpt') != null ) excerpt = tinymce.get('excerpt').getContent({format: 'raw'});
-			} else {
-				excerpt = $('#excerpt').val();
-			}
+			var excerpt = getWCFMEditorContent( 'excerpt' );
 			
-			var description = '';
-			if( $('#description').hasClass('rich_editor') ) {
-				if( tinymce.get('description') != null ) description = tinymce.get('description').getContent({format: 'raw'});
-			} else {
-				description = $('#description').val();
-			}
+			var description = getWCFMEditorContent( 'description' );
 			
 			var data = {
 				action : 'wcfm_ajax_controller',
@@ -292,26 +320,22 @@ jQuery( document ).ready( function( $ ) {
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
 					$response_json = $.parseJSON(response);
-					$('.wcfm-message').html('').removeClass('wcfm-error').removeClass('wcfm-success').slideUp();
+					$('.wcfm-message').html('').removeClass('wcfm-success').removeClass('wcfm-error').slideUp();
+					wcfm_notification_sound.play();
 					if($response_json.status) {
-						audio.play();
 						$('#wcfm_articles_manage_form .wcfm-message').html('<span class="wcicon-status-completed"></span>' + $response_json.message).addClass('wcfm-success').slideDown( "slow", function() {
 						  if( $response_json.redirect ) window.location = $response_json.redirect;	
 						} );
 					} else {
-						audio.play();
 						$('#wcfm_articles_manage_form .wcfm-message').html('<span class="wcicon-status-cancelled"></span>' + $response_json.message).addClass('wcfm-error').slideDown();
 					}
 					if($response_json.id) $('#article_id').val($response_json.id);
+					wcfmMessageHide();
 					$('#wcfm-content').unblock();
 				}
 			});
 		}
 	});
-	
-	function playSound(filename) {
-	  document.getElementById("sound").innerHTML='<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename +'.mp3" /></audio>';
-	}
 	
 	function jsUcfirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);

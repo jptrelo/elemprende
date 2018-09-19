@@ -41,7 +41,7 @@ if ( $threshold != -1 ) {
 }
 
 $withdraw_limit =  dokan_get_option( 'withdraw_limit', 'dokan_withdraw', 0 );
-$payment_methods = dokan_withdraw_get_active_methods();
+$payment_methods = dokan_get_seller_active_withdraw_methods(); //dokan_withdraw_get_active_methods();
 $payment_methods_arr = array();
 foreach ( $payment_methods as $method_name ) {
 	$payment_methods_arr[esc_attr( $method_name )] = dokan_withdraw_get_method_title( $method_name ); 
@@ -57,11 +57,11 @@ foreach ( $payment_methods as $method_name ) {
 	  <div id="wcfm_page_load"></div>
 	  
 		<div class="wcfm-container wcfm-top-element-container">
-			<h2><?php echo $message; ?></h2>
+			<h2 style="text-align: left;"><?php echo $message; ?></h2>
 			
 			<?php
 			if( $wcfm_is_allow_payments = apply_filters( 'wcfm_is_allow_payments', true ) ) {
-				echo '<a class="add_new_wcfm_ele_dashboard text_tip" href="'.wcfm_payments_url().'" data-tip="'. __('Transaction History', 'wc-frontend-manager') .'"><span class="fa fa-credit-card"></span><span class="text">' . __('Transactions', 'dc-woocommerce-multi-vendor' ) . '</span></a>';
+				echo '<a class="add_new_wcfm_ele_dashboard text_tip" href="'.wcfm_payments_url().'" data-tip="'. __('Transaction History', 'wc-frontend-manager') .'"><span class="fa fa-credit-card"></span><span class="text">' . __('Transactions', 'wc-frontend-manager' ) . '</span></a>';
 			}
 			?>
 			<div class="wcfm-clearfix"></div>
@@ -84,28 +84,34 @@ foreach ( $payment_methods as $method_name ) {
 					'message' => __( 'You don\'t have sufficient balance for a withdraw request!', 'dokan-lite' )
 			) );
 		} else {
-		?>
-			<form metod="post" id="wcfm_withdrawal_manage_form">
-				<div class="wcfm-container">
-					<div id="wcfm_withdrawal_listing_expander" class="wcfm-content">
-						<?php
-						$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_withdrawal_fields_dokan', array( "withdraw_amount" => array('label' => __('Withdraw Amount', 'dokan-lite'), 'type' => 'number', 'attributes' => array( 'min' => $withdraw_limit ), 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'placeholder' => '0.00' ),
-																																																								"withdraw_method" => array('label' => __('Payment Method', 'dokan-lite'), 'type' => 'select', 'options' => $payment_methods_arr, 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_ele wcfm_title' ),
-																																																							) ) );
-						?>
-						<div class="wcfm-clearfix"></div>
+			if ( ! empty( $payment_methods ) ) {
+			?>
+				<form metod="post" id="wcfm_withdrawal_manage_form">
+					<div class="wcfm-container">
+						<div id="wcfm_withdrawal_listing_expander" class="wcfm-content">
+							<?php
+							$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_withdrawal_fields_dokan', array( "withdraw_amount" => array('label' => __('Withdraw Amount', 'dokan-lite'), 'type' => 'number', 'attributes' => array( 'min' => $withdraw_limit ), 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'placeholder' => '0.00' ),
+																																																									"withdraw_method" => array('label' => __('Payment Method', 'dokan-lite'), 'type' => 'select', 'options' => $payment_methods_arr, 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_ele wcfm_title' ),
+																																																								) ) );
+							?>
+							<div class="wcfm-clearfix"></div>
+						</div>	
 					</div>	
-				</div>	
-				<div class="wcfm-clearfix"></div>
-				
-				<div id="wcfm_products_simple_submit" class="wcfm_form_simple_submit_wrapper">
-				  <div class="wcfm-message" tabindex="-1"></div>
-				  
-					<input type="submit" name="withdrawal-data" value="<?php _e( 'Request', 'wc-frontend-manager' ); ?>" id="wcfm_withdrawal_request_button" class="wcfm_submit_button" />
+					<div class="wcfm-clearfix"></div>
+					
+					<div id="wcfm_products_simple_submit" class="wcfm_form_simple_submit_wrapper">
+						<div class="wcfm-message" tabindex="-1"></div>
+						
+						<input type="submit" name="withdrawal-data" value="<?php _e( 'Request', 'wc-frontend-manager' ); ?>" id="wcfm_withdrawal_request_button" class="wcfm_submit_button" />
+					</div>
+					<div class="wcfm-clearfix"></div>
+				</form>
+			<?php } else { ?>
+				<div class="dokan-alert dokan-alert-warning">
+						<strong><?php echo sprintf( '%s <a href="%s">%s</a>', __( 'No withdraw method is available. Please update your payment method to withdraw funds.', 'dokan-lite' ), esc_url( get_wcfm_settings_url() ), __( 'Payment Settings Setup', 'dokan-lite' ) ) ?></strong>
 				</div>
-				<div class="wcfm-clearfix"></div>
-			</form>
-		<?php } ?>
+			<?php } ?> 
+		<?php } ?> 
 		
 		<?php
 		do_action( 'after_wcfm_withdrawal' );

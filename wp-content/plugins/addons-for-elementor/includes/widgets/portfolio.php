@@ -1,7 +1,7 @@
 <?php
 
 /*
-Widget Name: Livemesh Grid
+Widget Name: Posts Grid
 Description: Display posts or custom post types in a multi-column grid.
 Author: LiveMesh
 Author URI: https://www.livemeshthemes.com
@@ -12,6 +12,7 @@ namespace LivemeshAddons\Widgets;
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Scheme_Color;
+use Elementor\Group_Control_Image_Size;
 use Elementor\Group_Control_Typography;
 use Elementor\Scheme_Typography;
 
@@ -27,7 +28,7 @@ class LAE_Portfolio_Widget extends Widget_Base {
     }
 
     public function get_title() {
-        return __('Livemesh Grid', 'livemesh-el-addons');
+        return __('Posts Grid', 'livemesh-el-addons');
     }
 
     public function get_icon() {
@@ -155,8 +156,11 @@ class LAE_Portfolio_Widget extends Widget_Base {
             [
                 'label' => __('Heading for the grid', 'livemesh-el-addons'),
                 'type' => Controls_Manager::TEXT,
-                'placeholder' => __('My Portfolio', 'livemesh-el-addons'),
-                'default' => __('My Portfolio', 'livemesh-el-addons'),
+                'placeholder' => __('My Posts', 'livemesh-el-addons'),
+                'default' => __('My Posts', 'livemesh-el-addons'),
+                'dynamic' => [
+                    'active' => true,
+                ],
             ]
         );
 
@@ -266,6 +270,15 @@ class LAE_Portfolio_Widget extends Widget_Base {
             ]
         );
 
+        $this->add_group_control(
+            Group_Control_Image_Size::get_type(),
+            [
+                'name' => 'thumbnail_size',
+                'label' => __('Image Size', 'livemesh-el-addons'),
+                'default' => 'large',
+            ]
+        );
+
         $this->add_control(
             'filterable',
             [
@@ -278,15 +291,23 @@ class LAE_Portfolio_Widget extends Widget_Base {
             ]
         );
 
-        $this->add_control(
+        $this->add_responsive_control(
             'per_line',
             [
-                'label' => __('Columns per row', 'livemesh-el-addons'),
-                'type' => Controls_Manager::NUMBER,
-                'min' => 1,
-                'max' => 5,
-                'step' => 1,
-                'default' => 3,
+                'label' => __( 'Columns per row', 'livemesh-el-addons' ),
+                'type' => Controls_Manager::SELECT,
+                'default' => '3',
+                'tablet_default' => '2',
+                'mobile_default' => '1',
+                'options' => [
+                    '1' => '1',
+                    '2' => '2',
+                    '3' => '3',
+                    '4' => '4',
+                    '5' => '5',
+                    '6' => '6',
+                ],
+                'frontend_available' => true,
             ]
         );
 
@@ -316,7 +337,7 @@ class LAE_Portfolio_Widget extends Widget_Base {
         $this->add_control(
             'heading_desktop',
             [
-                'label' => __( 'Desktop', 'livemesh-el-addons' ),
+                'label' => __('Desktop', 'livemesh-el-addons'),
                 'type' => Controls_Manager::HEADING,
                 'separator' => 'after',
             ]
@@ -570,11 +591,22 @@ class LAE_Portfolio_Widget extends Widget_Base {
             ]
         );
 
+        $this->add_control(
+            'thumbnail_info_tags_hover_color',
+            [
+                'label' => __('Taxonomy Terms Hover Color', 'livemesh-el-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .lae-block-grid .lae-module .lae-module-image .lae-terms a:hover' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
         $this->add_group_control(
             Group_Control_Typography::get_type(),
             [
                 'name' => 'tags_typography',
-                'selector' => '{{WRAPPER}} .lae-portfolio-wrap .lae-portfolio .lae-portfolio-item .lae-project-image .lae-image-info .lae-terms, {{WRAPPER}} .lae-portfolio-wrap .lae-portfolio .lae-portfolio-item .lae-project-image .lae-image-info .lae-terms a',
+                'selector' => '{{WRAPPER}} .lae-portfolio-wrap .lae-portfolio .lae-portfolio-item .lae-project-image .lae-image-info .lae-terms:hover, {{WRAPPER}} .lae-portfolio-wrap .lae-portfolio .lae-portfolio-item .lae-project-image .lae-image-info .lae-terms a:hover',
             ]
         );
 
@@ -613,6 +645,17 @@ class LAE_Portfolio_Widget extends Widget_Base {
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .lae-portfolio-wrap .lae-portfolio .lae-portfolio-item .entry-title a' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'entry_title_hover_color',
+            [
+                'label' => __('Entry Title Hover Color', 'livemesh-el-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .lae-portfolio-wrap .lae-portfolio .lae-portfolio-item .entry-title a:hover' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -725,140 +768,16 @@ class LAE_Portfolio_Widget extends Widget_Base {
 
     }
 
-
-    function posts_grid($loop, $settings, $taxonomies) {
-
-        $column_style = lae_get_column_class(intval($settings['per_line'])); ?>
-
-        <?php $current_page = get_queried_object_id(); ?>
-
-        <?php while ($loop->have_posts()) : $loop->the_post(); ?>
-
-            <?php $post_id = get_the_ID(); ?>
-
-            <?php
-            if ($post_id === $current_page)
-                continue; // skip current page since we can run into infinite loop when users choose All option in build query
-            ?>
-
-            <?php
-            $style = '';
-            foreach ($taxonomies as $taxonomy) {
-                $terms = get_the_terms($post_id, $taxonomy);
-                if (!empty($terms) && !is_wp_error($terms)) {
-                    foreach ($terms as $term) {
-                        $style .= ' term-' . $term->term_id;
-                    }
-                }
-            }
-            ?>
-
-            <div data-id="id-<?php echo $post_id; ?>"
-                 class="lae-portfolio-item <?php echo $style; ?> <?php echo $column_style; ?>">
-
-                <article id="post-<?php echo $post_id; ?>" <?php post_class(); ?>>
-
-                    <?php if ($thumbnail_exists = has_post_thumbnail()): ?>
-
-                        <div class="lae-project-image">
-
-                            <?php if ($settings['image_linkable'] == 'yes'): ?>
-
-                                <a href="<?php the_permalink(); ?>"> <?php the_post_thumbnail('large'); ?> </a>
-
-                            <?php else: ?>
-
-                                <?php the_post_thumbnail('large'); ?>
-
-                            <?php endif; ?>
-
-                            <div class="lae-image-info">
-
-                                <div class="lae-entry-info">
-
-                                    <?php the_title('<'. $settings['title_tag']. ' class="lae-post-title"><a href="' . get_permalink() . '" title="' . get_the_title() . '"
-                                               rel="bookmark">', '</a></'. $settings['title_tag'] . '>'); ?>
-
-                                    <?php echo lae_get_taxonomy_info($taxonomies); ?>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    <?php endif; ?>
-
-                    <?php if (($settings['display_title'] == 'yes') || ($settings['display_summary'] == 'yes')) : ?>
-
-                        <div
-                                class="lae-entry-text-wrap <?php echo($thumbnail_exists ? '' : ' nothumbnail'); ?>">
-
-                            <?php if ($settings['display_title'] == 'yes') : ?>
-
-                                <?php the_title('<'. $settings['entry_title_tag']. ' class="entry-title"><a href="' . get_permalink() . '" title="' . get_the_title() . '"
-                                               rel="bookmark">', '</a></'. $settings['entry_title_tag'] . '>'); ?>
-
-                            <?php endif; ?>
-
-                            <?php if (($settings['display_post_date'] == 'yes') || ($settings['display_author'] == 'yes') || ($settings['display_taxonomy'] == 'yes')) : ?>
-
-                                <div class="lae-entry-meta">
-
-                                    <?php if ($settings['display_author'] == 'yes'): ?>
-
-                                        <?php echo lae_entry_author(); ?>
-
-                                    <?php endif; ?>
-
-                                    <?php if ($settings['display_post_date'] == 'yes'): ?>
-
-                                        <?php echo lae_entry_published(); ?>
-
-                                    <?php endif; ?>
-
-                                    <?php if ($settings['display_taxonomy'] == 'yes'): ?>
-
-                                        <?php echo lae_get_taxonomy_info($taxonomies); ?>
-
-                                    <?php endif; ?>
-
-                                </div>
-
-                            <?php endif; ?>
-
-                            <?php if ($settings['display_summary'] == 'yes') : ?>
-
-                                <div class="entry-summary">
-
-                                    <?php the_excerpt(); ?>
-
-                                </div>
-
-                            <?php endif; ?>
-
-                        </div>
-
-                    <?php endif; ?>
-
-                </article><!-- .hentry -->
-
-            </div>
-
-        <?php endwhile; ?>
-
-        <?php wp_reset_postdata(); ?>
-
-        <?php
-
-    }
-
     protected function render() {
 
-        $settings = $this->get_settings();
+        $settings = $this->get_settings_for_display();
+
+        $settings = apply_filters('lae_posts_grid_' . $this->get_id() . '_settings', $settings);
 
         // Use the processed post selector query to find posts.
         $query_args = lae_build_query_args($settings);
+
+        $query_args = apply_filters('lae_posts_grid_' . $this->get_id() . '_query_args', $query_args, $settings);
 
         $loop = new \WP_Query($query_args);
 
@@ -866,48 +785,172 @@ class LAE_Portfolio_Widget extends Widget_Base {
         if ($loop->have_posts()) :
 
             // Check if any taxonomy filter has been applied
-            list($chosen_terms, $taxonomies) = lae_get_chosen_terms($settings['tax_query']);
+            list($chosen_terms, $taxonomies) = lae_get_chosen_terms($query_args);
+
             if (empty($chosen_terms))
                 $taxonomies[] = $settings['taxonomy_filter'];
 
-            ?>
+            $output = '<div class="lae-portfolio-wrap lae-gapless-grid">';
 
-            <div class="lae-portfolio-wrap lae-gapless-grid">
+            if (!empty($settings['heading']) || $settings['filterable'] == 'yes'):
 
-                <?php if (!empty($settings['heading']) || $settings['filterable'] == 'yes'): ?>
+                $header_class = (trim($settings['heading']) === '') ? ' lae-no-heading' : '';
 
-                    <?php $header_class = (trim($settings['heading']) === '') ? ' lae-no-heading' : ''; ?>
+                $grid_header = '<div class="lae-portfolio-header ' . $header_class . '">';
 
-                    <div class="lae-portfolio-header <?php echo $header_class; ?>">
+                if (!empty($settings['heading'])) :
 
-                        <?php if (!empty($settings['heading'])) : ?>
+                    $grid_header .= '<' . $settings['heading_tag']
+                        . ' class="lae-heading">' . wp_kses_post($settings['heading'])
+                        . '</' . $settings['heading_tag'] . '>';
 
-                            <<?php echo $settings['heading_tag']; ?> class="lae-heading"><?php echo wp_kses_post($settings['heading']); ?></<?php echo $settings['heading_tag']; ?>>
+                endif;
 
-                        <?php endif; ?>
+                if ($settings['filterable'] == 'yes')
+                    $grid_header .= lae_get_taxonomy_terms_filter($taxonomies, $chosen_terms);
 
-                        <?php
+                $grid_header .= '</div>';
 
-                        if ($settings['filterable'] == 'yes')
-                            echo lae_get_taxonomy_terms_filter($taxonomies, $chosen_terms);
+                $output .= apply_filters('lae_posts_grid_header', $grid_header, $settings);
 
-                        ?>
+            endif;
 
-                    </div>
+            $output .= '<div id="lae-portfolio-' . uniqid()
+                . '" class="lae-portfolio js-isotope lae-' . esc_attr($settings['layout_mode']) . ' lae-grid-container ' . lae_get_grid_classes($settings)
+                . '" data-isotope-options=\'{ "itemSelector": ".lae-portfolio-item", "layoutMode": "' . esc_attr($settings['layout_mode']) . '"}\'>';
 
-                <?php endif; ?>
+            $current_page = get_queried_object_id();
 
-                <div id="lae-portfolio-<?php echo uniqid(); ?>"
-                     class="lae-portfolio js-isotope lae-<?php echo esc_attr($settings['layout_mode']); ?> lae-grid-container"
-                     data-isotope-options='{ "itemSelector": ".lae-portfolio-item", "layoutMode": "<?php echo esc_attr($settings['layout_mode']); ?>" }'>
+            while ($loop->have_posts()) : $loop->the_post();
 
-                    <?php $this->posts_grid($loop, $settings, $taxonomies); ?>
+                $post_id = get_the_ID();
 
-                </div><!-- Isotope items -->
+                if ($post_id === $current_page)
+                    continue; // skip current page since we can run into infinite loop when users choose All option in build query
 
-            </div>
+                $style = '';
+                foreach ($taxonomies as $taxonomy) {
+                    $terms = get_the_terms($post_id, $taxonomy);
+                    if (!empty($terms) && !is_wp_error($terms)) {
+                        foreach ($terms as $term) {
+                            $style .= ' term-' . $term->term_id;
+                        }
+                    }
+                }
 
-            <?php
+                $entry_output = '<div data-id="id-' . $post_id . '" class="lae-grid-item lae-portfolio-item ' . $style . '">';
+
+                $entry_output .= '<article id="post-' . $post_id . '" class="' . join(' ', get_post_class('', $post_id)) . '">';
+
+                if ($thumbnail_exists = has_post_thumbnail()):
+
+                    $entry_image = '<div class="lae-project-image">';
+
+                    $image_setting = ['id' => get_post_thumbnail_id($post_id)];
+
+                    $thumbnail_html = lae_get_image_html($image_setting, 'thumbnail_size', $settings);
+
+                    if ($settings['image_linkable'] == 'yes'):
+
+                        $thumbnail_html = '<a href="' . get_the_permalink() . '">' . $thumbnail_html . '</a>';
+
+                    endif;
+
+                    $entry_image .= apply_filters('lae_posts_grid_thumbnail_html', $thumbnail_html, $image_setting, $settings);
+
+                    $image_info = '<div class="lae-image-info">';
+
+                    $image_info .= '<div class="lae-entry-info">';
+
+                    $image_info .= '<' . $settings['title_tag'] . ' class="lae-post-title"><a href="' . get_permalink() . '" title="' . get_the_title() . '" rel="bookmark">' . get_the_title() . '</a></' . $settings['title_tag'] . '>';
+
+                    $image_info .= lae_get_info_for_taxonomies($taxonomies);
+
+                    $image_info .= '</div>';
+
+                    $image_info .= '</div><!-- .lae-image-info -->';
+
+                    $entry_image .= apply_filters('lae_posts_grid_image_info', $image_info, $settings);
+
+                    $entry_image .= '</div>';
+
+                    $entry_output .= apply_filters('lae_posts_grid_entry_image', $entry_image, $image_setting, $settings);
+
+                endif;
+
+                if (($settings['display_title'] == 'yes') || ($settings['display_summary'] == 'yes')) :
+
+                    $entry_text = '<div class="lae-entry-text-wrap ' . ($thumbnail_exists ? '' : ' nothumbnail') . '">';
+
+                    if ($settings['display_title'] == 'yes') :
+
+                        $entry_title = '<' . $settings['entry_title_tag'] . ' class="entry-title"><a href="' . get_permalink() . '" title="' . get_the_title() . '" rel="bookmark">' . get_the_title() . '</a></' . $settings['entry_title_tag'] . '>';
+
+                        $entry_text .= apply_filters('lae_posts_grid_entry_title', $entry_title, $settings);
+
+                    endif;
+
+                    if (($settings['display_post_date'] == 'yes') || ($settings['display_author'] == 'yes') || ($settings['display_taxonomy'] == 'yes')) :
+
+                        $entry_meta = '<div class="lae-entry-meta">';
+
+                        if ($settings['display_author'] == 'yes'):
+
+                            $entry_meta .= lae_entry_author();
+
+                        endif;
+
+                        if ($settings['display_post_date'] == 'yes'):
+
+                            $entry_meta .= lae_entry_published();
+
+                        endif;
+
+                        if ($settings['display_taxonomy'] == 'yes'):
+
+                            $entry_meta .= lae_get_info_for_taxonomies($taxonomies);
+
+                        endif;
+
+                        $entry_meta .= '</div>';
+
+                        $entry_text .= apply_filters('lae_posts_grid_entry_meta', $entry_meta, $post_id, $settings);
+
+                    endif;
+
+                    if ($settings['display_summary'] == 'yes') :
+
+                        $excerpt = '<div class="entry-summary">';
+
+                        $excerpt .= get_the_excerpt();
+
+                        $excerpt .= '</div>';
+
+                        $entry_text .= apply_filters('lae_posts_grid_entry_excerpt', $excerpt, $post_id, $settings);
+
+                    endif;
+
+                    $entry_text .= '</div>';
+
+                    $entry_output .= apply_filters('lae_posts_grid_entry_text', $entry_text, $post_id, $settings);
+
+                endif;
+
+                $entry_output .= '</article><!-- .hentry -->';
+
+                $entry_output .= '</div>';
+
+                $output .= apply_filters('lae_posts_grid_entry_output', $entry_output, $post_id, $settings);
+
+            endwhile;
+
+            wp_reset_postdata();
+
+            $output .= '</div><!-- .lae-portfolio -->';
+
+            $output .= '</div><!-- .lae-portfolio-wrap -->';
+
+            echo apply_filters('lae_posts_grid_output', $output, $settings);
 
         endif;
     }

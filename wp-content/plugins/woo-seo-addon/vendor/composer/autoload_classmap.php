@@ -6,10 +6,4 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Premmerce\\SeoAddon\\Admin\\Admin' => $baseDir . '/src/Admin/Admin.php',
-    'Premmerce\\SeoAddon\\Frontend\\Frontend' => $baseDir . '/src/Frontend/Frontend.php',
-    'Premmerce\\SeoAddon\\SeoAddonPlugin' => $baseDir . '/src/SeoAddonPlugin.php',
-    'Premmerce\\SeoAddon\\WordpressSDK\\FileManager\\FileManager' => $baseDir . '/sdk/FileManager/FileManager.php',
-    'Premmerce\\SeoAddon\\WordpressSDK\\Notifications\\AdminNotifier' => $baseDir . '/sdk/Notifications/AdminNotifier.php',
-    'Premmerce\\SeoAddon\\WordpressSDK\\Plugin\\PluginInterface' => $baseDir . '/sdk/Plugin/PluginInterface.php',
 );

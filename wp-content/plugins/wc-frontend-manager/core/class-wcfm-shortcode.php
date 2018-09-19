@@ -22,10 +22,17 @@ class WCFM_Shortcode {
 		
 		// WC Frontend Manager Header Panel Notifications as Shortcode
 		add_shortcode('wcfm_notifications', array(&$this, 'wcfm_notifications_shortcode'));
+		
+		// WCfM Enquiry Button Short code
+		add_shortcode('wcfm_enquiry', array(&$this, 'wcfm_enquiry_shortcode'));
 	}
 
 	public function wc_frontend_manager($attr) {
 		global $WCFM;
+		$WCFM->nocache();
+		
+		wc_nocache_headers();
+		
 		$this->load_class('wc-frontend-manager');
 		return $this->shortcode_wrapper(array('WCFM_Frontend_Manager_Shortcode', 'output'));
 	}
@@ -93,9 +100,11 @@ class WCFM_Shortcode {
 		$notice = true;
 		if ( isset( $attr['notice'] ) && !empty( $attr['notice'] ) && ( 'false' == $attr['notice'] ) ) { $notice = false; }
 		
-		$unread_notice = $WCFM->frontend->wcfm_direct_message_count( 'notice' );
-		$unread_message = $WCFM->frontend->wcfm_direct_message_count( 'message' ); 
-		$unread_enquiry = $WCFM->frontend->wcfm_direct_message_count( 'enquiry' );
+		$unread_notice = $WCFM->wcfm_notification->wcfm_direct_message_count( 'notice' );
+		$unread_message = $WCFM->wcfm_notification->wcfm_direct_message_count( 'message' ); 
+		$unread_enquiry = $WCFM->wcfm_notification->wcfm_direct_message_count( 'enquiry' );
+		
+		ob_start();
 		?>
 		<div class="wcfm_sc_notifications">
 			<?php if( $message && apply_filters( 'wcfm_is_pref_direct_message', true ) && apply_filters( 'wcfm_is_allow_notifications', true ) && apply_filters( 'wcfm_is_allow_sc_notifications', true ) ) { ?>
@@ -111,6 +120,58 @@ class WCFM_Shortcode {
 			<?php } ?>
 		</div>
 		<?php
+		return ob_get_clean();
+	}
+	
+	/**
+	 * WCfM Enquiry Ask a Question button short code
+	 */
+	function wcfm_enquiry_shortcode( $atts ) {
+		global $WCFM;
+		if( apply_filters( 'wcfm_is_pref_enquiry', true ) ) {
+			if( is_product() ) {
+				$wcfm_options = get_option( 'wcfm_options', array() );
+				
+				$ask_question_label  = isset( $wcfm_options['wcfm_enquiry_button_label'] ) ? $wcfm_options['wcfm_enquiry_button_label'] : __( 'Ask a Question', 'wc-frontend-manager' );
+				if ( isset( $attr['label'] ) && !empty( $attr['label'] ) ) { 
+					$ask_question_label = $attr['label']; 
+				} 
+				
+				$button_style = '';
+				$background_color = '';
+				$color = '';
+				$base_color = '';
+				
+				if ( isset( $attr['background'] ) && !empty( $attr['background'] ) ) { $background_color = $attr['background']; }
+				if( $background_color ) { $button_style .= 'background: ' . $background_color . ';border-bottom-color: ' . $background_color . ';'; }
+				elseif( isset( $wcfm_options['wc_frontend_manager_button_background_color_settings'] ) ) { $button_style .= 'background: ' . $wcfm_options['wc_frontend_manager_button_background_color_settings'] . ';border-bottom-color: ' . $wcfm_options['wc_frontend_manager_button_background_color_settings'] . ';'; }
+				if ( isset( $attr['color'] ) && !empty( $attr['color'] ) ) { $color = $attr['color']; }
+				if( $color ) { $button_style .= 'color: ' . $color . ';'; }
+				elseif( isset( $wcfm_options['wc_frontend_manager_button_text_color_settings'] ) ) { $button_style .= 'color: ' . $wcfm_options['wc_frontend_manager_button_text_color_settings'] . ';'; }
+				
+				if ( isset( $attr['hover'] ) && !empty( $attr['hover'] ) ) { $base_color = $attr['hover']; }
+				elseif( isset( $wcfm_options['wc_frontend_manager_base_highlight_color_settings'] ) ) { $base_color = $wcfm_options['wc_frontend_manager_base_highlight_color_settings']; }
+				
+				ob_start();
+				?>
+				<div class="wcfm_ele_wrapper wcfm_enquiry_widget">
+				  <div class="wcfm-clearfix"></div>
+					<a href="#" class="wcfm_catalog_enquiry" style="<?php echo $button_style; ?>"><span class="fa fa-question-circle-o"></span>&nbsp;&nbsp;<span class="add_enquiry_label"><?php echo $ask_question_label; ?></span></a>
+					<?php if( $base_color ) { ?>
+						<style>a.wcfm_catalog_enquiry:hover{background: <?php echo $base_color; ?> !important;border-bottom-color: <?php echo $base_color; ?> !important;}</style>
+				  <?php } ?>
+					<div class="wcfm-clearfix"></div><br />
+					<?php
+					if( !apply_filters( 'wcfm_is_pref_enquiry_tab', true ) && !apply_filters( 'wcfm_is_pref_enquiry_button', true ) ) {
+						$WCFM->template->get_template( 'enquiry/wcfm-view-enquiry-tab.php' );
+					}
+					?>
+					<div class="wcfm-clearfix"></div>
+				</div>
+				<?php
+				return ob_get_clean();
+			}
+		}
 	}
 
 	/**

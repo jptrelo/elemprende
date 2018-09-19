@@ -1,7 +1,7 @@
 <?php
 
 /*
-Widget Name: Livemesh Stats Bars
+Widget Name: Stats Bars
 Description: Display multiple stats bars that talk about skills or other percentage stats.
 Author: LiveMesh
 Author URI: https://www.livemeshthemes.com
@@ -27,7 +27,7 @@ class LAE_Stats_Bars_Widget extends Widget_Base {
     }
 
     public function get_title() {
-        return __('Livemesh Stats Bars', 'livemesh-el-addons');
+        return __('Stats Bars', 'livemesh-el-addons');
     }
 
     public function get_icon() {
@@ -42,7 +42,7 @@ class LAE_Stats_Bars_Widget extends Widget_Base {
         return [
             'lae-widgets-scripts',
             'lae-frontend-scripts',
-            'waypoints'
+            'lae-waypoints'
         ];
     }
 
@@ -81,6 +81,10 @@ class LAE_Stats_Bars_Widget extends Widget_Base {
                         'label' => __('Stats Title', 'livemesh-el-addons'),
                         'type' => Controls_Manager::TEXT,
                         'description' => __('The title for the stats bar', 'livemesh-el-addons'),
+                        'default' => __('My stats title', 'livemesh-el-addons'),
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
 
                     [
@@ -274,46 +278,47 @@ class LAE_Stats_Bars_Widget extends Widget_Base {
 
     protected function render() {
 
-        $settings = $this->get_settings();
-        ?>
+        $settings = $this->get_settings_for_display();
 
-        <div class="lae-stats-bars">
+        $settings = apply_filters('lae_stats_bars_' . $this->get_id() . '_settings', $settings);
 
-            <?php foreach ($settings['stats_bars'] as $stats_bar) :
+        $output = '<div class="lae-stats-bars">';
 
-                $color_style = '';
-                $color = $stats_bar['bar_color'];
-                if ($color)
-                    $color_style = ' style="background:' . esc_attr($color) . ';"';
+        foreach ($settings['stats_bars'] as $stats_bar) :
 
-                ?>
+            $color_style = '';
+            $color = $stats_bar['bar_color'];
+            if ($color)
+                $color_style = ' style="background:' . esc_attr($color) . ';"';
 
-                <div class="lae-stats-bar">
+            $child_output = '<div class="lae-stats-bar">';
 
-                    <div class="lae-stats-title">
-                        <?php echo esc_html($stats_bar['stats_title']) ?><span><?php echo esc_attr($stats_bar['percentage_value']); ?>%</span>
-                    </div>
+            $child_output .= '<div class="lae-stats-title">';
 
-                    <div class="lae-stats-bar-wrap">
+            $child_output .= esc_html($stats_bar['stats_title']);
 
-                        <div <?php echo $color_style; ?> class="lae-stats-bar-content"
-                                                         data-perc="<?php echo esc_attr($stats_bar['percentage_value']); ?>"></div>
+            $child_output .= '<span>' . esc_attr($stats_bar['percentage_value']) . '%</span>';
 
-                        <div class="lae-stats-bar-bg"></div>
+            $child_output .= '</div>';
 
-                    </div>
+            $child_output .= '<div class="lae-stats-bar-wrap">';
 
-                </div>
+            $child_output .= '<div ' . $color_style . ' class="lae-stats-bar-content" data-perc="' . esc_attr($stats_bar['percentage_value']) . '"></div>';
 
-                <?php
+            $child_output .= '<div class="lae-stats-bar-bg"></div>';
 
-            endforeach;
+            $child_output .= '</div>';
 
-            ?>
+            $child_output .= '</div><!-- .lae-stats-bar -->';
 
-        </div>
+            $output .= apply_filters('lae_stats_bar_output', $child_output, $stats_bar, $settings);
 
-        <?php
+        endforeach;
+
+        $output .= '</div><!-- .lae-stats-bars -->';
+
+        echo apply_filters('lae_stats_bars_output', $output, $settings);
+
     }
 
     protected function content_template() {

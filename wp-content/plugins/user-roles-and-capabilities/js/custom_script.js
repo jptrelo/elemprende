@@ -93,19 +93,32 @@
             // length should be greater than 0
             if ($('input#filter-capability').val().trim().length < 2) {
                 $(".cap-name-to-filter").removeClass('green');
+                $('input#filter-capability').closest('table').find('tr').show();
                 return;
             }
+            $('input#filter-capability').closest('table').find('tr').show();
+
             // add class green when there is match
             var regxp = new RegExp($('input#filter-capability').val().trim());
             $(".cap-name-to-filter").each(function () {
+
                 if (regxp.test($(this).text())) {
                     $(this).addClass('green');
                     //console.log($(this).closest('tr').prev());
                     //console.log($(this).closest('tr').next());
                 } else {
+                    $(this).closest('tr').hide();
                     $(this).removeClass('green');
                 }
             });
+
+
+            $("tr.solvease-rnc-head-start").each(function () {
+                var headRowID = $(this).attr('head-row-id');
+                if($(".cap-name-to-filter."+headRowID).is(":visible") !== true){
+                    $(this).hide();
+                }
+            })
         });
 
 

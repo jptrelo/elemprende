@@ -24,6 +24,12 @@ $logo_image_url = get_user_meta( $user_id, '_vendor_image', true );
 $shop_description = get_user_meta( $user_id, '_vendor_description', true );
 
 $rich_editor = apply_filters( 'wcfm_is_allow_rich_editor', 'rich_editor' );
+$wpeditor = apply_filters( 'wcfm_is_allow_settings_wpeditor', 'wpeditor' );
+if( $wpeditor && $rich_editor ) {
+	$rich_editor = 'wcfm_wpeditor';
+} else {
+	$wpeditor = 'textarea';
+}
 if( !$rich_editor ) {
 	$breaks = array("<br />","<br>","<br/>"); 
 	
@@ -33,6 +39,9 @@ if( !$rich_editor ) {
 
 $wcfm_vacation_mode = ( get_user_meta( $user_id, 'wcfm_vacation_mode', true ) ) ? get_user_meta( $user_id, 'wcfm_vacation_mode', true ) : 'no';
 $wcfm_disable_vacation_purchase = ( get_user_meta( $user_id, 'wcfm_disable_vacation_purchase', true ) ) ? get_user_meta( $user_id, 'wcfm_disable_vacation_purchase', true ) : 'no';
+$wcfm_vacation_mode_type = ( get_user_meta( $user_id, 'wcfm_vacation_mode_type', true ) ) ? get_user_meta( $user_id, 'wcfm_vacation_mode_type', true ) : 'instant';
+$wcfm_vacation_start_date = ( get_user_meta( $user_id, 'wcfm_vacation_start_date', true ) ) ? get_user_meta( $user_id, 'wcfm_vacation_start_date', true ) : '';
+$wcfm_vacation_end_date = ( get_user_meta( $user_id, 'wcfm_vacation_end_date', true ) ) ? get_user_meta( $user_id, 'wcfm_vacation_end_date', true ) : '';
 $wcfm_vacation_mode_msg = get_user_meta( $user_id, 'wcfm_vacation_mode_msg', true );
 
 $banner_image_url = get_user_meta( $user_id, '_vendor_banner', true );
@@ -54,9 +63,15 @@ $state_options = array();
 if( $state && isset( $states[$country] ) && is_array( $states[$country] ) ) {
 	$state_options = $states[$country];
 }
+if( $state ) $state_options[$state] = $state;
 
 // Billing Details
 $_vendor_payment_mode = get_user_meta( $user_id, '_vendor_payment_mode', true );
+if (isset($_GET['code'])) {
+	$_vendor_payment_mode = 'stripe_masspay';
+} elseif (isset($_GET['disconnect_stripe'])) {
+	$_vendor_payment_mode = '';
+}
 $paypal_email = get_user_meta( $user_id, '_vendor_paypal_email', true );
 $_vendor_bank_account_type = get_user_meta( $user_id, '_vendor_bank_account_type', true );
 $_vendor_bank_account_number = get_user_meta( $user_id, '_vendor_bank_account_number', true );
@@ -75,6 +90,9 @@ if (isset($payment_admin_settings['payment_method_paypal_masspay']) && $payment_
 if (isset($payment_admin_settings['payment_method_paypal_payout']) && $payment_admin_settings['payment_method_paypal_payout'] = 'Enable') {
 	$payment_mode['paypal_payout'] = __('PayPal Payout', 'dc-woocommerce-multi-vendor');
 }
+if (isset($payment_admin_settings['payment_method_stripe_masspay']) && $payment_admin_settings['payment_method_stripe_masspay'] = 'Enable') {
+	$payment_mode['stripe_masspay'] = __('Stripe Connect', 'dc-woocommerce-multi-vendor');
+}
 if (isset($payment_admin_settings['payment_method_direct_bank']) && $payment_admin_settings['payment_method_direct_bank'] = 'Enable') {
 	$payment_mode['direct_bank'] = __('Direct Bank', 'dc-woocommerce-multi-vendor');
 }
@@ -82,21 +100,13 @@ $wcfm_vendor_payment_modes = apply_filters('wcmp_vendor_payment_mode', $payment_
 
 $is_marketplace = wcfm_is_marketplace();
 
-// Policy
-$wcmp_policy_settings = get_option("wcmp_general_policies_settings_name");
-$wcmp_capabilities_settings_name = get_option("wcmp_general_policies_settings_name");
-$can_vendor_edit_policy_tab_label_field = apply_filters('can_vendor_edit_policy_tab_label_field', true);
-$can_vendor_edit_cancellation_policy_field = apply_filters('can_vendor_edit_cancellation_policy_field', true);
-$can_vendor_edit_refund_policy_field = apply_filters('can_vendor_edit_refund_policy_field', true);
-$can_vendor_edit_shipping_policy_field = apply_filters('can_vendor_edit_shipping_policy_field', true);
-
 $wcmp_payment_settings_name = get_option('wcmp_payment_settings_name');
 
 $template_options = apply_filters('wcmp_vendor_shop_template_options', array('template1' => $WCMp->plugin_url.'assets/images/template1.png', 'template2' => $WCMp->plugin_url.'assets/images/template2.png', 'template3' => $WCMp->plugin_url.'assets/images/template3.png'));
 $shop_template = get_wcmp_vendor_settings('wcmp_vendor_shop_template', 'vendor', 'dashboard', 'template1');
 $shop_template = get_user_meta( $user_id, '_shop_template', true ) ? get_user_meta( $user_id, '_shop_template', true ) : $shop_template;
 
-$current_offset = get_option('gmt_offset');
+$current_offset = get_user_meta( $user_id, 'gmt_offset', true);
 $tzstring = get_user_meta( $user_id, 'timezone_string', true );
 // Remove old Etc mappings. Fallback to gmt_offset.
 if (false !== strpos($tzstring, 'Etc/GMT')) {
@@ -131,6 +141,14 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 	  
 	  <div class="wcfm-container wcfm-top-element-container">
 	  	<h2><?php _e('Store Settings', 'wc-frontend-manager' ); ?></h2>
+	  	
+	  	<?php 
+	  	do_action( 'wcfm_vendor_setting_header_before', $user_id );
+			if( apply_filters( 'wcfm_is_allow_social_profile', true ) ) {
+				echo '<a id="wcfm_social_settings" class="add_new_wcfm_ele_dashboard text_tip" href="'.get_wcfm_profile_url().'#wcfm_profile_form_social_head" data-tip="' . __( 'Social', 'wc-frontend-manager' ) . '"><span class="fa fa-users"></span><span class="text">' . __( 'Social', 'wc-frontend-manager' ) . '</span></a>';
+			}
+			do_action( 'wcfm_vendor_setting_header_after', $user_id );
+			?>
 	  	<div class="wcfm-clearfix"></div>
 		</div>	
 	  <div class="wcfm-clearfix"></div><br />
@@ -150,13 +168,12 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 				<div class="wcfm-container">
 					<div id="wcfm_settings_form_vendor_expander" class="wcfm-content">
 						<?php
-						  $rich_editor = apply_filters( 'wcfm_is_allow_rich_editor', 'rich_editor' );
 							$settings_fields_general = apply_filters( 'wcfm_wcmarketplace_settings_fields_general', array(
 																																																"wcfm_logo" => array('label' => __('Logo', 'wc-frontend-manager') , 'type' => 'upload', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title', 'prwidth' => 150, 'value' => $logo_image_url, 'hints' => __( 'Preferred logo should be 200x200 px.', 'wc-frontend-manager' ) ),
 																																																"shop_name" => array('label' => __('Shop Name', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $vendor->page_title, 'hints' => __( 'Your shop name is public and must be unique.', 'wc-frontend-manager' ) ),
 																																																"shop_slug" => array('label' => __('Shop Slug', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $vendor->page_slug, 'hints' => __( 'Your shop slug is public and must be unique.', 'wc-frontend-manager' ) ),
-																																																"shop_description" => array('label' => __('Shop Description', 'wc-frontend-manager') , 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele ' . $rich_editor, 'label_class' => 'wcfm_title', 'value' => $shop_description, 'hints' => __( 'This is displayed on your shop page.', 'wc-frontend-manager' ) ),
-																																																) );
+																																																"shop_description" => array('label' => __('Shop Description', 'wc-frontend-manager') , 'type' => $wpeditor, 'class' => 'wcfm-textarea wcfm_ele ' . $rich_editor, 'label_class' => 'wcfm_title', 'value' => $shop_description, 'hints' => __( 'This is displayed on your shop page.', 'wc-frontend-manager' ) ),
+																																																), $user_id );
 						  if( !apply_filters( 'wcfm_is_allow_store_logo', true ) ) {
 								if( isset( $settings_fields_general['wcfm_logo'] ) ) { unset( $settings_fields_general['wcfm_logo'] ); }
 							}
@@ -186,22 +203,22 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 					<div class="wcfm-container">
 						<div id="wcfm_settings_form_identity_expander" class="wcfm-content">
 							<?php
-								 $settings_fields_identity = apply_filters( 'wcfm_wcmarketplace_settings_fields_identity', array(
-																																							"banner" => array('label' => __('Banner', 'wc-frontend-manager') , 'type' => 'upload', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'prwidth' => 250, 'value' => $banner_image_url, 'hints' => __( 'Preferred banner should be 1200x245 px.', 'wc-frontend-manager' ) ),
-																																							//"shop_email" => array('label' => __('Shop Email', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $shop_email, 'hints' => __( 'Your store Email address.', 'wc-frontend-manager' ) ),
-																																							"shop_phone" => array('label' => __('Shop Phone', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $shop_phone, 'hints' => __( 'Your store phone no.', 'wc-frontend-manager' ) ),
-																																							) );
-								 
-								if( !apply_filters( 'wcfm_is_allow_store_banner', true ) ) {
-									if( isset( $settings_fields_identity['banner'] ) ) { unset( $settings_fields_identity['banner'] ); }
-								}
-								
-								if( !apply_filters( 'wcfm_is_allow_store_phone', true ) ) {
-									if( isset( $settings_fields_identity['shop_phone'] ) ) { unset( $settings_fields_identity['shop_phone'] ); }
-								}
-										
-								$WCFM->wcfm_fields->wcfm_generate_form_field( $settings_fields_identity );		
-								if( apply_filters( 'wcfm_is_allow_store_address', true ) ) {
+							 $settings_fields_identity = apply_filters( 'wcfm_wcmarketplace_settings_fields_identity', array(
+																																						"banner" => array('label' => __('Banner', 'wc-frontend-manager') , 'type' => 'upload', 'class' => 'wcfm-text wcfm-banner-uploads wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'prwidth' => 250, 'value' => $banner_image_url, 'hints' => __( 'Preferred banner should be 1200x245 px.', 'wc-frontend-manager' ) ),
+																																						//"shop_email" => array('label' => __('Shop Email', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $shop_email, 'hints' => __( 'Your store Email address.', 'wc-frontend-manager' ) ),
+																																						"shop_phone" => array('label' => __('Shop Phone', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $shop_phone, 'hints' => __( 'Your store phone no.', 'wc-frontend-manager' ) ),
+																																						), $user_id );
+							 
+							if( !apply_filters( 'wcfm_is_allow_store_banner', true ) ) {
+								if( isset( $settings_fields_identity['banner'] ) ) { unset( $settings_fields_identity['banner'] ); }
+							}
+							
+							if( !apply_filters( 'wcfm_is_allow_store_phone', true ) ) {
+								if( isset( $settings_fields_identity['shop_phone'] ) ) { unset( $settings_fields_identity['shop_phone'] ); }
+							}
+									
+							$WCFM->wcfm_fields->wcfm_generate_form_field( $settings_fields_identity );		
+							if( apply_filters( 'wcfm_is_allow_store_address', true ) ) {
 							?>
 						
 								<div class="wcfm_clearfix"></div>
@@ -214,43 +231,47 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 																																																			"country" => array('label' => __('Country', 'wc-frontend-manager') , 'type' => 'country', 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'attributes' => array( 'style' => 'width: 60%;' ), 'value' => $country ),
 																																																			"state" => array('label' => __('State/County', 'wc-frontend-manager') , 'type' => 'select', 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'options' => $state_options, 'value' => $state ),
 																																																			"city" => array('label' => __('City/Town', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $city ),
-																																																			"zip" => array('label' => __('Postcode/Zip', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $zip ),
-																																																			) ) );
-								}
-								?>
-							
-							
-								<p class="tzstring wcfm_title wcfm_ele"><strong><?php _e('Timezone', 'wc-frontend-manager'); ?></strong><span class="img_tip" data-tip="<?php _e('Set the local timezone.', 'wc-frontend-manager'); ?>"></span></p>
-								<label class="screen-reader-text" for="tzstring"><?php _e('Timezone', 'wc-frontend-manager'); ?></label>
-								<select id="timezone" name="timezone" class="wcfm-select wcfm_ele" style="width: 60%;">
-									<?php echo wp_timezone_choice( $tzstring, get_user_locale() ); ?>
-								</select>
-							
-								<?php if( apply_filters( 'wcfm_is_allow_store_address', true ) ) { ?>
-									<div>
-										<p class="store_location wcfm_title wcfm_ele"><strong><?php _e('Store Location', 'wc-frontend-manager'); ?></strong></p>
-										<?php 
-										$api_key = get_wcmp_vendor_settings('google_api_key');
-										if ( !empty( $api_key ) ) {
-											$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_wcmarketplace_settings_fields_location', array(
-																																																			"find_address" => array( 'placeholder' => __( 'Type an address to find', 'wc-frontend-manager' ), 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $map_address ),
-																																																			"store_location" => array( 'type' => 'hidden', 'value' => $store_location ),
-																																																			"store_lat" => array( 'type' => 'hidden', 'value' => $store_lat ),
-																																																			"store_lng" => array( 'type' => 'hidden', 'value' => $store_lng ),
-																																																			) ) );
+																																																			"zip" => array('label' => __('Postcode/Zip', 'wc-frontend-manager') , 'type' => 'number', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $zip, 'attributes' => array( 'min' => '1', 'step'=> '1' ) ),
+																																																			), $user_id ) );
 										
-											?>
-											<div class="wcfm_clearfix"></div><br />
-											<div class="wcfm-wcmarketplace-google-map" id="wcfm-wcmarketplace-map"></div>
-											<div class="wcfm_clearfix"></div><br />
-										<?php
-										} else {
-											echo __('Please contact your administrator to enable Google map feature.', 'wc-frontend-manager');
-										}
+									?>
+								</div>
+							  <?php
+							}
+							?>
+							
+							
+							<p class="tzstring wcfm_title wcfm_ele"><strong><?php _e('Timezone', 'wc-frontend-manager'); ?></strong><span class="img_tip" data-tip="<?php _e('Set the local timezone.', 'wc-frontend-manager'); ?>"></span></p>
+							<label class="screen-reader-text" for="tzstring"><?php _e('Timezone', 'wc-frontend-manager'); ?></label>
+							<select id="timezone" name="timezone" class="wcfm-select wcfm_ele" style="width: 60%;">
+								<?php echo wp_timezone_choice( $tzstring, get_user_locale() ); ?>
+							</select>
+						
+							<?php if( apply_filters( 'wcfm_is_allow_store_address', true ) ) { ?>
+								<div class="wcfm_clearfix"></div>
+								<div class="wcfm_vendor_settings_heading"><h3><?php _e( 'Store Location', 'wc-frontend-manager' ); ?></h3></div>
+								<div class="store_address store_location_wrap">
+									<?php 
+									$api_key = get_wcmp_vendor_settings('google_api_key');
+									if ( !empty( $api_key ) ) {
+										$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_wcmarketplace_settings_fields_location', array(
+																																																		"find_address" => array( 'label' => __( 'Find Location', 'wc-frontend-manager' ), 'placeholder' => __( 'Type an address to find', 'wc-frontend-manager' ), 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $map_address ),
+																																																		"store_location" => array( 'type' => 'hidden', 'value' => $store_location ),
+																																																		"store_lat" => array( 'type' => 'hidden', 'value' => $store_lat ),
+																																																		"store_lng" => array( 'type' => 'hidden', 'value' => $store_lng ),
+																																																		), $user_id ) );
+									
 										?>
-									</div>
-								<?php } ?>
-							</div>
+										<div class="wcfm_clearfix"></div><br />
+										<div class="wcfm-wcmarketplace-google-map" id="wcfm-wcmarketplace-map"></div>
+										<div class="wcfm_clearfix"></div><br />
+									<?php
+									} else {
+										echo __('Please contact your administrator to enable Google map feature.', 'wc-frontend-manager');
+									}
+									?>
+								</div>
+							<?php } ?>
 							
 							<?php if( get_wcmp_vendor_settings( 'can_vendor_edit_shop_template', 'vendor', 'dashboard', false ) ) { ?>
 								<div class="wcfm_clearfix"></div>
@@ -275,20 +296,6 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 				<?php } ?>
 				<!-- end collapsible -->
 				
-				<!-- collapsible - Social -->
-				<?php if( $wcfm_is_allow_social_profile = apply_filters( 'wcfm_is_allow_social_profile', true ) ) { ?>
-					<a href="<?php echo get_wcfm_profile_url(); ?>#wcfm_profile_form_social_head" class="page_collapsible page_collapsible_dummy" id="wcfm_profile_form_social_head">
-						<label class="fa fa-users"></label>
-						<?php _e('Social', 'wc-frontend-manager'); ?><span></span>
-					</a>
-					<div class="wcfm-container">
-						<div id="wcfm_profile_form_social_expander" class="wcfm-content">
-						
-						</div>
-					</div>
-				<?php } ?>
-				<!-- end collapsible -->
-				
 				<!-- collapsible - Billing -->
 				<?php if( $wcfm_is_allow_billing_settings = apply_filters( 'wcfm_is_allow_billing_settings', true ) ) { ?>
 					<div class="page_collapsible" id="wcfm_settings_form_payment_head">
@@ -309,220 +316,273 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 																																				"_vendor_destination_currency" => array('label' => __('Destination Currency', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele paymode_field paymode_direct_bank', 'label_class' => 'wcfm_title wcfm_ele paymode_field paymode_direct_bank', 'value' => $_vendor_destination_currency ),
 																																				"_vendor_iban" => array('label' => __('Account IBAN', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele paymode_field paymode_direct_bank', 'label_class' => 'wcfm_title wcfm_ele paymode_field paymode_direct_bank', 'value' => $_vendor_iban ),
 																																				"_vendor_account_holder_name" => array('label' => __('Account Holder Name', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele paymode_field paymode_direct_bank', 'label_class' => 'wcfm_title wcfm_ele paymode_field paymode_direct_bank', 'value' => $_vendor_account_holder_name ),
-																																				) ) );
+																																				), $user_id ) );
 							do_action( 'wcfm_wcmarketplace_billing_settings_fields', $user_id );
 							?>
 							<div class="paymode_field paymode_stripe_masspay">
 							  <?php
-							  if( WCFM_Dependencies::wcfm_wcmp_stripe_connect_active_check() && apply_filters( 'wcfm_is_allow_billing_stripe', true ) ) {
+							  if( apply_filters( 'wcfm_is_allow_billing_stripe', true ) ) {
 									global $WCMp_Stripe_Gateway;
 									$vendor = get_wcmp_vendor($user_id);
 									if ($vendor) {
-										$stripe_settings = get_option('woocommerce_stripe_settings');
-										if (isset($stripe_settings) && !empty($stripe_settings)) {
-											if (isset($stripe_settings['enabled']) && $stripe_settings['enabled'] == 'yes') {
-												$testmode = $stripe_settings['testmode'] === "yes" ? true : false;
-												$client_id = $testmode ? get_wcmp_stripe_gateway_settings('test_client_id', 'payment', 'stripe_gateway') : get_wcmp_stripe_gateway_settings('live_client_id', 'payment', 'stripe_gateway');
-												$secret_key = $testmode ? $stripe_settings['test_secret_key'] : $stripe_settings['secret_key'];
-												if (isset($client_id) && isset($secret_key)) {
-													if (isset($_GET['code'])) {
-														$code = $_GET['code'];
-														if (!is_user_logged_in()) {
-															if (isset($_GET['state'])) {
-																$user_id = $_GET['state'];
-															}
+										if (isset($payment_admin_settings['payment_method_stripe_masspay']) && $payment_admin_settings['payment_method_stripe_masspay'] = 'Enable') {
+											$testmode = get_wcmp_vendor_settings('testmode', 'payment', 'stripe_gateway') === "Enable" ? true : false;
+											$client_id = $testmode ? get_wcmp_vendor_settings('test_client_id', 'payment', 'stripe_gateway') : get_wcmp_vendor_settings('live_client_id', 'payment', 'stripe_gateway');
+											$secret_key = $testmode ? get_wcmp_vendor_settings('test_secret_key', 'payment', 'stripe_gateway') : get_wcmp_vendor_settings('live_secret_key', 'payment', 'stripe_gateway');
+											if (isset($client_id) && isset($secret_key)) {
+												if (isset($_GET['code'])) {
+													$code = $_GET['code'];
+													if (!is_user_logged_in()) {
+														if (isset($_GET['state'])) {
+															$user_id = $_GET['state'];
 														}
-														$token_request_body = array(
-															'grant_type' => 'authorization_code',
-															'client_id' => $client_id,
-															'code' => $code,
-															'client_secret' => $secret_key
-														);
-														$req = curl_init('https://connect.stripe.com/oauth/token');
-														curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
-														curl_setopt($req, CURLOPT_POST, true);
-														curl_setopt($req, CURLOPT_POSTFIELDS, http_build_query($token_request_body));
-														curl_setopt($req, CURLOPT_SSL_VERIFYPEER, false);
-														curl_setopt($req, CURLOPT_SSL_VERIFYHOST, 2);
-														curl_setopt($req, CURLOPT_VERBOSE, true);
-														// TODO: Additional error handling
-														$respCode = curl_getinfo($req, CURLINFO_HTTP_CODE);
-														$resp = json_decode(curl_exec($req), true);
-														curl_close($req);
-														if (!isset($resp['error'])) {
-															update_user_meta($user_id, 'vendor_connected', 1);
-															update_user_meta($user_id, 'admin_client_id', $client_id);
-															update_user_meta($user_id, 'access_token', $resp['access_token']);
-															update_user_meta($user_id, 'refresh_token', $resp['refresh_token']);
-															update_user_meta($user_id, 'stripe_publishable_key', $resp['stripe_publishable_key']);
-															update_user_meta($user_id, 'stripe_user_id', $resp['stripe_user_id']);
-														}
-														if (isset($resp['access_token']) || get_user_meta($user_id, 'vendor_connected', true) == 1) {
-															update_user_meta($user_id, 'vendor_connected', 1);
-															?>
-															<div class="clear"></div>
-															<div class="wcmp_stripe_connect">
-																<form action="" method="POST">
-																	<table class="form-table">
-																		<tbody>
-																			<tr>
-																				<th>
-																					<label><?php _e('Stripe', 'saved-cards'); ?></label>
-																				</th>
-																				<td>
-																					<label><?php _e('You are connected with Stripe', 'saved-cards'); ?></label>
-																				</td>
-																			</tr>
-																			<tr>
-																				<th></th>
-																				<td>
-																					<input type="submit" class="button" name="disconnect_stripe" value="Disconnect Stripe Account" />
-																				</td>
-																			</tr>
-																		</tbody>
-																	</table>
-																</form>
-															</div>
-															<?php
-														} else {
-															update_user_meta($user_id, 'vendor_connected', 0);
-															?>
-															<div class="clear"></div>
-															<div class="wcmp_stripe_connect">
-																<form action="" method="POST">
-																	<table class="form-table">
-																		<tbody>
-																			<tr>
-																				<th>
-																					<label><?php _e('Stripe', 'saved-cards'); ?></label>
-																				</th>
-																				<td>
-																					<label><?php _e('Please Retry!!!', 'saved-cards'); ?></label>
-																				</td>
-																			</tr>
-																		</tbody>
-																	</table>
-																</form>
-															</div>
-															<?php
 													}
-												} else if (isset($_GET['error'])) { // Error
-													update_user_meta($user_id, 'vendor_connected', 0);
-													?>
-													<div class="clear"></div>
-													<div class="wcmp_stripe_connect">
-														<table class="form-table">
-															<tbody>
-																<tr>
-																	<th>
-																		<label><?php _e('Stripe', 'saved-cards'); ?></label>
-																	</th>
-																	<td>
-																		<label><?php _e('Please Retry!!!', 'saved-cards'); ?></label>
-																	</td>
-																</tr>
-															</tbody>
-														</table>
-													</div>
-													<?php
-												} else {
-													$vendor_connected = get_user_meta($user_id, 'vendor_connected', true);
-													$connected = true;
-		
-													if (isset($vendor_connected) && $vendor_connected == 1) {
-														$admin_client_id = get_user_meta($user_id, 'admin_client_id', true);
-		
-														if ($admin_client_id == $client_id) {
-															?>
-															<div class="clear"></div>
-															<div class="wcmp_stripe_connect">
+													$token_request_body = array(
+														'grant_type' => 'authorization_code',
+														'client_id' => $client_id,
+														'code' => $code,
+														'client_secret' => $secret_key
+													);
+													$req = curl_init('https://connect.stripe.com/oauth/token');
+													curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
+													curl_setopt($req, CURLOPT_POST, true);
+													curl_setopt($req, CURLOPT_POSTFIELDS, http_build_query($token_request_body));
+													curl_setopt($req, CURLOPT_SSL_VERIFYPEER, false);
+													curl_setopt($req, CURLOPT_SSL_VERIFYHOST, 2);
+													curl_setopt($req, CURLOPT_VERBOSE, true);
+													// TODO: Additional error handling
+													$respCode = curl_getinfo($req, CURLINFO_HTTP_CODE);
+													$resp = json_decode(curl_exec($req), true);
+													print_r($resp);
+													curl_close($req);
+													if (!isset($resp['error'])) {
+														update_user_meta( $user_id, 'vendor_connected', 1);
+														update_user_meta( $user_id, 'admin_client_id', $client_id);
+														update_user_meta( $user_id, 'access_token', $resp['access_token']);
+														update_user_meta( $user_id, 'refresh_token', $resp['refresh_token']);
+														update_user_meta( $user_id, 'stripe_publishable_key', $resp['stripe_publishable_key']);
+														update_user_meta( $user_id, 'stripe_user_id', $resp['stripe_user_id']);
+														update_user_meta( $user_id, '_vendor_payment_mode', 'stripe_masspay' );
+														?>
+														<script>
+															window.location =  '<?php echo get_wcfm_settings_url() . '#wcfm_settings_form_payment_head'; ?>';
+														</script>
+														<?php
+													}
+													if (isset($resp['access_token']) || get_user_meta($user_id, 'vendor_connected', true) == 1) {
+														update_user_meta($user_id, 'vendor_connected', 1);
+														?>
+														<div class="clear"></div>
+														<div class="wcmp_stripe_connect">
+															<form action="" method="POST">
 																<table class="form-table">
 																	<tbody>
 																		<tr>
-																			<th>
-																					<label><?php _e('Stripe', 'saved-cards'); ?></label>
+																			<th style="width: 35%;">
+																				<label><?php _e('Stripe', 'wc-frontend-manager'); ?></label>
 																			</th>
 																			<td>
-																					<label><?php _e('You are connected with Stripe', 'saved-cards'); ?></label>
+																				<label><?php _e('You are connected with Stripe', 'wc-frontend-manager'); ?></label>
 																			</td>
 																		</tr>
 																		<tr>
 																			<th></th>
 																			<td>
-																					<input type="submit" class="button" name="disconnect_stripe" value="Disconnect Stripe Account" />
+																				<input type="submit" class="button" name="disconnect_stripe" value="<?php _e( 'Disconnect Stripe Account', 'wc-frontend-manager' ); ?>" />
 																			</td>
 																		</tr>
 																	</tbody>
 																</table>
-															</div>
-															<?php
-														} else {
-															$connected = false;
-														}
+															</form>
+														</div>
+														<?php
 													} else {
-															$connected = false;
+														update_user_meta($user_id, 'vendor_connected', 0);
+														?>
+														<div class="clear"></div>
+														<div class="wcmp_stripe_connect">
+															<form action="" method="POST">
+																<table class="form-table">
+																	<tbody>
+																		<tr>
+																			<th style="width: 35%;">
+																				<label><?php _e('Stripe', 'wc-frontend-manager'); ?></label>
+																			</th>
+																			<td>
+																				<label><?php _e('Please Retry!!!', 'wc-frontend-manager'); ?></label>
+																			</td>
+																		</tr>
+																	</tbody>
+																</table>
+															</form>
+														</div>
+														<?php
+												}
+											} else if (isset($_GET['error'])) { // Error
+												update_user_meta($user_id, 'vendor_connected', 0);
+												?>
+												<div class="clear"></div>
+												<div class="wcmp_stripe_connect">
+													<table class="form-table">
+														<tbody>
+															<tr>
+																<th style="width: 35%;">
+																	<label><?php _e('Stripe', 'wc-frontend-manager'); ?></label>
+																</th>
+																<td>
+																	<label><?php _e('Please Retry!!!', 'wc-frontend-manager'); ?></label>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+												<?php
+											} else {
+												
+												if (isset($_GET['disconnect_stripe'])) {
+													$vendor = get_wcmp_vendor($user_id);
+													$stripe_settings = get_wcmp_vendor_settings( 'payment_method_stripe_masspay', 'payment' );
+													$stripe_user_id = get_user_meta($user_id, 'stripe_user_id', true);
+													if (isset($stripe_settings) && $stripe_settings != 'Enable' && empty($stripe_user_id)) {
+															return;
 													}
-		
-													if (!$connected) {
-		
-														$status = delete_user_meta($user_id, 'vendor_connected');
-														$status = delete_user_meta($user_id, 'admin_client_id');
-		
-														// Show OAuth link
-														$authorize_request_body = array(
-															'response_type' => 'code',
-															'scope' => 'read_write',
+													$testmode = get_wcmp_vendor_settings('testmode', 'payment', 'stripe_gateway') === "Enable" ? true : false;
+													$client_id = $testmode ? get_wcmp_vendor_settings('test_client_id', 'payment', 'stripe_gateway') : get_wcmp_vendor_settings('live_client_id', 'payment', 'stripe_gateway');
+													$secret_key = $testmode ? get_wcmp_vendor_settings('test_secret_key', 'payment', 'stripe_gateway') : get_wcmp_vendor_settings('live_secret_key', 'payment', 'stripe_gateway');
+													$token_request_body = array(
 															'client_id' => $client_id,
-															'state' => $user_id
-														);
-														$url = 'https://connect.stripe.com/oauth/authorize?' . http_build_query($authorize_request_body);
-														$stripe_connect_url = $WCMp_Stripe_Gateway->plugin_url . 'assets/images/blue-on-light.png';
-		
-														if (!$status) {
+															'stripe_user_id' => $stripe_user_id,
+															'client_secret' => $secret_key
+													);
+													$req = curl_init('https://connect.stripe.com/oauth/deauthorize');
+													curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
+													curl_setopt($req, CURLOPT_POST, true);
+													curl_setopt($req, CURLOPT_POSTFIELDS, http_build_query($token_request_body));
+													curl_setopt($req, CURLOPT_SSL_VERIFYPEER, false);
+													curl_setopt($req, CURLOPT_SSL_VERIFYHOST, 2);
+													curl_setopt($req, CURLOPT_VERBOSE, true);
+													// TODO: Additional error handling
+													$respCode = curl_getinfo($req, CURLINFO_HTTP_CODE);
+													$resp = json_decode(curl_exec($req), true);
+													curl_close($req);
+													if ( $vendor && isset( $resp['stripe_user_id'] ) ) {
+															delete_user_meta( $user_id, 'vendor_connected');
+															delete_user_meta( $user_id, 'admin_client_id');
+															delete_user_meta( $user_id, 'access_token');
+															delete_user_meta( $user_id, 'refresh_token');
+															delete_user_meta( $user_id, 'stripe_publishable_key');
+															delete_user_meta( $user_id, 'stripe_user_id');
+															update_user_meta( $user_id, '_vendor_payment_mode', '' );
+															//wc_add_notice(__('Your account has been disconnected', 'marketplace-stripe-gateway'), 'success');
 															?>
-															<div class="clear"></div>
+															<script>
+																window.location =  '<?php echo get_wcfm_settings_url() . '#wcfm_settings_form_payment_head'; ?>';
+															</script>
+															<?php
+													} else {
+															//wc_add_notice(__('Unable to disconnect your account pleease try again', 'marketplace-stripe-gateway'), 'error');
+													}
+												}
+												
+												
+												
+												$vendor_connected = get_user_meta($user_id, 'vendor_connected', true);
+												$connected = true;
+	
+												if (isset($vendor_connected) && $vendor_connected == 1) {
+													$admin_client_id = get_user_meta($user_id, 'admin_client_id', true);
+	
+													if ($admin_client_id == $client_id) {
+														?>
+														<div class="clear"></div>
+														<div class="wcmp_stripe_connect">
+															<table class="form-table">
+																<tbody>
+																	<tr>
+																		<th style="width: 35%;">
+																				<label><?php _e('Stripe', 'wc-frontend-manager'); ?></label>
+																		</th>
+																		<td>
+																				<label><?php _e('You are connected with Stripe', 'wc-frontend-manager'); ?></label>
+																		</td>
+																	</tr>
+																	<tr>
+																		<th></th>
+																		<td>
+																				<input type="submit" class="button" name="disconnect_stripe" value="<?php _e('Disconnect Stripe Account', 'wc-frontend-manager'); ?>" />
+																		</td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+														<?php
+													} else {
+														$connected = false;
+													}
+												} else {
+														$connected = false;
+												}
+	
+												if (!$connected) {
+	
+													$status = delete_user_meta($user_id, 'vendor_connected');
+													$status = delete_user_meta($user_id, 'admin_client_id');
+	
+													// Show OAuth link
+													$authorize_request_body = array(
+														'response_type' => 'code',
+														'scope' => 'read_write',
+														'client_id' => $client_id,
+														'redirect_uri' => get_wcfm_settings_url(),
+														'state' => $user_id
+													);
+													$url = 'https://connect.stripe.com/oauth/authorize?' . http_build_query($authorize_request_body);
+													$stripe_connect_url = $WCMp->plugin_url . 'assets/images/blue-on-light.png';
+	
+													if (!$status) {
+														?>
+														<div class="clear"></div>
+														<div class="wcmp_stripe_connect">
+															<table class="form-table">
+																<tbody>
+																	<tr>
+																		<th style="width: 35%;">
+																			<label><?php _e('Stripe', 'wc-frontend-manager'); ?></label>
+																		</th>
+																		<td><?php _e('You are not connected with stripe.', 'wc-frontend-manager'); ?></td>
+																	</tr>
+																	<tr>
+																		<th></th>
+																		<td>
+																			<a href=<?php echo $url; ?> target="_self"><img src="<?php echo $stripe_connect_url; ?>" /></a>
+																		</td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+														<?php
+													} else {
+															?>
+														<div class="clear"></div>
 															<div class="wcmp_stripe_connect">
 																<table class="form-table">
 																	<tbody>
 																		<tr>
-																			<th>
-																				<label><?php _e('Stripe', 'saved-cards'); ?></label>
+																			<th style="width: 35%;">
+																				<label><?php _e('Stripe', 'wc-frontend-manager'); ?></label>
 																			</th>
-																			<td><?php _e('You are not connected with stripe.', 'saved-cards'); ?></td>
+																			<td><?php _e('Please connected with stripe again.', 'wc-frontend-manager'); ?></td>
 																		</tr>
 																		<tr>
 																			<th></th>
 																			<td>
-																				<a href=<?php echo $url; ?> target="_self"><img src="<?php echo $stripe_connect_url; ?>" /></a>
+																					<a href=<?php echo $url; ?> target="_self"><img src="<?php echo $stripe_connect_url; ?>" /></a>
 																			</td>
 																		</tr>
 																	</tbody>
 																</table>
 															</div>
 															<?php
-														} else {
-																?>
-															<div class="clear"></div>
-																<div class="wcmp_stripe_connect">
-																	<table class="form-table">
-																		<tbody>
-																			<tr>
-																				<th>
-																					<label><?php _e('Stripe', 'saved-cards'); ?></label>
-																				</th>
-																				<td><?php _e('Please connected with stripe again.', 'saved-cards'); ?></td>
-																			</tr>
-																			<tr>
-																				<th></th>
-																				<td>
-																						<a href=<?php echo $url; ?> target="_self"><img src="<?php echo $stripe_connect_url; ?>" /></a>
-																				</td>
-																			</tr>
-																		</tbody>
-																	</table>
-																</div>
-																<?php
-															}
 														}
 													}
 												}
@@ -566,7 +626,7 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 									$shipping_class_id = $shipping_term_id = get_user_meta($user_id, 'shipping_class_id', true);
 									$raw_zones = WC_Shipping_Zones::get_zones();
 									$raw_zones[] = array('id' => 0);
-									
+									$has_shipping_settings_option = false;
 									foreach ($raw_zones as $raw_zone) {
 										$zone = new WC_Shipping_Zone($raw_zone['id']);
 										$raw_methods = $zone->get_shipping_methods();
@@ -576,8 +636,9 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 												$instance_field = $raw_method->instance_form_fields["class_cost_" . $shipping_class_id];
 												$instance_settings = $raw_method->instance_settings["class_cost_" . $shipping_class_id];
 												$option_name = 'woocommerce_' . $raw_method->id . "_" . $raw_method->instance_id . "_settings_class_cost_" . $shipping_class_id;
-												$WCFM->wcfm_fields->wcfm_generate_form_field( array( $option_name => array('label' => $instance_field['title'] . ' - ' . $raw_method->title, 'name' => 'wcfm_vendor_shipping_data[' . $option_name . ']', 'placeholder' => $instance_field['placeholder'], 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => esc_attr($instance_settings), 'hints' => strip_tags( $instance_field['description'] ) )
+												$WCFM->wcfm_fields->wcfm_generate_form_field( array( $option_name => array('label' => $instance_field['title'] . ' - ' . $raw_method->title, 'name' => 'wcfm_vendor_shipping_data[' . $option_name . ']', 'placeholder' => $instance_field['placeholder'], 'type' => 'number', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => esc_attr($instance_settings), 'hints' => strip_tags( $instance_field['description'] ), 'attributes' => array( 'min' => '0.01', 'step' => '0.01' ) )
 																																		) );
+												$has_shipping_settings_option = true;
 											} elseif ($raw_method->id == 'table_rate') {
 												if( WCFM_Dependencies::wcfm_wc_table_rates_active_check() && WCFM_Dependencies::wcfm_wcmp_advanced_shipping_active_check() ) {
 													echo "<h2>" . __( 'Shipping Zone', 'wc-frontend-manager' ) . ': ' . $zone->get_zone_name() . "</h2><div class='wcfm_clearfix'></div>";
@@ -604,71 +665,29 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 																															"wcfm_table_rate_shipping_rules"  => array( 'label' => __('Shipping Rules', 'wc-frontend-manager') , 'type' => 'multiinput', 'name' => 'wcfm_table_rate_shipping_rules['.$raw_method->instance_id.']', 'class' => 'wcfm-text', 'label_class' => 'wcfm_title', 'value' => $table_rate_shipping_rules, 'options' => array(
 																																																			"rate_condition" => array('label' => __('Condition', 'wcmp-advance-shipping'), 'type' => 'select', 'options' => array('' => __('None', 'wcmp-advance-shipping'), 'price' => __('Price', 'wcmp-advance-shipping'), 'weight' => __('Weight', 'wcmp-advance-shipping'), 'items' => __('Item count', 'wcmp-advance-shipping')), 'class' => 'wcfm-select wcfm_half_ele', 'label_class' => 'wcfm_title wcfm_half_ele_title' ),
 																																																			"rate_label" => array('label' => __('Label', 'wcmp-advance-shipping'), 'type' => 'text', 'class' => 'wcfm-text wcfm_half_ele', 'label_class' => 'wcfm_title wcfm_half_ele_title' ),
-																																																			"rate_min" => array('label' => __('Min', 'wcmp-advance-shipping'), 'type' => 'text', 'class' => 'wcfm-text wcfm_half_ele', 'label_class' => 'wcfm_title wcfm_half_ele_title' ),
-																																																			"rate_max" => array('label' => __('Max', 'wcmp-advance-shipping'), 'type' => 'text', 'class' => 'wcfm-text wcfm_half_ele', 'label_class' => 'wcfm_title wcfm_half_ele_title' ),
-																																																			"rate_cost" => array('label' => __('Row cost', 'wcmp-advance-shipping'), 'type' => 'text', 'class' => 'wcfm-text wcfm_half_ele', 'label_class' => 'wcfm_title wcfm_half_ele_title' ),
-																																																			"rate_cost_per_item" => array('label' => __('Item cost', 'wcmp-advance-shipping'), 'type' => 'text', 'class' => 'wcfm-text wcfm_half_ele', 'label_class' => 'wcfm_title wcfm_half_ele_title' ),
-																																																			"rate_cost_per_weight_unit" => array('label' => __('lbs cost', 'wcmp-advance-shipping'), 'type' => 'text', 'class' => 'wcfm-text wcfm_half_ele', 'label_class' => 'wcfm_title wcfm_half_ele_title' ),
-																																																			"rate_cost_percent" => array('label' => __('% cost', 'wcmp-advance-shipping'), 'type' => 'text', 'class' => 'wcfm-text wcfm_half_ele', 'label_class' => 'wcfm_title wcfm_half_ele_title' ),
+																																																			"rate_min" => array('label' => __('Min', 'wcmp-advance-shipping'), 'type' => 'number', 'class' => 'wcfm-text wcfm_half_ele', 'label_class' => 'wcfm_title wcfm_half_ele_title', 'attributes' => array( 'min' => '0.01', 'step' => '0.01' ) ),
+																																																			"rate_max" => array('label' => __('Max', 'wcmp-advance-shipping'), 'type' => 'number', 'class' => 'wcfm-text wcfm_half_ele', 'label_class' => 'wcfm_title wcfm_half_ele_title', 'attributes' => array( 'min' => '0.01', 'step' => '0.01' ) ),
+																																																			"rate_cost" => array('label' => __('Row cost', 'wcmp-advance-shipping'), 'type' => 'number', 'class' => 'wcfm-text wcfm_half_ele', 'label_class' => 'wcfm_title wcfm_half_ele_title', 'attributes' => array( 'min' => '0.01', 'step' => '0.01' ) ),
+																																																			"rate_cost_per_item" => array('label' => __('Item cost', 'wcmp-advance-shipping'), 'type' => 'number', 'class' => 'wcfm-text wcfm_half_ele', 'label_class' => 'wcfm_title wcfm_half_ele_title', 'attributes' => array( 'min' => '0.01', 'step' => '0.01' ) ),
+																																																			"rate_cost_per_weight_unit" => array('label' => __('lbs cost', 'wcmp-advance-shipping'), 'type' => 'number', 'class' => 'wcfm-text wcfm_half_ele', 'label_class' => 'wcfm_title wcfm_half_ele_title', 'attributes' => array( 'min' => '0.01', 'step' => '0.01' ) ),
+																																																			"rate_cost_percent" => array('label' => __('% cost', 'wcmp-advance-shipping'), 'type' => 'number', 'class' => 'wcfm-text wcfm_half_ele', 'label_class' => 'wcfm_title wcfm_half_ele_title', 'attributes' => array( 'min' => '0.01', 'step' => '0.01' ) ),
 																																																			"rate_id" => array( 'type' => 'hidden' )
 																																																			)	)								
 																														);
 													$WCFM->wcfm_fields->wcfm_generate_form_field( $table_rate_shipping_fields );
+													$has_shipping_settings_option = true;
 												}
 											}
 										}
+									}
+									if( !$has_shipping_settings_option ) {
+										_e( 'There is no shipping zone or Flat Rate shipping method not associated for the zones to set shipping prices, kindly contact your Store Admin.', 'wc-frontend-manager' );
 									}
 								?>
 							</div>
 						</div>
 						<div class="wcfm_clearfix"></div>
 					<?php } ?>
-				<?php } ?>
-				<!-- end collapsible -->
-				
-				<!-- collapsible - Policies -->
-				<?php if( $wcfm_is_allow_policy_settings = apply_filters( 'wcfm_is_allow_policy_settings', true ) ) { ?>
-					<div class="page_collapsible" id="wcfm_settings_form_policies_head">
-						<label class="fa fa-ambulance"></label>
-						<?php _e('Policies', 'wc-frontend-manager'); ?><span></span>
-					</div>
-					<div class="wcfm-container">
-						<div id="wcfm_settings_form_policies_expander" class="wcfm-content">
-							<?php
-								if( $can_vendor_edit_policy_tab_label_field  ) {
-									$vendor_policy_tab_title = get_user_meta( $user_id, '_vendor_policy_tab_title', true ); 
-									$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_wcmp_settings_fields_policies', array(
-																																																														"vendor_policy_tab_title" => array('label' => __('Policy Tab Label', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $vendor_policy_tab_title )
-																																																													 ) ) );
-								}
-								
-								if ( $can_vendor_edit_shipping_policy_field ) {
-									$vendor_shipping_policy = get_user_meta( $user_id, '_vendor_shipping_policy', true ); 
-									$vendor_shipping_policy = $vendor_shipping_policy ? $vendor_shipping_policy : $wcmp_policy_settings['shipping_policy'];
-									$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_wcmp_settings_fields_policies_shipping', array(
-																																																													"vendor_shipping_policy" => array('label' => __('Shipping Policy', 'wc-frontend-manager') , 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $vendor_shipping_policy )
-																																																												 ) ) );
-								}
-								
-								if ( $can_vendor_edit_refund_policy_field ) {
-									$vendor_refund_policy = get_user_meta( $user_id, '_vendor_shipping_policy', true ); 
-									$vendor_refund_policy = $vendor_refund_policy ? $vendor_refund_policy : $wcmp_policy_settings['refund_policy'];
-									$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_wcmp_settings_fields_policies_refund', array(
-																																																													"vendor_refund_policy" => array('label' => __('Refund Policy', 'wc-frontend-manager') , 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $vendor_refund_policy )
-																																																												 ) ) );
-								}
-								
-								if ( $can_vendor_edit_cancellation_policy_field ) {
-									$vendor_cancellation_policy = get_user_meta( $user_id, '_vendor_cancellation_policy', true ); 
-									$vendor_cancellation_policy = $vendor_cancellation_policy ? $vendor_cancellation_policy : $wcmp_policy_settings['cancellation_policy'];
-									$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_wcmp_settings_fields_policies_refund', array(
-																																																													"vendor_cancellation_policy" => array('label' => __('Cancellation Policy', 'wc-frontend-manager') , 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $vendor_cancellation_policy )
-																																																												 ) ) );
-								}
-							?>
-						</div>
-					</div>
-					<div class="wcfm_clearfix"></div>
 				<?php } ?>
 				<!-- end collapsible -->
 				
@@ -698,8 +717,8 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 																																																		"vendor_csd_return_country" => array('label' => __('Country', 'wc-frontend-manager') , 'type' => 'country', 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'attributes' => array( 'style' => 'width: 60%;' ), 'value' => $vendor_csd_return_country ),
 																																																		"vendor_csd_return_city" => array('label' => __('City/Town', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $vendor_csd_return_city ),
 																																																		"vendor_csd_return_state" => array('label' => __('State/County', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $vendor_csd_return_state ),
-																																																		"vendor_csd_return_zip" => array('label' => __('Postcode/Zip', 'wc-frontend-manager') , 'type' => 'text', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $vendor_csd_return_zip )
-																																																		) ) );
+																																																		"vendor_csd_return_zip" => array('label' => __('Postcode/Zip', 'wc-frontend-manager') , 'type' => 'number', 'class' => 'wcfm-text wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $vendor_csd_return_zip, 'attributes' => array( 'min' => '1', 'step'=> '1' ) )
+																																																		), $user_id ) );
 								?>
 							</div>
 						</div>
@@ -708,34 +727,35 @@ $store_lng = get_user_meta( $user_id, '_store_lng', true ) ? get_user_meta( $use
 				<?php } ?>
 				<!-- end collapsible -->
 				
+				<?php do_action( 'end_wcfm_vendor_settings', $user_id ); ?>
+				
 				<!-- collapsible - Vacation -->
-				<?php if( $wcfm_is_allow_vacation_settings = apply_filters( 'wcfm_is_allow_vacation_settings', true ) ) { ?>
-					<div class="page_collapsible" id="wcfm_settings_form_vacation_head">
-						<label class="fa fa-tripadvisor"></label>
-						<?php _e('Vacation Mode', 'wc-frontend-manager'); ?><span></span>
-					</div>
-					<div class="wcfm-container">
-						<div id="wcfm_settings_form_vacation_expander" class="wcfm-content">
-							<?php
-							if( WCFM_Dependencies::wcfmu_plugin_active_check() ) {
+				<?php if( WCFM_Dependencies::wcfmu_plugin_active_check() ) { ?>
+					<?php if( apply_filters( 'wcfm_is_pref_vendor_vacation', true ) && apply_filters( 'wcfm_is_allow_vacation_settings', true ) ) { ?>
+						<div class="page_collapsible" id="wcfm_settings_form_vacation_head">
+							<label class="fa fa-tripadvisor"></label>
+							<?php _e('Vacation Mode', 'wc-frontend-manager'); ?><span></span>
+						</div>
+						<div class="wcfm-container">
+							<div id="wcfm_settings_form_vacation_expander" class="wcfm-content">
+								<?php
 								$WCFM->wcfm_fields->wcfm_generate_form_field( apply_filters( 'wcfm_vendors_settings_fields_vacation', array(
 																																																													"wcfm_vacation_mode" => array('label' => __('Enable Vacation Mode', 'wc-frontend-manager') , 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => 'yes', 'dfvalue' => $wcfm_vacation_mode ),
 																																																													"wcfm_disable_vacation_purchase" => array('label' => __('Disable Purchase During Vacation', 'wc-frontend-manager') , 'type' => 'checkbox', 'class' => 'wcfm-checkbox wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => 'yes', 'dfvalue' => $wcfm_disable_vacation_purchase ),
+																																																													"wcfm_vacation_mode_type" => array('label' => __('Vacation Type', 'wc-frontend-manager') , 'type' => 'select', 'class' => 'wcfm-select wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'options' => array( 'instant' => __( 'Instantly Close', 'wc-frontend-manager' ), 'date_wise' => __( 'Date wise close', 'wc-frontend-manager' ) ), 'value' => $wcfm_vacation_mode_type ),
+																																																													"wcfm_vacation_start_date" => array('label' => __('From', 'wc-frontend-manager'), 'type' => 'text', 'placeholder' => 'From... YYYY-MM-DD', 'class' => 'wcfm-text wcfm_ele date_wise_vacation_ele', 'label_class' => 'wcfm_title wcfm_ele date_wise_vacation_ele', 'value' => $wcfm_vacation_start_date),
+																																																													"wcfm_vacation_end_date" => array('label' => __('Upto', 'wc-frontend-manager'), 'type' => 'text', 'placeholder' => 'To... YYYY-MM-DD', 'class' => 'wcfm-text wcfm_ele date_wise_vacation_ele', 'label_class' => 'wcfm_title wcfm_ele date_wise_vacation_ele', 'value' => $wcfm_vacation_end_date),
 																																																													"wcfm_vacation_mode_msg" => array('label' => __('Vacation Message', 'wc-frontend-manager') , 'type' => 'textarea', 'class' => 'wcfm-textarea wcfm_ele', 'label_class' => 'wcfm_title wcfm_ele', 'value' => $wcfm_vacation_mode_msg )
-																																																												 ) ) );
-							} else {
-								if( $is_wcfmu_inactive_notice_show = apply_filters( 'is_wcfmu_inactive_notice_show', true ) ) {
-									wcfmu_feature_help_text_show( __( 'Vacation Mode', 'wc-frontend-manager' ) );
-								}
-							}
-							?>
+																																																												 ), $user_id ) );
+								?>
+							</div>
 						</div>
-					</div>
-					<div class="wcfm_clearfix"></div>
-				<?php } ?>
+						<div class="wcfm_clearfix"></div>
+					<?php } ?>
+				<?php
+				}
+				?>
 				<!-- end collapsible -->
-				
-				<?php do_action( 'end_wcfm_vendor_settings', $user_id ); ?>
 				
 				<?php do_action( 'end_wcfm_wcmarketplace_settings', $user_id ); ?>
 			</div>

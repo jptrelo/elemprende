@@ -15,7 +15,7 @@ class Premium_Carousel_Widget extends Widget_Base {
 	}
 
 	public function get_title() {
-		return esc_html__( 'Premium Carousel', 'premium-addons-for-elementor' );
+		return \PremiumAddons\Helper_Functions::get_prefix() . ' Carousel';
 	}
 
 	public function get_icon() {
@@ -28,7 +28,7 @@ class Premium_Carousel_Widget extends Widget_Base {
     }
 
 	public function get_script_depends() {
-		return ['slick-carousel-js'];
+		return ['premium-addons-js','slick-carousel-js'];
 	}
 
 	public function get_categories() {
@@ -548,6 +548,53 @@ class Premium_Carousel_Widget extends Widget_Base {
 				]
 			]
 		);
+        
+        $this->add_control(
+			'premium_carousel_navigation_effect',
+			[
+				'label' 		=> esc_html__( 'Ripple Effect', 'premium-addons-for-elementor' ),
+				'description'	=> esc_html__( 'Enable a ripple effect when the active dot is hovered/clicked', 'premium-addons-for-elementor' ),
+				'type'			=> Controls_Manager::SWITCHER,
+                'condition'		=> [
+					'premium_carousel_dot_navigation_show' => 'yes'
+				],
+			]
+		);
+        
+        $this->add_control(
+			'premium_carousel_navigation_effect_border_color',
+			[
+				'label' 		=> esc_html__( 'Ripple Color', 'premium-addons-for-elementor' ),
+				'type' 			=> Controls_Manager::COLOR,
+				'scheme' 		=> [
+				    'type' 	=> Scheme_Color::get_type(),
+				    'value' => Scheme_Color::COLOR_1,
+				],
+				'condition'		=> [
+					'premium_carousel_dot_navigation_show' => 'yes',
+                    'premium_carousel_navigation_effect'   => 'yes'
+				],
+				'selectors'		=> [
+					'{{WRAPPER}} .premium-carousel-wrapper.hvr-ripple-out ul.slick-dots li.slick-active:before' => 'border-color: {{VALUE}}'
+				]
+			]
+		);
+        
+        /*First Border Radius*/
+        $this->add_control('premium_carousel_navigation_effect_border_radius',
+                [
+                    'label'         => esc_html__('Border Radius', 'premium-addons-for-elementor'),
+                    'type'          => Controls_Manager::SLIDER,
+                    'size_units'    => ['px', '%', 'em'],
+                    'condition'		=> [
+                        'premium_carousel_dot_navigation_show' => 'yes',
+                        'premium_carousel_navigation_effect'    => 'yes'
+                    ],
+                    'selectors'     => [
+                        '{{WRAPPER}} .premium-carousel-wrapper.hvr-ripple-out ul.slick-dots li.slick-active:before' => 'border-radius: {{SIZE}}{{UNIT}};'
+                        ]
+                    ]
+                );
 
 		$this->end_controls_section();
 
@@ -585,7 +632,6 @@ class Premium_Carousel_Widget extends Widget_Base {
 				'label' 		=> esc_html__( 'RTL Mode', 'premium-addons-for-elementor' ),
 				'description'	=> esc_html__( 'Turn on RTL mode if your language starts from right to left', 'premium-addons-for-elementor' ),
 				'type'			=> Controls_Manager::SWITCHER,
-				'default'		=> 'no',
 				'condition'		=> [
 					'premium_carousel_slider_type!' => 'vertical'
 				]
@@ -598,7 +644,6 @@ class Premium_Carousel_Widget extends Widget_Base {
 				'label' 		=> esc_html__( 'Adaptive Height', 'premium-addons-for-elementor' ),
 				'description'	=> esc_html__( 'Adaptive height setting gives each slide a fixed height to avoid huge white space gaps', 'premium-addons-for-elementor' ),
 				'type'			=> Controls_Manager::SWITCHER,
-				'default'		=> 'no'
 			]
 		);
 
@@ -608,7 +653,6 @@ class Premium_Carousel_Widget extends Widget_Base {
 				'label' 		=> esc_html__( 'Pause on Hover', 'premium-addons-for-elementor' ),
 				'description'	=> esc_html__( 'Pause the slider when mouse hover', 'premium-addons-for-elementor' ),
 				'type'			=> Controls_Manager::SWITCHER,
-				'default'		=> 'no'
 			]
 		);
 
@@ -618,7 +662,6 @@ class Premium_Carousel_Widget extends Widget_Base {
 				'label' 		=> esc_html__( 'Center Mode', 'premium-addons-for-elementor' ),
 				'description'	=> esc_html__( 'Center mode enables a centered view with partial next/previous slides. Animations and all visible scroll type doesn\'t work with this mode', 'premium-addons-for-elementor' ),
 				'type'			=> Controls_Manager::SWITCHER,
-				'default'		=> 'no'
 			]
 		);
 
@@ -635,27 +678,24 @@ class Premium_Carousel_Widget extends Widget_Base {
 
 	protected function render() {
 		$settings = $this->get_settings();
-		$options = '';
         $arrows_position = $settings['premium_carousel_arrow_position']['size'] . 'px';
 		// Carousel sliding type 
 		if( $settings['premium_carousel_slider_type'] == 'horizontal' ){
-			$options .= 'vertical: false,'."\r\n";
+			$vertical = false;
 		} else if( $settings['premium_carousel_slider_type'] == 'vertical' ) {
-			$options .= 'vertical: true,'."\r\n";
+			$vertical = true;
 		} 
 
 		// responsive carousel set up
 
 		$slides_on_desk = $settings['premium_carousel_responsive_desktop'];
 		if( $settings['premium_carousel_slides_to_show'] == 'all' ) {
-			$slide_to_scroll = $slides_on_desk;
-			$options .= 'slidesToScroll: ' . $slide_to_scroll . ','."\r\n";
+			$slidesToScroll = !empty($slides_on_desk) ? $slides_on_desk : 1;
 		} else {
-			$slide_to_scroll = 1;
-			$options .= 'slidesToScroll: ' . $slide_to_scroll .','."\r\n";
+			$slidesToScroll = 1;
 		}
 
-		$options .= 'slidesToShow: ' .$slides_on_desk . ',';
+		$slidesToShow = !empty($slides_on_desk) ? $slides_on_desk : 1;
 
 		$slides_on_tabs = $settings['premium_carousel_responsive_tabs'];
 		$slides_on_mob = $settings['premium_carousel_responsive_mobile'];
@@ -668,77 +708,71 @@ class Premium_Carousel_Widget extends Widget_Base {
 			$slides_on_mob = $slides_on_desk;
 		}
 
-		$options .= 'responsive : [
-			{
-			  	breakpoint: 1025,
-			  	settings: {
-					slidesToShow: ' . $slides_on_desk . ',
-					slidesToScroll: ' . $slide_to_scroll . '
-			  	}
-			},
-			{
-			  	breakpoint: 769,
-			  	settings: {
-					slidesToShow: ' . $slides_on_tabs . ',
-					slidesToScroll: ' . $slides_on_tabs . '
-			  	}
-			},
-			{
-			  	breakpoint: 481,
-			  	settings: {
-					slidesToShow: ' . $slides_on_mob . ',
-					slidesToScroll: ' . $slides_on_mob . '
-			  	}
-			}
-		],';
+		$responsive = '[{breakpoint: 1025,settings: {slidesToShow: ' . $slides_on_desk . ',slidesToScroll: ' . $slidesToScroll . '}},{breakpoint: 769,settings: {slidesToShow: ' . $slides_on_tabs . ',slidesToScroll: ' . $slides_on_tabs . '}},{breakpoint: 481,settings: {slidesToShow: ' . $slides_on_mob . ',slidesToScroll: ' . $slides_on_mob . '}}]';
 
 		if( $settings['premium_carousel_loop'] == 'yes' ) {
-			$options . 'infinite : true,';
+			$infinite = true;
 		} else {
-			$options . 'infinite : false,';
+			$infinite = false;
 		}
 
 		if( $settings['premium_carousel_speed'] != '' ) {
-			$options .= 'speed : ' . $settings['premium_carousel_speed'].',';
-		}
+			$speed = $settings['premium_carousel_speed'];
+		} else {
+            $speed = '';
+        }
 		
 		if( $settings['premium_carousel_autoplay'] == 'yes' ) {
-			$options .= 'autoplay : true,';
+			$autoplay = true;
 
-			if( $settings['premium_carousel_autoplay_speed'] !== '' ) {
-				$options .= 'autoplaySpeed : ' . $settings['premium_carousel_autoplay_speed'] .',';
-			}
-			
-		}
+        if( $settings['premium_carousel_autoplay_speed'] !== '' ) {
+            $autoplaySpeed = $settings['premium_carousel_autoplay_speed'];
+        }
+		} else {
+            $autoplay = false;
+            $autoplaySpeed = '';
+        }
 
 		if( $settings['premium_carousel_draggable_effect'] == 'yes' ) {
-			$options .= 'draggable : true,';
-		}
+			$draggable = true;
+		} else {
+            $draggable = false;
+        }
 		if( $settings['premium_carousel_touch_move'] == 'yes' ) {
-			$options .= 'touchMove : true,';
-		}
+			$touchMove = true;
+		} else {
+            $touchMove = false;
+        }
 		$dir = '';
 		if( $settings['premium_carousel_RTL_Mode'] == 'yes' ) {
-			$options .= 'rtl : true,';
+			$rtl = true;
 			$dir = 'dir="rtl"';
-		}
+        } else {
+            $rtl = false;
+        }
 		if( $settings['premium_carousel_adaptive_height'] == 'yes' ) {
-			$options .= 'adaptiveHeight : true,';
-		}
-		if( $settings['premium_carousel_pausehover'] == 'no' ) {
-			$options .= 'pauseOnHover: false,';
+			$adaptiveHeight = true;
+        } else {
+            $adaptiveHeight = false;
+        }
+		if( $settings['premium_carousel_pausehover'] == 'yes' ) {
+			$pauseOnHover = true;
 		} else {
-			$options .= 'pauseOnHover: true,';
+			$pauseOnHover = false;
 		}
 		if( $settings['premium_carousel_center_mode'] == 'yes' ) {
-			$options .= 'centerMode : true,';
-		}
+			$centerMode = true;
+        } else {
+            $centerMode = false;
+        }
 		if( $settings['premium_carousel_space_btw_items'] !== '' ) {
-			$options .= 'centerPadding : ' . '"'.$settings['premium_carousel_space_btw_items'].'px",';
-		}
+			$centerPadding = $settings['premium_carousel_space_btw_items']."px";
+        } else {
+            $centerPadding = '';
+        }
 		// Navigation arrow setting setup
 		if( $settings['premium_carousel_navigation_show'] == 'yes') {
-			$options .= 'arrows : true,';
+			$arrows = true;
 
 			if( $settings['premium_carousel_slider_type'] == 'vertical' ) {
 				$vertical_alignment = "ver-carousel-arrow";
@@ -834,13 +868,15 @@ class Premium_Carousel_Widget extends Widget_Base {
 
 			$left_arrow = '<a type="button" data-role="none" class="'. $vertical_alignment .' carousel-prev'.$arrow_class.'" aria-label="Next" role="button" style=""><i class="'.$icon_prev_class.'" aria-hidden="true"></i></a>';
 
-			$options .= 'nextArrow : \''.$next_arrow.'\',';
-			$options .= 'prevArrow : \''.$left_arrow.'\',';
+			$nextArrow = $next_arrow;
+			$prevArrow = $left_arrow;
 		} else {
-			$options .= 'arrows : false,';
+			$arrows = false;
+            $nextArrow = '';
+			$prevArrow = '';
 		}
 		if( $settings['premium_carousel_dot_navigation_show'] == 'yes' ){
-			$options .= 'dots: true,';
+			$dots =  true;
 			if( $settings['premium_carousel_dot_icon'] == 'square_white' ) {
 				$dot_icon = 'fa fa-square-o';
 			}
@@ -856,26 +892,60 @@ class Premium_Carousel_Widget extends Widget_Base {
 			if( $settings['premium_carousel_dot_icon'] == 'circle_thin_bold' ) {
 				$dot_icon = 'fa fa-circle-o';
 			}
-			$options .= 'customPaging: function(slider, i) {
-                   return \'<i class="' . $dot_icon . '"></i>\';
-                },';
-		}
+			$customPaging = $dot_icon;
+		} else {
+            $dots =  false;
+            $dot_icon = '';
+            $customPaging = '';
+        }
 		$extra_class = $settings['premium_carousel_extra_class'] !== '' ? ' '.$settings['premium_carousel_extra_class'] : '';
 		
 		$animation_class = $settings['premium_carousel_animation_list'];
 		$animation = 'class="item-wrapper" data-animation="animated ' . $animation_class .'"';
+        
+        if($settings['premium_carousel_navigation_effect'] == 'yes') {
+            $dot_anim = 'hvr-ripple-out';
+        } else {
+            $dot_anim = '';
+        }
+        
+        $carousel_settings = [
+            'vertical'      => $vertical,
+            'slidesToScroll'=> $slidesToScroll,
+            'slidesToShow'  => $slidesToShow,
+            'responsive'    => $responsive,
+            'infinite'      => $infinite,
+            'speed'         => $speed,
+            'autoplay'      => $autoplay,
+            'autoplaySpeed' => $autoplaySpeed,
+            'draggable'     => $draggable,
+            'touchMove'     => $touchMove,
+            'rtl'           => $rtl,
+            'adaptiveHeight'=> $adaptiveHeight,
+            'pauseOnHover'  => $pauseOnHover,
+            'centerMode'    => $centerMode,
+            'centerPadding' => $centerPadding,
+            'arrows'        => $arrows,
+            'nextArrow'     => $nextArrow,
+            'prevArrow'     => $prevArrow,
+            'dots'          => $dots,
+            'customPaging'  => $customPaging,
+            'slidesDesk'    => $slides_on_desk,
+            'slidesTab'     => $slides_on_tabs,
+            'slidesMob'     => $slides_on_mob,
+        ];
 		?>
             
-			<div id="premium-carousel-wrapper-<?php echo esc_attr( $this->get_id() ); ?>" class="premium-carousel-wrapper carousel-wrapper-<?php echo esc_attr( $this->get_id() ); ?><?php echo $extra_class;?>" <?php echo $dir; ?>>
-				<div id="premium-carousel-<?php echo esc_attr( $this->get_id() ); ?>">
+			<div id="premium-carousel-wrapper-<?php echo esc_attr( $this->get_id() ); ?>" class="premium-carousel-wrapper <?php echo esc_attr($dot_anim); ?> carousel-wrapper-<?php echo esc_attr( $this->get_id() ); ?><?php echo $extra_class;?>" <?php echo $dir; ?> data-settings='<?php echo wp_json_encode($carousel_settings); ?>'>
+                <div id="premium-carousel-<?php echo esc_attr( $this->get_id() ); ?>" class="premium-carousel-inner">
 					<?php 
-						$boosted_elements_page_id = is_array( $settings['premium_carousel_slider_content'] ) ? $settings['premium_carousel_slider_content'] : array();
-						$boosted_elements_frontend = new Frontend;
+						$premium_elements_page_id = is_array( $settings['premium_carousel_slider_content'] ) ? $settings['premium_carousel_slider_content'] : array();
+						$premium_elements_frontend = new Frontend;
 						
-						foreach( $boosted_elements_page_id as $elementor_post_id ) :
+						foreach( $premium_elements_page_id as $elementor_post_id ) :
 					 ?>
 					<div <?php echo $animation; ?>>
-						<?php echo $boosted_elements_frontend->get_builder_content($elementor_post_id, true); ?>
+						<?php echo $premium_elements_frontend->get_builder_content($elementor_post_id, true); ?>
 					</div>
 					<?php endforeach; ?>
 				</div>
@@ -890,98 +960,7 @@ class Premium_Carousel_Widget extends Widget_Base {
                 }
                 <?php endif; ?>
             </style>
-			<script type="text/javascript">
-				(function( $ ) {
-					$(document).ready( function() {
-						function slideToShow( slick ) {
-							slidesToShow = slick.options.slidesToShow;
-							windowWidth = jQuery( window ).width();
-				            if ( windowWidth < 1025 ) {
-				                slidesToShow = slick.options.responsive[0].settings.slidesToShow;
-				            }
-				            if ( windowWidth < 769 ) {
-				                slidesToShow = slick.options.responsive[1].settings.slidesToShow;
-				            }
-				            if ( windowWidth < 481 ) {
-				                slidesToShow = slick.options.responsive[2].settings.slidesToShow;
-				            }
-				            return slidesToShow;
-						}
-						$('.carousel-wrapper-<?php echo esc_attr( $this->get_id() ); ?>').on('init', function (event, slick ) {
-				            event.preventDefault();
-				            $('.carousel-wrapper-<?php echo esc_attr( $this->get_id() ); ?> .item-wrapper.slick-active').each(function (index, el) {
-				                $this = $(this);
-				                $this.addClass($this.data('animation'));
-				            });
-
-				           $('.slick-track').addClass('translate');
-				            
-				        });
-						$('#premium-carousel-<?php echo esc_attr( $this->get_id() ); ?>').slick({ <?php echo $options; ?> });
-
-						$('.carousel-wrapper-<?php echo esc_attr( $this->get_id() ); ?>').on('afterChange', function (event, slick, currentSlide, nextSlide) {
-				            slidesScrolled = slick.options.slidesToScroll;
-				            slidesToShow = slideToShow( slick );
-				            centerMode = slick.options.centerMode;
-				            $currentParent = slick.$slider[0].parentElement.id;
-				            slideToAnimate = currentSlide + slidesToShow - 1;
-
-				            if (slidesScrolled == 1) {
-				                if ( centerMode == true ) {
-				                    animate = slideToAnimate - 2;
-				                    $inViewPort = $( '#' + $currentParent + " [data-slick-index='" + animate + "']");
-				                    $inViewPort.addClass($inViewPort.data('animation'));
-				                } else {
-				                    $inViewPort = $( '#' + $currentParent + " [data-slick-index='" + slideToAnimate + "']");
-				                    $inViewPort.addClass($inViewPort.data('animation'));
-				                }
-				            } else {
-				                for (var i = slidesScrolled + currentSlide; i >= 0; i--) {
-				                    $inViewPort = $( '#' + $currentParent + " [data-slick-index='" + i + "']");
-				                    $inViewPort.addClass($inViewPort.data('animation'));
-				                }
-				            }
-				        });
-
-				        $('.carousel-wrapper-<?php echo esc_attr( $this->get_id() ); ?>').on('beforeChange', function (event, slick, currentSlide) {
-					            $inViewPort = $("[data-slick-index='" + currentSlide + "']");
-					            $inViewPort.siblings().removeClass($inViewPort.data('animation'));
-					    });
-				        <?php if( $settings['premium_carousel_slider_type'] == 'vertical' ) : ?>
-					    var maxHeight = -1;
-				        $('.slick-slide').each(function() {
-						  if ($(this).height() > maxHeight) {
-						    maxHeight = $(this).height();
-						  }
-						});
-						$('.slick-slide').each(function() {
-						  if ($(this).height() < maxHeight) {
-						    $(this).css('margin', Math.ceil((maxHeight-$(this).height())/2) + 'px 0');
-						  }
-						});
-						<?php endif; ?>
-				        var marginFix = {
-				        	element : $('a.ver-carousel-arrow'),
-				        	getWidth :  function() {
-				        		var width = this.element.outerWidth();
-				        		return width / 2;
-				        	},
-				        	setWidth : function( type = 'vertical') {
-				        		if( type == 'vertical' ) {
-				        			this.element.css( 'margin-left', '-' + this.getWidth() + 'px' );
-				        		} else {
-				        			this.element.css( 'margin-top', '-' + this.getWidth() + 'px' );
-				        		}
-				        	}
-				        }
-					    marginFix.setWidth();
-					    marginFix.element = $('a.carousel-arrow');
-					    marginFix.setWidth('horizontal');
-					});
-				})(jQuery);
-			</script>
-		<?php 
-
+		<?php
 	}
 }
 Plugin::instance()->widgets_manager->register_widget_type( new Premium_Carousel_Widget() );

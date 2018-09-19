@@ -58,17 +58,25 @@ class WCFM_Settings_Dokan_Controller {
 			}
 		}
 		
-		if ( dokan_get_option( 'new_seller_enable_selling', 'dokan_selling', 'on' ) == 'off' ) {
-				update_user_meta( $user_id, 'dokan_enable_selling', 'no' );
+		//if ( dokan_get_option( 'new_seller_enable_selling', 'dokan_selling', 'on' ) == 'off' ) {
+			//update_user_meta( $user_id, 'dokan_enable_selling', 'no' );
+		//} else {
+			//update_user_meta( $user_id, 'dokan_enable_selling', 'yes' );
+		//}
+		//update_user_meta( $user_id, 'can_post_product', '1' );
+		//update_user_meta( $user_id, 'dokan_enable_selling', 'yes' );
+		
+		// Shipping Type
+		if( isset( $wcfm_settings_form['wcfm_dokan_regular_shipping'] ) ) {
+			update_user_meta( $user_id, 'wcfm_dokan_regular_shipping', 'yes' );
 		} else {
-				update_user_meta( $user_id, 'dokan_enable_selling', 'yes' );
+			update_user_meta( $user_id, 'wcfm_dokan_regular_shipping', 'no' );
 		}
 		
 		// Checkboxes 
 		if( !isset( $wcfm_settings_form['show_email'] ) ) $wcfm_settings_form['show_email'] = 'no';
 		if( !isset( $wcfm_settings_form['show_more_ptab'] ) ) $wcfm_settings_form['show_more_ptab'] = 'no';
 		if( !isset( $wcfm_settings_form['enable_tnc'] ) ) $wcfm_settings_form['enable_tnc'] = 'no';
-		if( !isset( $wcfm_settings_form['_dps_shipping_enable'] ) ) $wcfm_settings_form['_dps_shipping_enable'] = 'no';
 		
 		// Vacation Settings
 		if( !isset( $wcfm_settings_form['wcfm_vacation_mode'] ) ) $wcfm_settings_form['wcfm_vacation_mode'] = 'no';
@@ -79,6 +87,7 @@ class WCFM_Settings_Dokan_Controller {
 		
 		update_user_meta( $user_id, 'dokan_profile_settings', $wcfm_settings_form );
 		
+		do_action( 'wcfm_vendor_settings_update', $user_id, $wcfm_settings_form );
 		do_action( 'wcfm_dokan_settings_update', $user_id, $wcfm_settings_form );
 		
 		echo '{"status": true, "message": "' . __( 'Settings saved successfully', 'wc-frontend-manager' ) . '"}';

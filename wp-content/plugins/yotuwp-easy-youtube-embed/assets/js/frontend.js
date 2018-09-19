@@ -21,7 +21,7 @@
 		return this;
 	};
 
-	window.yotu_check = null;
+	yotu_check = null;
 	window.yotuwp = {
 		data : {
 			ready : false,
@@ -35,24 +35,39 @@
 			yotuwp.data.ready = true;
 			clearInterval(yotu_check);
 
-			$( document ).ready(function() {
-				var ua = navigator.userAgent,
-				bevent = (ua.match(/iPad/i) || ua.match(/iPhone/)) ? "touchstart" : "click";
+			$(document).ready(function() {
+
+				var ua = navigator.userAgent;
 
 				$('.yotu-playlist').each(function (ind){
 
-					let that = $(this),
+					var that = $(this),
 						player = that.data('yotu'),
 						settings = yotuwp.helper.settings(that),
 						loaded_ids = [],
 						loaded_page = [1],
 						firstId = that.find('.yotu-videos li:first-child a').data('videoid');
 
-					if(player !== 'modal' && firstId !== false && typeof yotuwp.data.players[player] === 'undefined'){
+					if (settings.player['autoplay'] == 0) delete settings.player['autoplay'];
+
+					if (player !== 'modal' && firstId !== false && typeof yotuwp.data.players[player] === 'undefined') {
+						
+						if (settings.player.loop) {
+							settings.player['playlist'] = firstId;
+						}
+
+						var player_setting = settings.player,
+							delete_keys = ['scrolling', 'width', 'mode', 'playing', 'playing_description'];
+
+						delete_keys.map(function (key){
+							if( typeof player_setting[key] !== 'undefined') delete player_setting[key];
+						});
+						
+
 						yotuwp.data.players[player] = new YT.Player('yotu-player-' + player, {
 							width: 1000,
 							height: 600,
-							playerVars: settings.player,
+							playerVars: player_setting,
 							videoId: firstId,
 							events: {
 								'onStateChange': function (e){
@@ -63,7 +78,7 @@
 					}
 
 					//find thumbs
-					that.find('.yotu-videos a').each(function (ind){
+					that.find('.yotu-videos a.yotu-video').each(function (ind) {
 						var video = $(this),
 							videoId = video.data('videoid'),
 							thumb = video.find('img').attr('src');
@@ -78,21 +93,18 @@
 					that.data('last_token', settings.next);
 
 				});
-
-				var pagination_act = '.yotu-pagination a:' + bevent,
-					videos_act = '.yotu-videos a:' + bevent;
-
+				
 				$('body').hook({
 					actions: {
-						[pagination_act]: 'load_more',
-						[videos_act]: yotuwp.list.events
+						'.yotu-pagination a:click': 'load_more',
+						'.yotu-videos a.yotu-video:click': yotuwp.list.events
 					},
-					load_more : function (e){
+					load_more : function (e) {
 						e.preventDefault();
 						var target = $(e.target),
 							wrp = target.closest('.yotu-playlist');
 
-						if(target.hasClass('yotu-active')) return;
+						if (target.hasClass('yotu-active')) return;
 
 						target.addClass('yotu-active');
 
@@ -114,29 +126,29 @@
 		},
 
 		helper : {
-			decode: function (str){
+			decode: function (str) {
 				return JSON.parse(window.atob(str));
 			},
-			encode: function (obj){
+			encode: function (obj) {
 				return window.btoa(JSON.stringify(obj));
 			},
-			settings : function (elm){
+			settings : function (elm) {
 				return JSON.parse(window.atob(elm.data('settings')));
 			}
 		},
 
-		add_action : function (name, callback){
+		add_action : function (name, callback) {
 			if (yotuwp.data.actions[name] === undefined)
 				yotuwp.data.actions[name] = [];
 
 			yotuwp.data.actions[name].push(callback);
 		},
 
-		do_action : function(name){
+		do_action : function(name) {
 			var params = Array.prototype.slice.call(arguments, 1);
 			if (yotuwp.data.actions[name] !== undefined) {
 				var res;
-				yotuwp.data.actions[name].map(function(func){
+				yotuwp.data.actions[name].map(function(func) {
 					if (typeof func == 'function') {
 						try { 
 							res = func.apply(null, params);
@@ -148,11 +160,11 @@
 			}
 		},
 
-		apply_filter: function (name, val){
+		apply_filter: function (name, val) {
 			var params = Array.prototype.slice.call(arguments, 2, arguments.length);
 			params.push(val);
 			if (yotuwp.data.filters[name] !== undefined) {
-				yotuwp.data.filters[name].map(function(func){
+				yotuwp.data.filters[name].map(function(func) {
 					if (typeof func == 'function') {
 						try { 
 							val = func.apply(null, params);
@@ -165,14 +177,14 @@
 			return val;
 		},
 
-		add_filter: function (name, callback){
+		add_filter: function (name, callback) {
 			if (yotuwp.data.filters[name] === undefined)
 				yotuwp.data.filters[name] = [];
 
 			yotuwp.data.filters[name].push(callback);
 		},
 
-		l: function (ind){
+		l: function (ind) {
 			return (yotujs.lang[ind]!== 'undefined')? yotujs.lang[ind] : '';
 		},
 
@@ -186,29 +198,37 @@
 				'list' : null
 			},
 
-			play : function (video, list){
+			play : function (video, list) {
 
 				var player = list.data('yotu'),
 					settings = yotuwp.helper.settings(list),
 					loaded_ids = list.data('loaded');
 
-				if(
+				if (
 					typeof yotuwp.data.players[player] !== 'undefined' ||
 					player == 'modal'
-				){
+				) {
 
-					if(player === 'modal'){
+					if (player === 'modal') {
 						yotuwp.player.lightbox.open(
 							video,
 							settings,
 							list
 						);
 					}
-					else{
+					else {
 						yotuwp.data.players[player].loadVideoById(video);
-						$('html, body').animate({
-							scrollTop: list.offset().top - settings.player.scrolling
-						}, 1000);
+						var pos =  list.offset().top - settings.player.scrolling;
+						
+						if ( settings.player.scrolling == 0 ) {
+							//find center top
+							var pheight = jQuery('#yotu-player-' + player).outerHeight(),
+								wheight = jQuery(window).height();
+								
+							pos = list.offset().top - parseInt( (wheight - pheight) /2 );
+						}
+						
+						$('html, body').animate({scrollTop : pos}, 500);
 					}
 
 					this.current = {
@@ -224,9 +244,9 @@
 				}
 			},
 
-			pause : function (){
-				for(var p in yotuwp.data.players){
-					if(
+			pause : function () {
+				for (var p in yotuwp.data.players) {
+					if (
 						p !== yotuwp.player.current.player &&
 						typeof yotuwp.data.players[p] !== 'undefined'
 					)
@@ -236,7 +256,7 @@
 
 			gen_thumbs : {},
 
-			info : function (){
+			info : function () {
 				var wrp = $('#yotu-player-' + yotuwp.player.current.player).closest('.yotu-wrapper-player');
 
 				wrp.find('.yotu-playing').html(yotuwp.data.videos[this.current.video][0]);
@@ -264,7 +284,7 @@
 
 					html_a = yotuwp.apply_filter('next_prev', html_a);
 
-					var elm = jQuery(html_a.join('')).appendTo('body');
+					var elm = $(html_a.join('')).appendTo('body');
 
 					elm.hook({
 						actions : {
@@ -281,21 +301,28 @@
 				},
 
 				open : function (video, settings, list){
-					if(!this.loaded){
+					if (!this.loaded) {
 						this.render();
 					}
 
-					if(
+					if (
 						!list.is( yotuwp.player.current.list )
-					){
+					) {
 						settings.player['enablejsapi'] = 1;
+						var player_setting = settings.player,
+							delete_keys = ['scrolling', 'width', 'mode', 'playing', 'playing_description'];
+
+						delete_keys.map(function (key){
+							if( typeof player_setting[key] !== 'undefined') delete player_setting[key];
+						});
+						
 						yotuwp.player.current.list = list;
 
 						$('#yotu-player-modal').replaceWith('<div id="yotu-player-modal"></div>');
 						yotuwp.data.players['modal'] = new YT.Player('yotu-player-modal', {
 							width: 1000,
 							height: 600,
-							playerVars: settings.player,
+							playerVars: player_setting,
 							videoId: video,
 							events: {
 								'onStateChange': function (e){
@@ -303,18 +330,18 @@
 								}
 							}
 						});
-					}else{
+					} else {
 						yotuwp.data.players['modal'].loadVideoById(video);
 					}
 
-					if(settings.player.playing){
-						$('.yotu-lightbox').addClass('yotu-show-title')
+					if (settings.player.playing) {
+						$('.yotu-lightbox').addClass('yotu-show-title');
 					}
 
-					if(
+					if (
 						settings.player.thumbnails && 
 						settings.pagination
-					){
+					) {
 						var loaded_ids = list.data('loaded'),
 							thumbs = $('#yotu-thumbnails'),
 							loaded_page = list.data('loaded_page'),
@@ -324,10 +351,10 @@
 						$('.yotu-lightbox .yotu-thumbnails').removeClass('yotu-thumb-169');
 						if(list.hasClass('yotu-thumb-169')) $('.yotu-lightbox .yotu-thumbnails').addClass('yotu-thumb-169');
 
-						if(
+						if (
 							current < total && 
 							settings.pagination == 'on'
-						){
+						) {
 							var load_more = jQuery('<a href="#" class="yotu-lightbox-more"><span class="yotuicon-more"></span></a>');
 
 							load_more.hook({
@@ -339,11 +366,11 @@
 									var loaded_page = list.data('loaded_page'),
 										current = Math.max.apply(Math, loaded_page);
 
-									if(load_more.hasClass('yotu-loading')) return;
+									if (load_more.hasClass('yotu-loading')) return;
 
 									load_more.addClass('yotu-loading');
 
-									if(current + 1 == total)
+									if (current + 1 == total)
 										load_more.remove();
 
 									yotuwp.list.load(
@@ -354,10 +381,10 @@
 											
 											load_more.removeClass('yotu-loading');
 
-											if(res.settings.next === '')
+											if (res.settings.next === '')
 												load_more.remove();
 
-											if(res.items.length > 0){
+											if (res.items.length > 0){
 												res.items.map(function (item){
 													thumbs.owlCarousel().trigger(
 														'add.owl.carousel',
@@ -460,22 +487,22 @@
 			},
 
 			status : function (e){
-				var status = e.data,
-					wrp =$(e.target.a).closest('.yotu-playlist'),
-					player = wrp.data('yotu'),
-					playing = e.target.getVideoData();
-
-				if(typeof playing['video_id'] === undefined) return;
+				var status  = e.data,
+				    wrp     = $(e.target.a).closest('.yotu-playlist'),
+				    player  = wrp.data('yotu'),
+				    playing = e.target.getVideoData();
+				
+				if(typeof playing['video_id'] === 'undefined') return;
 
 				if(
 					status === 1 &&
 					yotuwp.player.current.player !== 'modal'
 				){
 					yotuwp.player.current = {
-						'player' : player,	
+						'player': player,
 						'video' : playing.video_id,
-						'list' : wrp
-					}
+						'list'  : wrp
+					};
 				}
 
 				var settings = yotuwp.helper.settings(yotuwp.player.current.list);
@@ -489,24 +516,31 @@
 					typeof settings.player['autonext'] !== 'undefined' &&
 					settings.player.autonext === 1
 				){
-					var videos = wrp.find('[data-videoid]'),
-						player = wrp.data('yotu'),
-						found = false, nextvideo = '';
-
-					for(var i =0; i< videos.length; i++){
-						if(found){
+					
+					var videos    = $(yotuwp.player.current.list).find('[data-videoid]'),
+					    found     = false,
+						nextvideo = '';
+						
+					for(var i =0; i < videos.length; i++){
+						if( found ){
 							nextvideo = $(videos[i]).data('videoid');
 							break;
 						}
-						if($(videos[i]).data('videoid') == yotuwp.player.current.video){
+
+						if( $(videos[i]).data('videoid') == yotuwp.player.current.video ){
 							found = true;
 						}
 					}
-
-					if(nextvideo ===''){
+					
+					if( nextvideo === '' ){
 						nextvideo = $(videos[0]).data('videoid');
 					}
-					wrp.find('[data-videoid='+nextvideo+']').trigger('click');
+					if(yotuwp.player.current.player === 'modal'){
+
+						yotuwp.data.players['modal'].loadVideoById(nextvideo);
+						yotuwp.player.current.video = nextvideo;
+						yotuwp.player.info();
+					} else $(yotuwp.player.current.list).find('[data-videoid='+nextvideo+']').trigger('click');
 				}
 			}
 		},
@@ -514,7 +548,7 @@
 		list : {
 			load : function (wrp, func, atts){
 
-				let settings = yotuwp.helper.settings(wrp),
+				var settings = yotuwp.helper.settings(wrp),
 					loaded_page = wrp.data('loaded_page'),
 					loaded_ids = wrp.data('loaded'),
 					load_more = wrp.find('.yotu-pagination a'),
@@ -527,8 +561,10 @@
 								break;
 							case 404:
 								text = yotujs.lang[3];
+								break;
 							case 500:
 								text = yotujs.lang[6];
+								break;
 							case 504:
 								text = yotujs.lang[5];
 								break;
@@ -566,13 +602,16 @@
 							error(404);
 						},
 						200: function(res) {
-							if(res.error){
+
+							if (res.error) {
 								error(504);
 								return;
 							}
 
 							atts.current += (data.page == 'next' || data.page == 'more')? 1 : -1;
+
 							wrp.data('page', atts.current);
+
 							switch(atts.func) {
 								case 'pagination':
 									wrp.find('.yotu-pagination-current').html(atts.current);
@@ -582,17 +621,18 @@
 									break;
 							}
 
-							if(
-								loaded_page.indexOf(atts.current) === -1
-							){
+							if ( loaded_page.indexOf(atts.current) === -1 ) {
+
 								loaded_page.push(atts.current);
+
 								wrp.data('loaded_page', loaded_page);
-								if(res.settings.next !== ""){
+
+								if (res.settings.next !== "") {
 									wrp.data('last_token', res.settings.next);
 								}
 							}
 
-							Object.keys(res.items).map(function (ind){
+							Object.keys(res.items).map(function (ind) {
 								if(loaded_ids.indexOf(res.items[ind].videoId) == -1)
 									loaded_ids.push(res.items[ind].videoId);
 
@@ -605,9 +645,10 @@
 								}
 								
 							});
+
 							wrp.data('loaded', loaded_ids);
 
-							if(typeof func === 'function'){
+							if (typeof func === 'function') {
 								func(wrp, res, data);
 							}
 						}
@@ -643,17 +684,19 @@
 				if( data.page !== 'more' )
 					wrp.find('.yotu-videos').replaceWith(html);
 				else{
+
 					wrp.find('.yt_loading').remove();
-					if(['carousel'].indexOf(settings.template)>-1){
+
+					if (['masonry', 'carousel'].indexOf(settings.template)>-1) {
 						yotuwp.do_action('loadmore-'+settings.template, wrp, html, settings);
 					} else wrp.find('.yotu-videos ul').append(html.find('ul').html());
 					
-					if(res.settings.next === "") wrp.find('.yotu-pagination').addClass('yotu-hide');
+					if (res.settings.next === "") wrp.find('.yotu-pagination').addClass('yotu-hide');
 				}
 
 				wrp.hook({
 					actions : {
-						'.yotu-videos a:click' : yotuwp.list.events
+						'.yotu-videos a.yotu-video:click' : yotuwp.list.events
 					}
 				});
 
@@ -665,31 +708,27 @@
 					wrp.removeClass('yotu-limit-min yotu-limit-max');
 			}
 		}
-	}
-
-	
-
-
+	};
 })(jQuery);
 
-
-if (typeof window.YT === 'undefined')
+if (typeof window['YT'] === 'undefined')
 {
+	
 	var tag = document.createElement('script');
-
 	tag.src = "https://www.youtube.com/iframe_api";
-
 	var firstScriptTag = document.getElementsByTagName('script')[0];
-
 	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
 
-window.onYouTubeIframeAPIReady = (typeof window.onYouTubeIframeAPIReady !== 'undefined') ? window.onYouTubeIframeAPIReady : function ()
-{
+if(typeof window.onYouTubeIframeAPIReady == 'undefined'){
+	window.onYouTubeIframeAPIReady = function () {
+		yotuwp.init();
+	};
+} else if (typeof window.YT !== 'undefined'){
 	yotuwp.init();
-};
+}
 
-yotu_check = setInterval(function (){
+var yotu_check = setInterval(function (){
 	if (typeof window.YT !== 'undefined' && window.YT.loaded)
 	{
 		if(!yotuwp.ready) yotuwp.init();

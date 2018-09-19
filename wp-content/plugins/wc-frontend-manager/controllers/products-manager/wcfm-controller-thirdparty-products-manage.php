@@ -71,6 +71,13 @@ class WCFM_ThirdParty_Products_Manage_Controller {
 			}
 		}
 		
+		// Woocommerce Epeken Support - 4.1.0
+    if( apply_filters( 'wcfm_is_allow_epeken', true ) ) {
+			if( WCFM_Dependencies::wcfm_epeken_plugin_active_check() ) {
+				add_action( 'after_wcfm_products_manage_meta_save', array( &$this, 'wcfm_wcepeken_product_meta_save' ), 150, 2 );
+			}
+		}
+		
 		// Third Party Product Meta Data Save
     add_action( 'after_wcfm_products_manage_meta_save', array( &$this, 'wcfm_thirdparty_products_manage_meta_save' ), 100, 2 );
 	}
@@ -135,26 +142,32 @@ class WCFM_ThirdParty_Products_Manage_Controller {
 		global $wpdb, $WCFM, $_POST;
 		
 		if( $wcfm_products_manage_form_data['product_type'] == 'auction' ) {
-			$aution_fields = array(
-				'_yith_auction_for',
-				'_yith_auction_to',
-			);
 			
-			$wcfm_products_manage_form_data['_yith_auction_for'] = ( $wcfm_products_manage_form_data[ '_yith_auction_for' ] ) ? strtotime( $wcfm_products_manage_form_data[ '_yith_auction_for' ] ) : '';
-			$wcfm_products_manage_form_data['_yith_auction_to'] = ( $wcfm_products_manage_form_data[ '_yith_auction_to' ] ) ? strtotime( $wcfm_products_manage_form_data[ '_yith_auction_to' ] ) : '';
+			$auction_product = wc_get_product($new_product_id);
 			
-			
-			foreach ( $aution_fields as $field_name ) {
-				if ( isset( $wcfm_products_manage_form_data[ $field_name ] ) ) {
-					$rental_fields[ $field_name ] = $wcfm_products_manage_form_data[ $field_name ];
-					update_post_meta( $new_product_id, $field_name, $wcfm_products_manage_form_data[ $field_name ] );
-				}
+			if (isset($wcfm_products_manage_form_data['_yith_auction_for'])) {
+				$my_date = $wcfm_products_manage_form_data['_yith_auction_for'];
+				$gmt_date = get_gmt_from_date($my_date);
+				yit_save_prop($auction_product, '_yith_auction_for', strtotime($gmt_date),true);
+			}
+			if (isset($wcfm_products_manage_form_data['_yith_auction_to'])) {
+				$my_date = $wcfm_products_manage_form_data['_yith_auction_to'];
+				$gmt_date = get_gmt_from_date($my_date);
+				yit_save_prop($auction_product, '_yith_auction_to', strtotime($gmt_date),true);
 			}
 			
 			// Stock Update
 			update_post_meta( $new_product_id, '_manage_stock', 'yes' );
 			update_post_meta( $new_product_id, '_stock_status', 'instock' );
 			update_post_meta( $new_product_id, '_stock', 1 );
+			
+			//Prevent issues with orderby in shop loop
+			$bids = YITH_Auctions()->bids;
+			$exist_auctions = $bids->get_max_bid($new_product_id);
+			if (!$exist_auctions) {
+				yit_save_prop($auction_product, '_yith_auction_start_price',0);
+				yit_save_prop($auction_product, '_price',0);
+			}
 		}
 	}
 	
@@ -164,277 +177,89 @@ class WCFM_ThirdParty_Products_Manage_Controller {
 	function wcfm_geomywp_product_meta_save( $new_product_id, $wcfm_products_manage_form_data ) {
 		global $wpdb, $WCFM, $_POST;
 		
-		$geomywp_settings   = get_option( 'gmw_options' );
-		if ( !isset( $geomywp_settings[ 'post_types_settings' ] ) || !isset( $geomywp_settings[ 'post_types_settings' ][ 'post_types' ] ) || empty( $geomywp_settings[ 'post_types_settings' ][ 'post_types' ] ) || ( !in_array( 'product', $geomywp_settings[ 'post_types_settings' ][ 'post_types' ] ) ) ) { return; }
-		
-		$prefix     	= '_wppl_';
-		$wcfm_geomywp_meta_fields 	= array(
-				'id'       => 'wppl-meta-box',
-				'fields'   => array(
-						array(
-								'name' => __( 'Street', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'street',
-								'type' => 'text',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'Apt/Suit', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'apt',
-								'type' => 'text',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'City', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'city',
-								'type' => 'text',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'State', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'state',
-								'type' => 'text',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'Zipcode', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'zipcode',
-								'type' => 'text',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'Country', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'country',
-								'type' => 'text',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'Phone Number', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'phone',
-								'type' => 'text',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'Fax Number', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'fax',
-								'type' => 'text',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'Email Address', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'email',
-								'type' => 'text',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'Website', 'GMW' ),
-								'desc' => 'Ex: www.website.com',
-								'id'   => $prefix . 'website',
-								'type' => 'text',
-								'std'  => '',
-								'placeholder' => 'ex: http://www.mywebsite.com',
-						),
-						array(
-								'name' => __( 'Latitude', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'enter_lat',
-								'type' => 'text-right',
-								'std'  		=> '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'Longitude', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'enter_long',
-								'type' => 'text-right',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'Latitude', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'lat',
-								'type' => 'text-disable',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'Longitude', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'long',
-								'type' => 'text-disable',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'Full Address', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'address',
-								'type' => 'text-disable',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'Days & Hours', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'days_hours',
-								'type' => 'text',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'State Long', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'state_long',
-								'type' => 'text',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'Country Long', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'country_long',
-								'type' => 'text',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'Formatted address', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'formatted_address',
-								'type' => 'text',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'street_number', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'street_number',
-								'type' => 'text',
-								'std'  => '',
-								'placeholder' => '',
-						),
-						array(
-								'name' => __( 'street_name', 'GMW' ),
-								'desc' => '',
-								'id'   => $prefix . 'street_name',
-								'type' => 'text',
-								'std'  => '',
-								'placeholder' => '',
-						)
-				)
-		);
-		
-		foreach ( $wcfm_geomywp_meta_fields[ 'fields' ] as $field ) :
-
-			if ( $field[ 'id' ] == '_wppl_days_hours' ) {
-
-				if ( isset( $wcfm_products_manage_form_data[ $field[ 'id' ] ] ) ) :
-
-					$old = get_post_meta( $new_product_id, $field[ 'id' ], true );
-					$new = $wcfm_products_manage_form_data[ $field[ 'id' ] ];
-
-					if ( $new && $new != $old ) {
-							update_post_meta( $new_product_id, $field[ 'id' ], $new );
-					} elseif ( '' == $new && $old ) {
-							delete_post_meta( $new_product_id, $field[ 'id' ], $old );
-					}
-
-				endif;
-			}
-
-			endforeach;
-
-			//do_action( 'gmw_pt_admin_update_location_post_meta', $new_product_id, $_POST, $wppl_options );
-			//delete locaiton if there are no address or lat/long
-			if ( !isset( $wcfm_products_manage_form_data[ '_wppl_formatted_address' ] ) || empty( $wcfm_products_manage_form_data[ '_wppl_formatted_address' ] ) || !isset( $wcfm_products_manage_form_data[ '_wppl_lat' ] ) || empty( $wcfm_products_manage_form_data[ '_wppl_lat' ] ) ) {
-
-				$wpdb->query(
-								$wpdb->prepare(
-												"DELETE FROM " . $wpdb->prefix . "places_locator WHERE post_id=%d", $new_product_id
-								)
-				);
-			} else {
-			
-				$wcfm_products_manage_form_data['gmw_map_icon']  = ( isset( $wcfm_products_manage_form_data['gmw_map_icon'] ) && !empty( $wcfm_products_manage_form_data['gmw_map_icon'] ) ) ? $wcfm_products_manage_form_data['gmw_map_icon'] : '_default.png';
-				$wcfm_products_manage_form_data 					       = apply_filters( 'gmw_pt_before_location_updated', $wcfm_products_manage_form_data, $new_product_id );
-
-				//location array
-				$location = array(
-						'post_id'           => $new_product_id,
-						'feature'           => 0,
-						'post_type'         => 'product',
-						'post_title'        => $wcfm_products_manage_form_data['title'],
-						'post_status'       => 'publish',
-						'street_number'     => $wcfm_products_manage_form_data['_wppl_street_number'],
-						'street_name'       => $wcfm_products_manage_form_data['_wppl_street_name'], 
-						'street'            => $wcfm_products_manage_form_data['_wppl_street'],
-						'apt'               => $wcfm_products_manage_form_data['_wppl_apt'],
-						'city'              => $wcfm_products_manage_form_data['_wppl_city'],
-						'state'             => $wcfm_products_manage_form_data['_wppl_state'],
-						'state_long'        => $wcfm_products_manage_form_data['_wppl_state_long'],
-						'zipcode'           => $wcfm_products_manage_form_data['_wppl_zipcode'],
-						'country'           => $wcfm_products_manage_form_data['_wppl_country'],
-						'country_long'      => $wcfm_products_manage_form_data['_wppl_country_long'],
-						'address'           => $wcfm_products_manage_form_data['_wppl_address'],
-						'formatted_address' => $wcfm_products_manage_form_data['_wppl_formatted_address'],
-						'phone'             => $wcfm_products_manage_form_data['_wppl_phone'],
-						'fax'               => $wcfm_products_manage_form_data['_wppl_fax'],
-						'email'             => $wcfm_products_manage_form_data['_wppl_email'],
-						'website'           => $wcfm_products_manage_form_data['_wppl_website'],
-						'lat'               => $wcfm_products_manage_form_data['_wppl_lat'],
-						'long'              => $wcfm_products_manage_form_data['_wppl_long'],
-						'map_icon'          => $wcfm_products_manage_form_data['gmw_map_icon'],
-				);
-				
-				//update locaiton in database
-				$wpdb->replace( $wpdb->prefix . 'places_locator', 
-				array(
-					'post_id'           => $location['post_id'],
-					'feature'           => $location['feature'],
-					'post_status'       => $location['post_status'],
-					'post_type'         => $location['post_type'],
-					'post_title'        => $location['post_title'],
-					'lat'               => $location['lat'],
-					'long'              => $location['long'],
-					'street_number'     => $location['street_number'],
-					'street_name'       => $location['street_name'],
-					'street'            => $location['street'],
-					'apt'               => $location['apt'],
-					'city'              => $location['city'],
-					'state'             => $location['state'],
-					'state_long'        => $location['state_long'],
-					'zipcode'           => $location['zipcode'],
-					'country'           => $location['country'],
-					'country_long'      => $location['country_long'],
-					'address'           => $location['address'],
-					'formatted_address' => $location['formatted_address'],
-					'phone'             => $location['phone'],
-					'fax'               => $location['fax'],
-					'email'             => $location['email'],
-					'website'           => $location['website'],			
-					'map_icon'          => $location['map_icon'],
-				)
-			);
-				
+		if( !isset( $wcfm_products_manage_form_data['gmw_location_form'] ) || empty( $wcfm_products_manage_form_data['gmw_location_form'] ) ) {
+			return;
 		}
+		
+		// Submitted location values
+		$location = $wcfm_products_manage_form_data['gmw_location_form'];
+
+		// abort if no location found
+		if ( empty( $location['latitude'] ) || empty( $location['longitude'] ) ) {
+			return;
+		}
+		
+		$location['object_id'] = $new_product_id;
+
+		// location meta
+		$location_meta = ! empty( $location['location_meta'] ) ? $location['location_meta'] : array();
+
+		// map icon if exists
+		$location['map_icon'] = ! empty( $location['map_icon'] ) ? $location['map_icon'] : '_default.png';
+		
+		$location_args = array(
+			'object_type'		=> $location['object_type'],
+			'object_id'			=> (int) $location['object_id'],
+			'user_id'			=> (int) $location['user_id'],
+			'parent'			=> 0,
+			'status'        	=> 1,
+			'featured'			=> 0,
+			'title'				=> ! empty( $location['title'] ) ? $location['title'] : '',
+			'latitude'          => $location['latitude'],
+			'longitude'         => $location['longitude'],
+			'street_number'     => $location['street_number'],
+			'street_name'       => $location['street_name'],
+			'street' 			=> $location['street'],
+			'premise'       	=> $location['premise'],
+			'neighborhood'  	=> $location['neighborhood'],
+			'city'              => $location['city'],
+			'county'            => $location['county'],
+			'region_name'   	=> $location['region_name'],
+			'region_code'   	=> $location['region_code'],
+			'postcode'      	=> $location['postcode'],
+			'country_name'  	=> $location['country_name'],
+			'country_code'  	=> $location['country_code'],
+			'address'           => $location['address'],
+			'formatted_address' => $location['formatted_address'],
+			'place_id'			=> $location['place_id'],
+			'map_icon'			=> $location['map_icon'],
+		);
+
+		// filter location args before updating location
+		$location_args = apply_filters( 'gmw_lf_location_args_before_location_updated', $location_args, $location, $wcfm_products_manage_form_data );
+	  $location_args = apply_filters( 'gmw_lf_'.$location['object_type'].'_location_args_before_location_updated', $location_args, $location, $wcfm_products_manage_form_data );
+
+	    // run custom functions before updating location
+		do_action( 'gmw_lf_before_location_updated', $location, $location_args, $wcfm_products_manage_form_data );
+	  do_action( 'gmw_lf_before_'.$location['object_type'].'_location_updated', $location, $location_args, $wcfm_products_manage_form_data );
+
+		// save location
+		$location['ID'] = gmw_update_location_data( $location_args );
+
+		// filter location meta before updating
+		$location_meta = apply_filters( 'gmw_lf_location_meta_before_location_updated', $location_meta, $location, $wcfm_products_manage_form_data );
+	  $location_meta = apply_filters( 'gmw_lf_'.$location['object_type'].'_location_meta_before_location_updated', $location_meta, $location, $wcfm_products_manage_form_data );
+
+		// save location meta
+		if ( ! empty( $location_meta ) ) {
+
+			foreach ( $location_meta as $meta_key => $meta_value ) {
+
+				if ( ! is_array( $meta_value ) ) {
+					$meta_value = trim( $meta_value );
+				}
+
+				if ( empty( $meta_value ) || ( is_array( $meta_value ) && ! array_filter( $meta_value ) ) ) {
+					gmw_delete_location_meta( $location['ID'], $meta_key );
+				} else {
+					gmw_update_location_meta( $location['ID'], $meta_key, $meta_value );
+				}
+			}
+		}
+
+		//do something after location updated
+		do_action( 'gmw_lf_after_location_updated', $location, $wcfm_products_manage_form_data );
+	  do_action( 'gmw_lf_after_'.$location['object_type'].'_location_updated', $location, $wcfm_products_manage_form_data );
 	}
 	
 	/**
@@ -773,6 +598,32 @@ class WCFM_ThirdParty_Products_Manage_Controller {
 	}
 	
 	/**
+	 * WC Epeken Product Manage data save
+	 */
+	function wcfm_wcepeken_product_meta_save( $new_product_id, $wcfm_products_manage_form_data ) {
+		global $wpdb, $WCFM, $_POST;
+		
+		if( apply_filters( 'wcfm_is_allow_epeken', true ) ) {
+			$product_origin_selected = isset($wcfm_products_manage_form_data['epeken_valid_origin_option']) ? $wcfm_products_manage_form_data['epeken_valid_origin_option'] : '';
+			$product_origin = get_post_meta($new_product_id,'product_origin',true);
+			$data_asal_kota = get_option('epeken_data_asal_kota');
+			if (empty($product_origin) && !empty($data_asal_kota)) {
+				update_post_meta( $new_product_id, 'product_origin', $data_asal_kota);
+			} else {
+				update_post_meta( $new_product_id, 'product_origin', $product_origin_selected);
+			}
+			$product_insurance_mandatory = isset($wcfm_products_manage_form_data['epeken_product_insurance_mandatory']) ? $wcfm_products_manage_form_data['epeken_product_insurance_mandatory'] : '';
+			update_post_meta( $new_product_id, 'product_insurance_mandatory', $product_insurance_mandatory);
+
+			$product_wood_pack_mandatory = isset($wcfm_products_manage_form_data['epeken_product_wood_pack_mandatory']) ? $wcfm_products_manage_form_data['epeken_product_wood_pack_mandatory'] : '';
+			update_post_meta( $new_product_id, 'product_wood_pack_mandatory', $product_wood_pack_mandatory);
+
+			$product_free_ongkir = isset($wcfm_products_manage_form_data['epeken_product_free_ongkir']) ? $wcfm_products_manage_form_data['epeken_product_free_ongkir'] : '';
+			update_post_meta( $new_product_id, 'product_free_ongkir', $product_free_ongkir);
+		}
+	}
+	
+	/**
 	 * Third Party Product Meta data save
 	 */
 	function wcfm_thirdparty_products_manage_meta_save( $new_product_id, $wcfm_products_manage_form_data ) {
@@ -897,6 +748,7 @@ class WCFM_ThirdParty_Products_Manage_Controller {
 			if(WCFM_Dependencies::wcfm_wc_role_based_price_active_check()) {
 				if( isset( $wcfm_products_manage_form_data['role_based_price'] ) ) {
 					update_post_meta( $new_product_id, '_role_based_price', $wcfm_products_manage_form_data['role_based_price'] );	
+					update_post_meta( $new_product_id, '_enable_role_based_price', 1 );
 				}
 			}
 		}

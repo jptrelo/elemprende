@@ -1,11 +1,11 @@
-=== Addons for Elementor ===
+=== Livemesh Addons for Elementor ===
 Author URI: https://www.livemeshthemes.com/elementor-addons
 Plugin URI: https://www.livemeshthemes.com/elementor-addons
-Contributors: livemesh
+Contributors: livemesh, freemius
 Tags: elementor, elementor addons, elementor extensions, elementor modules, page builder, portfolio, carousel, posts grid
 Requires at least: 4.5
 Tested up to: 4.9
-Stable Tag: 1.5.4
+Stable Tag: 2.3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,15 +13,15 @@ A collection of premium quality addons or modules for use in Elementor page buil
 
 == Description ==
 
-Addons for Elementor features huge collection of premium, easy to use yet highly functional extensions that can be used in a Elementor page builder. This is really a premium plugin that you can get for free.
+Livemesh Addons for Elementor features huge collection of premium, easy to use yet highly functional extensions that can be used in a Elementor page builder. This is really a premium plugin that you can get for free.
 
-This plugin comes with widgets for just about everything you need to build a professional website without switching to a premium theme - services, team profiles, counters, bar charts, piecharts, testimonials, clients list, portfolio/posts grid, posts carousels, pricing plan and much more in the <a href="https://www.livemeshthemes.com/elementor-addons" title="Addons for Elementor Premium Version">PRO version</a>. All the addons that help turn your free theme into a premium one with just a few clicks. Every premium page builder element you need is available for easy drag and drop into your page by just activating this plugin.
+This plugin comes with widgets for just about everything you need to build a professional website without switching to a premium theme - services, team profiles, counters, bar charts, piecharts, testimonials, clients list, portfolio/posts grid, posts carousels, pricing plan and much more in the <a href="https://www.livemeshthemes.com/elementor-addons" title="Livemesh Addons for Elementor Premium Version">PRO version</a>. All the addons that help turn your free theme into a premium one with just a few clicks. Every premium page builder element you need is available for easy drag and drop into your page by just activating this plugin.
 
 <a href="https://wordpress.org/plugins/elementor/" rel="nofollow">Elementor</a> plugin must be activated to use this plugin. After you activate the required plugins, the addons should be available for use in Elementor.
 
 See the all of elements in action here -
 
-<a href="https://www.livemeshthemes.com/elementor-addons/addons-demo#demo-section" title="Addons for Elementor Demo Site"><strong>LIVE DEMO</strong></a> | <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Addons for Elementor Premium Version"><strong>PRO Version</strong></a>.
+<a href="https://www.livemeshthemes.com/elementor-addons/addons-demo#demo-section" title="Livemesh Addons for Elementor Demo Site"><strong>LIVE DEMO</strong></a> | <a href="https://www.livemeshthemes.com/elementor-addons/pricing/" title="Livemesh Addons for Elementor Premium Version"><strong>Premium Version</strong></a>.
 
 The plugin comes with the following Elementor addons or extensions. <strong>Almost all of the elements come with a dark version.</strong> -
 
@@ -41,7 +41,7 @@ The plugin comes with the following Elementor addons or extensions. <strong>Almo
 <li><a href="https://www.livemeshthemes.com/elementor-addons/clients-module/" title="Clients List Element">Clients List</a> extension to showcase the clients that you have handled.</li>
 <li><a href="https://www.livemeshthemes.com/elementor-addons/pricing-table/" title="Pricing Table Extension">Pricing Plans</a> to help get more sales.</li></ul>
 
-The <strong><a href="https://www.livemeshthemes.com/elementor-addons/" title="Addons for Elementor Pro" target="_blank">PRO version</a></strong> of the plugin comes with additional addons and advanced features added to elements above -
+The <strong><a href="https://www.livemeshthemes.com/elementor-addons/" title="Livemesh Addons for Elementor Premium" target="_blank">Premium version</a></strong> of the plugin comes with additional addons and advanced features added to elements above -
 
 <ul>
 <li><a href="https://www.livemeshthemes.com/elementor-addons/posts-block/" title="Posts Block Addon">Posts Block</a> to help present your blog posts, events, news items or portfolio in a dozen creative ways. Comes with AJAX filtering, pagination and load more features to help visitors navigate your entire collection of blog posts or custom post types and their categories without reloading the page.</li>
@@ -57,31 +57,28 @@ The <strong><a href="https://www.livemeshthemes.com/elementor-addons/" title="Ad
 <li><a href="https://www.livemeshthemes.com/elementor-addons/buttons/" title="Buttons">Flat style buttons</a> with rich set of customization options.</li>
 <li><a href="https://www.livemeshthemes.com/elementor-addons/icon-lists/" title="Icon List element">Icon list addon</a> that lets you use either images or icon fonts to create custom social icons list, capture payment options etc.</li>
 <li><a href="https://www.livemeshthemes.com/elementor-addons/services-advanced/" title="Advanced Services">Advanced Services</a> with additional styles and animations for services addon.</li>
-<li><a href="https://www.livemeshthemes.com/elementor-addons/portfolio-grid-pro/" title="Livemesh Grid">Lazy Load</a> - The portfolio/post grid and image gallery addons incorporate option to lazy load posts/images with the click of a Load More button.</li>
-<li><a href="https://www.livemeshthemes.com/elementor-addons/portfolio-grid-pro/" title="Livemesh Grid">Pagination</a> - Create a grid of posts or custom post types with AJAX based pagination support. </li>
+<li><a href="https://www.livemeshthemes.com/elementor-addons/portfolio-grid-pro/" title="Posts Grid">Lazy Load</a> - The portfolio/post grid and image gallery addons incorporate option to lazy load posts/images with the click of a Load More button.</li>
+<li><a href="https://www.livemeshthemes.com/elementor-addons/portfolio-grid-pro/" title="Posts Grid">Pagination</a> - Create a grid of posts or custom post types with AJAX based pagination support. </li>
 <li>Lightbox Support - The premium version comes with support for Lightbox for grid and carousel addons.</li>
 <li>Customizations - Ability to choose custom font size, color or hover color for certain addons. More coming.</li>
 <li>Custom Animations - Choose from over <strong>40+ animations</strong> for most addon elements (excludes sliders, carousels and grid). The animations display on user scrolling to the element or when the element becomes visible in the browser window.</li>
 <li>Sample Data - Sample data that you can import into your site to get started quickly on the addons and some sample layouts.</li>
-<li>Premium Support - The customers will be provided access to a dedicated support forum with searchable content, private tickets, with threads attended to within 24 hours.</li>
+<li>Premium Support - The customers will have access to a support portal with queries attended to within 24 hours.</li>
 </ul>
-
-<strong>Join our Facebook Group</strong>
-Join our Facebook group! Constant dialog with users is one of our top priorities, as well as supporting them in every possible way. That’s why we have created a Facebook group, where we’d like to talk everything Elementor addons with you, convey important updates, encourage you to share your work and also give feedback. It is also be a place where you can ask questions, exchange views with fellow users of Addons for Elementor. Join now and say hello! <a href="https://www.facebook.com/groups/364780903969891/" target="_blank">Livemesh Addons for Elementor Facebook Group</a>
 
 == Installation ==
 
 1. Install and activate the Elementor page builder.
-2. Unzip the downloaded addons-for-elementor.zip file and upload to the `/wp-content/plugins/` directory or install the Addons for Elementor by Livemesh plugin from WordPress repository. Activate the plugin through the 'Plugins' menu in WordPress.
+2. Unzip the downloaded addons-for-elementor.zip file and upload to the `/wp-content/plugins/` directory or install the Livemesh Addons for Elementor by Livemesh plugin from WordPress repository. Activate the plugin through the 'Plugins' menu in WordPress.
 4. For Portfolio element, install and activate the <strong>optional plugin</strong> <a href="https://wordpress.org/plugins/portfolio-post-type/" title="Portfolio Post Type">Portfolio Post Type plugin</a>. The Portfolio addon can be built using custom post type registered by this plugin.
 
 Optionally, if you have premium version of the plugin installed, you can import the sample data that replicates the demo site for you by importing the file sample-data.xml file located in the plugin directory. The import option is available under Tools &gt; Import in WordPress admin.
 
 == Support ==
 
-The premium version of the plugin has a <a title="Addons for Elementor support forum" href="https://support.livemeshthemes.com/forums/forum/elementor-addons-support/">dedicated support forum</a> where you can post support queries.
+The premium version of the plugin entitles you to quick support with replies posted within 24 hours (on week days).
 
-To register with support, pls send us your purchase details along with desired forum username through our <a href="https://www.livemeshthemes.com/contact-us/" title="Livemesh Contact form">contact form</a> and we will create a support account and email you the forum access details.
+Please submit your support query through our <a href="https://www.livemeshthemes.com/elementor-addons/contact-us/" title="Livemesh Contact form">website contact form</a>. This will create a support ticket in our support portal.
 
 == Frequently Asked Questions ==
 
@@ -101,15 +98,53 @@ Pls install and activate the <a href="https://wordpress.org/plugins/portfolio-po
 
 == Screenshots ==
 1. Live Demo of Elementor Addons
-2. Addons for Elementor appearing in the sidebar window of the page builder.
+2. Livemesh Addons for Elementor appearing in the sidebar window of the page builder.
 3. Editing a module or addon in the Elementor.
 4. The Elementor Addons plugin options window.
-5. The Addons for Elementor plugin documentation.
+5. The Livemesh Addons for Elementor plugin documentation.
 
 == Changelog ==
 
+= 2.3.3 =
+* Fixed - Social media icons not showing up for team profiles.
+* Added - Filters for settings object employed for rendering the addons
+
+= 2.3.1 =
+* Fixed - Incompatibility with some themes which load waypoints JS script.
+
+= 2.3 =
+* Added - Extensive support for filters and templates to enable users to customize the output generated by the addons. You can now create a template file in elementor-addons folder in your child theme to customize the addons html or use filters to customize output generated by the addons.
+* Updated - Documentation providing information on how to use templates and filters to customize the plugin addons
+
+= 2.2 =
+* Fixed - Incompatibility with certain themes due to different versions of waypoints scripts being used.
+
+= 2.1 =
+* Fixed - Certain widgets/addons like pricing, carousel, services raised errors when 'Add Item' button was pressed to add items. Error seen with latest version of Elementor.
+* Fixed - Deprecated warning on checkbox control.
+
+= 2.0.2 =
+* Fixed - The grid filter does not reflect the taxonomies chosen in the query.
+
+= 2.0.1 =
+* Fixed - Bug fixes.
+
+= 2.0 =
+* Added - Image size options for all relevant addons.
+* Added – New simpler grid system for all elements that use grid.
+* Added – Seamless control of number of columns at all device resolutions for all those elements that involve grid – posts/portfolio grid, clients, services, testimonials, team, charts, pricing table etc.
+* Added - Sample animations for services, clients, testimonials, team and pricing table.
+
+= 1.6 =
+* Added – Compatibility with Elementor and Elementor PRO 2.
+* Added - Dynamic field connections for most widgets supported by Elementor 2.
+* Updated - Removed Livemesh prefix from all elements. For example, Livemesh Services is now named Services, Livemesh Tabs is now Tabs, Livemesh Grid is now Posts Grid etc.
+* Added - Ability to specify client name in HTML for additional formatting.
+* Updated - Waypoints script with new API for handling events on scroll
+* Fixed - Some themes can break animations and report script errors for elements like piecharts, odometers, progress bars etc.
+
 = 1.5.4 =
-* Fixed – Livemesh Grid columns can break in certain resolutions in FireFox.
+* Fixed – Posts Grid columns can break in certain resolutions in FireFox.
 * Fixed - The piechart value is not being rounded.
 * Fixed - The post grid and posts carousel date format not reflecting the user preference specified in Settings page.
 

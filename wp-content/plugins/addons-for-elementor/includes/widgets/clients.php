@@ -1,7 +1,7 @@
 <?php
 
 /*
-Widget Name: Livemesh Clients
+Widget Name: Clients
 Description: Display one or more clients depicting a percentage value in a multi-column grid.
 Author: LiveMesh
 Author URI: https://www.livemeshthemes.com
@@ -27,7 +27,7 @@ class LAE_Clients_Widget extends Widget_Base {
     }
 
     public function get_title() {
-        return __('Livemesh Clients', 'livemesh-el-addons');
+        return __('Clients', 'livemesh-el-addons');
     }
 
     public function get_icon() {
@@ -40,9 +40,8 @@ class LAE_Clients_Widget extends Widget_Base {
 
     public function get_script_depends() {
         return [
-            'lae-widgets-scripts',
             'lae-frontend-scripts',
-            'waypoints'
+            'lae-waypoints'
         ];
     }
 
@@ -55,15 +54,33 @@ class LAE_Clients_Widget extends Widget_Base {
             ]
         );
 
-        $this->add_control(
+        $this->add_responsive_control(
             'per_line',
             [
-                'label' => __('Columns per row', 'livemesh-el-addons'),
-                'type' => Controls_Manager::NUMBER,
-                'min' => 1,
-                'max' => 6,
-                'step' => 1,
-                'default' => 4,
+                'label' => __( 'Columns per row', 'livemesh-el-addons' ),
+                'type' => Controls_Manager::SELECT,
+                'default' => '4',
+                'tablet_default' => '3',
+                'mobile_default' => '2',
+                'options' => [
+                    '1' => '1',
+                    '2' => '2',
+                    '3' => '3',
+                    '4' => '4',
+                    '5' => '5',
+                    '6' => '6',
+                ],
+                'frontend_available' => true,
+            ]
+        );
+
+        $this->add_control(
+            'widget_animation',
+            [
+                "type" => Controls_Manager::SELECT,
+                "label" => __("Animation Type", "livemesh-el-addons"),
+                'options' => lae_get_animation_options(),
+                'default' => 'none',
             ]
         );
 
@@ -79,6 +96,10 @@ class LAE_Clients_Widget extends Widget_Base {
                         'label' => __('Client Name', 'livemesh-el-addons'),
                         'label_block' => true,
                         'description' => __('The name of the client/customer.', 'livemesh-el-addons'),
+                        'default' => __('My client name', 'livemesh-el-addons'),
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
 
                     [
@@ -92,6 +113,9 @@ class LAE_Clients_Widget extends Widget_Base {
                             'is_external' => 'true',
                         ],
                         'placeholder' => __('http://client-link.com', 'livemesh-el-addons'),
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
 
                     [
@@ -103,6 +127,9 @@ class LAE_Clients_Widget extends Widget_Base {
                             'url' => Utils::get_placeholder_image_src(),
                         ],
                         'label_block' => true,
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
 
                 ],
@@ -235,58 +262,55 @@ class LAE_Clients_Widget extends Widget_Base {
 
     protected function render() {
 
-        $settings = $this->get_settings();
-        ?>
+        $settings = $this->get_settings_for_display();
 
-        <?php $num_of_columns = intval($settings['per_line']); ?>
+        $settings = apply_filters('lae_clients_' . $this->get_id() . '_settings', $settings);
 
-        <?php $column_style = lae_get_column_class($num_of_columns); ?>
+        list($animate_class, $animation_attr) = lae_get_animation_atts($settings['widget_animation']);
 
-        <div class="lae-clients lae-grid-container lae-gapless-grid">
+        $output = '<div class="lae-clients lae-gapless-grid">';
 
-            <?php foreach ($settings['clients'] as $client): ?>
+        $output .= '<div class="lae-grid-container ' . lae_get_grid_classes($settings) . '">';
 
-                <div class="lae-client <?php echo $column_style; ?>">
+        foreach ($settings['clients'] as $client):
 
-                    <?php if (!empty($client['client_image'])): ?>
+            $child_output = '<div class="lae-grid-item lae-client ' . $animate_class . '" ' . $animation_attr . '>';
 
-                        <?php echo wp_get_attachment_image($client['client_image']['id'], 'full', false, array('class' => 'lae-image full', 'alt' => $client['client_name'])); ?>
+            if (!empty($client['client_image'])):
 
-                    <?php endif; ?>
+                $child_output .= wp_get_attachment_image($client['client_image']['id'], 'full', false, array('class' => 'lae-image full', 'alt' => $client['client_name']));
 
+            endif;
 
+            if (!empty($client['client_link']) && !empty($client['client_link']['url'])):
 
-                    <?php if (!empty($client['client_link']) && !empty($client['client_link']['url'])): ?>
+                $target = $client['client_link']['is_external'] ? 'target="_blank"' : '';
 
-                        <?php $target = $client['client_link']['is_external'] ? 'target="_blank"' : ''; ?>
+                $child_output .= '<div class="lae-client-name">';
 
-                        <div class="lae-client-name">
+                $child_output .= '<a href="' . esc_url($client['client_link']['url']) . ' " title="' . esc_html($client['client_name']) . '" ' . $target . '>' . wp_kses_post($client['client_name']) . '</a>';
 
-                            <a href="<?php echo esc_url($client['client_link']['url']); ?>"
-                               title="<?php echo esc_html($client['client_name']); ?>"
-                                <?php echo $target; ?>><?php echo esc_html($client['client_name']); ?></a>
-                        </div>
+                $child_output .= '</div>';
 
-                    <?php else: ?>
+            else:
 
-                        <div class="lae-client-name"><?php echo esc_html($client['client_name']); ?></div>
+                $child_output .= '<div class="lae-client-name">' . wp_kses_post($client['client_name']) . '</div>';
 
-                    <?php endif; ?>
+            endif;
 
+            $child_output .= '<div class="lae-image-overlay"></div>';
 
-                    <div class="lae-image-overlay"></div>
+            $child_output .= '</div><!-- .lae-client -->';
 
-                </div>
+            $output .= apply_filters('lae_client_item_output', $child_output, $client, $settings);
 
-                <?php
+        endforeach;
 
-            endforeach;
+        $output .= '</div>';
 
-            ?>
+        $output .= '</div><!-- .lae-clients -->';
 
-        </div>
-
-        <?php
+        echo apply_filters('lae_clients_output', $output, $settings);
     }
 
     protected function content_template() {

@@ -50,7 +50,7 @@ class WCFM_Ajax {
 		// Vendor Manager Change Vendor
 		add_action( 'wp_ajax_vendor_manager_change_url', array( $this, 'vendor_manager_change_url' ) );
 		
-		// Vendor Manager Change Vendor
+		// WCfM Dashboard Menu Toggle
 		add_action( 'wp_ajax_wcfm_menu_toggler', array( $this, 'wcfm_menu_toggler' ) );
 		
 		// WCfM Ajax Product Search
@@ -59,6 +59,17 @@ class WCFM_Ajax {
 		// WCfM Ajax Vendor Search
 		add_action( 'wp_ajax_wcfm_json_search_vendors', array( $this, 'wcfm_json_search_vendors' ) );
 		
+		// Email Verification Code
+		add_action( 'wp_ajax_wcfm_email_verification_code', array( &$this, 'wcfm_email_verification_code' ) );
+		
+		// Vendor disable
+    add_action( 'wp_ajax_wcfm_vendor_disable', array( &$this, 'wcfm_vendor_disable' ) );
+    
+    // Vendor disable
+    add_action( 'wp_ajax_wcfm_vendor_enable', array( &$this, 'wcfm_vendor_enable' ) );
+    
+    // Knowledgebase View
+    add_action('wp_ajax_wcfm_knowledgebase_view', array( &$this, 'wcfm_knowledgebase_view' ) );
   }
   
   public function wcfm_ajax_controller() {
@@ -74,141 +85,153 @@ class WCFM_Ajax {
 	  	
 				case 'wc-products':
 				case 'wcfm-products':
-					require_once( $this->controllers_path . 'wcfm-controller-products.php' );
+					include_once( $this->controllers_path . 'products/wcfm-controller-products.php' );
 					new WCFM_Products_Controller();
 			  break;
 			  
 			  case 'wcfm-products-manage':
 			  	if( wcfm_is_booking() ) {
-						require_once( $this->controllers_path . 'wc_bookings/wcfm-controller-wcbookings-products-manage.php' );
+						include_once( $this->controllers_path . 'wc_bookings/wcfm-controller-wcbookings-products-manage.php' );
 						new WCFM_WCBookings_Products_Manage_Controller();
 					}
 					// Third Party Plugin Support
-					require_once( $this->controllers_path . 'products-manager/wcfm-controller-thirdparty-products-manage.php' );
+					include_once( $this->controllers_path . 'products-manager/wcfm-controller-thirdparty-products-manage.php' );
 					new WCFM_ThirdParty_Products_Manage_Controller();
 					
 					// Custom Field Plugin Support
-					require_once( $this->controllers_path . 'products-manager/wcfm-controller-customfield-products-manage.php' );
+					include_once( $this->controllers_path . 'products-manager/wcfm-controller-customfield-products-manage.php' );
 					new WCFM_Custom_Field_Products_Manage_Controller();
 					
-					require_once( $this->controllers_path . 'products-manager/wcfm-controller-products-manage.php' );
+					include_once( $this->controllers_path . 'products-manager/wcfm-controller-products-manage.php' );
 					new WCFM_Products_Manage_Controller();
 					
 			  break;
 					
 			  case 'wcfm-coupons':
-					require_once( $this->controllers_path . 'wcfm-controller-coupons.php' );
+					include_once( $this->controllers_path . 'coupons/wcfm-controller-coupons.php' );
 					new WCFM_Coupons_Controller();
 				break;
 				
 				case 'wcfm-coupons-manage':
-					require_once( $this->controllers_path . 'wcfm-controller-coupons-manage.php' );
+					include_once( $this->controllers_path . 'coupons/wcfm-controller-coupons-manage.php' );
 					new WCFM_Coupons_Manage_Controller();
 				break;
 				
 				case 'wcfm-orders':
 					if( $WCFM->is_marketplace && ( wcfm_is_vendor() || apply_filters( 'wcfm_is_show_marketplace_orders', false ) ) ) {
-						require_once( $this->controllers_path . 'orders/wcfm-controller-' . $WCFM->is_marketplace . '-orders.php' );
+						include_once( $this->controllers_path . 'orders/wcfm-controller-' . $WCFM->is_marketplace . '-orders.php' );
 						if( $WCFM->is_marketplace == 'wcvendors' ) new WCFM_Orders_WCVendors_Controller();
 						elseif( $WCFM->is_marketplace == 'wcpvendors' ) new WCFM_Orders_WCPVendors_Controller();
 						elseif( $WCFM->is_marketplace == 'wcmarketplace' ) new WCFM_Orders_WCMarketplace_Controller();
 						elseif( $WCFM->is_marketplace == 'dokan' ) new WCFM_Orders_Dokan_Controller();
+						elseif( $WCFM->is_marketplace == 'wcfmmarketplace' ) new WCFM_Orders_WCFMMarketplace_Controller();
 					} else {
-						require_once( $this->controllers_path . 'orders/wcfm-controller-orders.php' );
+						include_once( $this->controllers_path . 'orders/wcfm-controller-orders.php' );
 						new WCFM_Orders_Controller();
 					}
 				break;
 				
 				case 'wcfm-listings':
-					require_once( $this->controllers_path . 'wcfm-controller-listings.php' );
+					include_once( $this->controllers_path . 'listings/wcfm-controller-listings.php' );
 					new WCFM_Listings_Controller();
 				break;
 				
 				case 'wcfm-reports-out-of-stock':
-					require_once( $this->controllers_path . 'wcfm-controller-reports-out-of-stock.php' );
+					include_once( $this->controllers_path . 'reports/wcfm-controller-reports-out-of-stock.php' );
 					new WCFM_Reports_Out_Of_Stock_Controller();
 				break;
 				
 				case 'wcfm-profile':
-					require_once( $this->controllers_path . 'wcfm-controller-profile.php' );
+					include_once( $this->controllers_path . 'profile/wcfm-controller-profile.php' );
 					new WCFM_Profile_Controller();
 				break;
 					
 				case 'wcfm-settings':
 					if( $WCFM->is_marketplace && wcfm_is_vendor() ) {
-						require_once( $this->controllers_path . 'settings/wcfm-controller-' . $WCFM->is_marketplace . '-settings.php' );
+						include_once( $this->controllers_path . 'settings/wcfm-controller-' . $WCFM->is_marketplace . '-settings.php' );
 						if( $WCFM->is_marketplace == 'wcvendors' ) new WCFM_Settings_WCVendors_Controller();
 						elseif( $WCFM->is_marketplace == 'wcpvendors' ) new WCFM_Settings_WCPVendors_Controller();
 						elseif( $WCFM->is_marketplace == 'wcmarketplace' ) new WCFM_Settings_WCMarketplace_Controller();
 						elseif( $WCFM->is_marketplace == 'dokan' ) new WCFM_Settings_Dokan_Controller();
+						elseif( $WCFM->is_marketplace == 'wcfmmarketplace' ) new WCFM_Settings_Marketplace_Controller();
 					} else {
-						require_once( $this->controllers_path . 'settings/wcfm-controller-settings.php' );
+						include_once( $this->controllers_path . 'settings/wcfm-controller-settings.php' );
 						new WCFM_Settings_Controller();
 					}
 				break;
 				
 				case 'wcfm-capability':
-					require_once( $this->controllers_path . 'wcfm-controller-capability.php' );
+					include_once( $this->controllers_path . 'capability/wcfm-controller-capability.php' );
 					new WCFM_Capability_Controller();
 				break;
 				
 				case 'wcfm-knowledgebase':
-					require_once( $this->controllers_path . 'wcfm-controller-knowledgebase.php' );
+					include_once( $this->controllers_path . 'knowledgebase/wcfm-controller-knowledgebase.php' );
 					new WCFM_Knowledgebase_Controller();
 				break;
 				
 				case 'wcfm-knowledgebase-manage':
-					require_once( $this->controllers_path . 'wcfm-controller-knowledgebase-manage.php' );
+					include_once( $this->controllers_path . 'knowledgebase/wcfm-controller-knowledgebase-manage.php' );
 					new wcfm_Knowledgebase_Manage_Controller();
 				break;
 				
 				case 'wcfm-notices':
-					require_once( $this->controllers_path . 'notice/wcfm-controller-notices.php' );
+					include_once( $this->controllers_path . 'notice/wcfm-controller-notices.php' );
 					new WCFM_Notices_Controller();
 				break;
 				
 				case 'wcfm-notice-manage':
-					require_once( $this->controllers_path . 'notice/wcfm-controller-notice-manage.php' );
+					include_once( $this->controllers_path . 'notice/wcfm-controller-notice-manage.php' );
 					new wcfm_Notice_Manage_Controller();
 				break;
 				
 				case 'wcfm-notice-reply':
-					require_once( $this->controllers_path . 'notice/wcfm-controller-notice-reply.php' );
+					include_once( $this->controllers_path . 'notice/wcfm-controller-notice-reply.php' );
 					new WCFM_Notice_Reply_Controller();
 				break;
 				
 				case 'wcfm-messages':
-					require_once( $this->controllers_path . 'wcfm-controller-messages.php' );
+					include_once( $this->controllers_path . 'messages/wcfm-controller-messages.php' );
 					new WCFM_Messages_Controller();
 				break;
 				
 				case 'wcfm-message-sent':
-					require_once( $this->controllers_path . 'wcfm-controller-message-sent.php' );
+					include_once( $this->controllers_path . 'messages/wcfm-controller-message-sent.php' );
 					new WCFM_Message_Sent_Controller();
 				break;
 				
 				case 'wcfm-vendors':
-					require_once( $this->controllers_path . 'vendors/wcfm-controller-vendors.php' );
+					include_once( $this->controllers_path . 'vendors/wcfm-controller-vendors.php' );
 					new WCFM_Vendors_Controller();
 				break;
 				
+				case 'wcfm-vendors-new':
+					include_once( $this->controllers_path . 'vendors/wcfm-controller-vendors-new.php' );
+					new WCFM_Vendors_New_Controller();
+				break;
+				
 				case 'wcfm-vendors-manage':
-					require_once( $this->controllers_path . 'vendors/wcfm-controller-vendors-manage.php' );
+					include_once( $this->controllers_path . 'vendors/wcfm-controller-vendors-manage.php' );
 					new WCFM_Vendors_Manage_Controller();
 				break;
 				
 				case 'wcfm-vendors-manage-profile':
-					require_once( $this->controllers_path . 'vendors/wcfm-controller-vendors-manage.php' );
+					include_once( $this->controllers_path . 'vendors/wcfm-controller-vendors-manage.php' );
 					new WCFM_Vendors_Manage_Profile_Controller();
 				break;
 				
+				case 'wcfm-vendors-manage-marketplace-settings':
+					include_once( $this->controllers_path . 'settings/wcfm-controller-wcfmmarketplace-settings.php' );
+					new WCFM_Settings_Marketplace_Controller();
+				break;
+				
 				case 'wcfm-vendors-manage-badges':
-					require_once( $this->controllers_path . 'vendors/wcfm-controller-vendors-manage.php' );
+					include_once( $this->controllers_path . 'vendors/wcfm-controller-vendors-manage.php' );
 					new WCFM_Vendors_Manage_Badges_Controller();
 				break;
 				
 				case 'wcfm-vendors-commission':
-					require_once( $this->controllers_path . 'vendors/wcfm-controller-vendors-commission.php' );
+					include_once( $this->controllers_path . 'vendors/wcfm-controller-vendors-commission.php' );
 					new WCFM_Vendors_Commission_Controller();
 				break;
 			}
@@ -227,6 +250,7 @@ class WCFM_Ajax {
 		$taxonomy     = esc_attr( $_POST['taxonomy'] );
 		$new_term     = wc_clean( $_POST['new_term'] );
 		$parent_term  = wc_clean( $_POST['parent_term'] );
+		$nbsp         = '&nbsp;';
 
 		if ( taxonomy_exists( $taxonomy ) ) {
 
@@ -243,13 +267,13 @@ class WCFM_Ajax {
 				$author_is_vendor = 1;
 				$message_to = 0;
 				$wcfm_messages = sprintf( __( 'A new %s <b>%s</b> added to the store by <b>%s</b>', 'wc-frontend-manager' ), ucfirst( $taxonomy ), $new_term, get_user_by( 'id', $author_id )->display_name );
-				$WCFM->frontend->wcfm_send_direct_message( $author_id, $message_to, $author_is_admin, $author_is_vendor, $wcfm_messages, 'new_taxonomy_term' );
+				$WCFM->wcfm_notification->wcfm_send_direct_message( $author_id, $message_to, $author_is_admin, $author_is_vendor, $wcfm_messages, 'new_taxonomy_term' );
 				
 				// Sending front-end HTML
 				$term = get_term_by( 'id', $result['term_id'], $taxonomy );
 				echo '<li class="product_cats_checklist_item checklist_item_' . esc_attr( $term->term_id ) . '" data-item="' . esc_attr( $term->term_id ) . '">';
 				echo '<span class="fa fa-arrow-circle-right sub_checklist_toggler"></span>';
-				if( $taxonomy != 'product_cat' ) {
+				if( ( $taxonomy != 'product_cat' ) && ( $taxonomy != 'wcfm_knowledgebase_category' ) ) {
 					echo '<label class="selectit">' . $nbsp . '<input type="checkbox" class="wcfm-checkbox" name="product_custom_taxonomies[' . $taxonomy . '][]" value="' . esc_attr( $term->term_id ) . '" checked />' . esc_html( $term->name ) . '</label>';
 				} else {
 					echo '<label class="selectit">' . $nbsp . '<input type="checkbox" class="wcfm-checkbox" name="product_cats[]" value="' . esc_attr( $term->term_id ) . '" checked /><span>' . esc_html( $term->name ) . '</span></label>';
@@ -277,7 +301,7 @@ class WCFM_Ajax {
 						if($attr_first) $attr_first = false;
 						
 						if($attributes['is_taxonomy']) {
-							$pro_attributes .= '"' . sanitize_title( $attributes['tax_name'] ) . '": {';
+							$pro_attributes .= '"' . sanitize_title( $attributes['tax_name'] ) . '": { "name" : " ' . $attributes['name'] . ' ", "data" : {';
 							if( !is_array($attributes['value']) ) {
 								$att_values = explode( WC_DELIMITER , $attributes['value']);
 								$is_first = true;
@@ -300,17 +324,17 @@ class WCFM_Ajax {
 									}
 								}
 							}
-							$pro_attributes .= '}';
+							$pro_attributes .= '} }';
 						} else {
-							$pro_attributes .= '"' . sanitize_title( $attributes['name'] ) . '": {';
+							$pro_attributes .= '"' . sanitize_title( $attributes['name'] ) . '": { "name" : " ' . $attributes['name'] . ' ", "data" : {';
 							$att_values = explode( WC_DELIMITER, $attributes['value']);
 							$is_first = true;
 							foreach($att_values as $att_value) {
 								if(!$is_first) $pro_attributes .= ',';
 								if($is_first) $is_first = false;
-								$pro_attributes .= '"' . trim($att_value) . '": "' . esc_attr(trim($att_value)) . '"';
+								$pro_attributes .= '"' . esc_attr(trim($att_value)) . '": "' . esc_attr(trim($att_value)) . '"';
 							}
-							$pro_attributes .= '}';
+							$pro_attributes .= '} }';
 						}
 					}
 				}
@@ -328,17 +352,30 @@ class WCFM_Ajax {
   public function delete_wcfm_product() {
   	global $WCFM, $WCFMu;
   	
-  	$proid = $_POST['proid'];
+  	$product_id = $_POST['proid'];
 		
-		if( $proid ) {
-			$product = wc_get_product( $proid );
+		if( $product_id ) {
+			$product = wc_get_product( $product_id );
+			if( !$product || !is_object( $product ) ) {
+				echo 'failed';
+				die;
+			}
+			
+			do_action( 'wcfm_before_product_delete', $product_id );
 			if ( 'appointment' === $product->get_type() ) {
 				remove_all_actions( 'before_delete_post' );
 			}
 			
-			if(wp_delete_post($proid)) {
-				echo 'success';
-				die;
+			if( apply_filters( 'wcfm_is_allow_product_delete' , false ) ) {
+				if(wp_delete_post($product_id)) {
+					echo 'success';
+					die;
+				}
+			} else {
+				if(wp_trash_post($product_id)) {
+					echo 'success';
+					die;
+				}
 			}
 			die;
 		}
@@ -352,7 +389,15 @@ class WCFM_Ajax {
   	
   	if( isset( $_POST['proid'] ) && !empty( $_POST['proid'] ) ) {
   		$product_id = absint( $_POST['proid'] );
-  		wp_publish_post( $product_id );
+  		do_action( 'wcfm_before_product_approve', $product_id );
+  		$update_product = apply_filters( 'wcfm_product_content_before_update', array(
+  																																					'ID'           => $product_id,
+																																						'post_status'  => 'publish',
+																																						'post_type'    => 'product',
+																																					), $product_id );
+  		wp_update_post( $update_product, true );
+  		do_action( 'wcfm_after_product_approve', $product_id );
+  		delete_post_meta( $product_id, '_wcfm_review_product_notified' );
   	}
 		
 		die;
@@ -366,6 +411,14 @@ class WCFM_Ajax {
   	
   	$order_id = $_POST['orderid'];
   	
+  	if( wcfm_is_vendor() ) {
+			$is_marketplace = wcfm_is_marketplace();
+			if( $is_marketplace == 'wcfmmarketplace' ) {
+				do_action( 'wcfmmp_vendor_order_status_update', $order_id, 'wc-completed' );
+				die;
+			}
+		}
+  	
   	if ( wc_is_order_status( 'wc-completed' ) && $order_id ) {
 			$order = wc_get_order( $order_id );
 			$order->update_status( 'completed', '', true );
@@ -376,10 +429,14 @@ class WCFM_Ajax {
 			if( wcfm_is_vendor() ) {
 				$shop_name =  $WCFM->wcfm_vendor_support->wcfm_get_vendor_store_by_vendor( absint($user_id) );
 			}
-			$comment_id = $order->add_order_note( sprintf( __( '<b>%s</b> has updated order status to <b>%s</b>', 'wc-frontend-manager' ), $shop_name, ucfirst( 'completed' ) ), '1');
+			$wcfm_messages = sprintf( __( '<b>%s</b> order status updated to <b>%s</b> by <b>%s</b>', 'wc-frontend-manager' ), '#<a target="_blank" class="wcfm_dashboard_item_title" href="' . get_wcfm_view_order_url($order_id) . '">' . $order_id . '</a>', wc_get_order_status_name( 'completed' ), $shop_name );
+			$comment_id = $order->add_order_note( $wcfm_messages, '1');
 			if( wcfm_is_vendor() ) { add_comment_meta( $comment_id, '_vendor_id', $user_id ); }
 			
+			$WCFM->wcfm_notification->wcfm_send_direct_message( -2, 0, 1, 0, $wcfm_messages, 'status-update' );
+			
 			do_action( 'woocommerce_order_edit_status', $order_id, 'completed' );
+			do_action( 'wcfm_order_update_status', $order_id, 'completed' );
 		}
 		die;
   }
@@ -393,6 +450,14 @@ class WCFM_Ajax {
   	$order_id = $_POST['order_id'];
   	$order_status = $_POST['order_status'];
   	
+  	if( wcfm_is_vendor() ) {
+			$is_marketplace = wcfm_is_marketplace();
+			if( $is_marketplace == 'wcfmmarketplace' ) {
+				do_action( 'wcfmmp_vendor_order_status_update', $order_id, $order_status );
+				die;
+			}
+		}
+  	
   	if ( wc_is_order_status( $order_status ) && $order_id ) {
 			$order = wc_get_order( $order_id );
 			$order->update_status( str_replace('wc-', '', $order_status), '', true );
@@ -403,10 +468,16 @@ class WCFM_Ajax {
 			if( wcfm_is_vendor() ) {
 				$shop_name =  $WCFM->wcfm_vendor_support->wcfm_get_vendor_store_by_vendor( absint($user_id) );
 			}
-			$comment_id = $order->add_order_note( sprintf( __( '<b>%s</b> has updated order status to <b>%s</b>', 'wc-frontend-manager' ), $shop_name, ucfirst( str_replace('wc-', '', $order_status) ) ), '1');
+			$wcfm_messages = sprintf( __( '<b>%s</b> order status updated to <b>%s</b> by <b>%s</b>', 'wc-frontend-manager' ), '#<a target="_blank" class="wcfm_dashboard_item_title" href="' . get_wcfm_view_order_url($order_id) . '">' . $order_id . '</a>', wc_get_order_status_name( str_replace('wc-', '', $order_status) ), $shop_name );
+			$comment_id = $order->add_order_note( $wcfm_messages, '1');
 			if( wcfm_is_vendor() ) { add_comment_meta( $comment_id, '_vendor_id', $user_id ); }
 			
+			$WCFM->wcfm_notification->wcfm_send_direct_message( -2, 0, 1, 0, $wcfm_messages, 'status-update' );
+			
 			do_action( 'woocommerce_order_edit_status', $order_id, str_replace('wc-', '', $order_status) );
+			do_action( 'wcfm_order_update_status', $order_id, str_replace('wc-', '', $order_status) );
+			
+			echo '{"status": true, "message": "' . __( 'Order status updated.', 'wc-frontend-manager' ) . '"}';
 		}
 		die;
   	
@@ -455,17 +526,17 @@ class WCFM_Ajax {
 	 */
   function wcfm_dismiss_inactive_addon_notice() {
   	if ( ! empty( $_POST['wcfm_wcfmvm_inactive'] ) ) {
-			$offer_key = 'wcfm_wcfmvm_inactive1402';
+			$offer_key = 'wcfm_wcfmvm_inactive2306';
 			update_option( $offer_key . '_tracking_notice', 'hide' );
 		}
 		
 		if ( ! empty( $_POST['wcfm_wcfmu_inactive'] ) ) {
-			$offer_key = 'wcfm_wcfmu_inactive1402';
+			$offer_key = 'wcfm_wcfmu_inactive1609';
 			update_option( $offer_key . '_tracking_notice', 'hide' );
 		}
 		
 		if ( ! empty( $_POST['wcfm_wcfmgs_inactive'] ) ) {
-			$offer_key = 'wcfm_wcfmgs_inactive1402';
+			$offer_key = 'wcfm_wcfmgs_inactive1609';
 			update_option( $offer_key . '_tracking_notice', 'hide' );
 		}
   }
@@ -524,7 +595,7 @@ class WCFM_Ajax {
 			'post_mime_type'   => '',
 			'post_parent'      => '',
 			//'author'	   => get_current_user_id(),
-			'post_status'      => array('publish'),
+			'post_status'      => array('publish', 'private'),
 			'suppress_filters' => 0 
 		);
 		$args = apply_filters( 'wcfm_products_args', $args );
@@ -556,4 +627,142 @@ class WCFM_Ajax {
 		$vendor_arr = $WCFM->wcfm_vendor_support->wcfm_get_vendor_list( false, 0, 25, $term );
 		wp_send_json( apply_filters( 'wcfm_json_search_vendors', $vendor_arr ) );
   }
+  
+  /**
+   * WCfM Profile email verification code send
+   */
+  function wcfm_email_verification_code() {
+  	global $WCFM;
+  	
+  	$user_id = get_current_user_id();
+  	$user_email = $_POST['user_email'];
+		
+		if( $user_email ) {
+			$email_verification_code = get_post_meta( $user_id, '_wcfm_email_verification_code', true );
+			if( $email_verification_code ) {
+				$verification_code = $email_verification_code;
+			} else {
+				$verification_code = rand( 100000, 999999 );
+				update_post_meta( $user_id, '_wcfm_email_verification_code', $verification_code );
+			}
+			
+			// Sending verification code in email
+			if( !defined( 'DOING_WCFM_EMAIL' ) ) 
+				define( 'DOING_WCFM_EMAIL', true );
+			$verification_mail_subject = "{site_name}: " . __( "Email Verification Code", "wc-frontend-manager" ) . " - " . $verification_code;
+			$verification_mail_body =    '<br/>' . __( 'Hi', 'wc-frontend-manager' ) .
+																	 ',<br/><br/>' . 
+																	 sprintf( __( 'Here is your email verification code - <b>%s</b>', 'wc-frontend-manager' ), '{verification_code}' ) .
+																	 '<br/><br/>' . __( 'Thank You', 'wc-frontend-manager' ) .
+																   '<br/><br/>';
+													 
+			$subject = str_replace( '{site_name}', get_bloginfo( 'name' ), $verification_mail_subject );
+			$subject = str_replace( '{verification_code}', $verification_code, $subject );
+			$message = str_replace( '{verification_code}', $verification_code, $verification_mail_body );
+			$message = apply_filters( 'wcfm_email_content_wrapper', $message, __( 'Email Verification', 'wc-multivendor-membership' ) );
+			
+			wp_mail( $user_email, $subject, $message );
+			
+			echo '{"status": true, "message": "' . __( 'Email verification code send to your email.', 'wc-frontend-manager' ) . '"}';
+		} else {
+			echo '{"status": false, "message": "' . __( 'Email verification not working right now, please try after sometime.', 'wc-frontend-manager' ) . '"}';
+		}
+		die;
+  }
+  
+  /**
+	 * Vednor acount disable
+	 */
+	function wcfm_vendor_disable() {
+		global $WCFM, $_POST, $wpdb;
+		
+		if( isset( $_POST['memberid'] ) ) {
+			$member_id = absint( $_POST['memberid'] );
+			$member_user = new WP_User( $member_id );
+			$vendor_store = $WCFM->wcfm_vendor_support->wcfm_get_vendor_store_by_vendor( $member_id );
+			
+			$member_user->set_role('disable_vendor');
+			
+			update_user_meta( $member_id, '_disable_vendor', true );
+			
+			// Delete Membership Data
+			do_action( 'wcfm_membership_data_reset', $member_id );
+			
+			// Membership Disable Admin Desktop Notification
+			$wcfm_messages = sprintf( __( '<b>%s</b> (Store: <b>%s</b>) has been disabled.', 'wc-frontend-manager' ), $member_user->first_name, $vendor_store );
+			$WCFM->wcfm_notification->wcfm_send_direct_message( -2, 0, 1, 0, $wcfm_messages, 'vendor-disable' );
+			
+			// Vendor Notification
+			$wcfm_messages = sprintf( __( 'Your Store: <b>%s</b> has been disabled.', 'wc-frontend-manager' ), $vendor_store );
+			$WCFM->wcfm_notification->wcfm_send_direct_message( -1, $member_id, 1, 0, $wcfm_messages, 'vendor-disable' );
+				
+			echo '{"status": true, "message": "' . __( 'Vendor successfully disabled.', 'wc-frontend-manager' ) . '"}';
+			die;
+		}
+		echo '{"status": false, "message": "' . __( 'Vendor can not be disabled right now, please try after sometime.', 'wc-frontend-manager' ) . '"}';
+		die;
+	}
+	
+	/**
+	 * Vednor acount enable
+	 */
+	function wcfm_vendor_enable() {
+		global $WCFM, $_POST, $wpdb;
+		
+		if( isset( $_POST['memberid'] ) ) {
+			$member_id = absint( $_POST['memberid'] );
+			$member_user = new WP_User( $member_id );
+			$vendor_store = $WCFM->wcfm_vendor_support->wcfm_get_vendor_store_by_vendor( $member_id );
+			
+			$is_marketplace = wcfm_is_marketplace();
+			if( $is_marketplace == 'wcmarketplace' ) {
+				$member_user->set_role('dc_vendor');
+			} elseif( $is_marketplace == 'wcpvendors' ) {
+				$member_user->set_role('wc_product_vendors_admin_vendor');
+			} elseif( $is_marketplace == 'wcvendors' ) {
+				$member_user->set_role('vendor');
+			} elseif( $is_marketplace == 'dokan' ) {
+				$member_user->set_role('seller');
+			} elseif( $is_marketplace == 'wcfmmarketplace' ) {
+				$member_user->set_role('wcfm_vendor');
+			}
+			
+			delete_user_meta( $member_id, '_disable_vendor' );
+			
+			// Membership Enable Admin Desktop Notification
+			$wcfm_messages = sprintf( __( '<b>%s</b> (Store: <b>%s</b>) has been enabled.', 'wc-frontend-manager' ), $member_user->first_name, $vendor_store );
+			$WCFM->wcfm_notification->wcfm_send_direct_message( -2, 0, 1, 0, $wcfm_messages, 'vendor-enable' );
+			
+			// Vendor Notification
+			$wcfm_messages = sprintf( __( 'Your Store: <b>%s</b> has been enabled.', 'wc-frontend-manager' ), $vendor_store );
+			$WCFM->wcfm_notification->wcfm_send_direct_message( -1, $member_id, 1, 0, $wcfm_messages, 'vendor-enable' );
+			
+				
+			echo '{"status": true, "message": "' . __( 'Vendor successfully enabled.', 'wc-frontend-manager' ) . '"}';
+			die;
+		}
+		echo '{"status": false, "message": "' . __( 'Vendor can not be enabled right now, please try after sometime.', 'wc-frontend-manager' ) . '"}';
+		die;
+	}
+	
+	/**
+	 * Generate Knowledgebase View
+	 */
+	function wcfm_knowledgebase_view() {
+		global $WCFM;
+		
+		$knowledgebase_id = '';
+		if( isset($_POST['knowledgebaseid']) ) {
+			$knowledgebase_id = $_POST['knowledgebaseid'];
+			
+			$knowledgebase_post = get_post( $knowledgebase_id );
+			
+			echo '<table><tbody><tr><td><h2 style="font-size: 18px;line-height: 20px;color:#00798b;text-decoration:underline;">';
+			echo $knowledgebase_post->post_title;
+			echo '</h2></td></tr><tr><td>';
+			echo $knowledgebase_post->post_content;
+			echo '</td></tr></tbody></table>';
+		}
+		die;
+	}
 }

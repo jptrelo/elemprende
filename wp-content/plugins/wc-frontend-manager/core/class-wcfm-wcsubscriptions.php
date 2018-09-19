@@ -21,8 +21,8 @@ class WCFM_WCSubscriptions {
     	add_filter( 'wcfm_product_types', array( &$this, 'wcs_product_types' ), 30 );
     	
     	// Subscriptions Product Type Capability
-			add_filter( 'wcfm_settings_fields_product_types', array( &$this, 'wcfmcap_product_types' ), 30, 3 );
-    	
+			add_filter( 'wcfm_capability_settings_fields_product_types', array( &$this, 'wcfmcap_product_types' ), 30, 3 );
+			
     	// Subscriptions Product options
     	add_filter( 'wcfm_product_manage_fields_pricing', array( &$this, 'wcs_product_manage_fields_pricing' ), 30, 2 );
     	

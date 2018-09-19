@@ -770,7 +770,7 @@ public function wf_dhl_createshipment(){
 	}
     else{			
 		//wp_redirect(admin_url('/post.php?post='.$_GET['wf_dhl_createshipment'].'&action=edit&'.WCFM_Tracking_Admin_DHLExpress::get_admin_notification_message_var()));
-		$post_id	=	base64_decode($_GET['wf_dhl_createshipment']);
+		$post_id	=	$_GET['wf_dhl_createshipment'];
 		?>
 		<script>
 		window.location = "<?php echo get_wcfm_view_order_url( $post_id ); ?>";
@@ -1120,16 +1120,16 @@ window.onclick = function(event) {
 			echo '<hr style="border-color:#c9c9c9"></li>';
 			$shipping_label = get_post_meta($orderid, 'wf_woo_dhl_shippingLabel_'.$shipmentId, true);
 			if(!empty($shipping_label)) {
-				$download_url = add_query_arg( 'wf_dhl_viewlabel', base64_encode($shipmentId.'|'.$orderid), get_wcfm_view_order_url( $order_id ) );?>
+				$download_url = add_query_arg( 'wf_dhl_viewlabel', base64_encode($shipmentId.'|'.$orderid), get_wcfm_view_order_url( $orderid ) );?>
 				<a class="button wcfm_submit_button tips button-primary" target="_blank"  href="<?php echo $download_url; ?>" data-tip="<?php _e('Shipment Label', 'wf-shipping-dhl'); ?>"><?php _e('Shipment Label', 'wf-shipping-dhl'); ?></a>
-				<a class="button wcfm_submit_button tips"  href="<?php echo add_query_arg( 'wf_dhl_delete_label', base64_encode($order_id), get_wcfm_view_order_url( $order_id ) ); ?>" onclick="return confirm('Are you sure?');" data-tip="<?php _e('Reset Shipment', 'wf-shipping-dhl'); ?>"><?php _e('Reset Shipment', 'wf-shipping-dhl'); ?></a>
+				<a class="button wcfm_submit_button tips"  href="<?php echo add_query_arg( 'wf_dhl_delete_label', $orderid, get_wcfm_view_order_url( $orderid ) ); ?>" onclick="return confirm('Are you sure?');" data-tip="<?php _e('Reset Shipment', 'wf-shipping-dhl'); ?>"><?php _e('Reset Shipment', 'wf-shipping-dhl'); ?></a>
 				<?php 
 			}
 			
 			
 			$commercial_invoice = get_post_meta($orderid, 'wf_woo_dhl_shipping_commercialInvoice_'.$shipmentId, true);
 			if(!empty($commercial_invoice)){
-				$commercial_invoice_download_url = add_query_arg( 'wf_dhl_view_commercial_invoice', base64_encode($shipmentId.'|'.$orderid), get_wcfm_view_order_url( $order_id ) );?>
+				$commercial_invoice_download_url = add_query_arg( 'wf_dhl_view_commercial_invoice', base64_encode($shipmentId.'|'.$orderid), get_wcfm_view_order_url( $orderid ) );?>
 				<a class="button wcfm_submit_button tips button-primary"  href="<?php echo $commercial_invoice_download_url; ?>" target="_blank" data-tip="<?php _e('Commercial Invoice', 'wf-shipping-dhl'); ?>"><?php _e('Commercial Invoice', 'wf-shipping-dhl'); ?></a>
 				<?php 
 			}
@@ -1146,7 +1146,7 @@ window.onclick = function(event) {
 				if(empty($stored_return_shipment))
 				{
 				?>
-					<a class="button wcfm_submit_button tips dhl_generate_packages button-primary" style="text-align: center;float:right;" href="<?php echo add_query_arg( 'wf_dhl_process_return_packages', base64_encode($orderid), get_wcfm_view_order_url( $order_id ) ); ?>" data-tip="<?php _e( 'Process Return Shipment', 'wf-shipping-dhl' ); ?>"><?php _e( 'Process Return Shipment', 'wf-shipping-dhl' ); ?></a><hr style="border-color:#0074a2">
+					<a class="button wcfm_submit_button tips dhl_generate_packages button-primary" style="text-align: center;float:right;" href="<?php echo add_query_arg( 'wf_dhl_process_return_packages', $orderid, get_wcfm_view_order_url( $orderid ) ); ?>" data-tip="<?php _e( 'Process Return Shipment', 'wf-shipping-dhl' ); ?>"><?php _e( 'Process Return Shipment', 'wf-shipping-dhl' ); ?></a><hr style="border-color:#0074a2">
 					<script type="text/javascript">
 					jQuery("a.dhl_process_return_packages").on("click", function() {
 						location.href = this.href;
@@ -1158,7 +1158,7 @@ window.onclick = function(event) {
 				else
 				{
 				$stored_return_packages	=	get_post_meta( $orderid, '_wf_dhl_stored_return_packages', true );
-				$generate_return_url = add_query_arg( 'wf_dhl_create_return_shipment', base64_encode($orderid), get_wcfm_view_order_url( $order_id ) );
+				$generate_return_url = add_query_arg( 'wf_dhl_create_return_shipment', $orderid, get_wcfm_view_order_url( $orderid ) );
 			if(empty($stored_return_packages))
 			{
 				$items = $order->get_items();
@@ -1180,7 +1180,7 @@ window.onclick = function(event) {
 					}
 					echo '</table>';
 				?>
-			<a class="button wcfm_submit_button tips dhl_generate_return_packages button-primary" id="" style="text-align: center;" href="<?php echo add_query_arg( 'wf_dhl_generate_return_packages', base64_encode($orderid), get_wcfm_view_order_url( $order_id ) ); ?>" data-tip="<?php _e( 'Generate Return Packages', 'wf-shipping-dhl' ); ?>"><?php _e( 'Generate Return Packages', 'wf-shipping-dhl' ); ?></a><hr style="border-color:#0074a2">
+			<a class="button wcfm_submit_button tips dhl_generate_return_packages button-primary" id="" style="text-align: center;" href="<?php echo add_query_arg( 'wf_dhl_generate_return_packages', $orderid, get_wcfm_view_order_url( $orderid ) ); ?>" data-tip="<?php _e( 'Generate Return Packages', 'wf-shipping-dhl' ); ?>"><?php _e( 'Generate Return Packages', 'wf-shipping-dhl' ); ?></a><hr style="border-color:#0074a2">
 				<!-- <script type="text/javascript">
 				jQuery("a.dhl_generate_return_packages").on("click", function() {
 					location.href = this.href;
@@ -1286,7 +1286,7 @@ window.onclick = function(event) {
 
 			<li>
 				<a class="button wcfm_submit_button tips onclickdisable dhl_create_return_shipment button-primary" style="text-align: center;" href="<?php echo $generate_return_url; ?>" data-tip="<?php _e('Create Return Shipment', 'wf-shipping-dhl'); ?>"><?php _e('Create Return Shipment', 'wf-shipping-dhl'); ?></a>
-				<a class="button wcfm_submit_button tips onclickdisable dhl_product_choose_return_shipment" style="text-align: center;" href="<?php echo add_query_arg( 'dhl_product_choose_return_shipment', base64_encode($orderid), get_wcfm_view_order_url( $order_id ) ); ?>" data-tip="<?php _e('Back', 'wf-shipping-dhl'); ?>"><?php _e('Back', 'wf-shipping-dhl'); ?></a>
+				<a class="button wcfm_submit_button tips onclickdisable dhl_product_choose_return_shipment" style="text-align: center;" href="<?php echo add_query_arg( 'dhl_product_choose_return_shipment', $orderid, get_wcfm_view_order_url( $orderid ) ); ?>" data-tip="<?php _e('Back', 'wf-shipping-dhl'); ?>"><?php _e('Back', 'wf-shipping-dhl'); ?></a>
 			</li>
 
 			<script type="text/javascript">
@@ -1478,15 +1478,15 @@ window.onclick = function(event) {
 			if(!empty($shipping_label)){
 
 				echo '<hr style="border-color:#c9c9c9"></li>';
-				$download_return_url = add_query_arg( 'wf_dhl_viewreturnlabel', base64_encode($shipmentId.'|'.$orderid), get_wcfm_view_order_url( $order_id ) );?>
+				$download_return_url = add_query_arg( 'wf_dhl_viewreturnlabel', base64_encode($shipmentId.'|'.$orderid), get_wcfm_view_order_url( $orderid ) );?>
 				<a class="button wcfm_submit_button tips button-primary" target="_blank"  href="<?php echo $download_return_url; ?>" data-tip="<?php _e('Return Label', 'wf-shipping-dhl'); ?>"><?php _e('Return Label', 'wf-shipping-dhl'); ?></a>
-				<a class="button wcfm_submit_button tips"  href="<?php echo add_query_arg( 'wf_dhl_delete_return_label', base64_encode($orderid), get_wcfm_view_order_url( $order_id ) ); ?>" onclick="return confirm('Are you sure?');" data-tip="<?php _e('Reset Return Label', 'wf-shipping-dhl'); ?>"><?php _e('Reset Return Label', 'wf-shipping-dhl'); ?></a>
+				<a class="button wcfm_submit_button tips"  href="<?php echo add_query_arg( 'wf_dhl_delete_return_label', $orderid, get_wcfm_view_order_url( $orderid ) ); ?>" onclick="return confirm('Are you sure?');" data-tip="<?php _e('Reset Return Label', 'wf-shipping-dhl'); ?>"><?php _e('Reset Return Label', 'wf-shipping-dhl'); ?></a>
 				<?php 
 			}
 			
 			$commercial_invoice = get_post_meta($orderid, 'wf_woo_dhl_shipping_return_commercialInvoice_'.$shipmentId, true);
 			if(!empty($commercial_invoice)){
-				$commercial_invoice_download_url = add_query_arg( 'wf_dhl_view_return_commercial_invoice', base64_encode($shipmentId.'|'.$orderid), get_wcfm_view_order_url( $order_id ) );?>
+				$commercial_invoice_download_url = add_query_arg( 'wf_dhl_view_return_commercial_invoice', base64_encode($shipmentId.'|'.$orderid), get_wcfm_view_order_url( $orderid ) );?>
 				<a class="button wcfm_submit_button tips button-primary"  href="<?php echo $commercial_invoice_download_url; ?>" target="_blank" data-tip="<?php _e('Commercial Invoice', 'wf-shipping-dhl'); ?>"><?php _e('Commercial Invoice', 'wf-shipping-dhl'); ?></a>
 				<?php 
 			}
@@ -1501,10 +1501,10 @@ window.onclick = function(event) {
 		if(empty($stored_packages)	&&	!is_array($stored_packages)){
 			echo '<strong>'.__( 'Auto generate packages.', 'wf-shipping-dhl' ).'</strong></br>';
 			?>
-			<a class="button wcfm_submit_button tips dhl_generate_packages button-primary"  href="<?php echo add_query_arg( 'wf_dhl_generate_packages', base64_encode($orderid), get_wcfm_view_order_url( $order_id ) ); ?>" data-tip="<?php _e( 'Generate Packages', 'wf-shipping-dhl' ); ?>"><?php _e( 'Generate Packages', 'wf-shipping-dhl' ); ?></a>
+			<a class="button wcfm_submit_button tips dhl_generate_packages button-primary"  href="<?php echo add_query_arg( 'wf_dhl_generate_packages', base64_encode($orderid), get_wcfm_view_order_url( $orderid ) ); ?>" data-tip="<?php _e( 'Generate Packages', 'wf-shipping-dhl' ); ?>"><?php _e( 'Generate Packages', 'wf-shipping-dhl' ); ?></a>
 			<?php
 		}else{
-			$generate_url = add_query_arg( 'wf_dhl_createshipment', base64_encode($orderid), get_wcfm_view_order_url( $order_id ) );
+			$generate_url = add_query_arg( 'wf_dhl_createshipment',$orderid, get_wcfm_view_order_url( $orderid ) );
 			$select_box_value = '';
 			echo '<li>';
 				echo '<span style="font-weight:bold;">'.__( 'Package(s)' , 'wf-shipping-dhl').':</span>';
@@ -1567,7 +1567,7 @@ window.onclick = function(event) {
 					}
 				echo '</table>';
 				echo '<a class="wf-action-button wcfm_submit_button wf-add-button button-secondary" style="font-size: 12px;" id="wf_dhl_add_package">Add Package</a>'; ?>
-				<a class="button wcfm_submit_button tips dhl_generate_packages button-secondary"  href="<?php echo add_query_arg( 'wf_dhl_generate_packages', base64_encode($orderid), get_wcfm_view_order_url( $order_id ) ); ?>" data-tip="<?php _e( 'Regenerate Packages', 'wf-shipping-dhl' ); ?>"><?php _e( 'Regenerate', 'wf-shipping-dhl' ); ?></a> <?php
+				<a class="button wcfm_submit_button tips dhl_generate_packages button-secondary"  href="<?php echo add_query_arg( 'wf_dhl_generate_packages', base64_encode($orderid), get_wcfm_view_order_url( $orderid ) ); ?>" data-tip="<?php _e( 'Regenerate Packages', 'wf-shipping-dhl' ); ?>"><?php _e( 'Regenerate', 'wf-shipping-dhl' ); ?></a> <?php
 			
 			echo '</li>';
 			?>
@@ -1683,7 +1683,7 @@ window.onclick = function(event) {
 				}                                                                                                     
 				echo '</table>';
 				?>
-				<a class="button wcfm_submit_button tips wf_dhl_generate_packages_rates button-secondary"  href="<?php echo add_query_arg( 'wf_dhl_generate_packages_rates', base64_encode($orderid), get_wcfm_view_order_url( $order_id ) ); ?>" data-tip="<?php _e( 'Re-Calculate', 'wf-shipping-dhl' ); ?>"><?php _e( 'Re-Calculate', 'wf-shipping-dhl' ); ?></a>
+				<a class="button wcfm_submit_button tips wf_dhl_generate_packages_rates button-secondary"  href="<?php echo add_query_arg( 'wf_dhl_generate_packages_rates', base64_encode($orderid), get_wcfm_view_order_url( $orderid ) ); ?>" data-tip="<?php _e( 'Re-Calculate', 'wf-shipping-dhl' ); ?>"><?php _e( 'Re-Calculate', 'wf-shipping-dhl' ); ?></a>
 				<?php
 			
 			

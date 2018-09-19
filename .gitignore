@@ -7,7 +7,7 @@ wp-content/cache/
 wp-content/upgrade/
 wp-content/wp-cache-config.php
 wp-content/plugins/hello.php
-
+.DS_Store
 /license.txt
 /readme.html
 /sitemap.xml

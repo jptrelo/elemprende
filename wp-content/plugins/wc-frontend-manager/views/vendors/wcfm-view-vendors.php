@@ -31,8 +31,9 @@ $admin_fee_mode = apply_filters( 'wcfm_is_admin_fee_mode', false );
 		<div class="wcfm-container wcfm-top-element-container">
 			<h2><?php _e('Vendors Listing', 'wc-frontend-manager' ); ?></h2>
 			<?php
-			if( $has_new = apply_filters( 'wcfm_add_new_vendor_sub_menu', true ) ) {
-				//echo '<a id="add_new_vendor_dashboard" class="add_new_wcfm_ele_dashboard text_tip" href="'.get_wcfm_vendors_manage_url().'" data-tip="' . __('Add New Vendor', 'wc-frontend-manager') . '"><span class="fa fa-gift"></span><span class="text">' . __( 'Add New', 'wc-frontend-manager') . '</span></a>';
+			if( ($WCFM->is_marketplace == 'wcfmmarketplace' ) && apply_filters( 'wcfm_add_new_vendor_sub_menu', true ) ) {
+				echo '<a id="add_new_vendor_dashboard" class="add_new_wcfm_ele_dashboard text_tip" href="'.get_wcfm_vendors_new_url().'" data-tip="' . __('Add New Vendor', 'wc-frontend-manager') . '"><span class="fa fa-user-o"></span><span class="text">' . __( 'Add New', 'wc-frontend-manager') . '</span></a>';
+				echo '<a id="add_new_vendor_dashboard" class="add_new_wcfm_ele_dashboard text_tip" href="'.get_wcfm_messages_url( 'vendor_approval' ).'" data-tip="' . __('Pending Vendors', 'wc-frontend-manager') . '"><span class="fa fa-user-times"></span><span class="text">' . __( 'Pending Vendors', 'wc-frontend-manager') . '</span></a>';
 			}
 			?>
 			<div class="wcfm-clearfix"></div>
@@ -71,36 +72,44 @@ $admin_fee_mode = apply_filters( 'wcfm_is_admin_fee_mode', false );
 				<table id="wcfm-vendors" class="display" cellspacing="0" width="100%">
 					<thead>
 						<tr>
-							<th><?php _e( 'Vendor', 'wc-frontend-manager' ); ?></th>
+						  <th><span class="wcicon-status-processing text_tip" data-tip="<?php _e( 'Status', 'wc-frontend-manager' ); ?>"></span></th>
+							<th><?php _e( 'Verification', 'wc-frontend-manager' ); ?></th>
+						  <th><?php _e( 'Vendor', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Store', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Membership', 'wc-frontend-manager' ); ?></th>
-							<th><span class="fa fa-cubes text_tip" data-tip="<?php _e( 'No. of Products', 'wc-frontend-manager' ); ?>"></span></th>
-							<th><?php _e( apply_filters( 'wcfm_vednors_gross_sales_label', __( 'Gross Sales', 'wc-frontend-manager' ) ) ); ?></th>
+							<th><span class="fa fa-cube text_tip" data-tip="<?php _e( 'Product Limit Stats', 'wc-frontend-manager' ); ?>"></span></th>
+							<th><span class="fa fa-hdd-o text_tip" data-tip="<?php _e( 'Disk Space Usage Stats', 'wc-frontend-manager' ); ?>"></span></th>
+							<th><?php printf( apply_filters( 'wcfm_vednors_gross_sales_label', __( 'Gross Sales', 'wc-frontend-manager' ) ) ); ?></th>
 							<?php if( $admin_fee_mode ) { ?>
-								<th><?php _e( apply_filters( 'wcfm_vednors_total_fees_label', __( 'Total Fees', 'wc-frontend-manager' ) ) ); ?></th>
-								<th><?php _e( apply_filters( 'wcfm_vednors_paid_fees_label', __( 'Paid Fees', 'wc-frontend-manager' ) ) ); ?></th>
+								<th><?php printf( apply_filters( 'wcfm_vednors_total_fees_label', __( 'Total Fees', 'wc-frontend-manager' ) ) ); ?></th>
+								<th><?php printf( apply_filters( 'wcfm_vednors_paid_fees_label', __( 'Paid Fees', 'wc-frontend-manager' ) ) ); ?></th>
 							<?php } else { ?>
-								<th><?php _e( apply_filters( 'wcfm_vednors_earned_commission_label', __( 'Total Earnings', 'wc-frontend-manager' ) ) ); ?></th>
-								<th><?php _e( apply_filters( 'wcfm_vednors_received_commission_label', __( 'Total Withdrawal', 'wc-frontend-manager' ) ) ); ?></th>
+								<th><?php printf( apply_filters( 'wcfm_vednors_earned_commission_label', __( 'Earnings', 'wc-frontend-manager' ) ) ); ?></th>
+								<th><?php printf( apply_filters( 'wcfm_vednors_received_commission_label', __( 'Withdrawal', 'wc-frontend-manager' ) ) ); ?></th>
 							<?php } ?>
-							<th><?php _e( apply_filters( 'wcfm_vendors_additional_info_column_label', __( 'Additional Info', 'wc-frontend-manager' ) ) ); ?></th>
+							<th><?php printf( apply_filters( 'wcfm_vendors_additional_info_column_label', __( 'Additional Info', 'wc-frontend-manager' ) ) ); ?></th>
+							<th><?php _e( 'Action', 'wc-frontend-manager' ); ?></th>
 						</tr>
 					</thead>
 					<tfoot>
 						<tr>
+						  <th><span class="wcicon-status-processing text_tip" data-tip="<?php _e( 'Status', 'wc-frontend-manager' ); ?>"></span></th>
+						  <th><?php _e( 'Verification', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Vendor', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Store', 'wc-frontend-manager' ); ?></th>
 							<th><?php _e( 'Membership', 'wc-frontend-manager' ); ?></th>
-							<th><span class="fa fa-cubes text_tip" data-tip="<?php _e( 'No. of Products', 'wc-frontend-manager' ); ?>"></span></th>
-							<th><?php _e( apply_filters( 'wcfm_vednors_gross_sales_label', __( 'Gross Sales', 'wc-frontend-manager' ) ) ); ?></th>
+							<th><span class="fa fa-cube text_tip" data-tip="<?php _e( 'Product Limit Stats', 'wc-frontend-manager' ); ?>"></span></th>
+							<th><span class="fa fa-hdd-o text_tip" data-tip="<?php _e( 'Disk Space Usage Stats', 'wc-frontend-manager' ); ?>"></span></th>
+							<th><?php printf( apply_filters( 'wcfm_vednors_gross_sales_label', __( 'Gross Sales', 'wc-frontend-manager' ) ) ); ?></th>
 							<?php if( $admin_fee_mode ) { ?>
-								<th><?php _e( apply_filters( 'wcfm_vednors_total_fees_label', __( 'Total Fees', 'wc-frontend-manager' ) ) ); ?></th>
-								<th><?php _e( apply_filters( 'wcfm_vednors_paid_fees_label', __( 'Paid Fees', 'wc-frontend-manager' ) ) ); ?></th>
+								<th><?php printf( apply_filters( 'wcfm_vednors_total_fees_label', __( 'Total Fees', 'wc-frontend-manager' ) ) ); ?></th>
+								<th><?php printf( apply_filters( 'wcfm_vednors_paid_fees_label', __( 'Paid Fees', 'wc-frontend-manager' ) ) ); ?></th>
 							<?php } else { ?>
-								<th><?php _e( apply_filters( 'wcfm_vednors_earned_commission_label', __( 'Total Earnings', 'wc-frontend-manager' ) ) ); ?></th>
-								<th><?php _e( apply_filters( 'wcfm_vednors_received_commission_label', __( 'Total Withdrawal', 'wc-frontend-manager' ) ) ); ?></th>
+								<th><?php printf( apply_filters( 'wcfm_vednors_earned_commission_label', __( 'Earnings', 'wc-frontend-manager' ) ) ); ?></th>
+								<th><?php printf( apply_filters( 'wcfm_vednors_received_commission_label', __( 'Withdrawal', 'wc-frontend-manager' ) ) ); ?></th>
 							<?php } ?>
-							<th><?php _e( apply_filters( 'wcfm_vendors_additional_info_column_label', __( 'Additional Info', 'wc-frontend-manager' ) ) ); ?></th>
+							<th><?php printf( apply_filters( 'wcfm_vendors_additional_info_column_label', __( 'Additional Info', 'wc-frontend-manager' ) ) ); ?></th>
+							<th><?php _e( 'Action', 'wc-frontend-manager' ); ?></th>
 						</tr>
 					</tfoot>
 				</table>

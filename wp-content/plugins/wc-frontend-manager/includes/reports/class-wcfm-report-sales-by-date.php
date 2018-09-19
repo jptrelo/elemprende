@@ -41,7 +41,7 @@ class WCFM_Report_Sales_By_Date extends WC_Admin_Report {
 	 * @return bool
 	 */
 	public function __construct( $current_range = '' ) {
-		global $WCFM;
+		global $WCFM, $nocache;
 		
 		if( !$current_range ) {
 			$current_range = ! empty( $_GET['range'] ) ? sanitize_text_field( $_GET['range'] ) : '7day';
@@ -86,9 +86,10 @@ class WCFM_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'            => $this->group_by_query,
-			//'order_by'            => 'post_date ASC',
+			'order_by'            => 'post_date ASC',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
+			'nocache'             => true,
 			'order_types'         => wc_get_order_types( 'order-count' ),
 			'order_status'        => array( 'completed', 'processing', 'on-hold', 'refunded' ),
 		) );
@@ -120,9 +121,10 @@ class WCFM_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'     => $this->group_by_query . ', order_item_name',
-			//'order_by'     => 'post_date ASC',
+			'order_by'     => 'post_date ASC',
 			'query_type'   => 'get_results',
 			'filter_range' => true,
+			'nocache'      => true,
 			'order_types'  => wc_get_order_types( 'order-count' ),
 			'order_status' => array( 'completed', 'processing', 'on-hold', 'refunded' ),
 		) );
@@ -150,9 +152,10 @@ class WCFM_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'            => $this->group_by_query,
-			//'order_by'            => 'post_date ASC',
+			'order_by'            => 'post_date ASC',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
+			'nocache'             => true,
 			'order_types'         => wc_get_order_types( 'order-count' ),
 			'order_status'        => array( 'completed', 'processing', 'on-hold', 'refunded' ),
 		) );
@@ -178,6 +181,7 @@ class WCFM_Report_Sales_By_Date extends WC_Admin_Report {
 			),
 			'query_type'          => 'get_var',
 			'filter_range'        => true,
+			'nocache'             => true,
 			'order_types'         => wc_get_order_types( 'order-count' ),
 			'order_status'        => array( 'refunded' ),
 		) ) );
@@ -214,9 +218,10 @@ class WCFM_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'            => $this->group_by_query,
-			//'order_by'            => 'post_date ASC',
+			'order_by'            => 'post_date ASC',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
+			'nocache'             => true,
 			'order_types'         => wc_get_order_types( 'sales-reports' ),
 			'order_status'        => array( 'completed', 'processing', 'on-hold', 'refunded' ),
 		) );
@@ -256,6 +261,7 @@ class WCFM_Report_Sales_By_Date extends WC_Admin_Report {
 			'group_by'            => 'posts.post_parent',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
+			'nocache'             => true,
 			'order_status'        => false,
 			'parent_order_status' => array( 'refunded' ),
 		) );
@@ -317,9 +323,10 @@ class WCFM_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'            => 'refund_id',
-			//'order_by'            => 'post_date ASC',
+			'order_by'            => 'post_date ASC',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
+			'nocache'             => true,
 			'order_status'        => false,
 			'parent_order_status' => array( 'completed', 'processing', 'on-hold' ),
 		) );
@@ -381,9 +388,10 @@ class WCFM_Report_Sales_By_Date extends WC_Admin_Report {
 				),
 			),
 			'group_by'            => 'refund_id',
-			//'order_by'            => 'post_date ASC',
+			'order_by'            => 'post_date ASC',
 			'query_type'          => 'get_results',
 			'filter_range'        => true,
+			'nocache'             => true,
 			'order_status'        => false,
 			'parent_order_status' => array( 'completed', 'processing', 'on-hold', 'refunded' ),
 		) );
@@ -687,7 +695,11 @@ class WCFM_Report_Sales_By_Date extends WC_Admin_Report {
 				var sales_data = <?php echo $chart_data; ?>;
 				var show_legend    = <?php echo $show_legend; ?>;
 				
-				jQuery('.chart-placeholder').css( 'width', jQuery('.chart-placeholder').outerWidth() + 'px' );
+				$show_ticks = true;
+				if( jQuery(window).width() <= 640 ) { $show_ticks = false; }
+				$placeholder_width = jQuery('.chart-placeholder').outerWidth();
+				if( $placeholder_width < 340 ) { $placeholder_width = 340; }
+				jQuery('.chart-placeholder').css( 'width', $placeholder_width + 'px' );
 				
 				var ctx = document.getElementById("chart-placeholder-canvas").getContext("2d");
 				var mySalesReportChart = new Chart(ctx, {
@@ -775,7 +787,10 @@ class WCFM_Report_Sales_By_Date extends WC_Admin_Report {
 										scaleLabel: {
 											display: false,
 											labelString: "<?php _e( 'Date', 'wc-frontend-manager' ); ?>"
-										}
+										},
+										ticks:{
+											display: $show_ticks
+                    }
 									}],
 									yAxes: [{
 										scaleLabel: {

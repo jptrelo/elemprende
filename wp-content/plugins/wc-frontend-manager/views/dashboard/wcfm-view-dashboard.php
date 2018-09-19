@@ -1,4 +1,15 @@
 <?php
+/**
+ * WCFMu plugin view
+ *
+ * Admin Dashboard Views
+ * This template can be overridden by copying it to yourtheme/wcfm/dashboard/
+ *
+ * @author 		WC Lovers
+ * @package 	wcfm/views
+ * @version   1.0.0
+ */
+ 
 global $WCFM, $wpdb;
 
 $order_count = 0;
@@ -74,11 +85,6 @@ $wcfm_report_analytics->chart_colors = apply_filters( 'wcfm_report_analytics_cha
 $wcfm_report_analytics->calculate_current_range( '7day' );
 
 $user_id = get_current_user_id();
-$wp_user_avatar_id = get_user_meta( $user_id, 'wp_user_avatar', true );
-$wp_user_avatar = wp_get_attachment_url( $wp_user_avatar_id );
-if ( !$wp_user_avatar ) {
-	$wp_user_avatar = $WCFM->plugin_url . 'assets/images/user.png';
-}
 
 $is_marketplace = wcfm_is_marketplace();
 
@@ -96,7 +102,7 @@ $is_marketplace = wcfm_is_marketplace();
 		
 		<?php do_action( 'begin_wcfm_dashboard' ); ?>
 		
-		<?php require_once( $WCFM->library->views_path . 'dashboard/wcfm-view-dashboard-welcome-box.php' ); ?>
+		<?php $WCFM->template->get_template( 'dashboard/wcfm-view-dashboard-welcome-box.php' ); ?>
 		
 		<?php if( apply_filters( 'wcfm_is_pref_stats_box', true ) ) { ?>
 			<div class="wcfm_dashboard_stats">
@@ -145,8 +151,8 @@ $is_marketplace = wcfm_is_marketplace();
 						<a href="<?php echo apply_filters( 'sales_by_product_report_url', get_wcfm_reports_url( ), '' ); ?>">
 							<span class="fa fa-cubes"></span>
 							<div>
-								<?php printf( _n( "<strong>%s item</strong><br />", "<strong>%s items</strong><br />", $report_data_block->total_items, 'wc-frontend-manager' ), $report_data_block->total_items ); ?>
-								<?php _e( 'sold in last 7 days', 'wc-frontend-manager' ); ?>
+								<?php printf( _n( "<strong>%s item</strong>", "<strong>%s items</strong>", $report_data_block->total_items, 'wc-frontend-manager' ), $report_data_block->total_items ); ?>
+								<br /><?php _e( 'sold in last 7 days', 'wc-frontend-manager' ); ?>
 							</div>
 						</a>
 					</div>
@@ -158,8 +164,8 @@ $is_marketplace = wcfm_is_marketplace();
 						<a href="<?php echo get_wcfm_orders_url( ); ?>">
 							<span class="fa fa-cart-plus"></span>
 							<div>
-								<?php printf( _n( "<strong>%s order</strong><br />", "<strong>%s orders</strong><br />", $report_data_block->total_orders, 'wc-frontend-manager' ), $report_data_block->total_orders ); ?>
-								<?php _e( 'received in last 7 days', 'wc-frontend-manager' ); ?>
+								<?php printf( _n( "<strong>%s order</strong>", "<strong>%s orders</strong>", $report_data_block->total_orders, 'wc-frontend-manager' ), $report_data_block->total_orders ); ?>
+								<br /><?php _e( 'received in last 7 days', 'wc-frontend-manager' ); ?>
 							</div>
 						</a>
 					</div>
@@ -247,7 +253,7 @@ $is_marketplace = wcfm_is_marketplace();
 								<div id="wcfm_dashboard_wc_status_expander" class="wcfm-content">
 									<ul class="wc_status_list">
 										<?php
-										if ( current_user_can( 'view_woocommerce_reports' ) && ( $top_seller = $this->get_top_seller() ) && $top_seller->qty ) {
+										if ( current_user_can( 'view_woocommerce_reports' ) && ( $top_seller = $WCFM->library->get_top_seller() ) && $top_seller->qty ) {
 											?>
 											<li class="best-seller-this-month">
 												<a href="<?php echo apply_filters( 'sales_by_product_report_url',  get_wcfm_reports_url( ), $top_seller->product_id ); ?>">

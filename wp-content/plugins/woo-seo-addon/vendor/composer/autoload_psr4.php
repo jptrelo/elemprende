@@ -6,6 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Premmerce\\SeoAddon\\WordpressSDK\\' => array($baseDir . '/sdk'),
     'Premmerce\\SeoAddon\\' => array($baseDir . '/src'),
+    'Premmerce\\SDK\\' => array($vendorDir . '/premmerce/wordpress-sdk/src'),
 );

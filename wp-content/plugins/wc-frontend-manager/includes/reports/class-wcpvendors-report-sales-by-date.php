@@ -175,41 +175,51 @@ class WC_Product_Vendors_Vendor_Report_Sales_By_Date extends WC_Admin_Report {
 				$average_sales_title = sprintf( __( '%s average monthly sales', 'woocommerce-product-vendors' ), '<strong>' . wc_price( $data->average_sales ) . '</strong>' );
 			break;
 		}
-
-		$legend[] = array(
-			'title'            => sprintf( __( '%s gross sales in this period', 'woocommerce-product-vendors' ), '<strong>' . wc_price( $data->total_sales ) . '</strong>' ),
-			'placeholder'      => __( 'This is the sum of the order totals after any refunds and including shipping and taxes.', 'woocommerce-product-vendors' ),
-			'color'            => $this->chart_colors['sales_amount'],
-			'highlight_series' => 4
-		);
-
-		$legend[] = array(
-			'title'            => sprintf( __( '%s net sales in this period', 'woocommerce-product-vendors' ), '<strong>' . wc_price( $data->net_sales ) . '</strong>' ),
-			'placeholder'      => __( 'This is the sum of the order totals after any refunds and excluding shipping and taxes.', 'woocommerce-product-vendors' ),
-			'color'            => $this->chart_colors['net_sales_amount'],
-			'highlight_series' => 5
-		);
-
-		$legend[] = array(
-			'title'            => sprintf( __( '%s total earnings', 'wc-frontend-manager' ), '<strong>' . wc_price( $data->total_earned ) . '</strong>' ),
-			'placeholder'      => __( 'This is the sum of the earned commission including shipping and taxes if applicable.', 'woocommerce-product-vendors' ),
-			'color'            => $this->chart_colors['earned'],
-			'highlight_series' => 6
-		);
-
-		$legend[] = array(
-			'title'            => sprintf( __( '%s total withdrawal', 'wc-frontend-manager' ), '<strong>' . wc_price( $data->total_commission ) . '</strong>' ),
-			'placeholder'      => __( 'This is the sum of the commission paid including shipping and taxes if applicable.', 'woocommerce-product-vendors' ),
-			'color'            => $this->chart_colors['commission'],
-			'highlight_series' => 6
-		);
 		
-		if ( $data->average_sales > 0 ) {
+		if( apply_filters( 'wcfm_sales_report_is_allow_gross_sales', true ) ) {
 			$legend[] = array(
-				'title'            => $average_sales_title,
-				'color'            => $this->chart_colors['average'],
-				'highlight_series' => 3
+				'title'            => sprintf( __( '%s gross sales in this period', 'woocommerce-product-vendors' ), '<strong>' . wc_price( $data->total_sales ) . '</strong>' ),
+				'placeholder'      => __( 'This is the sum of the order totals after any refunds and including shipping and taxes.', 'woocommerce-product-vendors' ),
+				'color'            => $this->chart_colors['sales_amount'],
+				'highlight_series' => 4
 			);
+		}
+		
+		if( apply_filters( 'wcfm_sales_report_is_allow_net_sales', true ) ) {
+			$legend[] = array(
+				'title'            => sprintf( __( '%s net sales in this period', 'woocommerce-product-vendors' ), '<strong>' . wc_price( $data->net_sales ) . '</strong>' ),
+				'placeholder'      => __( 'This is the sum of the order totals after any refunds and excluding shipping and taxes.', 'woocommerce-product-vendors' ),
+				'color'            => $this->chart_colors['net_sales_amount'],
+				'highlight_series' => 5
+			);
+		}
+		
+		if( apply_filters( 'wcfm_sales_report_is_allow_earning', true ) ) {
+			$legend[] = array(
+				'title'            => sprintf( __( '%s total earnings', 'wc-frontend-manager' ), '<strong>' . wc_price( $data->total_earned ) . '</strong>' ),
+				'placeholder'      => __( 'This is the sum of the earned commission including shipping and taxes if applicable.', 'woocommerce-product-vendors' ),
+				'color'            => $this->chart_colors['earned'],
+				'highlight_series' => 6
+			);
+		}
+
+		if( apply_filters( 'wcfm_sales_report_is_allow_withdrawal', true ) ) {
+			$legend[] = array(
+				'title'            => sprintf( __( '%s total withdrawal', 'wc-frontend-manager' ), '<strong>' . wc_price( $data->total_commission ) . '</strong>' ),
+				'placeholder'      => __( 'This is the sum of the commission paid including shipping and taxes if applicable.', 'woocommerce-product-vendors' ),
+				'color'            => $this->chart_colors['commission'],
+				'highlight_series' => 6
+			);
+		}
+		
+		if( apply_filters( 'wcfm_sales_report_is_allow_avg_sales', true ) ) {
+			if ( $data->average_sales > 0 ) {
+				$legend[] = array(
+					'title'            => $average_sales_title,
+					'color'            => $this->chart_colors['average'],
+					'highlight_series' => 3
+				);
+			}
 		}
 
 		$legend[] = array(
@@ -402,7 +412,11 @@ class WC_Product_Vendors_Vendor_Report_Sales_By_Date extends WC_Admin_Report {
 				var sales_data = <?php echo $chart_data; ?>;
 				var show_legend    = <?php echo $show_legend; ?>;
 				
-				jQuery('.chart-placeholder').css( 'width', jQuery('.chart-placeholder').outerWidth() + 'px' );
+				$show_ticks = true;
+				if( jQuery(window).width() <= 640 ) { $show_ticks = false; }
+				$placeholder_width = jQuery('.chart-placeholder').outerWidth();
+				if( $placeholder_width < 340 ) { $placeholder_width = 340; }
+				jQuery('.chart-placeholder').css( 'width', $placeholder_width + 'px' );
 				
 				var ctx = document.getElementById("chart-placeholder-canvas").getContext("2d");
 				var mySalesReportChart = new Chart(ctx, {
@@ -410,6 +424,7 @@ class WC_Product_Vendors_Vendor_Report_Sales_By_Date extends WC_Admin_Report {
 						data: {
 							  labels: sales_data.total_earned_commission.labels,
 								datasets: [
+								      <?php if( apply_filters( 'wcfm_sales_report_is_allow_gross_sales', true ) ) { ?>
 											{
 												type: 'line',
 												label: "<?php _e( 'Gross Sales', 'wc-frontend-manager' ); ?>",
@@ -418,6 +433,8 @@ class WC_Product_Vendors_Vendor_Report_Sales_By_Date extends WC_Admin_Report {
 												fill: true,
 												data: sales_data.order_amounts.datas,
 											},
+											<?php } ?>
+											<?php if( apply_filters( 'wcfm_sales_report_is_allow_earning', true ) ) { ?>
 								      {
 												type: 'line',
 												label: "<?php _e( 'Earning', 'wc-frontend-manager' ); ?>",
@@ -426,6 +443,8 @@ class WC_Product_Vendors_Vendor_Report_Sales_By_Date extends WC_Admin_Report {
 												fill: true,
 												data: sales_data.total_earned_commission.datas,
 											},
+											<?php } ?>
+											<?php if( apply_filters( 'wcfm_sales_report_is_allow_withdrawal', true ) ) { ?>
 											{
 												type: 'bar',
 												label: "<?php _e( 'Withdrawal', 'wc-frontend-manager' ); ?>",
@@ -434,6 +453,7 @@ class WC_Product_Vendors_Vendor_Report_Sales_By_Date extends WC_Admin_Report {
 												borderWidth: 2,
 												data: sales_data.total_paid_commission.datas,
 											},
+											<?php } ?>
 											<?php if( apply_filters( 'wcfm_sales_report_is_allow_shipping', true ) ) { ?>
 											{
 												type: 'line',
@@ -484,7 +504,10 @@ class WC_Product_Vendors_Vendor_Report_Sales_By_Date extends WC_Admin_Report {
 										scaleLabel: {
 											display: false,
 											labelString: "<?php _e( 'Date', 'wc-frontend-manager' ); ?>"
-										}
+										},
+										ticks:{
+											display: $show_ticks
+                    }
 									}],
 									yAxes: [{
 										scaleLabel: {
@@ -503,7 +526,7 @@ class WC_Product_Vendors_Vendor_Report_Sales_By_Date extends WC_Admin_Report {
         });
 				function afterResizing() {
 					var canvasheight = document.getElementById("chart-placeholder-canvas").height;
-					if(canvasheight <= 375) {
+					if(canvasheight <= 370) {
 						mySalesReportChart.options.legend.display=false;
 					} else {
 						if( show_legend ) {

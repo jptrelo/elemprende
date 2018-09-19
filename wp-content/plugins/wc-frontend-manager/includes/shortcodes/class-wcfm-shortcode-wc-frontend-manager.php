@@ -26,7 +26,11 @@ class WCFM_Frontend_Manager_Shortcode {
 		global $WCFM, $wp, $WCFM_Query;
 		$WCFM->nocache();
 		
-		echo '<div id="wcfm-main-contentainer"> <div id="wcfm-content">';
+		$end_point = 'wcfm-dashboard';
+		
+		echo '<div id="wcfm-main-contentainer">';
+		do_action( 'wcfm_main_contentainer_before' );
+		echo  '<div id="wcfm-content">';
 		
 		if ( isset( $wp->query_vars['page'] ) ) {
 			$WCFM->library->load_views( 'wcfm-dashboard' );
@@ -36,6 +40,7 @@ class WCFM_Frontend_Manager_Shortcode {
 			foreach ( $wcfm_endpoints as $key => $value ) {
 				if ( isset( $wp->query_vars[ $key ] ) ) {
 					$WCFM->library->load_views( $key );
+					$end_point = $key;
 					$is_endpoint = true;
 				}
 			}
@@ -45,6 +50,8 @@ class WCFM_Frontend_Manager_Shortcode {
 			}
 		}
 		
-		echo '</div></div>';
+		echo '</div>';
+		do_action( 'wcfm_main_contentainer_after', $end_point );
+		echo '</div>';
 	}
 }

@@ -10,8 +10,8 @@ class Premium_Title_Widget extends Widget_Base
     }
 
     public function get_title() {
-        return esc_html__('Premium Title', 'premium-addons-for-elementor');
-    }
+		return \PremiumAddons\Helper_Functions::get_prefix() . ' Title';
+	}
 
     public function get_icon() {
         return 'pa-title';
@@ -39,6 +39,7 @@ class Premium_Title_Widget extends Widget_Base
                     'type'          => Controls_Manager::TEXT,
                     'default'       => esc_html__('Premium Title','premium-addons-for-elementor'),
                     'label_block'   => true,
+                    'dynamic'       => [ 'active' => true ]
                 ]
                 );
         
@@ -202,19 +203,19 @@ class Premium_Title_Widget extends Widget_Base
         /*Title Align*/
         $this->add_responsive_control('premium_title_style7_strip_align',
                 [
-                    'label'         => esc_html__( 'Align', 'elementor' ),
+                    'label'         => esc_html__( 'Align', 'premium-addons-for-elementor' ),
                     'type'          => Controls_Manager::CHOOSE,
                     'options'       => [
                         'left'      => [
-                            'title'=> esc_html__( 'Left', 'elementor' ),
+                            'title'=> esc_html__( 'Left', 'premium-addons-for-elementor' ),
                             'icon' => 'fa fa-align-left',
                             ],
                         'none'    => [
-                            'title'=> esc_html__( 'Center', 'elementor' ),
+                            'title'=> esc_html__( 'Center', 'premium-addons-for-elementor' ),
                             'icon' => 'fa fa-align-center',
                             ],
                         'right'     => [
-                            'title'=> esc_html__( 'Right', 'elementor' ),
+                            'title'=> esc_html__( 'Right', 'premium-addons-for-elementor' ),
                             'icon' => 'fa fa-align-right',
                             ],
                         ],  
@@ -541,17 +542,16 @@ class Premium_Title_Widget extends Widget_Base
 
     }
 
-    protected function render($instance = [])
-    {
+    protected function render($instance = []) {
         // get our input from the widget settings.
-        $settings = $this->get_settings();
+        $settings = $this->get_settings_for_display();
         
         $this->add_inline_editing_attributes('premium_title_text', 'none');
         
         $title_tag = $settings['premium_title_tag'];
         
         $selected_style = $settings['premium_title_style'];
-?>
+    ?>
 
 <div class="premium-title-container <?php echo $selected_style; ?>">
     <<?php echo $title_tag ; ?> class="premium-title-header premium-title-<?php echo $selected_style; ?>">
@@ -566,6 +566,45 @@ class Premium_Title_Widget extends Widget_Base
 </div>
 
     <?php
+    }
+    
+    protected function _content_template() {
+        ?>
+        <#
+            
+            view.addInlineEditingAttributes('premium_title_text', 'none');
+        
+            var titleTag = settings.premium_title_tag,
+        
+            selectedStyle = settings.premium_title_style,
+            
+            titleTag = settings.premium_title_tag,
+            
+            titleIcon = settings.premium_title_icon,
+            
+            titleText = settings.premium_title_text;
+            
+            view.addRenderAttribute( 'premium_title_container', 'class', [ 'premium-title-container', selectedStyle ] );
+            
+            view.addRenderAttribute( 'premium_title', 'class', [ 'premium-title-header', 'premium-title-' + selectedStyle ] );
+            
+            view.addRenderAttribute( 'premium_title_icon', 'class', [ 'premium-title-icon', titleIcon ] );
+            
+        
+        #>
+        <div {{{ view.getRenderAttributeString('premium_title_container') }}}>
+            <{{{titleTag}}} {{{view.getRenderAttributeString('premium_title')}}}>
+                <# if( selectedStyle == 'style7' ) { #>
+                    <span class="premium-title-style7-strip"></span>
+                <# } 
+                    if( '' != settings.premium_title_icon && 'yes' == settings.premium_title_icon_switcher ) { #>
+                        <i {{{ view.getRenderAttributeString('premium_title_icon') }}}></i>
+                    <# } #>
+                <span {{{ view.getRenderAttributeString('premium_title_text') }}}>{{{ titleText }}}</span>
+            </{{{titleTag}}}>
+        </div>
+        
+        <?php
     }
 }
 Plugin::instance()->widgets_manager->register_widget_type(new Premium_Title_Widget());

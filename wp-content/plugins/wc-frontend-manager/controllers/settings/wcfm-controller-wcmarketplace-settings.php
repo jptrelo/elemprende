@@ -25,6 +25,8 @@ class WCFM_Settings_WCMarketplace_Controller {
 		$wcfm_settings_form_data = array();
 	  parse_str($_POST['wcfm_settings_form'], $wcfm_settings_form);
 	  
+	  $has_error = false;
+	  
 	  // WCFM form custom validation filter
 		$custom_validation_results = apply_filters( 'wcfm_form_custom_validation', $wcfm_settings_form, 'vendor_setting_manage' );
 		if(isset($custom_validation_results['has_error']) && !empty($custom_validation_results['has_error'])) {
@@ -48,10 +50,10 @@ class WCFM_Settings_WCMarketplace_Controller {
 																					'_vendor_page_title'          => 'shop_name',
 																					'_vendor_page_slug'           => 'shop_slug',
 																					'_vendor_image'               => 'wcfm_logo',
-																					'_vendor_policy_tab_title'    => 'vendor_policy_tab_title',
-																					'_vendor_shipping_policy'     => 'vendor_shipping_policy',
-																					'_vendor_refund_policy'       => 'vendor_refund_policy',
-																					'_vendor_cancellation_policy' => 'vendor_cancellation_policy',
+																					'_vendor_policy_tab_title'    => 'wcfm_policy_tab_title',
+																					'_vendor_shipping_policy'     => 'wcfm_shipping_policy',
+																					'_vendor_refund_policy'       => 'wcfm_refund_policy',
+																					'_vendor_cancellation_policy' => 'wcfm_cancallation_policy',
 																					'_vendor_customer_phone'      => 'vendor_customer_phone',
 																					'_vendor_customer_email'      => 'vendor_customer_email',
 																					'_vendor_csd_return_address1' => 'vendor_csd_return_address1',
@@ -83,8 +85,15 @@ class WCFM_Settings_WCMarketplace_Controller {
 			if( $vendor ) {
 				$vendor->update_page_title( wc_clean( $wcfm_settings_form['shop_name'] ) );
 				wp_update_user( array( 'ID' => $user_id, 'display_name' => wc_clean( $wcfm_settings_form['shop_name'] ) ) );
+				if( apply_filters( 'wcfm_is_allow_reassociate_role', false ) ) {
+					$member_user = new WP_User(absint($user_id));
+					$member_user->set_role('dc_vendor');
+				}
 				if( isset( $wcfm_settings_form['shop_slug'] ) && !empty( $wcfm_settings_form['shop_slug'] ) ) {
-					$vendor->update_page_slug( wc_clean( $wcfm_settings_form['shop_slug'] ) );
+					if( !$vendor->update_page_slug( wc_clean( $wcfm_settings_form['shop_slug'] ) ) ) {
+						echo '{"status": false, "message": "' . __( 'Shop Slug already exists.', 'wc-frontend-manager' ) . '"}';
+						$has_error = true;
+					}
 				}
 			}
 		}
@@ -100,6 +109,7 @@ class WCFM_Settings_WCMarketplace_Controller {
 																					'_vendor_state'      => 'state',
 																					'_vendor_postcode'   => 'zip',
 																					'timezone_string'    => 'timezone',
+																					'gmt_offset'         => 'gmt_offset',
 																					'_find_address'      => 'find_address',
 																					'_store_location'    => 'store_location',
 																					'_store_lat'         => 'store_lat',
@@ -126,6 +136,16 @@ class WCFM_Settings_WCMarketplace_Controller {
 			if( isset( $wcfm_setting_store_fields['_store_location'] ) ) { unset( $wcfm_setting_store_fields['_store_location'] ); }
 			if( isset( $wcfm_setting_store_fields['_store_lat'] ) ) { unset( $wcfm_setting_store_fields['_store_lat'] ); }
 			if( isset( $wcfm_setting_store_fields['_store_lng'] ) ) { unset( $wcfm_setting_store_fields['_store_lng'] ); }
+		}
+		
+		if ( isset( $wcfm_settings_form['timezone'] ) && !empty( $wcfm_settings_form['timezone'] ) ) {
+			if ( !empty( $wcfm_settings_form['timezone'] ) && preg_match( '/^UTC[+-]/', $wcfm_settings_form['timezone'] ) ) {
+				$wcfm_settings_form['gmt_offset'] = $wcfm_settings_form['timezone'];
+				$wcfm_settings_form['gmt_offset'] = preg_replace( '/UTC\+?/', '', $wcfm_settings_form['gmt_offset'] );
+				$wcfm_settings_form['timezone'] = '';
+			} else{
+				$wcfm_settings_form['gmt_offset'] = 0;
+			}
 		}
 		
 		foreach( $wcfm_settings_store_fields as $wcfm_settings_store_key => $wcfm_settings_store_field ) {
@@ -263,9 +283,12 @@ class WCFM_Settings_WCMarketplace_Controller {
 			}
 		}
 		
+		do_action( 'wcfm_vendor_settings_update', $user_id, $wcfm_settings_form );
 		do_action( 'wcfm_wcmarketplace_settings_update', $user_id, $wcfm_settings_form );
 		
-		echo '{"status": true, "message": "' . __( 'Settings saved successfully', 'wc-frontend-manager' ) . '"}';
+		if( !$has_error ) {
+			echo '{"status": true, "message": "' . __( 'Settings saved successfully', 'wc-frontend-manager' ) . '"}';
+		}
 		 
 		die;
 	}

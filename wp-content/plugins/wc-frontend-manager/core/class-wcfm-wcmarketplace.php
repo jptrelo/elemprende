@@ -31,7 +31,8 @@ class WCFM_WCMarketplace {
     	add_filter( 'wcfm_store_name', array( &$this, 'wcmarketplace_store_name' ) );
     	
 			// Allow Vendor user to manage product from catalog
-			add_filter( 'wcfm_allwoed_user_rols', array( &$this, 'allow_wcmarketplace_vendor_role' ) );
+			add_filter( 'wcfm_allwoed_user_roles', array( &$this, 'allow_wcmarketplace_vendor_role' ) );
+			add_filter( 'wcfm_allwoed_vendor_user_roles', array( &$this, 'allow_wcmarketplace_vendor_role' ) );
 			
 			// Filter Vendor Products
 			add_filter( 'wcfm_products_args', array( &$this, 'wcmarketplace_products_args' ) );
@@ -43,6 +44,12 @@ class WCFM_WCMarketplace {
 			// Listing Filter for specific vendor
 			add_filter( 'wcfm_articles_args', array( &$this, 'wcmarketplace_listing_args' ) );
     	add_filter( 'wcfm_listing_args', array( $this, 'wcmarketplace_listing_args' ), 20 );
+    	add_filter( "woocommerce_product_export_product_query_args", array( &$this, 'wcmarketplace_listing_args' ), 100 );
+    	
+    	// Customers args
+    	if( apply_filters( 'wcfm_is_allow_order_customers_to_vendors', true ) ) {
+    		add_filter( 'wcfm_get_customers_args', array( &$this, 'wcmarketplace_filter_customers' ), 20 );
+    	}
     	
     	// Booking Filter
 			add_filter( 'wcfm_wcb_include_bookings', array( &$this, 'wcmarketplace_wcb_include_bookings' ) );
@@ -58,7 +65,9 @@ class WCFM_WCMarketplace {
 			
 			add_action( 'after_wcfm_products_manage_meta_save', array( &$this, 'wcmarketplace_product_manage_vendor_association' ), 10, 2 );
 			add_action( 'after_wcfm_product_duplicate', array( &$this, 'wcmarketplace_product_manage_vendor_association' ), 10, 2 );
-			add_action( 'wcfm_geo_locator_default_address', array( &$this, 'wcmarketplace_geo_locator_default_address' ), 10 );
+			add_filter( 'wcfm_geo_locator_default_address', array( &$this, 'wcmarketplace_geo_locator_default_address' ) );
+			add_filter( 'wcfm_geo_locator_default_latlng', array( &$this, 'wcmarketplace_geo_locator_default_latlng' ) );
+			add_filter( 'gmw_location_form_default_location', array( &$this, 'wcmarketplace_geomywp_default_address' ), 10, 2 );
 			
 			// Manage Vendor Product Export Permissions - 2.4.2
 			add_filter( 'woocommerce_product_export_row_data', array( &$this, 'wcmarketplace_product_export_row_data' ), 100, 2 );
@@ -124,8 +133,8 @@ class WCFM_WCMarketplace {
   // WCFM WCMp Store Name
   function wcmarketplace_store_name( $store_name ) {
   	$vendor = get_wcmp_vendor( $this->vendor_id );
-  	$shop_name = __( 'My Store', 'wc-frontend-manager' );  //get_user_meta( $this->vendor_id, '_vendor_page_title', true);
-  	$vmstore_name = __( 'My Store', 'wc-frontend-manager' );  //get_user_meta( $this->vendor_id, 'store_name', true );
+  	$shop_name = get_option( 'wcfm_my_store_label', __( 'My Store', 'wc-frontend-manager' ) );  //get_user_meta( $this->vendor_id, '_vendor_page_title', true);
+  	$vmstore_name = get_option( 'wcfm_my_store_label', __( 'My Store', 'wc-frontend-manager' ) );  //get_user_meta( $this->vendor_id, 'store_name', true );
   	if( $shop_name ) { $store_name = '<a target="_blank" href="' . apply_filters('wcmp_vendor_shop_permalink', $vendor->permalink) . '">' . $shop_name . '</a>'; }
   	elseif( $vmstore_name ) { $store_name = '<a target="_blank" href="' . apply_filters('wcmp_vendor_shop_permalink', $vendor->permalink) . '">' . $vmstore_name . '</a>'; }
   	else { $store_name = '<a target="_blank" href="' . apply_filters('wcmp_vendor_shop_permalink', $vendor->permalink) . '">' . __('Shop', 'wc-frontend-manager') . '</a>'; }
@@ -158,6 +167,44 @@ class WCFM_WCMarketplace {
 	function wcmarketplace_listing_args( $args ) {
   	$args['author'] = $this->vendor_id;
   	return $args;
+  }
+  
+  /**
+   * WCMp filter customers
+   */
+  function wcmarketplace_filter_customers( $args ) {
+  	global $WCFM, $wpdb;
+  	
+  	$vendor_customers  = array();
+  	// Own Customers
+  	$wcfm_customers_array = get_users( $args );
+  	if(!empty($wcfm_customers_array)) {
+			foreach( $wcfm_customers_array as $wcfm_customers_single ) {
+				$vendor_customers[] = $wcfm_customers_single->ID;
+			}
+		}
+  	
+		// Order Customers
+  	$sql = 'SELECT order_id FROM ' . $wpdb->prefix . 'wcmp_vendor_orders';
+		$sql .= ' WHERE 1=1';
+		$sql .= " AND `vendor_id` = {$this->vendor_id}";
+		$wcfm_orders_array = $wpdb->get_results( $sql );
+		if(!empty($wcfm_orders_array)) {
+			foreach($wcfm_orders_array as $wcfm_orders_single) {
+				$the_order = wc_get_order( $wcfm_orders_single->order_id );
+				if ( $the_order && is_object( $the_order ) && $the_order->get_user_id() ) {
+					$vendor_customers[] = $the_order->get_user_id();
+				}
+			}
+		}
+		if( !empty( $vendor_customers ) ) {
+			$args['include'] = $vendor_customers;
+		} else {
+			$args['include'] = array(0);
+		}
+		if( isset( $args['meta_key'] ) ) unset( $args['meta_key'] );
+		if( isset( $args['meta_value'] ) ) unset( $args['meta_value'] );
+		return $args;
   }
   
   /**
@@ -226,30 +273,80 @@ class WCFM_WCMarketplace {
 		// Admin Message for Pending Review
 		$product_status = get_post_status( $new_product_id );
 		if( $product_status == 'pending' ) {
-			$WCFM->wcfm_vendor_support->wcfm_admin_notification_product_review( $this->vendor_id, $new_product_id );
+			$WCFM->wcfm_notification->wcfm_admin_notification_product_review( $this->vendor_id, $new_product_id );
 		} else {
-			$WCFM->wcfm_vendor_support->wcfm_admin_notification_new_product( $this->vendor_id, $new_product_id );
+			$WCFM->wcfm_notification->wcfm_admin_notification_new_product( $this->vendor_id, $new_product_id );
 		}
   }
   
   // Geo Locator default address - 3.2.8
-  function wcmarketplace_geo_locator_default_address( $address ) {
+  function wcmarketplace_geo_locator_default_address( $store_address ) {
+		$map_address = get_user_meta( $this->vendor_id, '_find_address', true ) ? get_user_meta( $this->vendor_id, '_find_address', true ) : '';
+  	return $map_address;
+  }
+  
+  // Geo Locator default address - 3.2.8
+  function wcmarketplace_geo_locator_default_latlng( $store_latlng ) {
+		$store_lat = get_user_meta( $this->vendor_id, '_store_lat', true ) ? get_user_meta( $this->vendor_id, '_store_lat', true ) : 0;
+		$store_lng = get_user_meta( $this->vendor_id, '_store_lng', true ) ? get_user_meta( $this->vendor_id, '_store_lng', true ) : 0;
+		if( $store_lat && $store_lng ) $store_latlng = '('. $store_lat . ',' . $store_lng . ')';
+  	return $store_latlng;
+  }
+  
+  // GEO my WP default address - 4.0.7
+  function wcmarketplace_geomywp_default_address( $gmw_saved_location, $args ) {
   	
-  	$addr_1  = get_user_meta( $this->vendor_id, '_vendor_address_1', true );
-		$addr_2  = get_user_meta( $this->vendor_id, '_vendor_address_2', true );
-		$country  = get_user_meta( $this->vendor_id, '_vendor_country', true );
-		$city  = get_user_meta( $this->vendor_id, '_vendor_city', true );
-		$state  = get_user_meta( $this->vendor_id, '_vendor_state', true );
-		$zip  = get_user_meta( $this->vendor_id, '_vendor_postcode', true );
-				
-  	$address  = $addr_1;
-		if( $addr_2 ) $address  .= ' ' . $addr_2;
-		if( $city ) $address  .= ', ' . $city;
-		if( $state ) $address  .= ', ' . $state;
-		if( $zip ) $address  .= ' ' . $zip;
-		if( $country ) $address  .= ', ' . $country;
+  	if ( empty( $gmw_saved_location ) ) {
+  		
+			$map_address = get_user_meta( $this->vendor_id, '_find_address', true ) ? get_user_meta( $this->vendor_id, '_find_address', true ) : '';
+			$store_location = get_user_meta( $this->vendor_id, '_store_location', true ) ? get_user_meta( $this->vendor_id, '_store_location', true ) : '';
+			$store_lat = get_user_meta( $this->vendor_id, '_store_lat', true ) ? get_user_meta( $this->vendor_id, '_store_lat', true ) : 0;
+			$store_lng = get_user_meta( $this->vendor_id, '_store_lng', true ) ? get_user_meta( $this->vendor_id, '_store_lng', true ) : 0;
+	
+			$addr_1  = get_user_meta( $this->vendor_id, '_vendor_address_1', true );
+			$addr_2  = get_user_meta( $this->vendor_id, '_vendor_address_2', true );
+			$country  = get_user_meta( $this->vendor_id, '_vendor_country', true );
+			$city  = get_user_meta( $this->vendor_id, '_vendor_city', true );
+			$state  = get_user_meta( $this->vendor_id, '_vendor_state', true );
+			$zip  = get_user_meta( $this->vendor_id, '_vendor_postcode', true );
+					
+			// Country -> States
+			$country_obj   = new WC_Countries();
+			$countries     = $country_obj->countries;
+			$states        = $country_obj->states;
+			$country_name = '';
+			$state_name = '';
+			if( $country ) $country_name = $country;
+			if( $state ) $state_name = $state;
+			if( $country && isset( $countries[$country] ) ) {
+				$country_name = $countries[$country];
+			}
+			if( $state && isset( $states[$country] ) && is_array( $states[$country] ) ) {
+				$state_name = ($states[$country][$state]) ? $states[$country][$state] : '';
+			}
+		
+			$gmw_saved_location = array(
+				  'ID'            	=> 0,
+				  'latitude'      	=> $store_lat,
+					'longitude'     	=> $store_lng,
+					'street_number' 	=> $addr_1,
+					'street_name'   	=> $addr_2,
+					'street'        	=> $addr_1,
+					'premise'       	=>  '',
+					'neighborhood'  	=>  '',
+					'city'          	=> $city,
+					'county'        	=> $country,
+					'region_name'    	=> $state_name,
+					'region_code'    	=> $state,
+					'postcode'        => $zip,
+					'country_name'  	=> $country_name,
+					'country_code' 		=> $country,
+					'address' 			  => $map_address,
+					'formatted_address' => $map_address
+			);
+		}
   	
-  	return $address;
+  	return $gmw_saved_location;
   }
   
   // Product Export Data Filter - 2.4.2
@@ -319,14 +416,12 @@ class WCFM_WCMarketplace {
   
   // Order Details Shipping Line Item
   function wcmarketplace_is_allow_order_details_shipping_line_item( $allow ) {
-  	//if ( !WC_Vendors::$pv_options->get_option( 'give_shipping' ) ) $allow = false;
   	$allow = false;
   	return $allow;
   }
   
   // Order Details Tax Line Item
   function wcmarketplace_is_allow_order_details_tax_line_item( $allow ) {
-  	//if ( !WC_Vendors::$pv_options->get_option( 'give_tax' ) ) $allow = false;
   	$allow = false;
   	return $allow;
   }
@@ -345,7 +440,6 @@ class WCFM_WCMarketplace {
   
   // Order Details Tax Total
   function wcmarketplace_is_allow_order_details_tax_total( $allow ) {
-  	//if ( !WC_Vendors::$pv_options->get_option( 'give_tax' ) ) $allow = false;
   	$allow = false;
   	return $allow;
   }
@@ -397,9 +491,11 @@ class WCFM_WCMarketplace {
   		<th class="line_cost sortable no_ipad no_mob"><?php _e( 'Shipping Tax', 'wc-frontend-manager' ); ?></th>
   		<?php
   	}
+  	if( apply_filters( 'wcfm_is_allow_total', true ) ) {
   	?>
-  	<th class="line_cost sortable no_ipad no_mob"><?php _e( 'Total', 'wc-frontend-manager' ); ?></th>
+  	<th class="line_cost total_cost sortable no_ipad no_mob"><?php _e( 'Total', 'wc-frontend-manager' ); ?></th>
   	<?php
+  	}
   }
   
   // wcmarketplace after Order total Line item
@@ -481,9 +577,11 @@ class WCFM_WCMarketplace {
 			<?php } ?>
 			<?php
 		}
+		if( apply_filters( 'wcfm_is_allow_total', true ) ) {
 		?>
 		<td class="line_cost total_cost no_ipad no_mob"><?php echo wc_price( $line_total, array( 'currency' => $order_currency ) ); ?></td>
 		<?php
+		}
   }
   
   // WC marketplace Order Total Commission
@@ -592,21 +690,23 @@ class WCFM_WCMarketplace {
 			</tr>
 		<?php
 		}
-		?>
-		<tr>
-			<td class="label"><?php _e( 'Gross Total', 'wc-frontend-manager' ); ?>:</td>
-			<td>
-				
-			</td>
-			<td class="total">
-				<div class="view">
-					<?php 
-					echo wc_price( $gross_sale_order, array( 'currency' => $order_currency ) ); 
-					?>
-				</div>
-			</td>
-		</tr>
-		<?php
+		if( apply_filters( 'wcfm_is_allow_gross_total', true ) ) {
+			?>
+			<tr class="total_cost">
+				<td class="label"><?php _e( 'Gross Total', 'wc-frontend-manager' ); ?>:</td>
+				<td>
+					
+				</td>
+				<td class="total">
+					<div class="view">
+						<?php 
+						echo wc_price( $gross_sale_order, array( 'currency' => $order_currency ) ); 
+						?>
+					</div>
+				</td>
+			</tr>
+			<?php
+		}
   }
   
   // CSV Export URL
@@ -648,8 +748,8 @@ class WCFM_WCMarketplace {
   	$user_id = $this->vendor_id;
   	
     $products = $this->wcmarketplace_get_vendor_products();
-		if( !empty($products) )
-			$query['where'] .= "AND order_item_meta_2.meta_value in (" . implode( ',', $products ) . ")";
+    if( empty($products) ) return array(0);
+		$query['where'] .= "AND order_item_meta_2.meta_value in (" . implode( ',', $products ) . ")";
   	
   	return $query;
   }
@@ -787,7 +887,10 @@ class WCFM_WCMarketplace {
 		
 		update_post_meta( $duplicate->get_id(), '_wcfm_product_views', 0 );
 		
-		update_post_meta( $duplicate->get_id(), '_wcmp_parent_product_id', $product->get_id() );
+		//update_post_meta( $duplicate->get_id(), '_wcmp_parent_product_id', $product->get_id() );
+		$duplicate->set_parent_id($product->get_id());
+    update_post_meta($duplicate->get_id(), '_wcmp_child_product', true);
+    $duplicate->save();
 
 		// Hook rename to match other woocommerce_product_* hooks, and to move away from depending on a response from the wp_posts table.
 		do_action( 'woocommerce_product_duplicate', $duplicate, $product );

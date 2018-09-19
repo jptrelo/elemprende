@@ -24,6 +24,12 @@ jQuery(document).ready(function($) {
 			url: wcfm_params.ajax_url,
 			data: data,
 			success:	function(response) {
+				$response_json = $.parseJSON(response);
+				$('.wcfm-message').html('').removeClass('wcfm-error').removeClass('wcfm-success').slideUp();
+				if($response_json.status) {
+					wcfm_notification_sound.play();
+					$('#wcfm_booking_status_update_wrapper .wcfm-message').html('<span class="wcicon-status-completed"></span>' + $response_json.message).addClass('wcfm-success').slideDown( "slow" );
+				}
 				$('#bookings_details_general_expander').unblock();
 			}
 		});

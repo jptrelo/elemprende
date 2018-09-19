@@ -3,6 +3,7 @@
  * WCFM plugin view
  *
  * wcfm Enquiry Tab View
+ * This template can be overridden by copying it to yourtheme/wcfm/enquiry/
  *
  * @author 		WC Lovers
  * @package 	wcfm/views/enquiry
@@ -14,6 +15,9 @@ global $wp, $WCFM, $WCFMu, $post, $wpdb;
 $product_id = $post->ID;
 
 if( !$product_id ) return;
+
+$wcfm_options = get_option( 'wcfm_options', array() );
+$wcfm_enquiry_button_label  = isset( $wcfm_options['wcfm_enquiry_button_label'] ) ? $wcfm_options['wcfm_enquiry_button_label'] : __( 'Ask a Question', 'wc-frontend-manager' );
 
 ?>
 
@@ -30,57 +34,21 @@ if( apply_filters( 'wcfm_is_pref_enquiry_tab', true ) ) {
 		?>
 		<p class="woocommerce-noreviews wcfm-noenquiries"><?php _e( 'There are no enquiries yet.', 'wc-frontend-manager' ); ?></p>
 	<?php } ?>	
-	
-	<p><span class="add_enquiry"><span class="fa fa-question-circle fa-question-circle-o"></span><span class="add_enquiry_label"><?php _e( 'Ask a Question', 'wc-frontend-manager' ); ?></span></span></p>
+
+
+	<?php if( !apply_filters( 'wcfm_is_pref_enquiry_button', true ) ) { ?>
+		<div class="wcfm-clearfix"></div>
+		<p><span class="add_enquiry"><span class="fa fa-question-circle fa-question-circle-o"></span>&nbsp;<span class="add_enquiry_label"><?php _e( $wcfm_enquiry_button_label, 'wc-frontend-manager' ); ?></span></span></p>
+		<div class="wcfm-clearfix"></div>
+	<?php } ?>
 <?php } ?>
-<div class="enquiry_form_wrapper_hide">
-	<div id="enquiry_form_wrapper">
-		<div id="enquiry_form">
-			<div id="respond" class="comment-respond">
-				<form action="" method="post" id="wcfm_enquiry_form" class="enquiry-form" novalidate="">
-				  <?php if( !is_user_logged_in() ) { ?>
-					  <p class="comment-notes"><span id="email-notes"><?php _e( 'Your email address will not be published.', 'wc-frontend-manager' ); ?></span></p>
-					<?php } ?>
-					
-					<p class="comment-form-comment">
-						<label for="comment"><?php _e( 'Your enquiry', 'wc-frontend-manager' ); ?> <span class="required">*</span></label>
-						<textarea id="enquiry_comment" name="enquiry" cols="45" rows="8" aria-required="true" required=""></textarea>
-					</p>
-					
-					<?php if( !is_user_logged_in() ) { ?>
-						<p class="comment-form-author">
-							<label for="author"><?php _e( 'Name', 'wc-frontend-manager' ); ?> <span class="required">*</span></label> 
-							<input id="enquiry_author" name="customer_name" type="text" value="" size="30" aria-required="true" required="">
-						</p>
-						
-						<p class="comment-form-email">
-							<label for="email"><?php _e( 'Email', 'wc-frontend-manager' ); ?> <span class="required">*</span></label> 
-							<input id="enquiry_email" name="customer_email" type="email" value="" size="30" aria-required="true" required="">
-						</p>
-					<?php } ?>
-					
-					<?php if ( function_exists( 'gglcptch_init' ) ) { ?>
-						<div class="wcfm_clearfix"></div>
-						<?php echo apply_filters( 'gglcptch_display_recaptcha', 'wcfm_enquiry_form' ); ?>
-					<?php } ?>
-					<div class="wcfm_clearfix"></div>
-					<div class="wcfm-message" tabindex="-1"></div>
-					<div class="wcfm_clearfix"></div><br />
-					
-					<p class="form-submit">
-						<input name="submit" type="submit" id="wcfm_enquiry_submit_button" class="submit" value="<?php _e( 'Submit', 'wc-frontend-manager' ); ?>"> 
-						<input type="hidden" name="product_id" value="<?php echo $product_id; ?>" id="enquiry_product_id">
-					</p>	
-				</form>
-			</div><!-- #respond -->
-		</div>
-	</div>
-</div>
-<div class="wcfm-clearfix"></div>
+	
+<?php $WCFM->template->get_template( 'enquiry/wcfm-view-enquiry-form.php' ); ?>
 
 <?php 
 if( apply_filters( 'wcfm_is_pref_enquiry_tab', true ) ) {
 	if( !empty( $enquiries ) ) {
+		?><p class="woocommerce-noreviews wcfm-enquiries-count"><?php echo count( $enquiries ) . ' ' . __( 'Enquiries', 'wc-frontend-manager' ); ?></p><?php
 		echo '<div id="reviews" class="wcfm_enquiry_reviews enquiry_reviews"><ol class="wcfm_enquiry_list commentlist">';
 		foreach( $enquiries as $enquiry_data ) {
 			?>
@@ -89,10 +57,23 @@ if( apply_filters( 'wcfm_is_pref_enquiry_tab', true ) ) {
 					<div class="comment-text">
 						<div class="enquiry-by"><span style="width:60%"><span class="fa fa-clock-o"></span> <?php echo date_i18n( wc_date_format(), strtotime( $enquiry_data->posted ) ); ?></span></div>
 						<p class="meta">
-							<strong class="woocommerce-review__author"><?php echo $enquiry_data->enquiry; ?></strong> <span class="woocommerce-review__dash">&ndash;</span> <time class="woocommerce-review__published-date"><?php _e( 'by', 'wc-frontend-manager' ); ?> <?php echo $enquiry_data->customer_name; ?></time>
+							<strong class="woocommerce-review__author"><?php echo $enquiry_data->enquiry; ?></strong> 
+							<?php if( apply_filters( 'wcfm_is_allow_enquery_tab_customer_show', true ) ) { ?>
+								<span class="woocommerce-review__dash">&ndash;</span> 
+								<time class="woocommerce-review__published-date"><?php _e( 'by', 'wc-frontend-manager' ); ?> <?php echo apply_filters( 'wcfm_enquiry_customer_name_display',  $enquiry_data->customer_name, $enquiry_data->customer_id, $enquiry_data->ID ); ?></time>
+							<?php } ?>
 						</p>
 						<div class="description">
-							<?php echo $enquiry_data->reply; ?>
+							<?php
+							echo $enquiry_data->reply;
+							
+							if( $enquiry_data->reply_by && apply_filters( 'wcfm_is_allow_enquiry_tab_reply_by_show', false ) ) {
+								echo '<time class="woocommerce-review__published-date">';
+								_e( 'Reply by', 'wc-frontend-manager' );
+								echo '&nbsp;' . $WCFM->wcfm_vendor_support->wcfm_get_vendor_store_by_vendor( $enquiry_data->reply_by );
+								echo '</time>';
+							}
+							?>
 						</div>
 					</div>
 				</div>

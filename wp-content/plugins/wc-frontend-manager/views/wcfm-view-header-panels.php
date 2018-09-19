@@ -9,11 +9,12 @@
  * @since     2.3.2
  */
 
-global $WCFM, $wpdb, $wp;
+global $WCFM, $wpdb, $wp, $blog_id;
 
 $wcfm_options = get_option('wcfm_options');
 
 $is_headpanel_disabled = isset( $wcfm_options['headpanel_disabled'] ) ? $wcfm_options['headpanel_disabled'] : 'no';
+$is_responsive_float_menu_disabled = isset( $wcfm_options['responsive_float_menu_disabled'] ) ? $wcfm_options['responsive_float_menu_disabled'] : 'no';
 if( $is_headpanel_disabled == 'yes' ) return;
 
 $is_menu_disabled = isset( $wcfm_options['menu_disabled'] ) ? $wcfm_options['menu_disabled'] : 'no';
@@ -24,15 +25,18 @@ if( !$wcfm_is_allow_headpanels ) {
 }
 
 $user_id = get_current_user_id();
-$wp_user_avatar_id = get_user_meta( $user_id, 'wp_user_avatar', true );
+$wp_user_avatar_id = get_user_meta( $user_id, $wpdb->get_blog_prefix($blog_id).'user_avatar', true );
 $wp_user_avatar = wp_get_attachment_url( $wp_user_avatar_id );
-if ( !$wp_user_avatar ) {
-	$wp_user_avatar = $WCFM->plugin_url . 'assets/images/user.png';
+if( !$wp_user_avatar && apply_filters( 'wcfm_is_pref_buddypress', true ) && WCFM_Dependencies::wcfm_biddypress_plugin_active_check() ) {
+	$wp_user_avatar = bp_core_fetch_avatar( array( 'html' => false, 'item_id' => $user_id ) );
+}
+if ( !$wp_user_avatar ) {	
+	$wp_user_avatar = apply_filters( 'wcfm_defaut_user_avatar', $WCFM->plugin_url . 'assets/images/user.png' );
 }
 
-$unread_notice = $WCFM->frontend->wcfm_direct_message_count( 'notice' );
-$unread_message = $WCFM->frontend->wcfm_direct_message_count( 'message' ); 
-$unread_enquiry = $WCFM->frontend->wcfm_direct_message_count( 'enquiry' );
+$unread_notice = $WCFM->wcfm_notification->wcfm_direct_message_count( 'notice' );
+$unread_message = $WCFM->wcfm_notification->wcfm_direct_message_count( 'message' ); 
+$unread_enquiry = $WCFM->wcfm_notification->wcfm_direct_message_count( 'enquiry' );
 
 $store_name = apply_filters( 'wcfm_store_name', __( 'My Store', 'wc-frontend-manager' ) );
 //$store_name = __( 'My Store', 'wc-frontend-manager' );
@@ -40,6 +44,9 @@ $store_name = apply_filters( 'wcfm_store_name', __( 'My Store', 'wc-frontend-man
 
 <?php if( $is_menu_disabled != 'yes' ) { ?>
   <span class="wcfm_menu_toggler fa fa-bars text_tip" data-tip="<?php _e( 'Toggle Menu', 'wc-frontend-manager' ); ?>"></span>
+<?php } ?>
+<?php if( $is_responsive_float_menu_disabled == 'yes' ) { ?>
+	<span class="wcfm_responsive_menu_toggler fa fa-bars" title="<?php _e( 'Toggle Menu', 'wc-frontend-manager' ); ?>"></span>
 <?php } ?>
 <span class="wcfm-store-name-heading-text"><?php _e( $store_name );?></span>
 

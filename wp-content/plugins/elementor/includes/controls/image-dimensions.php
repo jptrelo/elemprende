@@ -80,7 +80,7 @@ class Control_Image_Dimensions extends Control_Base_Multiple {
 			<div class="elementor-panel-alert elementor-panel-alert-danger">
 				<?php echo __( 'The server does not have ImageMagick or GD installed and/or enabled! Any of these libraries are required for WordPress to be able to resize images. Please contact your server administrator to enable this before continuing.', 'elementor' ); ?>
 			</div>
-		<?php
+			<?php
 			return;
 		endif;
 		?>
@@ -112,7 +112,7 @@ class Control_Image_Dimensions extends Control_Base_Multiple {
 	 *
 	 * Used to determine whether the editor supports a given image mime-type.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 * @access private
 	 *
 	 * @return bool Whether the editor supports the given mime-type.

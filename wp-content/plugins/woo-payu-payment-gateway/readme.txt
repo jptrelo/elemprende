@@ -4,7 +4,7 @@ Donate link: https://www.payu.pl/en
 Tags: woocommerce, PayU, payment, payment gateway, platnosci, PayU Poland, PayU EU
 Requires at least: 3.5.1
 Tested up to: 4.9
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 License: GPLv2 
 
 == Description ==
@@ -44,6 +44,11 @@ In the Wordpress administration panel:
 
 == Changelog ==
 
+= 1.2.6 =
+* Sandbox added
+* Cleanup code
+= 1.2.5 =
+* PayU SDK update
 = 1.2.4 =
 * Fix calculate price in products
 * Update SDK

@@ -1,129 +1,134 @@
 <?php namespace Premmerce\SeoAddon;
 
+use Premmerce\SDK\V2\FileManager\FileManager;
+use Premmerce\SDK\V2\Notifications\AdminNotifier;
+use Premmerce\SDK\V2\Plugin\PluginInterface;
 use Premmerce\SeoAddon\Admin\Admin;
 use Premmerce\SeoAddon\Frontend\Frontend;
-use Premmerce\SeoAddon\WordpressSDK\FileManager\FileManager;
-use Premmerce\SeoAddon\WordpressSDK\Notifications\AdminNotifier;
-use Premmerce\SeoAddon\WordpressSDK\Plugin\PluginInterface;
 
 /**
  * Class SeoAddonPlugin
  * @package Premmerce\SeoAddon
  */
-class SeoAddonPlugin implements PluginInterface{
+class SeoAddonPlugin implements PluginInterface
+{
+    /**
+     * @var FileManager FileManager
+     */
+    private $fileManager;
 
-	/**
-	 * @var FileManager FileManager
-	 */
-	private $fileManager;
+    /**
+     * @var AdminNotifier
+     */
+    private $notifier;
 
-	/**
-	 * @var AdminNotifier
-	 */
-	private $notifier;
+    /**
+     * PremmerceSeoPlugin constructor.
+     *
+     * @param $mainFile
+     *
+     */
+    public function __construct($mainFile)
+    {
+        $this->fileManager = new FileManager($mainFile);
+        $this->notifier    = new AdminNotifier();
+    }
 
-	/**
-	 * PremmerceSeoPlugin constructor.
-	 *
-	 * @param $mainFile
-	 *
-	 */
-	public function __construct($mainFile){
-		$this->fileManager = new FileManager($mainFile);
-		$this->notifier    = new AdminNotifier();
-	}
+    /**
+     * Run plugin part
+     */
+    public function run()
+    {
+        $this->registerHooks();
+        if (is_admin()) {
+            new Admin($this->fileManager);
+        } else {
+            new Frontend($this->fileManager);
+        }
+    }
 
+    /**
+     * Register plugin hooks
+     */
+    private function registerHooks()
+    {
+        add_action('init', array($this, 'loadTextDomain'));
+        add_action('admin_init', array($this, 'checkRequirePlugins'));
+    }
 
-	/**
-	 * Run plugin part
-	 */
-	public function run(){
-		$this->registerHooks();
-		if(is_admin()){
-			new Admin($this->fileManager);
-		}else{
-			new Frontend($this->fileManager);
-		}
-	}
+    /**
+     * Load plugin translations
+     */
+    public function loadTextDomain()
+    {
+        $name = $this->fileManager->getPluginName();
+        load_plugin_textdomain('woo-seo-addon', false, $name . '/languages/');
+    }
 
-	/**
-	 * Register plugin hooks
-	 */
-	private function registerHooks(){
-		add_action('init', [$this, 'loadTextDomain']);
-		add_action('admin_init', [$this, 'checkRequirePlugins']);
-	}
+    /**
+     * Check required plugins and push notifications
+     */
+    public function checkRequirePlugins()
+    {
+        $message = __('The %s plugin requires %s plugin to be active!', 'woo-seo-addon');
 
-	/**
-	 * Load plugin translations
-	 */
-	public function loadTextDomain(){
-		$name = $this->fileManager->getPluginName();
-		load_plugin_textdomain('woo-seo-addon', false, $name . '/languages/');
-	}
+        $plugins = $this->validateRequiredPlugins();
 
-	/**
-	 * Check required plugins and push notifications
-	 */
-	public function checkRequirePlugins(){
-		$message = __('The %s plugin requires %s plugin to be active!', 'woo-seo-addon');
+        if (count($plugins)) {
+            foreach ($plugins as $plugin) {
+                $error = sprintf($message, 'WooCommerce SEO Addon', $plugin);
+                $this->notifier->push($error, AdminNotifier::ERROR, false);
+            }
+        }
+    }
 
-		$plugins = $this->validateRequiredPlugins();
+    /**
+     * Validate required plugins
+     *
+     * @return array
+     */
+    private function validateRequiredPlugins()
+    {
+        $plugins = array();
+        if (!defined('WPSEO_VERSION')) {
+            $plugins[] = '<a target="_blank" href="https://wordpress.org/plugins/wordpress-seo/">Yoast Seo</a>';
+        }
 
-		if(count($plugins)){
-			foreach($plugins as $plugin){
-				$error = sprintf($message, 'WooCommerce SEO Addon', $plugin);
-				$this->notifier->push($error, AdminNotifier::ERROR, false);
-			}
-		}
+        if (!function_exists('is_plugin_active')) {
+            include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+        }
 
-	}
+        if (!(is_plugin_active('woocommerce/woocommerce.php') || is_plugin_active_for_network('woocommerce/woocommerce.php'))) {
+            $plugins[] = '<a target="_blank" href="https://wordpress.org/plugins/woocommerce/">WooCommerce</a>';
+        }
 
-	/**
-	 * Validate required plugins
-	 *
-	 * @return array
-	 */
-	private function validateRequiredPlugins(){
+        return $plugins;
+    }
 
+    /**
+     * Fired when the plugin is activated
+     */
+    public function activate()
+    {
+    }
 
-		$plugins = [];
-		if(!defined('WPSEO_VERSION')){
-			$plugins[] = '<a target="_blank" href="https://wordpress.org/plugins/wordpress-seo/">Yoast Seo</a>';
-		}
+    /**
+     * Fired when the plugin is deactivated
+     */
+    public function deactivate()
+    {
+    }
 
-		if(!function_exists('is_plugin_active')){
-			include_once(ABSPATH . 'wp-admin/includes/plugin.php');
-		}
-
-		if(!(is_plugin_active('woocommerce/woocommerce.php') || is_plugin_active_for_network('woocommerce/woocommerce.php'))){
-			$plugins[] = '<a target="_blank" href="https://wordpress.org/plugins/woocommerce/">WooCommerce</a>';
-		}
-
-		return $plugins;
-	}
-
-	/**
-	 * Fired when the plugin is activated
-	 */
-	public function activate(){
-	}
-
-	/**
-	 * Fired when the plugin is deactivated
-	 */
-	public function deactivate(){
-	}
-
-	/**
-	 * Fired when the plugin is uninstalled
-	 */
-	public static function uninstall(){
-		delete_option('premmerce_seo_brand_field');
-		delete_option('premmerce_seo_address');
-		delete_option('premmerce_seo_email');
-		delete_option('premmerce_seo_telephone');
-		delete_option('premmerce_seo_openingHours');
-		delete_option('premmerce_seo_paymentAccepted');
-	}
+    /**
+     * Fired when the plugin is uninstalled
+     */
+    public static function uninstall()
+    {
+        delete_option('premmerce_seo_brand_field');
+        delete_option('premmerce_seo_address');
+        delete_option('premmerce_seo_email');
+        delete_option('premmerce_seo_telephone');
+        delete_option('premmerce_seo_openingHours');
+        delete_option('premmerce_seo_paymentAccepted');
+    }
 }

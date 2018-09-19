@@ -1,3 +1,19 @@
+<?php
+/**
+ * Orders Table Template
+ *
+ * This template can be overridden by copying it to yourtheme/wc-vendors/orders/orders.php
+ *
+ * @author		Jamie Madden, WC Vendors
+ * @package 	WCVendors/Templates/Orders
+ * @version 	2.0.0
+ */
+
+ if ( ! defined( 'ABSPATH' ) ) {
+ 	exit;
+ }
+?>
+
 <?php if ( function_exists( 'wc_print_notices' ) ) { wc_print_notices(); } ?>
 
 <h2><?php printf( 'Orders for %s', wc_get_product( $product_id )->get_title() ); ?></h2>
@@ -65,8 +81,8 @@
 			<td colspan="100%">
 
 				<?php
-				$can_view_comments = WC_Vendors::$pv_options->get_option( 'can_view_order_comments' );
-				$can_add_comments = WC_Vendors::$pv_options->get_option( 'can_submit_order_comments' );
+				$can_view_comments 	= 'yes' === get_option( 'wcvendors_capability_order_read_notes', 'no' ) ? true : false;
+				$can_add_comments 	= 'yes' === get_option( 'wcvendors_capability_order_update_notes', 'no' ) ? true : false;
 
 				if ($can_view_comments || $can_add_comments) :
 
@@ -79,7 +95,7 @@
 				?>
 				<a href="#" class="order-comments-link">
 					<p>
-						<?php printf( __( 'Comments (%s)', 'wcvendors' ), count( $comments ) ); ?>
+						<?php printf( __( 'Comments (%s)', 'wc-vendors' ), count( $comments ) ); ?>
 					</p>
 				</a>
 
@@ -110,26 +126,26 @@
 
 						<a href="#" class="order-tracking-link">
 							<p>
-								<?php _e( 'Shipping', 'wcvendors' ); ?>
+								<?php _e( 'Shipping', 'wc-vendors' ); ?>
 							</p>
 						</a>
 
 						<div class="order-tracking">
-							<?php 
-							
+							<?php
+
 							wc_enqueue_js( WCV_Vendor_dashboard::wc_st_js( $provider_array ) );
-							
+
 							wc_get_template( 'shipping-form.php', array(
 																				'order_id'       => $order_id,
 																				'product_id'     => $product_id,
 																				'providers'      => $providers,
-																				'provider_array' => $provider_array, 
+																				'provider_array' => $provider_array,
 																		   ), 'wc-vendors/orders/shipping/', wcv_plugin_dir . 'templates/orders/shipping/' );
 							?>
 						</div>
 
 					<?php endif; ?>
-					
+
 				<?php endif; ?>
 
 			</td>

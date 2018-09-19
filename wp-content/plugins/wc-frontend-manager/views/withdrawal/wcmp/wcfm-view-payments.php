@@ -17,8 +17,8 @@ if( !$wcfm_is_allow_payments ) {
 	return;
 }
 
-$start_date = date('01-m-Y');
-$end_date = date('t-m-Y');
+$start_date = date_i18n( wc_date_format(), strtotime( date('01-m-Y') ) );
+$end_date = date_i18n( wc_date_format(), strtotime( date('t-m-Y') ) );
 ?>
 <div class="collapse wcfm-collapse" id="wcfm_payments_listing">
   <div class="wcfm-page-headig">
@@ -49,8 +49,8 @@ $end_date = date('t-m-Y');
 	  <div class="wcfm-clearfix"></div><br />
 	  
 	  <div class="wcfm_payments_filter_wrap wcfm_filters_wrap">
-			<input id="payment_start_date_filter" type="text" class="wcfm-text" name="payment_start_date_filter" value="<?php echo $start_date; ?>" style="width: 160px;" />
-			<input id="payment_end_date_filter" type="text" class="wcfm-text" name="payment_end_date_filter" value="<?php echo $end_date; ?>" style="width: 160px;" />
+			<input id="payment_start_date_filter" type="text" class="wcfm-text" name="payment_start_date_filter" placeholder="<?php echo apply_filters( 'wcfm_date_filter_format', wc_date_format() ); ?>" data-date_format="<?php echo str_replace( 'mmmm', 'mm', str_replace( 'yyyy', 'yy', strtolower( wcfm_wp_date_format_to_js( wc_date_format() ) ) ) ); ?>" value="<?php echo $start_date; ?>" style="width: 160px;" />
+			<input id="payment_end_date_filter" type="text" class="wcfm-text" name="payment_end_date_filter" placeholder="<?php echo apply_filters( 'wcfm_date_filter_format', wc_date_format() ); ?>" data-date_format="<?php echo str_replace( 'mmmm', 'mm', str_replace( 'yyyy', 'yy', strtolower( wcfm_wp_date_format_to_js( wc_date_format() ) ) ) ); ?>" value="<?php echo $end_date; ?>" style="width: 160px;" />
 		</div>
 		
 		<?php do_action( 'before_wcfm_payments' ); ?>

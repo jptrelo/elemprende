@@ -41,7 +41,7 @@ if( !current_user_can( 'manage_bookings' ) ) {
 			</div>
 			<div class="wcfm_clearfix"></div>
 		  
-			<?php if( $wcfm_is_allow_manual_booking = apply_filters( 'wcfm_is_allow_manual_booking', true ) ) { ?>
+			<?php if( apply_filters( 'wcfm_is_allow_manual_booking', true ) ) { ?>
 				<div class="wcfm-container">
 					<?php if( WCFM_Dependencies::wcfmu_plugin_active_check() ) { ?>
 						<a href="<?php echo get_wcfm_create_bookings_url(); ?>">

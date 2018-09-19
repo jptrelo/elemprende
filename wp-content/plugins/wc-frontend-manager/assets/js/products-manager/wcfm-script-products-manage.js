@@ -1,9 +1,10 @@
 var removed_variations = [];
 var removed_person_types = [];
 var product_form_is_valid = true;
+var product_manage_from_popup = '';
 jQuery( document ).ready( function( $ ) {
 	// Collapsible
-  $('.page_collapsible').collapsible({
+  $('.wcfm-tabWrap .page_collapsible').collapsible({
 		defaultOpen: 'wcfm_products_manage_form_inventory_head',
 		speed: 'slow',
 		loadOpen: function (elem) { //replace the standard open state with custom function
@@ -27,11 +28,11 @@ jQuery( document ).ready( function( $ ) {
 			elem.next().stop(true, true).slideUp(opts.speed);
 		}
 	});
-	$('.page_collapsible').each(function() {
+	$('.wcfm-tabWrap .page_collapsible').each(function() {
 		$(this).html('<div class="page_collapsible_content_holder">' + $(this).html() + '</div>');
 		$(this).find('.page_collapsible_content_holder').after( $(this).find('span') );
 	});
-	$('.page_collapsible').find('span').addClass('fa');
+	$('.wcfm-tabWrap .page_collapsible').find('span').addClass('fa');
 	$('.collapse-open').addClass('collapse-close').removeClass('collapse-open');
 	$('.wcfm-tabWrap').find('.wcfm-container').hide();
 	//$('.wcfm-tabWrap').find('.page_collapsible:first').click();
@@ -46,7 +47,7 @@ jQuery( document ).ready( function( $ ) {
 	if( $('.product_taxonomies').length > 0 ) {
 		$('.product_taxonomies').each(function() {
 			$("#" + $(this).attr('id')).select2({
-				placeholder: wcfm_dashboard_messages.choose_select2 + $(this).attr('id') + " ..."
+				placeholder: wcfm_dashboard_messages.choose_select2 + " " + $('.taxonomy_'+$(this).attr('id')).text() + " ..."
 			});
 		});
 	}
@@ -88,7 +89,7 @@ jQuery( document ).ready( function( $ ) {
 			// Default Tab - 3.2.6
 			$product_type_org = product_type;
 			setTimeout(function() {
-				$('.page_collapsible:not(.wcfm_head_hide):first').click();
+				$('.wcfm-tabWrap .page_collapsible:not(.wcfm_head_hide):first').click();
 				$.each(wcfm_product_type_default_tab, function( $pro_type, pro_default_tab ) {
 					if( $pro_type == $product_type_org ) {
 						if( pro_default_tab != 'wcfm_products_manage_form_inventory_head' ) {
@@ -107,7 +108,7 @@ jQuery( document ).ready( function( $ ) {
 				$.each( wcfm_product_type_categories, function( product_type_cat, allowed_categories ) {
 					if( product_type == product_type_cat ) {
 						$.each( allowed_categories, function( index, allowed_category ) {
-							$('#product_cats').find('option[value="'+allowed_category+'"]').attr( 'disabled', false ).css( 'display', 'block' );
+							$('#product_cats').find('.wcfm_cat_option_'+allowed_category).attr( 'disabled', false ).css( 'display', 'block' );
 							$has_cat = true;
 						} );	
 					}
@@ -125,17 +126,18 @@ jQuery( document ).ready( function( $ ) {
 			// Product Type wise Category Checklist Filtering - 3.0.5
 			if( $("#product_cats_checklist").length > 0 ) {
 				$has_cat = false;
-				$('#product_cats_checklist').find('.product_cats_checklist_item').children('label').children('input').attr('disabled', true).addClass('product_cats_checklist_item_hide');
+				$('#product_cats_checklist').find('.product_cats_checklist_item').addClass('product_cats_checklist_item_hide');
 				$.each( wcfm_product_type_categories, function( product_type_cat, allowed_categories ) {
 					if( product_type == product_type_cat ) {
 						$.each( allowed_categories, function( index, allowed_category ) {
-							$('#product_cats_checklist').find('.checklist_item_'+allowed_category).children('label').children('input').attr('disabled', false).removeClass('product_cats_checklist_item_hide');
+							$('#product_cats_checklist').find('.checklist_item_'+allowed_category).removeClass('product_cats_checklist_item_hide');
+							$('#product_cats_checklist').find('.checklist_item_'+allowed_category).find('.product_taxonomy_sub_checklist').find('.product_cats_checklist_item').removeClass('product_cats_checklist_item_hide');
 							$has_cat = true;
 						} );	
 					}
 				} );
 				if( !$has_cat ) {
-					$('#product_cats_checklist').find('.product_cats_checklist_item').children('label').children('input').attr('disabled', false).removeClass('product_cats_checklist_item_hide');
+					$('#product_cats_checklist').find('.product_cats_checklist_item').removeClass('product_cats_checklist_item_hide');
 				}
 				$('.product_cats_checklist_item_hide_by_cap').attr( 'disabled', true );
 			}
@@ -158,7 +160,7 @@ jQuery( document ).ready( function( $ ) {
 			}
 			$('#is_downloadable').change();
 			$('#is_catalog').change();
-			//$('#is_virtual').change();
+			$('#is_virtual').change();
 			
 			
 			$( document.body ).trigger( 'wcfm_product_type_changed' );
@@ -167,28 +169,33 @@ jQuery( document ).ready( function( $ ) {
 			
 			// Tabheight  
 			collapsHeight = 0;
-			$('.page_collapsible').each(function() {
+			$('.wcfm-tabWrap .page_collapsible').each(function() {
 				if( !$(this).hasClass('wcfm_head_hide') ) {
 					//console.log($(this).attr('id'));
 					collapsHeight += $(this).height() + 21;
 				}
-			});  
-			resetCollapsHeight($('#sku'));
+			}); 
+			setTimeout(function() {
+				resetCollapsHeight($('.collapse-open').next('.wcfm-container').find('.wcfm_ele:not(.wcfm_title):first'));
+			}, 600 );
 		}).change();
 		
 		// Downloadable
 		$('#is_downloadable').change(function() {
 		  if($(this).is(':checked')) {
 		  	$('.downlodable').removeClass('wcfm_ele_hide wcfm_block_hide wcfm_head_hide');
-		  	resetCollapsHeight($('#sku'));
+		  	resetCollapsHeight($('.collapse-open').next('.wcfm-container').find('.wcfm_ele:not(.wcfm_title):first'));
 		  } else {
 		  	$('.downlodable').addClass('wcfm_ele_hide wcfm_block_hide wcfm_head_hide');
+		  	if( $('#product_type').val() == 'variable' ) {
+					$('.variable').removeClass('wcfm_ele_hide wcfm_block_hide wcfm_head_hide');
+				}
 		  }
 		}).change();
 		$('.is_downloadable_hidden').change(function() {
 		  if($(this).val() == 'enable') {
 		  	$('.downlodable').removeClass('wcfm_ele_hide wcfm_block_hide wcfm_head_hide');
-		  	resetCollapsHeight($('#sku'));
+		  	resetCollapsHeight($('.collapse-open').next('.wcfm-container').find('.wcfm_ele:not(.wcfm_title):first'));
 		  } else {
 		  	$('.downlodable').addClass('wcfm_ele_hide wcfm_block_hide wcfm_head_hide');
 		  }
@@ -197,11 +204,13 @@ jQuery( document ).ready( function( $ ) {
 		
 		// Virtual
 		$('#is_virtual').change(function() {
-		  if($(this).is(':checked')) {
-		  	$('.nonvirtual').addClass('wcfm_ele_hide wcfm_block_hide wcfm_head_hide');
-		  } else {
-		  	$('.nonvirtual').removeClass('wcfm_ele_hide wcfm_block_hide wcfm_head_hide');
-		  }
+			if( !$(this).hasClass('wcfm_ele_hide') ) {
+				if($(this).is(':checked')) {
+					$('.nonvirtual').addClass('wcfm_ele_hide wcfm_block_hide wcfm_head_hide');
+				} else {
+					$('.nonvirtual').removeClass('wcfm_ele_hide wcfm_block_hide wcfm_head_hide');
+				}
+			}
 		}).change();
 		$('.is_virtual_hidden').change(function() {
 		  if($(this).val() == 'enable') {
@@ -215,7 +224,7 @@ jQuery( document ).ready( function( $ ) {
 		$('#is_catalog').change(function() {
 		  if($(this).is(':checked')) {
 		  	$('.catalog_options').removeClass('wcfm_ele_hide wcfm_block_hide wcfm_head_hide');
-		  	resetCollapsHeight($('#sku'));
+		  	resetCollapsHeight($('.collapse-open').next('.wcfm-container').find('.wcfm_ele:not(.wcfm_title):first'));
 		  } else {
 		  	$('.catalog_options').addClass('wcfm_ele_hide wcfm_block_hide wcfm_head_hide');
 		  }
@@ -230,6 +239,11 @@ jQuery( document ).ready( function( $ ) {
 		if($(this).hasClass('collapse-open')) {
 			resetVariationsAttributes();
 		}
+	});
+	
+	// Product Popup Variations Change
+	$( document.body ).on( 'wcfm_product_popup_variations_option', function() {
+		resetVariationsAttributes();
 	});
 	
 	function addVariationManageStockProperty() {
@@ -277,17 +291,17 @@ jQuery( document ).ready( function( $ ) {
 	
 	$('.manage_stock_ele').change(function() {
 	  if($(this).is(':checked')) {
-	  	$(this).parent().find('.non_manage_stock_ele').removeClass('non_stock_ele_hide');
-	  	$(this).parent().find('.stock_status_ele').addClass('non_stock_ele_hide');
+	  	$(this).parent().find('.non_manage_stock_ele').removeClass('non_stock_ele_hide wcfm_custom_hide');
+	  	$(this).parent().find('.stock_status_ele').addClass('non_stock_ele_hide wcfm_custom_hide');
 	  	resetCollapsHeight($('#manage_stock'));
 	  } else {
-	  	$(this).parent().find('.non_manage_stock_ele').addClass('non_stock_ele_hide');
-	  	$(this).parent().find('.stock_status_ele').removeClass('non_stock_ele_hide');
+	  	$(this).parent().find('.non_manage_stock_ele').addClass('non_stock_ele_hide wcfm_custom_hide');
+	  	$(this).parent().find('.stock_status_ele').removeClass('non_stock_ele_hide wcfm_custom_hide');
 	  }
 	}).change();
 	
 	// On Page Load Manage Product Tab Container Height Set
-	resetCollapsHeight($('#sku'));
+	resetCollapsHeight($('.collapse-open').next('.wcfm-container').find('.wcfm_ele:not(.wcfm_title):first'));
 	
 	$('.sales_schedule').click( function() {
 	  $('.sales_schedule_ele').toggleClass('sales_schedule_ele_show');
@@ -301,10 +315,25 @@ jQuery( document ).ready( function( $ ) {
     });
   });
   
+  $('.wcfm_datetimepicker').each(function() {
+	  $(this).datetimepicker({
+      dateFormat : $(this).data('date_format'),
+      timeFormat: 'h:mm tt',
+      changeMonth: true,
+      changeYear: true
+    });
+  });
+  
+  $('.wcfm_timepicker').each(function() {
+	  $(this).timepicker({
+      timeFormat: 'h:mm tt',
+    });
+  });
+  
   $( "#sale_date_from" ).datepicker({
 		changeMonth: true,
 		changeYear: true,
-		dateFormat: 'yy-mm-dd',
+		dateFormat: $(this).data('date_format'),
 		onClose: function( selectedDate ) {
 			$( "#sale_date_upto" ).datepicker( "option", "minDate", selectedDate );
 		}
@@ -312,7 +341,7 @@ jQuery( document ).ready( function( $ ) {
 	$( "#sale_date_upto" ).datepicker({
 		changeMonth: true,
 		changeYear: true,
-		dateFormat: 'yy-mm-dd',
+		dateFormat: $(this).data('date_format'),
 		onClose: function( selectedDate ) {
 			$( "#sale_date_from" ).datepicker( "option", "maxDate", selectedDate );
 		}
@@ -384,6 +413,11 @@ jQuery( document ).ready( function( $ ) {
       if($(this)[0] != multi_input_holder.children('.multi_input_block:last')[0]) {
         $(this).children('.add_multi_input_block').remove();
       }
+      
+      //$(this).children('.add_multi_input_block').addClass('img_tip');
+			$(this).children('.add_multi_input_block').attr( 'title', wcfm_dashboard_messages.wcfm_multiblick_addnew_help );
+			//$(this).children('.remove_multi_input_block').addClass('img_tip');
+			$(this).children('.remove_multi_input_block').attr( 'title', wcfm_dashboard_messages.wcfm_multiblick_remove_help );
     });
     var multi_input_has_dummy = multi_input_holder.data('has-dummy');
     if( multi_input_has_dummy ) multi_input_holder.find('.add_multi_input_block').hide();
@@ -461,6 +495,8 @@ jQuery( document ).ready( function( $ ) {
       
       multi_input_blockEle.children('.add_multi_input_block').remove();
       multi_input_holder.append(multi_input_blockEle);
+      initiateTip();
+      multi_input_holder.children('.multi_input_block:last').find('.wcfm-select2').select2({ placeholder: wcfm_dashboard_messages.choose_select2 + ' ...' });
       multi_input_holder.children('.multi_input_block:last').append($(this));
       if(multi_input_holder.children('.multi_input_block').length > 1) multi_input_holder.children('.multi_input_block').children('.remove_multi_input_block').css('display', 'block');
       if( multi_input_holder.children('.multi_input_block').length == multi_input_limit ) multi_input_holder.find('.add_multi_input_block').hide();
@@ -641,7 +677,7 @@ jQuery( document ).ready( function( $ ) {
 	
 	$('#attributes').find('.multi_input_block').each(function() {
 		$multi_input_block = $(this);
-		$multi_input_block.prepend('<span class="fields_collapser attributes_collapser fa fa-arrow-circle-o-down"></span>');
+		$multi_input_block.prepend('<span class="fields_collapser attributes_collapser fa fa-arrow-circle-o-down" title="'+wcfm_dashboard_messages.wcfm_multiblick_collapse_help+'"></span>');
 	  if( $multi_input_block.find( $('input[data-name="is_taxonomy"]').data('name') == 1 ) ) {
 	  	$taxonomy = $multi_input_block.find( 'input[data-name="tax_name"]' ).val();
 	  	$( 'select.wcfm_attribute_taxonomy' ).find( 'option[value="' + $taxonomy + '"]' ).attr( 'disabled','disabled' );
@@ -697,6 +733,20 @@ jQuery( document ).ready( function( $ ) {
 	}
 	initAttributesCollapser(true);
 	
+	$('.wcfm_select_all_attributes').each(function() {
+		$(this).on('click', function() {
+		  $( this ).parent().find( 'select option' ).attr( 'selected', 'selected' );
+		  $( this ).parent().find( 'select' ).change();
+		});
+	});
+	
+	$('.wcfm_select_no_attributes').each(function() {
+		$(this).on('click', function() {
+		  $( this ).parent().find( 'select option' ).removeAttr( 'selected' );
+		  $( this ).parent().find( 'select' ).change();
+		});
+	});
+	
 	function resetVariationsAttributes() {
 		$('#wcfm_products_manage_form_variations_empty_expander').removeClass('wcfm_custom_hide');
 		$('#wcfm_products_manage_form_variations_expander').addClass('wcfm_custom_hide');
@@ -720,8 +770,8 @@ jQuery( document ).ready( function( $ ) {
 					var select_html = '';
 					$.each($.parseJSON(response), function(attr_name, attr_value) {
 						// Default Attributes
-						var default_select_html = '<select name="default_attributes[attribute_'+attr_name.toLowerCase()+']" class="wcfm-select wcfm_ele wcfm_half_ele default_attribute_ele attribute_ele attribute_ele_new variable" data-name="default_attribute_'+attr_name.toLowerCase()+'"><option value="">' + wcfm_dashboard_messages.any_attribute + ' ' + jsUcfirst( attr_name.replace( "pa_", "" ) ) + ' ..</option>';
-						$.each(attr_value, function(k, attr_val) {
+						var default_select_html = '<select name="default_attributes[attribute_'+attr_name.toLowerCase()+']" class="wcfm-select wcfm_ele wcfm_half_ele default_attribute_ele attribute_ele attribute_ele_new variable" data-name="default_attribute_'+attr_name.toLowerCase()+'"><option value="">' + wcfm_dashboard_messages.any_attribute + ' ' + attr_value.name + ' ..</option>';
+						$.each(attr_value.data, function(k, attr_val) {
 							default_select_html += '<option value="'+k+'">'+attr_val+'</option>';
 						});
 						default_select_html += '</select>';
@@ -740,8 +790,8 @@ jQuery( document ).ready( function( $ ) {
 						});
 						
 						// Variation Attributes
-						select_html = '<select name="attribute_'+attr_name.toLowerCase()+'" class="wcfm-select wcfm_ele wcfm_half_ele attribute_ele attribute_ele_new variable multi_input_block_element" data-name="attribute_'+attr_name.toLowerCase()+'"><option value="">' + wcfm_dashboard_messages.any_attribute + ' ' + jsUcfirst( attr_name.replace( "pa_", "" ) ) + ' ..</option>';
-						$.each(attr_value, function(k, attr_val) {
+						select_html = '<select name="attribute_'+attr_name.toLowerCase()+'" class="wcfm-select wcfm_ele wcfm_half_ele attribute_ele attribute_ele_new variable multi_input_block_element" data-name="attribute_'+attr_name.toLowerCase()+'"><option value="">' + wcfm_dashboard_messages.any_attribute + ' ' + attr_value.name + ' ..</option>';
+						$.each(attr_value.data, function(k, attr_val) {
 							select_html += '<option value="'+k+'">'+attr_val+'</option>';
 						});
 						select_html += '</select>';
@@ -790,7 +840,7 @@ jQuery( document ).ready( function( $ ) {
 	$('#variations').children('.multi_input_block').each(function() {
 		$multi_input_block = $(this);
 		$multi_input_block.prepend('<div class="wcfm_clearfix"></div>');
-		$multi_input_block.prepend('<span class="fields_collapser variations_collapser fa fa-arrow-circle-o-down"></span>');
+		$multi_input_block.prepend('<span class="fields_collapser variations_collapser fa fa-arrow-circle-o-down" title="'+wcfm_dashboard_messages.wcfm_multiblick_collapse_help+'"></span>');
 	  $attributes = $multi_input_block.find('input[data-name="attributes"]');
 	  $attributes_val = $attributes.val();
 	  if($attributes_val.length > 0) {
@@ -874,8 +924,100 @@ jQuery( document ).ready( function( $ ) {
 		$variations_option = $(this).val();
 		if( $variations_option ) {
 			switch( $variations_option ) {
+				case 'on_enabled':
+					$('#variations').find('input[data-name="enable"]').each(function() {
+						$(this).attr( "checked", true );
+					});
+					break;
+					
+				case 'off_enabled':
+					$('#variations').find('input[data-name="enable"]').each(function() {
+						$(this).attr( "checked", false );
+					});
+					break;
+					
+				case 'on_downloadable':
+					$('#variations').find('input[data-name="is_downloadable"]').each(function() {
+						$(this).attr( "checked", true ).change();
+					});
+					break;
+					
+				case 'off_downloadable':
+					$('#variations').find('input[data-name="is_downloadable"]').each(function() {
+						$(this).attr( "checked", false ).change();
+					});
+					break;
+					
+				case 'on_virtual':
+					$('#variations').find('input[data-name="is_virtual"]').each(function() {
+						$(this).attr( "checked", true ).change();
+					});
+					break;
+					
+				case 'off_virtual':
+					$('#variations').find('input[data-name="is_virtual"]').each(function() {
+						$(this).attr( "checked", false ).change();
+					});
+					break;
+					
+				case 'on_manage_stock':
+					$('#variations').find('input[data-name="manage_stock"]').each(function() {
+						$(this).attr( "checked", true ).change();
+					});
+					break;
+					
+				case 'off_manage_stock':
+					$('#variations').find('input[data-name="manage_stock"]').each(function() {
+						$(this).attr( "checked", false ).change();
+					});
+					break;
+					
+				case 'variable_stock':
+			  	var stock_qty = prompt( wcfm_products_manage_messages.set_stock  );
+			  	if( stock_qty != null ) {
+			  		$('#variations').find('input[data-name="stock_qty"]').each(function() {
+			  			if( !isNaN(parseFloat(stock_qty)) ) {
+								$(this).val(parseFloat(stock_qty));
+							}
+			  		});
+			  	}
+			  	break;
+			  	
+			 case 'variable_increase_stock':
+			  	var stock_qty = prompt( wcfm_products_manage_messages.increase_stock  );
+			  	if( stock_qty != null ) {
+			  		$('#variations').find('input[data-name="stock_qty"]').each(function() {
+			  			if( !isNaN(parseFloat(stock_qty)) ) {
+			  				if( $(this).val().length > 0 ) {
+									$(this).val(parseFloat($(this).val()) + parseFloat(stock_qty));
+								} else {
+									$(this).val(parseFloat(stock_qty));
+								}
+							}
+			  		});
+			  	}
+			  	break;
+			  	
+			  case 'variable_stock_status_instock':
+					$('#variations').find('select[data-name="stock_status"]').each(function() {
+						$(this).val('instock');
+					});
+			  	break;
+			  	
+			  case 'variable_stock_status_outofstock':
+			  	$('#variations').find('select[data-name="stock_status"]').each(function() {
+						$(this).val('outofstock');
+					});
+			  	break;
+			  	
+			  case 'variable_stock_status_onbackorder':
+			  	$('#variations').find('select[data-name="stock_status"]').each(function() {
+						$(this).val('onbackorder');
+					});
+			  	break;
+					
 			  case 'set_regular_price':
-			  	var regular_price = prompt( "Regular Price" );
+			  	var regular_price = prompt( wcfm_products_manage_messages.regular_price  );
 			  	if( regular_price != null ) {
 			  		$('#variations').find('input[data-name="regular_price"]').each(function() {
 			  			if( !isNaN(parseFloat(regular_price)) ) {
@@ -886,7 +1028,7 @@ jQuery( document ).ready( function( $ ) {
 			  	break;
 			  	
 			  case 'regular_price_increase':
-			  	var regular_price = prompt( "Regular price increase by" );
+			  	var regular_price = prompt( wcfm_products_manage_messages.regular_price_increase  );
 			  	if( regular_price != null ) {
 			  		$('#variations').find('input[data-name="regular_price"]').each(function() {
 			  			if( !isNaN(parseFloat(regular_price)) ) {
@@ -901,7 +1043,7 @@ jQuery( document ).ready( function( $ ) {
 			  	break;
 			  	
 			  case 'regular_price_decrease':
-			  	var regular_price = prompt( "Regular price decrease by" );
+			  	var regular_price = prompt( wcfm_products_manage_messages.regular_price_decrease );
 			  	if( regular_price != null ) {
 			  		$('#variations').find('input[data-name="regular_price"]').each(function() {
 			  			if( !isNaN(parseFloat(regular_price)) ) {
@@ -916,7 +1058,7 @@ jQuery( document ).ready( function( $ ) {
 			  	break;
 			  	
 			  case 'set_sale_price':
-			  	var sale_price = prompt( "Sale Price" );
+			  	var sale_price = prompt( wcfm_products_manage_messages.sales_price );
 			  	if( sale_price != null ) {
 			  		$('#variations').find('input[data-name="sale_price"]').each(function() {
 			  		  if( !isNaN(parseFloat(sale_price)) ) {
@@ -927,7 +1069,7 @@ jQuery( document ).ready( function( $ ) {
 			  	break;
 			  	
 			  case 'sale_price_increase':
-			  	var sale_price = prompt( "Sale price increase by" );
+			  	var sale_price = prompt( wcfm_products_manage_messages.sales_price_increase );
 			  	if( sale_price != null ) {
 			  		$('#variations').find('input[data-name="sale_price"]').each(function() {
 			  			if( !isNaN(parseFloat(sale_price)) ) {
@@ -942,7 +1084,7 @@ jQuery( document ).ready( function( $ ) {
 			  	break;
 			  	
 			  case 'sale_price_decrease':
-			  	var sale_price = prompt( "Sale price decrease by" );
+			  	var sale_price = prompt( wcfm_products_manage_messages.sales_price_decrease );
 			  	if( sale_price != null ) {
 			  		$('#variations').find('input[data-name="sale_price"]').each(function() {
 			  			if( !isNaN(parseFloat(sale_price)) ) {
@@ -957,7 +1099,7 @@ jQuery( document ).ready( function( $ ) {
 			  	break;
 			  	
 			  case 'set_length':
-			  	var length = prompt( "Length" );
+			  	var length = prompt( wcfm_products_manage_messages.length );
 			  	if( length != null ) {
 			  		$('#variations').find('input[data-name="length"]').each(function() {
 			  		  if( !isNaN(parseFloat(length)) ) {
@@ -968,7 +1110,7 @@ jQuery( document ).ready( function( $ ) {
 			  	break;
 			  	
 			  case 'set_width':
-			  	var width = prompt( "Width" );
+			  	var width = prompt( wcfm_products_manage_messages.width );
 			  	if( width != null ) {
 			  		$('#variations').find('input[data-name="width"]').each(function() {
 			  		  if( !isNaN(parseFloat(width)) ) {
@@ -979,7 +1121,7 @@ jQuery( document ).ready( function( $ ) {
 			  	break;
 			  	
 			  case 'set_height':
-			  	var height = prompt( "Height" );
+			  	var height = prompt( wcfm_products_manage_messages.height );
 			  	if( height != null ) {
 			  		$('#variations').find('input[data-name="height"]').each(function() {
 			  		  if( !isNaN(parseFloat(height)) ) {
@@ -990,12 +1132,34 @@ jQuery( document ).ready( function( $ ) {
 			  	break;
 			  	
 			  case 'set_weight':
-			  	var weight = prompt( "Weight" );
+			  	var weight = prompt( wcfm_products_manage_messages.weight );
 			  	if( weight != null ) {
 			  		$('#variations').find('input[data-name="weight"]').each(function() {
 			  		  if( !isNaN(parseFloat(weight)) ) {
 			  				$(this).val(parseFloat(weight));
 			  			}
+			  		});
+			  	}
+			  	break;
+			  	
+			  case 'variable_download_limit':
+			  	var download_limit = prompt( wcfm_products_manage_messages.download_limit );
+			  	if( download_limit != null ) {
+			  		$('#variations').find('input[data-name="download_limit"]').each(function() {
+			  			if( !isNaN(parseFloat(download_limit)) ) {
+								$(this).val(parseFloat(download_limit));
+							}
+			  		});
+			  	}
+			  	break;
+			  	
+			  case 'variable_download_expiry':
+			  	var download_expiry = prompt( wcfm_products_manage_messages.download_expiry );
+			  	if( download_expiry != null ) {
+			  		$('#variations').find('input[data-name="download_expiry"]').each(function() {
+			  			if( !isNaN(parseFloat(download_expiry)) ) {
+								$(this).val(parseFloat(download_expiry));
+							}
 			  		});
 			  	}
 			  	break;
@@ -1024,7 +1188,7 @@ jQuery( document ).ready( function( $ ) {
 					parent_term:  $parent_term
 				};
 		
-				$('#wcfm_add_new_taxonomy_box').block({
+				$wrapper.block({
 					message: null,
 					overlayCSS: {
 						background: '#fff',
@@ -1043,12 +1207,12 @@ jQuery( document ).ready( function( $ ) {
 								window.alert( response.error );
 							} else {
 								// Success.
-								$( '#product_cats_checklist' ).prepend( response );
+								$( '.product_taxonomy_checklist_'+$taxonomy ).prepend( response );
 								$wrapper.find('.wcfm_new_tax_ele').val('');
 								$wrapper.find('.wcfm_new_parent_taxt_ele').val(0);
 							}
-			
-							$( '#wcfm_add_new_taxonomy_box' ).unblock();
+							$wrapper.toggleClass('wcfm_add_new_taxonomy_form_hide');
+							$wrapper.unblock();
 						}
 					}
 				});
@@ -1091,122 +1255,48 @@ jQuery( document ).ready( function( $ ) {
 	
 	if( typeof gmw_forms != 'undefined' ) {
 		// Geo my WP Support
-		tinymce.PluginManager.add('geomywp', function(editor, url) {
-			// Add a button that opens a window
-			editor.addButton('geomywp', {
-				text: 'GMW Form',
-				icon: false,
-				onclick: function() {
-					// Open window
-					editor.windowManager.open({
-						title: 'GMW Form',
-						body: [
-							{type: 'listbox', name: 'form_type', label: 'Form Type', values: [{text: 'Form', value: 'form'}, {text: 'Map', value: 'map'}, {text: 'Results', value: 'results'}]},
-							{type: 'listbox', name: 'gmw_forms', label: 'Select Form', values: gmw_forms}
-						],
-						onsubmit: function(e) {
-							// Insert content when the window form is submitted
-							if(e.data.form_type == 'results') {
-								editor.insertContent('[gmw form="results"]');
-							} else if(e.data.form_type == 'map') {
-								editor.insertContent('[gmw map="' + e.data.gmw_forms + '"]');
-							} else {
-								editor.insertContent('[gmw form="' + e.data.gmw_forms + '"]');
+		if( typeof tinymce != 'undefined' ) {
+			tinymce.PluginManager.add('geomywp', function(editor, url) {
+				// Add a button that opens a window
+				editor.addButton('geomywp', {
+					text: 'GMW Form',
+					icon: false,
+					onclick: function() {
+						// Open window
+						editor.windowManager.open({
+							title: 'GMW Form',
+							body: [
+								{type: 'listbox', name: 'form_type', label: 'Form Type', values: [{text: 'Form', value: 'form'}, {text: 'Map', value: 'map'}, {text: 'Results', value: 'results'}]},
+								{type: 'listbox', name: 'gmw_forms', label: 'Select Form', values: gmw_forms}
+							],
+							onsubmit: function(e) {
+								// Insert content when the window form is submitted
+								if(e.data.form_type == 'results') {
+									editor.insertContent('[gmw form="results"]');
+								} else if(e.data.form_type == 'map') {
+									editor.insertContent('[gmw map="' + e.data.gmw_forms + '"]');
+								} else {
+									editor.insertContent('[gmw form="' + e.data.gmw_forms + '"]');
+								}
 							}
-						}
-					});
-				}
+						});
+					}
+				});
 			});
-		});
+		}
 		
 		tinyMce_toolbar += ' | geomywp';
 		// TinyMCE intialize - Short description
-		var shdescTinyMCE = tinymce.init({
-																	selector: '#excerpt',
-																	height: 75,
-																	menubar: false,
-																	plugins: [
-																		'advlist autolink lists link charmap print preview anchor',
-																		'searchreplace visualblocks code fullscreen',
-																		'insertdatetime image media table contextmenu paste code geomywp directionality'
-																	],
-																	toolbar: tinyMce_toolbar,
-																	content_css: '//www.tinymce.com/css/codepen.min.css',
-																	statusbar: false,
-																	browser_spellcheck: true,
-																	entity_encoding: "raw"
-																});
-		
-		// TinyMCE intialize - Description
-		var descTinyMCE = tinymce.init({
-																	selector: '#description',
-																	height: 75,
-																	menubar: false,
-																	plugins: [
-																		'advlist autolink lists link charmap print preview anchor',
-																		'searchreplace visualblocks code fullscreen',
-																		'insertdatetime image media table contextmenu paste code geomywp directionality',
-																		'autoresize'
-																	],
-																	toolbar: tinyMce_toolbar,
-																	content_css: '//www.tinymce.com/css/codepen.min.css',
-																	statusbar: false,
-																	browser_spellcheck: true,
-																	entity_encoding: "raw"
-																});
-	} else {
-		// TinyMCE intialize - Short description
 		if( $('#excerpt').hasClass('rich_editor') ) {
-			var shdescTinyMCE = tinymce.init({
-																		selector: '#excerpt',
-																		height: 75,
-																		menubar: false,
-																		plugins: [
-																			'advlist autolink lists link charmap print preview anchor',
-																			'searchreplace visualblocks code fullscreen',
-																			'insertdatetime image media table contextmenu paste code directionality'
-																		],
-																		toolbar: tinyMce_toolbar,
-																		content_css: '//www.tinymce.com/css/codepen.min.css',
-																		statusbar: false,
-																		browser_spellcheck: true,
-																		entity_encoding: "raw"
-																	});
-		}
-		
-		// TinyMCE intialize - Description
-		if( $('#description').hasClass('rich_editor') ) {
-			var descTinyMCE = tinymce.init({
-																		selector: '#description',
-																		//height: 75,
-																		menubar: false,
-																		plugins: [
-																			'advlist autolink lists link charmap print preview anchor',
-																			'searchreplace visualblocks code fullscreen',
-																			'insertdatetime image media table contextmenu paste code directionality',
-																			'autoresize'
-																		],
-																		toolbar: tinyMce_toolbar,
-																		content_css: '//www.tinymce.com/css/codepen.min.css',
-																		statusbar: false,
-																		browser_spellcheck: true,
-																		entity_encoding: "raw"
-																	});
-		}
-	}
-	
-	// WCFM Custom field Editor support
-	$('.wcfm_custom_field_editor').each(function() {
-		$wcfm_custom_field_editor = $(this);
-		if( $wcfm_custom_field_editor.hasClass('rich_editor') ) {
-			var wcfm_custom_field_TinyMCE = tinymce.init({
-																			selector: '#'+$wcfm_custom_field_editor.attr('id'),
-																			height: 150,
+			if( typeof tinymce != 'undefined' ) {
+				var shdescTinyMCE = tinymce.init({
+																			selector: '#excerpt',
+																			height: 75,
 																			menubar: false,
 																			plugins: [
 																				'advlist autolink lists link charmap print preview anchor',
 																				'searchreplace visualblocks code fullscreen',
-																				'insertdatetime image media table contextmenu paste code directionality'
+																				'insertdatetime image media table paste code geomywp directionality'
 																			],
 																			toolbar: tinyMce_toolbar,
 																			content_css: '//www.tinymce.com/css/codepen.min.css',
@@ -1214,10 +1304,100 @@ jQuery( document ).ready( function( $ ) {
 																			browser_spellcheck: true,
 																			entity_encoding: "raw"
 																		});
+			}
+		}
+		
+		// TinyMCE intialize - Description
+		if( $('#description').hasClass('rich_editor') ) {
+			if( typeof tinymce != 'undefined' ) {
+				var descTinyMCE = tinymce.init({
+																			selector: '#description',
+																			height: 75,
+																			menubar: false,
+																			plugins: [
+																				'advlist autolink lists link charmap print preview anchor',
+																				'searchreplace visualblocks code fullscreen',
+																				'insertdatetime image media table paste code geomywp directionality',
+																				'autoresize'
+																			],
+																			toolbar: tinyMce_toolbar,
+																			content_css: '//www.tinymce.com/css/codepen.min.css',
+																			statusbar: false,
+																			browser_spellcheck: true,
+																			entity_encoding: "raw"
+																		});
+			}
+		}
+	} else {
+		// TinyMCE intialize - Short description
+		if( $('#excerpt').hasClass('rich_editor') ) {
+			if( typeof tinymce != 'undefined' ) {
+				var shdescTinyMCE = tinymce.init({
+																			selector: '#excerpt',
+																			height: 75,
+																			menubar: false,
+																			plugins: [
+																				'advlist autolink lists link charmap print preview anchor',
+																				'searchreplace visualblocks code fullscreen',
+																				'insertdatetime image media table paste code directionality'
+																			],
+																			toolbar: tinyMce_toolbar,
+																			content_css: '//www.tinymce.com/css/codepen.min.css',
+																			statusbar: false,
+																			browser_spellcheck: true,
+																			entity_encoding: "raw"
+																		});
+			}
+		}
+		
+		// TinyMCE intialize - Description
+		if( $('#description').hasClass('rich_editor') ) {
+			if( typeof tinymce != 'undefined' ) {
+				var descTinyMCE = tinymce.init({
+																			selector: '#description',
+																			//height: 75,
+																			menubar: false,
+																			plugins: [
+																				'advlist autolink lists link charmap print preview anchor',
+																				'searchreplace visualblocks code fullscreen',
+																				'insertdatetime image media table paste code directionality',
+																				'autoresize'
+																			],
+																			toolbar: tinyMce_toolbar,
+																			content_css: '//www.tinymce.com/css/codepen.min.css',
+																			statusbar: false,
+																			browser_spellcheck: true,
+																			entity_encoding: "raw"
+																		});
+			}
+		}
+	}
+	
+	// WCFM Custom field Editor support
+	$('.wcfm_custom_field_editor').each(function() {
+		$wcfm_custom_field_editor = $(this);
+		if( $wcfm_custom_field_editor.hasClass('rich_editor') ) {
+			if( typeof tinymce != 'undefined' ) {
+				var wcfm_custom_field_TinyMCE = tinymce.init({
+																				selector: '#'+$wcfm_custom_field_editor.attr('id'),
+																				height: 150,
+																				menubar: false,
+																				plugins: [
+																					'advlist autolink lists link charmap print preview anchor',
+																					'searchreplace visualblocks code fullscreen',
+																					'insertdatetime image media table paste code directionality'
+																				],
+																				toolbar: tinyMce_toolbar,
+																				content_css: '//www.tinymce.com/css/codepen.min.css',
+																				statusbar: false,
+																				browser_spellcheck: true,
+																				entity_encoding: "raw"
+																			});
+			}
 		}
 	});
 	
-	function wcfm_products_manage_form_validate() {
+	function wcfm_products_manage_form_validate( $is_publish ) {
 		product_form_is_valid = true;
 		$('.wcfm-message').html('').removeClass('wcfm-error').removeClass('wcfm-success').slideUp();
 		var title = $.trim($('#wcfm_products_manage_form').find('#title').val());
@@ -1226,24 +1406,26 @@ jQuery( document ).ready( function( $ ) {
 			$('#wcfm_products_manage_form').find('#title').removeClass('wcfm_validation_success').addClass('wcfm_validation_failed');
 			product_form_is_valid = false;
 			$('#wcfm_products_manage_form .wcfm-message').html('<span class="wcicon-status-cancelled"></span>' + wcfm_products_manage_messages.no_title).addClass('wcfm-error').slideDown();
-			audio.play();
+			wcfm_notification_sound.play();
 		}
 		
 		// WCFM Custom field Editor support
 		if( $('.wcfm_custom_field_editor').length > 0 ) {
 			$('.wcfm_custom_field_editor').each(function() {
 				$wcfm_custom_field_editor = $(this);
-				if( $wcfm_custom_field_editor.hasClass('rich_editor') ) {
+				if( $wcfm_custom_field_editor.hasClass('rich_editor') || $wcfm_custom_field_editor.hasClass('wcfm_wpeditor') ) {
 					$('#'+$wcfm_custom_field_editor.attr('id')).val(tinymce.get($wcfm_custom_field_editor.attr('id')).getContent({format: 'raw'}));
 				}
 			});
 		}
 		
-		$( document.body ).trigger( 'wcfm_products_manage_form_validate' );
-		
-		$wcfm_is_valid_form = product_form_is_valid;
-		$( document.body ).trigger( 'wcfm_form_validate' );
-		product_form_is_valid = $wcfm_is_valid_form;
+		if( $is_publish ) {
+			$( document.body ).trigger( 'wcfm_products_manage_form_validate', $('#wcfm_products_manage_form') );
+			
+			$wcfm_is_valid_form = product_form_is_valid;
+			$( document.body ).trigger( 'wcfm_form_validate', $('#wcfm_products_manage_form') );
+			product_form_is_valid = $wcfm_is_valid_form;
+		}
 		
 		return product_form_is_valid;
 	}
@@ -1252,50 +1434,26 @@ jQuery( document ).ready( function( $ ) {
 	$('#wcfm_products_simple_draft_button').click(function(event) {
 	  event.preventDefault();
 	  
+	  var excerpt = getWCFMEditorContent( 'excerpt' );
+		
+		var description = getWCFMEditorContent( 'description' );
+		
+		// WC Box Office Support
+		var ticket_content = getWCFMEditorContent( '_ticket_content' );
+		
+		var ticket_email_html = getWCFMEditorContent( '_ticket_email_html' );
+	  
 	  // Validations
-	  $is_valid = wcfm_products_manage_form_validate();
+	  $is_valid = wcfm_products_manage_form_validate( false );
 	  
 	  if($is_valid) {
-			$('#wcfm-content').block({
+			$('#wcfm_products_manage_form').block({
 				message: null,
 				overlayCSS: {
 					background: '#fff',
 					opacity: 0.6
 				}
 			});
-			
-			var excerpt = '';
-			if( $('#excerpt').hasClass('rich_editor') ) {
-				if( tinymce.get('excerpt') != null ) excerpt = tinymce.get('excerpt').getContent({format: 'raw'});
-			} else {
-				excerpt = $('#excerpt').val();
-			}
-			
-			var description = '';
-			if( $('#description').hasClass('rich_editor') ) {
-				if( tinymce.get('description') != null ) description = tinymce.get('description').getContent({format: 'raw'});
-			} else {
-				description = $('#description').val();
-			}
-			
-			// WC Box Office Support
-			var ticket_content = '';
-			if( $('#_ticket_content').length > 0 ) {
-				if( $('#_ticket_content').hasClass('rich_editor') ) {
-					if( tinymce.get('_ticket_content') != null ) ticket_content = tinymce.get('_ticket_content').getContent({format: 'raw'});
-				} else {
-					ticket_content = $('#_ticket_content').val();
-				}
-			}
-			
-			var ticket_email_html = '';
-			if( $('#_ticket_email_html').length > 0 ) {
-				if( $('#_ticket_email_html').hasClass('rich_editor') ) {
-					if( tinymce.get('_ticket_email_html') != null ) ticket_email_html = tinymce.get('_ticket_email_html').getContent({format: 'raw'});
-				} else {
-					ticket_email_html = $('#_ticket_email_html').val();
-				}
-			}
 			
 			var data = {
 				action : 'wcfm_ajax_controller',
@@ -1307,23 +1465,24 @@ jQuery( document ).ready( function( $ ) {
 				removed_variations : removed_variations,
 				removed_person_types : removed_person_types,
 				ticket_content : ticket_content,
-				ticket_email_html : ticket_email_html
+				ticket_email_html : ticket_email_html,
+				product_manage_from_popup : product_manage_from_popup
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
 					$response_json = $.parseJSON(response);
 					$('.wcfm-message').html('').removeClass('wcfm-error').removeClass('wcfm-success').slideUp();
+					wcfm_notification_sound.play();
 					if($response_json.status) {
-						audio.play();
 						$('#wcfm_products_manage_form .wcfm-message').html('<span class="wcicon-status-completed"></span>' + $response_json.message).addClass('wcfm-success').slideDown( "slow", function() {
 							if( $response_json.redirect ) window.location = $response_json.redirect;	
 						} );
 					} else {
-						audio.play();
 						$('#wcfm_products_manage_form .wcfm-message').html('<span class="wcicon-status-cancelled"></span>' + $response_json.message).addClass('wcfm-error').slideDown();
 					}
 					if($response_json.id) $('#pro_id').val($response_json.id);
-					$('#wcfm-content').unblock();
+					wcfmMessageHide();
+					$('#wcfm_products_manage_form').unblock();
 				}
 			});	
 		}
@@ -1333,50 +1492,26 @@ jQuery( document ).ready( function( $ ) {
 	$('#wcfm_products_simple_submit_button').click(function(event) {
 	  event.preventDefault();
 	  
+	  var excerpt = getWCFMEditorContent( 'excerpt' );
+		
+		var description = getWCFMEditorContent( 'description' );
+		
+		// WC Box Office Support
+		var ticket_content = getWCFMEditorContent( '_ticket_content' );
+		
+		var ticket_email_html = getWCFMEditorContent( '_ticket_email_html' );
+	  
 	  // Validations
-	  $is_valid = wcfm_products_manage_form_validate();
+	  $is_valid = wcfm_products_manage_form_validate( true );
 	  
 	  if($is_valid) {
-			$('#wcfm-content').block({
+			$('#wcfm_products_manage_form').block({
 				message: null,
 				overlayCSS: {
 					background: '#fff',
 					opacity: 0.6
 				}
 			});
-			
-			var excerpt = '';
-			if( $('#excerpt').hasClass('rich_editor') ) {
-				if( tinymce.get('excerpt') != null ) excerpt = tinymce.get('excerpt').getContent({format: 'raw'});
-			} else {
-				excerpt = $('#excerpt').val();
-			}
-			
-			var description = '';
-			if( $('#description').hasClass('rich_editor') ) {
-				if( tinymce.get('description') != null ) description = tinymce.get('description').getContent({format: 'raw'});
-			} else {
-				description = $('#description').val();
-			}
-			
-			// WC Box Office Support
-			var ticket_content = '';
-			if( $('#_ticket_content').length > 0 ) {
-				if( $('#_ticket_content').hasClass('rich_editor') ) {
-					if( tinymce.get('_ticket_content') != null ) ticket_content = tinymce.get('_ticket_content').getContent({format: 'raw'});
-				} else {
-					ticket_content = $('#_ticket_content').val();
-				}
-			}
-			
-			var ticket_email_html = '';
-			if( $('#_ticket_email_html').length > 0 ) {
-				if( $('#_ticket_email_html').hasClass('rich_editor') ) {
-					if( tinymce.get('_ticket_email_html') != null ) ticket_email_html = tinymce.get('_ticket_email_html').getContent({format: 'raw'});
-				} else {
-					ticket_email_html = $('#_ticket_email_html').val();
-				}
-			}
 			
 			var data = {
 				action : 'wcfm_ajax_controller',
@@ -1388,29 +1523,29 @@ jQuery( document ).ready( function( $ ) {
 				removed_variations : removed_variations,
 				removed_person_types : removed_person_types,
 				ticket_content : ticket_content,
-				ticket_email_html : ticket_email_html
+				ticket_email_html : ticket_email_html,
+				product_manage_from_popup : product_manage_from_popup
 			}	
 			$.post(wcfm_params.ajax_url, data, function(response) {
 				if(response) {
 					$response_json = $.parseJSON(response);
 					$('.wcfm-message').html('').removeClass('wcfm-error').removeClass('wcfm-success').slideUp();
+					wcfm_notification_sound.play();
 					if($response_json.status) {
-						audio.play();
 						$('#wcfm_products_manage_form .wcfm-message').html('<span class="wcicon-status-completed"></span>' + $response_json.message).addClass('wcfm-success').slideDown( "slow", function() {
 						  if( $response_json.redirect ) window.location = $response_json.redirect;	
 						} );
 					} else {
-						audio.play();
 						$('#wcfm_products_manage_form .wcfm-message').html('<span class="wcicon-status-cancelled"></span>' + $response_json.message).addClass('wcfm-error').slideDown();
 					}
 					if($response_json.id) $('#pro_id').val($response_json.id);
-					$('#wcfm-content').unblock();
+					$('#wcfm_products_manage_form').unblock();
 				}
 			});
 		}
 	});
 	
-	// Single product multi-seller supprt - 3.3.7
+	// Single product multi-seller support - 3.3.7
 	if( wcfm_auto_product_suggest.allow ) {
 		$pro_id = $('#pro_id').val();
 		if( $pro_id == 0 ) {
@@ -1469,10 +1604,6 @@ jQuery( document ).ready( function( $ ) {
 				}
 			});
 		}
-	}
-	
-	function playSound(filename) {
-	  document.getElementById("sound").innerHTML='<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename +'.mp3" /></audio>';
 	}
 	
 	function jsUcfirst(string) {

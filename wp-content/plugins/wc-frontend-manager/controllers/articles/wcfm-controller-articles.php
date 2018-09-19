@@ -147,7 +147,12 @@ class WCFM_Articles_Controller {
 				$wcfm_articles_json_arr[$index][] =  date_i18n( wc_date_format(), strtotime($wcfm_articles_single->post_date) );
 				
 				// Author
-				$wcfm_articles_json_arr[$index][] =  get_user_by( 'id', $wcfm_articles_single->post_author )->display_name;
+				$author = get_user_by( 'id', $wcfm_articles_single->post_author );
+				if( $author ) {
+					$wcfm_articles_json_arr[$index][] =  $author->display_name;
+				} else {
+					$wcfm_articles_json_arr[$index][] =  '&ndash;';
+				}
 				
 				// Action
 				$actions = '<a class="wcfm-action-icon" target="_blank" href="' . get_permalink( $wcfm_articles_single->ID ) . '"><span class="fa fa-eye text_tip" data-tip="' . esc_attr__( 'View', 'wc-frontend-manager' ) . '"></span></a>';

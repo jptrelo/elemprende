@@ -2,8 +2,8 @@
 Contributors: automattic, woothemes, allendav, kellychoffman, jkudish, jeffstieler, nabsul, robobot3000, danreylop, mikeyarce, shaunkuschel, orangesareorange, pauldechov, dappermountain
 Tags: canada-post, shipping, stamps, usps, woocommerce, taxes, payment, stripe
 Requires at least: 4.6
-Tested up to: 4.9.4
-Stable tag: 1.12.3
+Tested up to: 4.9.6
+Stable tag: 1.16.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,7 +28,7 @@ Give customers lower rates on their shipping. Create ready-to-print shipping lab
 We've got taxes for you - no need to enter tax rates manually.
 
 = Be ready to accept payments instantly =
-Have a Stripe account created on your behalf or accept PayPal Express Checkout payments without having to setup an account.
+Have a Stripe account created on your behalf or accept PayPal Checkout payments without having to setup an account.
 
 == Installation ==
 
@@ -47,10 +47,10 @@ This section describes how to install the plugin and get it working.
 = What services are included? =
 
 * Real-time shipping rates from USPS or Canada Post
-* USPS label purchase/printing (domestic USA only)
+* USPS label purchase/printing
 * Automated tax calculation
 * Stripe account provisioning (through WooCommerce setup wizard)
-* PayPal Express Checkout payment authorization
+* PayPal Checkout payment authorization
 
 = Are Real-Time Rates in Checkout Free? =
 
@@ -58,11 +58,11 @@ Yes, real-time rates in checkout are totally free.
 
 = Can I buy and print shipping labels for US domestic and international packages? =
 
-You can buy and print USPS shipping labels for domestic packages only. International shipping is not yet supported.
+Yes! You can buy and print USPS shipping labels for domestic and international destinations.
 
 = This works with WooCommerce, right? =
 
-Yep! WooCommerce version 2.6 or newer, please.
+Yep! WooCommerce version 3.0 or newer, please.
 
 = Why is a Jetpack Connection and WordPress.com account required? =
 
@@ -87,8 +87,69 @@ The source code is freely available [in GitHub](https://github.com/Automattic/wo
 7. Enabling automated taxes
 8. Creating a Stripe account from the setup wizard
 9. Checking on the health of WooCommerce Services
+10. Checking and exporting the label purchase reports
 
 == Changelog ==
+
+= 1.16.1 =
+* Clear shipping rates when changing package weight or signature requirement so they can be recalculated
+* Correctly purchase a "First Class Envelope" or a "First Class Package Service" label depending if the package is an envelope or not
+
+= 1.16.0 =
+* Add international destinations support to USPS label printing
+* Fix bug with Shipping Label pointer dismissal when creating a label for the first time
+* Fix z-index issue with purchased shipping label ellipsis menu components
+* Prevent checkout with invalid ZIP code when using Automated Taxes
+* Fix tax calculation with multiple line items sharing product tax class
+* Display native tax tables for custom rates
+* Add street-level accuracy for tax calculation
+
+= 1.15.1 =
+* Fix the "Save changes" button staying disabled after failing to save the shipping method settings
+* Remove emojis from the shipping rates messages, they were causing problems at checkout on sites with a non-default MySQL charset configuration
+
+= 1.15.0 =
+* Several bugfixes and improvements for Automated Taxes
+* Immediately save the shipping method configuration when it's added to a shipping zone
+* Allow to bypass the address verification when purchasing a shipping label
+* Show which WordPress.com user can add a credit card for shipping label purchases
+* Tweak the list of purchased labels for an order so it's less cluttered
+
+= 1.14.1 =
+* Fix error when adding shipping method price adjustments
+
+= 1.14.0 =
+* GDPR - Added WCS section to the privacy policy guide
+* GDPR - Support for personal data export functionality
+* GDPR - Support for personal data erasure functionality
+* Minor changes to the settings page UI
+* Fix the PHP warning on the Status page when logs are empty
+* Fix log file retrieval on Status page to work with new WC 3.4 format that includes the date
+* Add error message on manual service data refresh failure
+
+= 1.13.3 =
+* Fix broken admin after product featured in 'missing weight' notice is deleted
+
+= 1.13.2 =
+* Fix PHP Warning when the server cannot be reached for shipping rates or products are missing dimensions
+
+= 1.13.1 =
+* Fix PHP Warning for individually packed shipping rates
+
+= 1.13.0 =
+* Show customer selected shipping rate when purchasing a shipping label
+* Add shipping labels to Reports
+* Add USPS signature requirement support to label purchase
+* Add link to view receipt for Shipping Labels
+* Fix bug showing incorrect shipping label rates when changing packages
+* Fix styling for purchasing shipping labels on mobile devices
+* Prevent incompatible settings for Automated Taxes
+* Fix duplicate "packages" section in Shipping Settings (Advanced Shipping Packages extension compatibility)
+* Add "copy to clipboard" button to debug logs on Status page
+* Improved error messaging
+* Fix unnecessary shipping rates requests made in the Dashboard
+* Fix PHP Warning when saving Tax settings
+* Add caching to Shipping Rate requests
 
 = 1.12.3 =
 * Fixed PHP Fatal when PayPal Express Checkout has not fully initialized

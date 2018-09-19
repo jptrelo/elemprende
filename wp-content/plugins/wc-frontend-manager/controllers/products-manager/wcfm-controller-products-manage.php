@@ -93,6 +93,11 @@ class WCFM_Products_Manage_Controller {
 						$unique_sku = wc_product_has_unique_sku( $new_product_id, $wcfm_products_manage_form_data['sku'] );
 						if ( ! $unique_sku ) {
 							update_post_meta( $new_product_id, '_sku', '' );
+							$update_product =  array(
+																				'ID'           => $new_product_id,
+																				'post_status'  => 'draft',
+																			);
+							wp_update_post( $update_product, true );
 							echo '{"status": false, "message": "' . $wcfm_products_manage_messages['sku_unique'] . '", "id": "' . $new_product_id . '", "redirect": "' . get_permalink( $new_product_id ) . '"}';
 							$has_error = true;
 						}
@@ -103,6 +108,20 @@ class WCFM_Products_Manage_Controller {
 				  
 				// Set Product Type
 				wp_set_object_terms( $new_product_id, $wcfm_products_manage_form_data['product_type'], 'product_type' );
+				
+				// file paths will be stored in an array keyed off md5(file path)
+				$downloadables = array();
+				if ( isset( $wcfm_products_manage_form_data['is_downloadable'] ) && isset( $wcfm_products_manage_form_data['downloadable_files'] ) ) {
+					foreach ( $wcfm_products_manage_form_data['downloadable_files'] as $downloadable_files ) {
+						if ( !empty($downloadable_files['name']) && !empty( $downloadable_files['file'] ) ) {
+							$downloadables[] = array(
+								'name' => wc_clean( $downloadable_files['name'] ),
+								'file' => wp_unslash( trim( $downloadable_files['file'] ) ),
+								'download_id' => $downloadable_files['id'],
+							);
+						}
+					}
+				}
 				
 				// Group Products
 				$grouped_products = isset( $wcfm_products_manage_form_data['grouped_products'] ) ? array_filter( array_map( 'intval', (array) $wcfm_products_manage_form_data['grouped_products'] ) ) : array();
@@ -184,32 +203,48 @@ class WCFM_Products_Manage_Controller {
 				$product_type = empty( $wcfm_products_manage_form_data['product_type'] ) ? WC_Product_Factory::get_product_type( $new_product_id ) : sanitize_title( stripslashes( $wcfm_products_manage_form_data['product_type'] ) );
 				$classname    = WC_Product_Factory::get_product_classname( $new_product_id, $product_type ? $product_type : 'simple' );
 				$product      = new $classname( $new_product_id );
-				$errors       = $product->set_props( apply_filters( 'wcfm_product_data_factory', array(
-					'virtual'            => isset( $wcfm_products_manage_form_data['is_virtual'] ),
-					'sku'                => isset( $wcfm_products_manage_form_data['sku'] ) ? wc_clean( $wcfm_products_manage_form_data['sku'] ) : null,
-					'tax_status'         => isset( $wcfm_products_manage_form_data['tax_status'] ) ? wc_clean( $wcfm_products_manage_form_data['tax_status'] ) : null,
-					'tax_class'          => isset( $wcfm_products_manage_form_data['tax_class'] ) ? wc_clean( $wcfm_products_manage_form_data['tax_class'] ) : null,
-					'weight'             => wc_clean( $wcfm_products_manage_form_data['weight'] ),
-					'length'             => wc_clean( $wcfm_products_manage_form_data['length'] ),
-					'width'              => wc_clean( $wcfm_products_manage_form_data['width'] ),
-					'height'             => wc_clean( $wcfm_products_manage_form_data['height'] ),
-					'shipping_class_id'  => absint( $wcfm_products_manage_form_data['shipping_class'] ),
-					'sold_individually'  => ! empty( $wcfm_products_manage_form_data['sold_individually'] ),
-					'upsell_ids'         => isset( $wcfm_products_manage_form_data['upsell_ids'] ) ? array_map( 'intval', (array) $wcfm_products_manage_form_data['upsell_ids'] ) : array(),
-					'cross_sell_ids'     => isset( $wcfm_products_manage_form_data['crosssell_ids'] ) ? array_map( 'intval', (array) $wcfm_products_manage_form_data['crosssell_ids'] ) : array(),
-					'regular_price'      => wc_clean( $wcfm_products_manage_form_data['regular_price'] ),
-					'sale_price'         => wc_clean( $wcfm_products_manage_form_data['sale_price'] ),
-					'manage_stock'       => ! empty( $wcfm_products_manage_form_data['manage_stock'] ),
-					'backorders'         => wc_clean( $wcfm_products_manage_form_data['backorders'] ),
-					'stock_status'       => wc_clean( $wcfm_products_manage_form_data['stock_status'] ),
-					'stock_quantity'     => wc_stock_amount( $wcfm_products_manage_form_data['stock_qty'] ),
-					'product_url'        => esc_url_raw( $wcfm_products_manage_form_data['product_url'] ),
-					'button_text'        => wc_clean( $wcfm_products_manage_form_data['button_text'] ),
-					'children'           => 'grouped' === $product_type ? $grouped_products : null,
-					'attributes'         => $pro_attributes,
-					'default_attributes' => $default_attributes,
-					'reviews_allowed'    => true,
-				), $new_product_id, $product, $wcfm_products_manage_form_data ) );
+				
+				$wcfm_product_data_factory = apply_filters( 'wcfm_product_data_factory', array(
+																										'virtual'            => isset( $wcfm_products_manage_form_data['is_virtual'] ),
+																										'sku'                => isset( $wcfm_products_manage_form_data['sku'] ) ? wc_clean( $wcfm_products_manage_form_data['sku'] ) : null,
+																										'tax_status'         => isset( $wcfm_products_manage_form_data['tax_status'] ) ? wc_clean( $wcfm_products_manage_form_data['tax_status'] ) : null,
+																										'tax_class'          => isset( $wcfm_products_manage_form_data['tax_class'] ) ? wc_clean( $wcfm_products_manage_form_data['tax_class'] ) : null,
+																										'weight'             => isset( $wcfm_products_manage_form_data['weight'] ) ? wc_clean( $wcfm_products_manage_form_data['weight'] ) : null,
+																										'length'             => isset( $wcfm_products_manage_form_data['length'] ) ? wc_clean( $wcfm_products_manage_form_data['length'] ) : null,
+																										'width'              => isset( $wcfm_products_manage_form_data['width'] ) ? wc_clean( $wcfm_products_manage_form_data['width'] ) : null,
+																										'height'             => isset( $wcfm_products_manage_form_data['height'] ) ? wc_clean( $wcfm_products_manage_form_data['height'] ) : null,
+																										'shipping_class_id'  => isset( $wcfm_products_manage_form_data['shipping_class'] ) ? absint( $wcfm_products_manage_form_data['shipping_class'] ) : null,
+																										'sold_individually'  => ! empty( $wcfm_products_manage_form_data['sold_individually'] ),
+																										'upsell_ids'         => isset( $wcfm_products_manage_form_data['upsell_ids'] ) ? array_map( 'intval', (array) $wcfm_products_manage_form_data['upsell_ids'] ) : array(),
+																										'cross_sell_ids'     => isset( $wcfm_products_manage_form_data['crosssell_ids'] ) ? array_map( 'intval', (array) $wcfm_products_manage_form_data['crosssell_ids'] ) : array(),
+																										'regular_price'      => isset( $wcfm_products_manage_form_data['regular_price'] ) ? wc_clean( $wcfm_products_manage_form_data['regular_price'] ) : '',
+																										'sale_price'         => isset( $wcfm_products_manage_form_data['sale_price'] ) ? wc_clean( $wcfm_products_manage_form_data['sale_price'] ) : '',
+																										'date_on_sale_from'  => isset( $wcfm_products_manage_form_data['sale_date_from'] ) ? wcfm_standard_date( wc_clean( $wcfm_products_manage_form_data['sale_date_from'] ) ) : '',
+																										'date_on_sale_to'    => isset( $wcfm_products_manage_form_data['sale_date_upto'] ) ? wcfm_standard_date( wc_clean( $wcfm_products_manage_form_data['sale_date_upto'] ) ) : '',
+																										'manage_stock'       => ! empty( $wcfm_products_manage_form_data['manage_stock'] ),
+																										'backorders'         => isset( $wcfm_products_manage_form_data['backorders'] ) ? wc_clean( $wcfm_products_manage_form_data['backorders'] ) : '',
+																										'stock_status'       => isset( $wcfm_products_manage_form_data['stock_status'] ) ? wc_clean( $wcfm_products_manage_form_data['stock_status'] ) : '',
+																										'stock_quantity'     => isset( $wcfm_products_manage_form_data['stock_qty'] ) ? wc_stock_amount( $wcfm_products_manage_form_data['stock_qty'] ) : '',
+																										'product_url'        => isset( $wcfm_products_manage_form_data['product_url'] ) ? esc_url_raw( $wcfm_products_manage_form_data['product_url'] ) : '',
+																										'button_text'        => wc_clean( $wcfm_products_manage_form_data['button_text'] ),
+																										'children'           => 'grouped' === $product_type ? $grouped_products : null,
+																										'downloadable'       => isset( $wcfm_products_manage_form_data['is_downloadable'] ),
+																										'download_limit'     => '' === $wcfm_products_manage_form_data['download_limit'] ? '' : absint( $wcfm_products_manage_form_data['download_limit'] ),
+																										'download_expiry'    => '' === $wcfm_products_manage_form_data['download_expiry'] ? '' : absint( $wcfm_products_manage_form_data['download_expiry'] ),
+																										'downloads'          => $downloadables,
+																										'attributes'         => $pro_attributes,
+																										'default_attributes' => $default_attributes,
+																										'reviews_allowed'    => true,
+																									), $new_product_id, $product, $wcfm_products_manage_form_data );
+				
+				if( !apply_filters( 'wcfmu_is_allow_downloadable', true ) ) {
+					unset( $wcfm_product_data_factory['downloadable'] );
+					unset( $wcfm_product_data_factory['download_limit'] );
+					unset( $wcfm_product_data_factory['download_expiry'] );
+					unset( $wcfm_product_data_factory['downloads'] );
+				}
+				
+				$errors       = $product->set_props( $wcfm_product_data_factory );
 		
 				if ( is_wp_error( $errors ) ) {
 					if( !$has_error )
@@ -285,11 +320,36 @@ class WCFM_Products_Manage_Controller {
 				}*/
 				
 				// Set Product Featured Image
-				if(isset($wcfm_products_manage_form_data['featured_img']) && !empty($wcfm_products_manage_form_data['featured_img'])) {
-					$featured_img_id = $WCFM->wcfm_get_attachment_id($wcfm_products_manage_form_data['featured_img']);
-					set_post_thumbnail( $new_product_id, $featured_img_id );
-				} elseif(isset($wcfm_products_manage_form_data['featured_img']) && empty($wcfm_products_manage_form_data['featured_img'])) {
-					delete_post_thumbnail( $new_product_id );
+				if( apply_filters( 'wcfm_is_allow_featured', true ) ) {
+					if(isset($wcfm_products_manage_form_data['featured_img']) && !empty($wcfm_products_manage_form_data['featured_img'])) {
+						$featured_img_id = $WCFM->wcfm_get_attachment_id($wcfm_products_manage_form_data['featured_img']);
+						set_post_thumbnail( $new_product_id, $featured_img_id );
+					} elseif(isset($wcfm_products_manage_form_data['featured_img']) && empty($wcfm_products_manage_form_data['featured_img'])) {
+						delete_post_thumbnail( $new_product_id );
+					}
+				}
+				
+				// Set Product Image Gallery
+				if( apply_filters( 'wcfm_is_allow_gallery', true ) ) {
+					if( isset($wcfm_products_manage_form_data['gallery_img']) && !empty($wcfm_products_manage_form_data['gallery_img']) ) {
+						$gallery = array();
+						$gallerylimit = apply_filters( 'wcfm_gallerylimit', -1 );
+						if( $gallerylimit == '-1' ) $gallerylimit = 500;
+						foreach($wcfm_products_manage_form_data['gallery_img'] as $gallery_imgs) {
+							if(isset($gallery_imgs['image']) && !empty($gallery_imgs['image'])) {
+								$gallery_img_id = $WCFM->wcfm_get_attachment_id($gallery_imgs['image']);
+								$gallery[] = $gallery_img_id;
+								if( $gallerylimit == count( $gallery ) ) break;
+							}
+						}
+						if ( ! empty( $gallery ) ) {
+							update_post_meta( $new_product_id, '_product_image_gallery', implode( ',', $gallery ) );
+						} else {
+							update_post_meta( $new_product_id, '_product_image_gallery', '' );
+						}
+					} elseif( isset($wcfm_products_manage_form_data['gallery_img']) && empty($wcfm_products_manage_form_data['gallery_img']) ) {
+						update_post_meta( $new_product_id, '_product_image_gallery', '' );
+					}
 				}
 				
 				// Set product basic options for simple and external products
@@ -347,7 +407,8 @@ class WCFM_Products_Manage_Controller {
 							$wc_variation    = new WC_Product_Variation( $variation_id );
 							$errors       = $wc_variation->set_props( apply_filters( 'wcfm_product_variation_data_factory', array(
 								//'status'            => 'publish' //isset( $variations['enable'] ) ? 'publish' : 'private',
-								'menu_order'        => wc_clean( $variations['menu_order'] ),
+								'virtual'           => isset( $variations['is_virtual'] ),
+								'menu_order'        => isset( $variations['menu_order'] ),
 								'regular_price'     => wc_clean( $variations['regular_price'] ),
 								'sale_price'        => wc_clean( $variations['sale_price'] ),
 								'manage_stock'      => isset( $variations['manage_stock'] ),
@@ -381,6 +442,15 @@ class WCFM_Products_Manage_Controller {
 					$product->get_data_store()->sync_variation_names( $product, wc_clean( $wcfm_products_manage_form_data['title'] ), wc_clean( $wcfm_products_manage_form_data['title'] ) );
 				}
 				
+				// On Product Approve
+				if( !wcfm_is_vendor() && ( get_post_status( $new_product_id ) == 'publish' ) ) {
+					$wcfm_review_product_notified = get_post_meta( $new_product_id, '_wcfm_review_product_notified', true );
+					if( $wcfm_review_product_notified ) {
+						do_action( 'wcfm_after_product_approve', $new_product_id );
+						delete_post_meta( $new_product_id, '_wcfm_review_product_notified' );
+					}
+				}
+				
 				do_action( 'after_wcfm_products_manage_meta_save', $new_product_id, $wcfm_products_manage_form_data );
 				
 				// Notify Admin on New Product Creation
@@ -389,12 +459,16 @@ class WCFM_Products_Manage_Controller {
 				} 
 				
 				if(!$has_error) {
-					if( get_post_status( $new_product_id ) == 'publish' ) {
-						if(!$has_error) echo '{"status": true, "message": "' . apply_filters( 'product_published_message', $wcfm_products_manage_messages['product_published'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_publish_redirect', get_permalink( $new_product_id ), $new_product_id ) . '", "id": "' . $new_product_id . '", "title": "' . get_the_title( $new_product_id ) . '"}';	
-					} elseif( get_post_status( $new_product_id ) == 'pending' ) {
-						if(!$has_error) echo '{"status": true, "message": "' . apply_filters( 'product_pending_message', $wcfm_products_manage_messages['product_pending'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_pending_redirect', get_wcfm_products_url( 'pending' ), $new_product_id ) . '", "id": "' . $new_product_id . '", "title": "' . get_the_title( $new_product_id ) . '"}';
+					if( isset( $_POST['product_manage_from_popup'] ) && $_POST['product_manage_from_popup'] ) {
+						if(!$has_error) echo '{"status": true, "message": "' . apply_filters( 'product_saved_message', $wcfm_products_manage_messages['product_saved'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_pending_redirect', get_wcfm_products_url(), $new_product_id ) . '", "id": "' . $new_product_id . '"}';
 					} else {
-						if(!$has_error) echo '{"status": true, "message": "' . apply_filters( 'product_saved_message', $wcfm_products_manage_messages['product_saved'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_draft_redirect', get_wcfm_edit_product_url( $new_product_id ), $new_product_id ) . '", "id": "' . $new_product_id . '"}';
+						if( get_post_status( $new_product_id ) == 'publish' ) {
+							if(!$has_error) echo '{"status": true, "message": "' . apply_filters( 'product_published_message', $wcfm_products_manage_messages['product_published'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_publish_redirect', get_wcfm_edit_product_url( $new_product_id ), $new_product_id ) . '", "id": "' . $new_product_id . '", "title": "' . get_the_title( $new_product_id ) . '"}';	
+						} elseif( get_post_status( $new_product_id ) == 'pending' ) {
+							if(!$has_error) echo '{"status": true, "message": "' . apply_filters( 'product_pending_message', $wcfm_products_manage_messages['product_pending'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_pending_redirect', get_wcfm_edit_product_url( $new_product_id ), $new_product_id ) . '", "id": "' . $new_product_id . '", "title": "' . get_the_title( $new_product_id ) . '"}';
+						} else {
+							if(!$has_error) echo '{"status": true, "message": "' . apply_filters( 'product_saved_message', $wcfm_products_manage_messages['product_saved'], $new_product_id ) . '", "redirect": "' . apply_filters( 'wcfm_product_save_draft_redirect', get_wcfm_edit_product_url( $new_product_id ), $new_product_id ) . '", "id": "' . $new_product_id . '"}';
+						}
 					}
 				}
 				die;

@@ -35,7 +35,7 @@ class Widget_WordPress extends Widget_Base {
 	/**
 	 * Whether the widget is a Pojo widget or not.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 * @access private
 	 *
 	 * @return bool
@@ -108,6 +108,20 @@ class Widget_WordPress extends Widget_Base {
 			return 'eicon-pojome';
 		}
 		return 'eicon-wordpress';
+	}
+
+	/**
+	 * Get widget keywords.
+	 *
+	 * Retrieve the list of keywords the widget belongs to.
+	 *
+	 * @since 2.1.0
+	 * @access public
+	 *
+	 * @return array Widget keywords.
+	 */
+	public function get_keywords() {
+		return [ 'wordpress', 'widget' ];
 	}
 
 	/**

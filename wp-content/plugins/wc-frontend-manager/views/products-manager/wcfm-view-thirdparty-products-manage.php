@@ -285,7 +285,7 @@ if(WCFM_Dependencies::wcfm_geo_my_wp_plugin_active_check()) {
 					<div id="wcfm_products_manage_form_bulk_discount_expander" class="wcfm-content">
 						<?php
 						if ( !function_exists('get_editable_roles') ) {
-							 require_once( ABSPATH . '/wp-admin/includes/user.php' );
+							 include_once( ABSPATH . '/wp-admin/includes/user.php' );
 						}
 						$wp_roles = get_editable_roles();
 						$wc_rbp_general = (array) get_option( 'wc_rbp_general' );

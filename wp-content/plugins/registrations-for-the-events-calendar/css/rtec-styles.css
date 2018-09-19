@@ -82,11 +82,13 @@
     padding: 12px 40px 12px 16px;
     padding-right: 40px !important;
     font-size: 16px;
+    cursor: pointer;
 }
-#rtec .rtec-submit-button {
+#rtec input[type="submit"]{
     float: none;
     padding: 12px 16px;
     font-size: 16px;
+    cursor: pointer;
 }
 #rtec .rtec-attendance p {
     text-align: center;
@@ -208,6 +210,24 @@
 }
 .rtec-event-meta .rtec-attendee {
     display: block;
+}
+/** Visitor Tools **/
+.rtec .rtec-already-registered-options .rtec-event-meta {
+    padding: 4%;
+}
+#rtec-options-form input {
+    max-width: 400px;
+}
+.rtec-already-registered-options input[type=submit] {
+    line-height: inherit;
+    height: auto;
+    margin-bottom: 10px;
+    padding: 12px 16px;
+    font-size: 16px;
+}
+.rtec-unregister-link-wrap,
+.rtec-already-registered-options.rtec-is-user form{
+    display: inline-block;
 }
 /* Shortcode Forms */
 h2.rtec-header, .entry-content h2.rtec-header { margin: 0; }

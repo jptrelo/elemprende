@@ -1,7 +1,7 @@
 <?php
 
 /*
-Widget Name: Livemesh Testimonials
+Widget Name: Testimonials
 Description: Display testimonials from your clients/customers in a multi-column grid.
 Author: LiveMesh
 Author URI: https://www.livemeshthemes.com
@@ -27,7 +27,7 @@ class LAE_Testimonials_Widget extends Widget_Base {
     }
 
     public function get_title() {
-        return __('Livemesh Testimonials', 'livemesh-el-addons');
+        return __('Testimonials', 'livemesh-el-addons');
     }
 
     public function get_icon() {
@@ -40,8 +40,8 @@ class LAE_Testimonials_Widget extends Widget_Base {
 
     public function get_script_depends() {
         return [
-            'lae-widgets-scripts',
-            'lae-frontend-scripts'
+            'lae-frontend-scripts',
+            'lae-waypoints'
         ];
     }
 
@@ -53,16 +53,24 @@ class LAE_Testimonials_Widget extends Widget_Base {
                 'label' => __('Testimonials', 'livemesh-el-addons'),
             ]
         );
-        
-        $this->add_control(
+
+        $this->add_responsive_control(
             'per_line',
             [
-                'label' => __('Columns per row', 'livemesh-el-addons'),
-                'type' => Controls_Manager::NUMBER,
-                'min' => 1,
-                'max' => 5,
-                'step' => 1,
-                'default' => 3,
+                'label' => __( 'Columns per row', 'livemesh-el-addons' ),
+                'type' => Controls_Manager::SELECT,
+                'default' => '3',
+                'tablet_default' => '2',
+                'mobile_default' => '1',
+                'options' => [
+                    '1' => '1',
+                    '2' => '2',
+                    '3' => '3',
+                    '4' => '4',
+                    '5' => '5',
+                    '6' => '6',
+                ],
+                'frontend_available' => true,
             ]
         );
 
@@ -95,13 +103,20 @@ class LAE_Testimonials_Widget extends Widget_Base {
                         'name' => 'client_name',
                         'label' => __('Name', 'livemesh-el-addons'),
                         'type' => Controls_Manager::TEXT,
+                        'default' => __('My client name', 'livemesh-el-addons'),
                         'description' => __('The client or customer name for the testimonial', 'livemesh-el-addons'),
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
                     [
                         'name' => 'credentials',
                         'label' => __('Client Details', 'livemesh-el-addons'),
                         'type' => Controls_Manager::TEXT,
                         'description' => __('The details of the client/customer like company name, credential held, company URL etc. HTML accepted.', 'livemesh-el-addons'),
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
 
                     [
@@ -112,6 +127,9 @@ class LAE_Testimonials_Widget extends Widget_Base {
                             'url' => Utils::get_placeholder_image_src(),
                         ],
                         'label_block' => true,
+                        'dynamic' => [
+                            'active' => true,
+                        ],
                     ],
 
                     [
@@ -120,6 +138,17 @@ class LAE_Testimonials_Widget extends Widget_Base {
                         'type' => Controls_Manager::WYSIWYG,
                         'description' => __('What your customer/client had to say', 'livemesh-el-addons'),
                         'show_label' => false,
+                        'dynamic' => [
+                            'active' => true,
+                        ],
+                    ],
+                    
+                    [
+                        "type" => Controls_Manager::SELECT,
+                        "name" => "widget_animation",
+                        "label" => __("Animation Type", "livemesh-el-addons"),
+                        'options' => lae_get_animation_options(),
+                        'default' => 'none',
                     ],
                     
                 ],
@@ -332,60 +361,60 @@ class LAE_Testimonials_Widget extends Widget_Base {
 
     protected function render() {
 
-        $settings = $this->get_settings();
-        ?>
+        $settings = $this->get_settings_for_display();
 
-        <?php $column_style = lae_get_column_class(intval($settings['per_line'])); ?>
+        $settings = apply_filters('lae_testimonials_' . $this->get_id() . '_settings', $settings);
 
-        <div class="lae-testimonials lae-grid-container">
+        $output = '<div class="lae-testimonials lae-grid-container ' . lae_get_grid_classes($settings) . '">';
 
-            <?php foreach ($settings['testimonials'] as $testimonial) : ?>
+        foreach ($settings['testimonials'] as $testimonial) :
 
-                <div class="lae-testimonial <?php echo $column_style; ?>">
+            list($animate_class, $animation_attr) = lae_get_animation_atts($testimonial['widget_animation']);
 
-                    <div class="lae-testimonial-text">
-                        
-                        <?php echo $this->parse_text_editor($testimonial['testimonial_text']) ?>
-                        
-                    </div>
+            $child_output = '<div class="lae-grid-item lae-testimonial ' . $animate_class . '" ' . $animation_attr . '>';
 
-                    <div class="lae-testimonial-user">
+            $child_output .= '<div class="lae-testimonial-text">';
 
-                        <div class="lae-image-wrapper">
+            $child_output .= $this->parse_text_editor($testimonial['testimonial_text']);
 
-                            <?php $client_image = $testimonial['client_image']; ?>
+            $child_output .= '</div>';
 
-                            <?php if (!empty($client_image)): ?>
+            $child_output .= '<div class="lae-testimonial-user">';
 
-                                <?php echo wp_get_attachment_image($client_image['id'], 'thumbnail', false, array('class' => 'lae-image full')); ?>
+            $child_output .= '<div class="lae-image-wrapper">';
 
-                            <?php endif; ?>
-                            
-                        </div>
+            $client_image = $testimonial['client_image'];
 
-                        <div class="lae-text">
-                            
-                            <<?php echo $settings['title_tag']; ?> class="lae-author-name"><?php echo esc_html($testimonial['client_name']) ?></<?php echo $settings['title_tag']; ?>>
-                            
-                            <div class="lae-author-credentials"><?php echo wp_kses_post($testimonial['credentials']); ?></div>
-                            
-                        </div>
+            if (!empty($client_image)):
 
-                    </div>
+                $child_output .= wp_get_attachment_image($client_image['id'], 'thumbnail', false, array('class' => 'lae-image full'));
 
-                </div>
+            endif;
 
-                <?php
+            $child_output .= '</div>';
 
-            endforeach;
+            $child_output .= '<div class="lae-text">';
 
-            ?>
+            $child_output .= '<' . $settings['title_tag'] . ' class="lae-author-name">' . esc_html($testimonial['client_name']) . '</' . $settings['title_tag'] . '>';
 
-        </div>
+            $child_output .= '<div class="lae-author-credentials">' . wp_kses_post($testimonial['credentials']) . '</div>';
 
-        <div class="lae-clear"></div>
+            $child_output .= '</div><!-- .lae-text -->';
 
-        <?php
+            $child_output .= '</div><!-- .lae-testimonial-user -->';
+
+            $child_output .= '</div><!-- .lae-testimonial -->';
+
+            $output .= apply_filters('lae_testimonial_output', $child_output, $testimonial, $settings);
+
+        endforeach;
+
+        $output .= '</div><!-- .lae-testimonials -->';
+
+        $output .= '<div class="lae-clear"></div>';
+
+        echo apply_filters('lae_testimonials_output', $output, $settings);
+
     }
 
     protected function content_template() {

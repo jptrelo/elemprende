@@ -20,9 +20,9 @@ jQuery(document).ready(function($) {
 		$.post(wcfm_params.ajax_url, data, function(response) {
 			if(response) {
 				$response_json = $.parseJSON(response);
+				$('.wcfm-message').html('').removeClass('wcfm-success').removeClass('wcfm-error').slideUp();
+				wcfm_notification_sound.play();
 				if($response_json.status) {
-					audio.play();
-					$('.wcfm-message').html('').removeClass('wcfm-success').slideUp();
 					$('#wcfm_withdrawal_manage_form .wcfm-message').html('<span class="wcicon-status-completed"></span>' + $response_json.message).addClass('wcfm-success').slideDown();
 					if( $response_json.redirect ) {
 						setTimeout(function() {
@@ -32,9 +32,8 @@ jQuery(document).ready(function($) {
 						$('#wcfm-content').unblock();
 					}
 				} else {
-					audio.play();
-					$('.wcfm-message').html('').removeClass('wcfm-success').slideUp();
 					$('#wcfm_withdrawal_manage_form .wcfm-message').html('<span class="wcicon-status-cancelled"></span>' + $response_json.message).addClass('wcfm-error').slideDown();
+					wcfmMessageHide();
 					$('#wcfm-content').unblock();
 				}
 			}

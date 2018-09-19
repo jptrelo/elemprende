@@ -31,11 +31,11 @@
 
 .collapse-open {
 	background: #1C2B36;
-	color: #00897b;
+	color: #00798b;
 }
 
 .page_collapsible:hover label, .page_collapsible.collapse-open label {
-	color: #00897b;
+	color: #00798b;
 }
 
 .collapse-open span {

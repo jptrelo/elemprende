@@ -69,7 +69,7 @@ $wcfm_report_sales_by_date->calculate_current_range( $current_range );
 	  <div id="wcfm_page_load"></div>
 	  
 	  <div class="wcfm-container wcfm-top-element-container">
-			<?php require_once( $WCFM->library->views_path . 'wcfm-view-reports-menu.php' ); ?>
+			<?php $WCFM->template->get_template( 'reports/wcfm-view-reports-menu.php' ); ?>
 			<div class="wcfm-clearfix"></div>
 		</div>
 	  <div class="wcfm-clearfix"></div><br />

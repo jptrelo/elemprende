@@ -32,8 +32,8 @@ class WCFM_WCBookings_Controller {
 							'offset'           => $offset,
 							'category'         => '',
 							'category_name'    => '',
-							'bookingby'          => 'date',
-							'booking'            => 'DESC',
+							'orderby'          => 'date',
+							'order'            => 'DESC',
 							'include'          => $include_bookings,
 							'exclude'          => '',
 							'meta_key'         => '',
@@ -151,7 +151,7 @@ class WCFM_WCBookings_Controller {
 				// Order
 				if ( $the_order ) {
 					if( apply_filters( 'wcfm_is_allow_order_details', true ) && $WCFM->wcfm_vendor_support->wcfm_is_order_for_vendor( $the_order->get_order_number() ) ) {
-						$wcfm_bookings_json_arr[$index][] = '<span class="booking-orderno"><a href="' . get_wcfm_view_order_url( $the_order->get_order_number(), $order ) . '">#' . $the_order->get_order_number() . '</a></span><br />' . esc_html( wc_get_order_status_name( $the_order->get_status() ) );
+						$wcfm_bookings_json_arr[$index][] = '<span class="booking-orderno"><a href="' . get_wcfm_view_order_url( $the_order->get_order_number(), $the_order ) . '">#' . $the_order->get_order_number() . '</a></span><br />' . esc_html( wc_get_order_status_name( $the_order->get_status() ) );
 					} else {
 						$wcfm_bookings_json_arr[$index][] = '<span class="booking-orderno">#' . $the_order->get_order_number() . '</span><br /> ' . esc_html( wc_get_order_status_name( $the_order->get_status() ) );
 					}

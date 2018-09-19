@@ -6,11 +6,11 @@ function login_widget_afo_shortcode( $atts ) {
      ), $atts ) );
      
 	ob_start();
-	$wid = new login_wid;
+	$aplf = new ap_login_form;
 	if($title){
 		echo '<h2>'. esc_html( $title ) .'</h2>';
 	}
-	$wid->loginForm();
+	$aplf->login_form();
 	$ret = ob_get_contents();	
 	ob_end_clean();
 	return $ret;
@@ -27,7 +27,7 @@ function forgot_password_afo_shortcode( $atts ) {
 	if($title){
 		echo '<h2>'. esc_html( $title ) .'</h2>';
 	}
-	$fpc->ForgotPassForm();
+	$fpc->forgot_pass_form();
 	$ret = ob_get_contents();	
 	ob_end_clean();
 	return $ret;

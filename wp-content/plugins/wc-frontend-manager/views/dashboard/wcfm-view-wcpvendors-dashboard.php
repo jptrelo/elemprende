@@ -3,6 +3,7 @@
  * WCFMu plugin view
  *
  * Marketplace WC Product Vendors Support
+ * This template can be overridden by copying it to yourtheme/wcfm/dashboard/
  *
  * @author 		WC Lovers
  * @package 	wcfm/views
@@ -152,20 +153,22 @@ $vendor_data = WC_Product_Vendors_Utils::get_vendor_data_from_user();
 		
 		<?php do_action( 'begin_wcfm_dashboard' ); ?>
 		
-		<?php require_once( $WCFM->library->views_path . 'dashboard/wcfm-view-dashboard-welcome-box.php' ); ?>
+		<?php $WCFM->template->get_template( 'dashboard/wcfm-view-dashboard-welcome-box.php' ); ?>
 		
 		<?php if( apply_filters( 'wcfm_is_pref_stats_box', true ) ) { ?>
 			<div class="wcfm_dashboard_stats">
 				<?php if( $wcfm_is_allow_reports = apply_filters( 'wcfm_is_allow_reports', true ) ) { ?>
-					<div class="wcfm_dashboard_stats_block">
-						<a href="<?php echo get_wcfm_reports_url( 'month' ); ?>">
-							<span class="fa fa-currency"><?php echo get_woocommerce_currency_symbol() ; ?></span>
-							<div>
-								<strong><?php echo wc_price( $gross_sales ); ?></strong><br />
-								<?php _e( 'gross sales in this month', 'wc-frontend-manager' ); ?>
-							</div>
-						</a>
-					</div>
+					<?php if( apply_filters( 'wcfm_sales_report_is_allow_gross_sales', true ) ) { ?>
+						<div class="wcfm_dashboard_stats_block">
+							<a href="<?php echo get_wcfm_reports_url( 'month' ); ?>">
+								<span class="fa fa-currency"><?php echo get_woocommerce_currency_symbol() ; ?></span>
+								<div>
+									<strong><?php echo wc_price( $gross_sales ); ?></strong><br />
+									<?php _e( 'gross sales in this month', 'wc-frontend-manager' ); ?>
+								</div>
+							</a>
+						</div>
+					<?php } ?>
 					<div class="wcfm_dashboard_stats_block">
 						<a href="<?php echo get_wcfm_reports_url( ); ?>">
 							<span class="fa fa-money"></span>
@@ -179,8 +182,8 @@ $vendor_data = WC_Product_Vendors_Utils::get_vendor_data_from_user();
 						<a href="<?php echo apply_filters( 'sales_by_product_report_url', get_wcfm_reports_url( ), '' ); ?>">
 							<span class="fa fa-cubes"></span>
 							<div>
-								<?php printf( _n( "<strong>%s item</strong><br />", "<strong>%s items</strong><br />", $total_sell, 'wc-frontend-manager' ), $total_sell ); ?>
-								<?php _e( 'sold in this month', 'wc-frontend-manager' ); ?>
+								<?php printf( _n( "<strong>%s item</strong>", "<strong>%s items</strong>", $total_sell, 'wc-frontend-manager' ), $total_sell ); ?>
+								<br /><?php _e( 'sold in this month', 'wc-frontend-manager' ); ?>
 							</div>
 						</a>
 					</div>
@@ -190,8 +193,8 @@ $vendor_data = WC_Product_Vendors_Utils::get_vendor_data_from_user();
 						<a href="<?php echo get_wcfm_orders_url( ); ?>">
 							<span class="fa fa-cart-plus"></span>
 							<div>
-								<?php printf( _n( "<strong>%s order</strong><br />", "<strong>%s orders</strong><br />", $order_count, 'wc-frontend-manager' ), $order_count ); ?>
-								<?php _e( 'received in this month', 'wc-frontend-manager' ); ?>
+								<?php printf( _n( "<strong>%s order</strong>", "<strong>%s orders</strong>", $order_count, 'wc-frontend-manager' ), $order_count ); ?>
+								<br /><?php _e( 'received in this month', 'wc-frontend-manager' ); ?>
 							</div>
 						</a>
 					</div>
@@ -253,11 +256,11 @@ $vendor_data = WC_Product_Vendors_Utils::get_vendor_data_from_user();
 						<div class="page_collapsible" id="wcfm_dashboard_wcfm_product_status"><span class="fa fa-cubes"></span><span class="dashboard_widget_head"><?php _e('Product Stats', 'wc-frontend-manager'); ?></span></div>
 						<div class="wcfm-container">
 							<div id="wcfm_dashboard_wcfm_product_stats_expander" class="wcfm-content">
-								 <?php if ( current_user_can( 'edit_products' ) && apply_filters( 'wcfm_is_allow_manage_products', true ) ) { ?>
+								 <?php if ( current_user_can( 'edit_products' ) && apply_filters( 'wcfm_is_allow_manage_products', true ) && apply_filters( 'wcfm_is_allow_products_stats_link', true ) ) { ?>
 								 <a class="chart_holder_anchor" href="<?php echo get_wcfm_products_url( ); ?>">
 								 <?php } ?>
 									 <div id="product_stats-report"><canvas id="product_stats_report-canvas"></canvas></div>	
-								 <?php if ( current_user_can( 'edit_products' ) && apply_filters( 'wcfm_is_allow_manage_products', true ) ) { ?>
+								 <?php if ( current_user_can( 'edit_products' ) && apply_filters( 'wcfm_is_allow_manage_products', true ) && apply_filters( 'wcfm_is_allow_products_stats_link', true ) ) { ?>
 								 </a>
 								 <?php } ?>
 							</div>

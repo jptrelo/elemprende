@@ -48,7 +48,7 @@ ul.wcfm_articles_menus li {
 }
 
 ul.wcfm_articles_menus li a {
-	color: #00897b;
+	color: #00798b;
 	font-weight: 500;
 	-webkit-transition-property: barticle,background,color;
 	transition-property: barticle,background,color;
@@ -65,8 +65,8 @@ ul.wcfm_articles_menus li a.active {
 .wcfm_articles_limit_label {
 	padding: 2px 10px;
 	font-size: 15px;
-  color: #D15600;
-  border: 1px solid #D15600;
+  color: #e85656;
+  border: 1px solid #e85656;
   border-radius: 3px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -103,7 +103,6 @@ table.dataTable.display tr th:nth-child(7) {
 
 @media only screen and (max-width: 640px) {
 	ul.wcfm_articles_menus {
-		width: 100%;
 		text-align: center;
 	}
 }

@@ -92,6 +92,13 @@ class WCFM_Payments_Controller {
 					$wcfm_payments_json_arr[$index][] = __('Bank Transfer', 'wc-frontend-manager');
 				}
 				
+				// Note
+				if( $wcfm_payments_single->note ) {
+					$wcfm_payments_json_arr[$index][] = $wcfm_payments_single->note;
+				} else {
+					$wcfm_payments_json_arr[$index][] = '&ndash;';
+				}
+				
 				// Date
 				$wcfm_payments_json_arr[$index][] = date( 'Y-m-d H:i A', strtotime( $wcfm_payments_single->date ) );
 				

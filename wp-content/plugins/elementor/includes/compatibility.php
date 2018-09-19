@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Elementor compatibility class.
+ * Elementor compatibility.
  *
  * Elementor compatibility handler class is responsible for compatibility with
  * external plugins. The class resolves different issues with non-compatible
@@ -33,32 +33,10 @@ class Compatibility {
 
 		self::polylang_compatibility();
 
-		if ( is_admin() ) {
+		if ( is_admin() || defined( 'WP_LOAD_IMPORTERS' ) ) {
 			add_filter( 'wp_import_post_meta', [ __CLASS__, 'on_wp_import_post_meta' ] );
 			add_filter( 'wxr_importer.pre_process.post_meta', [ __CLASS__, 'on_wxr_importer_pre_process_post_meta' ] );
 		}
-	}
-
-	/**
-	 * Exit to classic editor.
-	 *
-	 * Filters the "Exit To Dashboard URL" and replace it with the classic editor
-	 * URL.
-	 *
-	 * Fired by `elementor/document/urls/exit_to_dashboard` filter.
-	 *
-	 * @since 1.9.0
-	 * @access public
-	 * @static
-	 *
-	 * @param string $exit_url Default exit URL.
-	 *
-	 * @return string Classic editor URL.
-	 */
-	public static function exit_to_classic_editor( $exit_url ) {
-		$exit_url = add_query_arg( 'classic-editor', '', $exit_url );
-
-		return $exit_url;
 	}
 
 	/**
@@ -201,7 +179,7 @@ class Compatibility {
 
 		// Fix Preview URL for https://premium.wpmudev.org/project/domain-mapping/ plugin
 		if ( class_exists( 'domain_map' ) ) {
-			add_filter( 'elementor/utils/preview_url', function( $preview_url ) {
+			add_filter( 'elementor/document/urls/preview', function( $preview_url ) {
 				if ( wp_parse_url( $preview_url, PHP_URL_HOST ) !== $_SERVER['HTTP_HOST'] ) {
 					$preview_url = \domain_map::utils()->unswap_url( $preview_url );
 					$preview_url = add_query_arg( [
@@ -216,7 +194,6 @@ class Compatibility {
 		// Gutenberg
 		if ( function_exists( 'gutenberg_init' ) ) {
 			add_action( 'admin_print_scripts-edit.php', [ __CLASS__, 'add_new_button_to_gutenberg' ], 11 );
-			add_filter( 'elementor/document/urls/exit_to_dashboard', [ __CLASS__, 'exit_to_classic_editor' ] );
 		}
 	}
 
@@ -243,13 +220,15 @@ class Compatibility {
 			add_action( 'pll_pre_init', function( $polylang ) {
 				if ( isset( $_REQUEST['post'] ) ) {
 					$post_language = $polylang->model->post->get_language( $_REQUEST['post'], 'locale' );
-					$_REQUEST['lang'] = $post_language->locale;
+					if ( ! empty( $post_language ) ) {
+						$_REQUEST['lang'] = $post_language->locale;
+					}
 				}
 			} );
 		}
 
 		// Copy elementor data while polylang creates a translation copy
-		add_filter( 'pll_copy_post_metas', [ __CLASS__, 'save_polylang_meta' ], 10 , 4 );
+		add_filter( 'pll_copy_post_metas', [ __CLASS__, 'save_polylang_meta' ], 10, 4 );
 	}
 
 	/**

@@ -1,5 +1,47 @@
 *** Changelog ***
 
+= 1.6.3 - 2018-08-15 =
+* Fix - Fatal error caused by a fix for Smart Payment Buttons.
+
+= 1.6.2 - 2018-08-15 =
+* Fix - Tax not applied on the (Confirm your PayPal order) page at the checkout.
+
+= 1.6.1 - 2018-07-04 =
+* Fix - GDPR Fatal error exporting user data when they have PPEC subscriptions.
+* Fix - PayPal Credit still being disabled by default.
+* Update - Rename 'PayPal Express Checkout' to 'PayPal Checkout'.
+* Fix - Missing PayPal branding in "Buy Now" Smart Payment Button.
+* Fix - PHP warning when PayPal Credit not supported and no funding methods hidden.
+* Fix - Smart Payment Buttons gateway not inheriting IPN and subscription handling.
+* Fix - Single product Smart Payment Button failing without existing session.
+* Fix - When cart is empty, JS error on cart page and mini-cart payment buttons showing.
+* Add - Locale filter.
+
+= 1.6.0 - 2018-06-27 =
+* Add - Smart Payment Buttons mode as alternative to directly embedded image links for all instances of PayPal button.
+* Fix - Help tip alignment for image settings.
+* Update - Enable PayPal Credit by default, and restrict its support by currency.
+* Update - Omit 'Express Checkout' portion of default payment method title.
+* Update - Enable Express Checkout on regular checkout page by default.
+* Update - Enable Express Checkout on single product page by default.
+
+= 1.5.6 - 2018-06-06 =
+* Fix    - Virtual products cause issues with billing details validation.
+
+= 1.5.5 - 2018-05-23 =
+* Update - WC 3.4 compatibility
+* Update - Privacy policy notification.
+* Update - Export/erasure hooks added.
+
+= 1.5.4 - 2018-05-08 =
+* Add - Hook to make billing address not required `woocommerce_paypal_express_checkout_address_not_required` (bool).
+* Fix - Duplicate checkout settings when PP Credit option is enabled.
+* Fix - Impossible to open API credentials after saving Settings.
+* Fix - Prevent filtering if PPEC is not enabled.
+* Fix - Single Product checkout: Quantity being duplicated due to multiple AJAX calls.
+* Fix - When returning from PayPal, place order buttons says "proceed to payment".
+* Tweak - Default billing address to be required.
+
 = 1.5.3 - 2018-03-28 =
 * Fix - wp_enqueue_media was not correctly loaded causing weird behavior with other parts of system wanting to use it.
 * Fix - Typo in activation hook.

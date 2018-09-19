@@ -31,7 +31,8 @@ class WCFM_Dokan {
     	add_filter( 'wcfm_add_new_coupon_sub_menu', array( &$this, 'dokan_add_new_coupon_sub_menu' ) );
     	
 			// Allow Vendor user to manage product from catalog
-			add_filter( 'wcfm_allwoed_user_rols', array( &$this, 'allow_dokan_vendor_role' ) );
+			add_filter( 'wcfm_allwoed_user_roles', array( &$this, 'allow_dokan_vendor_role' ) );
+			add_filter( 'wcfm_allwoed_vendor_user_roles', array( &$this, 'allow_dokan_vendor_role' ) );
 			
 			// Filter Vendor Products
 			add_filter( 'wcfm_products_args', array( &$this, 'dokan_products_args' ) );
@@ -43,17 +44,30 @@ class WCFM_Dokan {
 			// Listing Filter for specific vendor
 			add_filter( 'wcfm_articles_args', array( &$this, 'dokan_listing_args' ) );
     	add_filter( 'wcfm_listing_args', array( $this, 'dokan_listing_args' ), 20 );
+    	add_filter( "woocommerce_product_export_product_query_args", array( &$this, 'dokan_listing_args' ), 100 );
+    	
+    	// Customers args
+    	if( apply_filters( 'wcfm_is_allow_order_customers_to_vendors', true ) ) {
+    		add_filter( 'wcfm_get_customers_args', array( &$this, 'dokan_filter_customers' ), 20 );
+    	}
     	
     	// Booking Filter
 			add_filter( 'wcfm_wcb_include_bookings', array( &$this, 'dokan_wcb_include_bookings' ) );
 			
 			// Manage Vendor Product Permissions
 			add_action( 'after_wcfm_products_manage_meta_save', array( &$this, 'dokan_product_manage_vendor_association' ), 10, 2 );
-			add_action( 'wcfm_geo_locator_default_address', array( &$this, 'dokan_geo_locator_default_address' ), 10 );
+			add_action( 'gmw_location_form_default_location', array( &$this, 'dokan_geo_locator_default_address' ), 10, 2 );
 			
 			// Manage Vendor Product Export Permissions - 2.4.2
 			add_filter( 'product_type_selector', array( $this, 'dokan_filter_product_types' ), 98 );
 			add_filter( 'woocommerce_product_export_row_data', array( &$this, 'dokan_product_export_row_data' ), 100, 2 );
+			
+			// Vendor Status restriction
+			add_filter( 'wcfm_is_allow_add_products', array( &$this, 'dokan_is_allow_add_products' ), 600 );
+			add_filter( 'wcfm_is_allow_edit_products', array( &$this, 'dokan_is_allow_add_products' ), 600 );
+			
+			// Vendor Publish Product Status check
+			add_filter( 'wcfm_is_allow_publish_products', array( &$this, 'dokan_is_allow_publish_products' ), 600 );
 			
 			// Filter Vendor Coupons
 			add_filter( 'wcfm_coupons_args', array( &$this, 'dokan_coupons_args' ) );
@@ -107,12 +121,11 @@ class WCFM_Dokan {
   function dokan_store_name( $store_name ) {
   	$user_id = $this->vendor_id;
   	$vendor_data = get_user_meta( $user_id, 'dokan_profile_settings', true );
-  	$shop_name     = __( 'My Store', 'wc-frontend-manager' );  //isset( $vendor_data['store_name'] ) ? esc_attr( $vendor_data['store_name'] ) : '';
-  	$shop_name     = __( 'My Store', 'wc-frontend-manager' );  //empty( $shop_name ) ? get_user_by( 'id', $user_id )->display_name : $shop_name;
+  	$shop_name     = get_option( 'wcfm_my_store_label', __( 'My Store', 'wc-frontend-manager' ) );  //isset( $vendor_data['store_name'] ) ? esc_attr( $vendor_data['store_name'] ) : '';
   	if( $shop_name ) $store_name = $shop_name;
   	$shop_link       = dokan_get_store_url( $user_id );
-  	if( $shop_name ) { $store_name = '<a target="_blank" href="' . apply_filters('wcv_vendor_shop_permalink', $shop_link) . '">' . $shop_name . '</a>'; }
-  	else { $store_name = '<a target="_blank" href="' . apply_filters('wcv_vendor_shop_permalink', $shop_link) . '">' . __('Shop', 'wc-frontend-manager') . '</a>'; }
+  	if( $shop_name ) { $store_name = '<a target="_blank" href="' . apply_filters('dokan_vendor_shop_permalink', $shop_link) . '">' . $shop_name . '</a>'; }
+  	else { $store_name = '<a target="_blank" href="' . apply_filters('dokan_vendor_shop_permalink', $shop_link) . '">' . __('Shop', 'wc-frontend-manager') . '</a>'; }
   	return $store_name;
   }
   
@@ -155,12 +168,51 @@ class WCFM_Dokan {
   }
   
   /**
+   * Dokan filter customers
+   */
+  function dokan_filter_customers( $args ) {
+  	global $WCFM, $wpdb;
+  	
+  	$vendor_customers  = array();
+  	
+  	// Own Customers
+  	$wcfm_customers_array = get_users( $args );
+  	if(!empty($wcfm_customers_array)) {
+			foreach( $wcfm_customers_array as $wcfm_customers_single ) {
+				$vendor_customers[] = $wcfm_customers_single->ID;
+			}
+		}
+  	
+		// Order Customers
+  	$sql = 'SELECT order_id FROM ' . $wpdb->prefix . 'dokan_orders';
+		$sql .= ' WHERE 1=1';
+		$sql .= " AND `seller_id` = {$this->vendor_id}";
+		$wcfm_orders_array = $wpdb->get_results( $sql );
+		if(!empty($wcfm_orders_array)) {
+			foreach($wcfm_orders_array as $wcfm_orders_single) {
+				$the_order = wc_get_order( $wcfm_orders_single->order_id );
+				if ( $the_order && is_object( $the_order ) && $the_order->get_user_id() ) {
+					$vendor_customers[] = $the_order->get_user_id();
+				}
+			}
+		}
+		if( !empty( $vendor_customers ) ) {
+			$args['include'] = $vendor_customers;
+		} else {
+			$args['include'] = array(0);
+		}
+		if( isset( $args['meta_key'] ) ) unset( $args['meta_key'] );
+		if( isset( $args['meta_value'] ) ) unset( $args['meta_value'] );
+		return $args;
+  }
+  
+  /**
    * WC Vendors Bookings
    */
   function dokan_wcb_include_bookings( ) {
   	global $WCFM, $wpdb, $_POST;
   	
-  	$vendor_products = $this->wcv_get_vendor_products( $this->vendor_id );
+  	$vendor_products = $this->dokan_get_vendor_products( $this->vendor_id );
 		
 		if( empty($vendor_products) ) return array(0);
 		
@@ -187,29 +239,78 @@ class WCFM_Dokan {
 		// Admin Message for Pending Review
 		$product_status = get_post_status( $new_product_id );
 		if( $product_status == 'pending' ) {
-			$WCFM->wcfm_vendor_support->wcfm_admin_notification_product_review( $this->vendor_id, $new_product_id );
+			$WCFM->wcfm_notification->wcfm_admin_notification_product_review( $this->vendor_id, $new_product_id );
 		} else {
-			$WCFM->wcfm_vendor_support->wcfm_admin_notification_new_product( $this->vendor_id, $new_product_id );
+			$WCFM->wcfm_notification->wcfm_admin_notification_new_product( $this->vendor_id, $new_product_id );
 		}
   }
   
   // Geo Locator default address- 3.2.8
-  function dokan_geo_locator_default_address( $address ) {
+  function dokan_geo_locator_default_address( $gmw_saved_location, $args ) {
   	global $WCFM;
   	
-  	$user_id = $this->vendor_id;
-  	
-  	$vendor_data = get_user_meta( $user_id, 'dokan_profile_settings', true );
-  	$address         = isset( $vendor_data['address'] ) ? $vendor_data['address'] : '';
-  	
-  	$address = isset( $vendor_data['address']['street_1'] ) ? $vendor_data['address']['street_1'] : '';
-		$address .= isset( $vendor_data['address']['street_2'] ) ? $vendor_data['address']['street_2'] : '';
-		$address .= isset( $vendor_data['address']['city'] ) ? $vendor_data['address']['city'] : '';
-		$address .= isset( $vendor_data['address']['state'] ) ? $vendor_data['address']['state'] : '';
-		$address .= isset( $vendor_data['address']['zip'] ) ? $vendor_data['address']['zip'] : '';
-		$address .= isset( $vendor_data['address']['country'] ) ? $vendor_data['address']['country'] : '';
+  	if ( empty( $gmw_saved_location ) ) {
+			
+			$vendor_data = get_user_meta( $this->vendor_id, 'dokan_profile_settings', true );
+			$address         = isset( $vendor_data['address'] ) ? $vendor_data['address'] : '';
+			
+			$street_1 = isset( $vendor_data['address']['street_1'] ) ? $vendor_data['address']['street_1'] : '';
+			$street_2 = isset( $vendor_data['address']['street_2'] ) ? $vendor_data['address']['street_2'] : '';
+			$city     = isset( $vendor_data['address']['city'] ) ? $vendor_data['address']['city'] : '';
+			$state    = isset( $vendor_data['address']['state'] ) ? $vendor_data['address']['state'] : '';
+			$zip      = isset( $vendor_data['address']['zip'] ) ? $vendor_data['address']['zip'] : '';
+			$country  = isset( $vendor_data['address']['country'] ) ? $vendor_data['address']['country'] : '';
+			
+			$map_location   = isset( $vendor_data['location'] ) ? esc_attr( $vendor_data['location'] ) : '';
+			$map_address    = isset( $vendor_data['find_address'] ) ? esc_attr( $vendor_data['find_address'] ) : '';
+			
+			$store_lat = '';
+			$store_lng = '';
+			if( $map_location ) {
+				$map_locations = explode( ",", $map_location );
+				if( is_array( $map_locations ) ) {
+					if( isset( $map_locations[0] ) ) $store_lat = $map_locations[0];
+					if( isset( $map_locations[1] ) ) $store_lng = $map_locations[1];
+				}
+			}
+			
+			// Country -> States
+			$country_obj   = new WC_Countries();
+			$countries     = $country_obj->countries;
+			$states        = $country_obj->states;
+			$country_name = '';
+			$state_name = '';
+			if( $country ) $country_name = $country;
+			if( $state ) $state_name = $state;
+			if( $country && isset( $countries[$country] ) ) {
+				$country_name = $countries[$country];
+			}
+			if( $state && isset( $states[$country] ) && is_array( $states[$country] ) ) {
+				$state_name = ($states[$country][$state]) ? $states[$country][$state] : '';
+			}
+			
+			$gmw_saved_location = array(
+				  'ID'            	=> 0,
+				  'latitude'      	=> $store_lat,
+					'longitude'     	=> $store_lng,
+					'street_number' 	=> $street_1,
+					'street_name'   	=> $street_2,
+					'street'        	=> $street_1,
+					'premise'       	=>  '',
+					'neighborhood'  	=>  '',
+					'city'          	=> $city,
+					'county'        	=> $country,
+					'region_name'    	=> $state_name,
+					'region_code'    	=> $state,
+					'postcode'        => $zip,
+					'country_name'  	=> $country_name,
+					'country_code' 		=> $country,
+					'address' 			  => $map_address,
+					'formatted_address' => $map_address
+			);
+		}
 		
-  	return $address;
+  	return $gmw_saved_location;
   }
   
   // Remove WC Vendors Buggy filter
@@ -224,11 +325,30 @@ class WCFM_Dokan {
   	
   	$user_id = $this->vendor_id;
   	
-  	$products = $this->wcv_get_vendor_products();
+  	$products = $this->dokan_get_vendor_products();
 		
 		if( !in_array( $product->get_ID(), $products ) ) return array();
 		
 		return $row;
+  }
+  
+  // Vendor Status check
+  function dokan_is_allow_add_products( $is_allow ) {
+  	if ( ! dokan_is_seller_enabled( $this->vendor_id ) ) {
+			//echo dokan_seller_not_enabled_notice();
+			$is_allow = false;
+		}
+  	return $is_allow;
+  }
+  
+  // Vendor Product Publish Status check
+  function dokan_is_allow_publish_products( $is_allow ) {
+  	if( apply_filters( 'wcfm_is_allow_respect_dokan_publish_product_settings', false ) ) {
+			if ( ! dokan_is_seller_trusted( $this->vendor_id ) ) {
+				$is_allow = false;
+			}
+		}
+  	return $is_allow;
   }
   
   // Coupons Args
@@ -323,10 +443,11 @@ class WCFM_Dokan {
   	
   	?>
 		<tr>
+		  <?php if( apply_filters( 'wcfm_order_details_total_earning_invoice', false ) ) { ?>
+		  <td class="no-borders"></td>
+		  <?php } ?>
 			<td class="label"><?php _e( 'Total Earning', 'wc-frontend-manager' ); ?>:</td>
-			<td>
-				
-			</td>
+			<td></td>
 			<td class="total">
 				<div class="view"><?php echo wc_price( $get_commission_order, array( 'currency' => $order_currency ) ); ?></div>
 			</td>
@@ -372,10 +493,9 @@ class WCFM_Dokan {
   	
   	$user_id = $this->vendor_id;
   	
-  	$products = $this->wcv_get_vendor_products();
-		
-		if( !empty($products) )
-		  $query['where'] .= "AND order_item_meta_2.meta_value in (" . implode( ',', $products ) . ")";
+  	$products = $this->dokan_get_vendor_products();
+  	if( empty($products) ) return array(0);
+		$query['where'] .= "AND order_item_meta_2.meta_value in (" . implode( ',', $products ) . ")";
   	
   	return $query;
   }
@@ -386,7 +506,7 @@ class WCFM_Dokan {
   	
   	$user_id = $this->vendor_id;
   	
-  	$products = $this->wcv_get_vendor_products();
+  	$products = $this->dokan_get_vendor_products();
   	
   	if( !empty( $result ) && is_array( $result ) ) {
   		foreach( $result as $result_key => $result_val ) {
@@ -400,35 +520,43 @@ class WCFM_Dokan {
   /**
    * WC Vendors current venndor products
    */
-  function wcv_get_vendor_products( $vendor_id = 0 ) {
+  function dokan_get_vendor_products( $vendor_id = 0 ) {
   	if( !$vendor_id ) $vendor_id = $this->vendor_id;
   	
-  	$args = array(
-							'posts_per_page'   => -1,
-							'offset'           => 0,
-							'category'         => '',
-							'category_name'    => '',
-							'orderby'          => 'date',
-							'order'            => 'DESC',
-							'include'          => '',
-							'exclude'          => '',
-							'meta_key'         => '',
-							'meta_value'       => '',
-							'post_type'        => 'product',
-							'post_mime_type'   => '',
-							'post_parent'      => '',
-							//'author'	   => get_current_user_id(),
-							'post_status'      => array('draft', 'pending', 'publish'),
-							'suppress_filters' => 0 
-						);
-		
-		$args = apply_filters( 'wcfm_products_args', $args );
-		$products = get_posts( $args );
-		$products_arr = array(0);
-		if(!empty($products)) {
-			foreach($products as $product) {
-				$products_arr[] = $product->ID;
+  	$post_count = 9999; //count_user_posts( $vendor_id, 'product' );
+  	$post_loop_offset = 0;
+  	$products_arr = array(0);
+  	while( $post_loop_offset < $post_count ) {
+			$args = array(
+								'posts_per_page'   => 10,
+								'offset'           => $post_loop_offset,
+								'category'         => '',
+								'category_name'    => '',
+								'orderby'          => 'date',
+								'order'            => 'DESC',
+								'include'          => '',
+								'exclude'          => '',
+								'meta_key'         => '',
+								'meta_value'       => '',
+								'post_type'        => 'product',
+								'post_mime_type'   => '',
+								'post_parent'      => '',
+								//'author'	       => get_current_user_id(),
+								'post_status'      => array('draft', 'pending', 'publish', 'private'),
+								'suppress_filters' => 0, 
+								'fields'           => 'ids'
+							);
+			
+			$args = apply_filters( 'wcfm_products_args', $args );
+			$products = get_posts( $args );
+			if(!empty($products)) {
+				foreach($products as $product) {
+					$products_arr[] = $product;
+				}
+			} else {
+				break;
 			}
+			$post_loop_offset += 10;
 		}
 		
 		return $products_arr;

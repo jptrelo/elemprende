@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Elementor database class.
+ * Elementor database.
  *
  * Elementor database handler class is responsible for communicating with the
  * DB, save and retrieve Elementor data and meta data.
@@ -182,7 +182,11 @@ class DB {
 
 		$document = Plugin::$instance->documents->get( $post_id );
 
-		return $document->get_elements_data( $status );
+		if ( $document ) {
+			return $document->get_elements_data( $status );
+		}
+
+		return [];
 	}
 
 	/**
@@ -213,21 +217,40 @@ class DB {
 	 * When editing the with Elementor the first time, the current page content
 	 * is parsed into Text Editor Widget that contains the original data.
 	 *
-	 * @since 1.0.0
+	 * @since 2.1.0
 	 * @access public
 	 *
 	 * @param int $post_id Post ID.
 	 *
 	 * @return array Content in Elementor format.
 	 */
-	public function _get_new_editor_from_wp_editor( $post_id ) {
+	public function get_new_editor_from_wp_editor( $post_id ) {
 		$post = get_post( $post_id );
 
 		if ( empty( $post ) || empty( $post->post_content ) ) {
 			return [];
 		}
 
-		$text_editor_widget_type = Plugin::$instance->widgets_manager->get_widget_types( 'text-editor' );
+		// Check if it's only a shortcode.
+		preg_match_all( '/' . get_shortcode_regex() . '/', $post->post_content, $matches, PREG_SET_ORDER );
+		if ( ! empty( $matches ) ) {
+			foreach ( $matches as $shortcode ) {
+				if ( trim( $post->post_content ) === $shortcode[0] ) {
+					$widget_type = Plugin::$instance->widgets_manager->get_widget_types( 'shortcode' );
+					$settings = [
+						'shortcode' => $post->post_content,
+					];
+					break;
+				}
+			}
+		}
+
+		if ( empty( $widget_type ) ) {
+			$widget_type = Plugin::$instance->widgets_manager->get_widget_types( 'text-editor' );
+			$settings = [
+				'editor' => $post->post_content,
+			];
+		}
 
 		// TODO: Better coding to start template for editor
 		return [
@@ -241,17 +264,35 @@ class DB {
 						'elements' => [
 							[
 								'id' => Utils::generate_random_string(),
-								'elType' => $text_editor_widget_type::get_type(),
-								'widgetType' => $text_editor_widget_type->get_name(),
-								'settings' => [
-									'editor' => $post->post_content,
-								],
+								'elType' => $widget_type::get_type(),
+								'widgetType' => $widget_type->get_name(),
+								'settings' => $settings,
 							],
 						],
 					],
 				],
 			],
 		];
+	}
+
+	/**
+	 * Get new editor from WordPress editor.
+	 *
+	 * When editing the with Elementor the first time, the current page content
+	 * is parsed into Text Editor Widget that contains the original data.
+	 *
+	 * @since 1.0.0
+	 * @deprecated 2.1.0 Use `DB::get_new_editor_from_wp_editor()` instead
+	 * @access public
+	 *
+	 * @param int $post_id Post ID.
+	 *
+	 * @return array Content in Elementor format.
+	 */
+	public function _get_new_editor_from_wp_editor( $post_id ) {
+		// TODO: _deprecated_function( __METHOD__, '2.1.0', __CLASS__ . '::get_new_editor_from_wp_editor()' );
+
+		return $this->get_new_editor_from_wp_editor( $post_id );
 	}
 
 	/**
@@ -281,7 +322,7 @@ class DB {
 	 * When saving data in the editor, this method renders recursively the plain
 	 * content containing only the content and the HTML. No CSS data.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 * @access private
 	 *
 	 * @param array $element_data Element data.
@@ -376,6 +417,7 @@ class DB {
 	 * auto-save. Only then copy elementor meta from one post to another using
 	 * `copy_elementor_meta()`.
 	 *
+	 * @since 1.9.2
 	 * @access public
 	 *
 	 * @param int $from_post_id Original post ID.
@@ -545,6 +587,8 @@ class DB {
 			$GLOBALS['post'] = $new_query->posts[0]; // WPCS: override ok.
 
 			setup_postdata( $GLOBALS['post'] );
+		} elseif ( $new_query->is_author() ) {
+			$GLOBALS['authordata'] = get_userdata( $new_query->get( 'author' ) ); // WPCS: override ok.
 		}
 	}
 
@@ -568,12 +612,15 @@ class DB {
 
 		$wp_query = $data['original']; // WPCS: override ok.
 
-		// Ensure the global post is set only if needed
+		// Ensure the global post/authordata is set only if needed.
 		unset( $GLOBALS['post'] );
+		unset( $GLOBALS['authordata'] );
 
 		if ( $wp_query->is_singular() && isset( $wp_query->posts[0] ) ) {
 			$GLOBALS['post'] = $wp_query->posts[0]; // WPCS: override ok.
 			setup_postdata( $GLOBALS['post'] );
+		} elseif ( $wp_query->is_author() ) {
+			$GLOBALS['authordata'] = get_userdata( $wp_query->get( 'author' ) ); // WPCS: override ok.
 		}
 	}
 
@@ -600,6 +647,7 @@ class DB {
 	 *
 	 * Retrieve the post plain text from any given Elementor data.
 	 *
+	 * @since 1.9.2
 	 * @access public
 	 *
 	 * @param array $data Post ID.

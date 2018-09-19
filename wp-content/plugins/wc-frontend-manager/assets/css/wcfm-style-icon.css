@@ -144,7 +144,7 @@
 .wcicon-status-refunded:before {
     content: "\e014";
 }
-.wcicon-status-completed:before {
+.wcicon-status-completed:before, .wcicon-status-active:before {
     content: "\e015";
 }
 .wcicon-variable:before {
@@ -153,7 +153,7 @@
 .wcicon-expand:before {
     content: "\e005";
 }
-.wcicon-status-failed:before {
+.wcicon-status-failed:before, .wcicon-status-expired:before {
     content: "\e016";
 }
 .wcicon-check:before {

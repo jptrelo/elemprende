@@ -1,0 +1,153 @@
+section.elementor-element-d8ca0de{
+    text-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    background-position: 0px -100px;
+    background-size: cover;
+    background-image: url('/elemprende/wp-content/uploads/images/1652341.jpg');
+    background-repeat: no-repeat;
+}
+
+@media screen and (max-width: 1190px) {
+    section.elementor-element-d8ca0de{
+        background-position: top;
+    }
+}
+
+section.elementor-element-d8ca0de h2{
+    text-shadow: none;
+}
+
+section.elementor-element-d8ca0de{
+    padding-bottom: 30px;
+}
+
+section.elementor-element-d8ca0de .elementor-text-editor p{
+    color: #FFF;
+}
+
+div.elementor-339 .elementor-container{
+    width: 100% !important;
+    max-width: inherit !important;
+}
+
+div.elementor-element-6c2b483, div.elementor-element-32e88f3, div.elementor-element-dece5ee{
+    padding: 20px;
+}
+
+div.elementor-element-32e88f3, div.elementor-element-55f47e68, div.elementor-element-1700d0bd{
+    background-color: #1B1464 !important;
+}
+
+div.elementor-element-6a653aa, div.elementor-element-dece5ee{
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-right: 0;
+}
+.elementor-339 .lae-stats-bars .lae-stats-bar .lae-stats-bar-bg,
+.elementor-339  .lae-stats-bars .lae-stats-bar .lae-stats-bar-content{
+    height: 10px !important;
+}
+
+.elementor-339 .lae-stats-bars .lae-stats-bar .lae-stats-bar-bg{
+    margin-top: -10px !important;
+}
+
+.lae-stats-bars .lae-stats-bar .lae-stats-title{
+    font-size: 14px !important;
+    color: #1B1464 !important;
+}
+
+.lae-stats-bars .lae-stats-bar{
+    margin-bottom: 5px !important;
+}
+
+div.elementor-element-3705748, div.elementor-element-3705748 div.elementor-column-wrap,
+div.elementor-element-b508174, div.elementor-element-b508174 > div.elementor-column-wrap,
+div.elementor-element-6c2b483 > div.elementor-column-wrap{
+    padding: 0 !important;
+}
+
+div.elementor-339 .elementor-element-b2ce552 > .elementor-widget-container{
+    margin: 20px 30px 0px 30px !important;
+}
+
+div.elementor-widget-container > h5{
+    display: none;
+}
+
+.elementor-column-gap-default > .elementor-row > .elementor-column > .elementor-element-populated{
+    padding: 0 !important;
+}
+
+.elementor-339 div.elementor-tab-title{
+    border: none !important;
+    color: #00cbcc;
+} 
+.elementor-339 div.elementor-tab-content{
+    border: none !important;
+    padding-left: 8px !important;
+    min-height: 215px !important;
+}
+
+div.elementor-339 div.elementor-tab-content p{
+    color: #7a7a7a !important;
+}
+.elementor-339 div.elementor-tab-title::after{
+    border: none !important;
+}
+
+div.elementor-element-6a653aa, div.elementor-element-9458426, div.elementor-element-484be981{
+    background-color: #f7f7f7 !important;
+}
+
+.elementor-339 .elementor-widget-tabs .elementor-tab-title.elementor-active{
+    color: #F15A24 !important;
+}
+
+.elementor-339 .elementor-widget-lae-stats-bars{
+    padding-bottom: 22px !important;
+    width: 100% !important;
+    bottom: 0 !important;
+    padding-left: 8px !important;
+    padding-right: 25px !important;
+    position: absolute !important;
+}
+
+.elementor-339 .elementor-counter-number{
+    color: #F15A24 !important;
+}
+
+.elementor-339 .elementor-counter-title{
+    color: #1b1464 !important; 
+}
+
+.elementor-339 .yop-poll-container{
+    background-color: #1B1464 !important;
+    width: 100% !important;
+}
+
+.elementor-339 div[class|='yop-poll-question']{
+    color: #F15A24 !important;
+    font-weight: 500;
+}
+
+.elementor-339 div[class|='yop-poll-answers']{
+    text-align: center !important;
+}
+
+.elementor-339 div[class|='yop-poll-answers'] ul{
+    display: inline-block !important;
+}
+.elementor-339 div[class|='yop-poll-question'] label{
+    color: #FFF !important;
+}
+
+.elementor-339 div.elementor-social-icons-wrapper{
+    text-align: right !important;
+    padding-right: 25px !important;
+}
+
+.elementor-339 .yop_poll_vote_button{
+    background: white !important;
+    border: 2px solid #63ffff;
+    color: #00cbcc !important;
+}

@@ -3,7 +3,7 @@
   Plugin Name: User Roles and Capabilities
   Plugin URI: http://solvease.com
   Description: manage user roles and capabilities. Create new roles and delete existing roles. Using this plugin you will not be able to modify any capabilities for administrator user role. WordPress built in roles cant be deleted.
-  Version: 1.2.1
+  Version: 1.2.3
   Author: mahabub
   Author URI: http://solvease.com
  License: GPLv2 or later

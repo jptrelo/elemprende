@@ -3,6 +3,7 @@
  * WCFMu plugin view
  *
  * Marketplace WC Marketplace Support
+ * This template can be overridden by copying it to yourtheme/wcfm/dashboard/
  *
  * @author 		WC Lovers
  * @package 	wcfm/views
@@ -148,20 +149,22 @@ if( $wcfm_is_allow_analytics = apply_filters( 'wcfm_is_allow_analytics', true ) 
 		
 		<?php do_action( 'begin_wcfm_dashboard' ); ?>
 		
-		<?php require_once( $WCFM->library->views_path . 'dashboard/wcfm-view-dashboard-welcome-box.php' ); ?>
+		<?php $WCFM->template->get_template( 'dashboard/wcfm-view-dashboard-welcome-box.php' ); ?>
 		
 		<?php if( apply_filters( 'wcfm_is_pref_stats_box', true ) ) { ?>
 			<div class="wcfm_dashboard_stats">
 				<?php if( $wcfm_is_allow_reports = apply_filters( 'wcfm_is_allow_reports', true ) ) { ?>
-					<div class="wcfm_dashboard_stats_block">
-						<a href="<?php echo get_wcfm_reports_url( 'month' ); ?>">
-							<span class="fa fa-currency"><?php echo get_woocommerce_currency_symbol() ; ?></span>
-							<div>
-								<strong><?php echo apply_filters( 'wcfm_vendor_dashboard_gross_sales', wc_price( $gross_sales ) ); ?></strong><br />
-								<?php _e( 'gross sales in this month', 'wc-frontend-manager' ); ?>
-							</div>
-						</a>
-					</div>
+					<?php if( apply_filters( 'wcfm_sales_report_is_allow_gross_sales', true ) ) { ?>
+						<div class="wcfm_dashboard_stats_block">
+							<a href="<?php echo get_wcfm_reports_url( 'month' ); ?>">
+								<span class="fa fa-currency"><?php echo get_woocommerce_currency_symbol() ; ?></span>
+								<div>
+									<strong><?php echo apply_filters( 'wcfm_vendor_dashboard_gross_sales', wc_price( $gross_sales ) ); ?></strong><br />
+									<?php _e( 'gross sales in this month', 'wc-frontend-manager' ); ?>
+								</div>
+							</a>
+						</div>
+					<?php } ?>
 					<div class="wcfm_dashboard_stats_block">
 						<a href="<?php echo get_wcfm_reports_url( ); ?>">
 							<span class="fa fa-money"></span>
@@ -175,8 +178,8 @@ if( $wcfm_is_allow_analytics = apply_filters( 'wcfm_is_allow_analytics', true ) 
 						<a href="<?php echo apply_filters( 'sales_by_product_report_url', get_wcfm_reports_url( ), '' ); ?>">
 							<span class="fa fa-cubes"></span>
 							<div>
-								<?php printf( _n( "<strong>%s item</strong><br />", "<strong>%s items</strong><br />", $total_sell, 'wc-frontend-manager' ), $total_sell ); ?>
-								<?php _e( 'sold in this month', 'wc-frontend-manager' ); ?>
+								<?php printf( _n( "<strong>%s item</strong>", "<strong>%s items</strong>", $total_sell, 'wc-frontend-manager' ), $total_sell ); ?>
+								<br /><?php _e( 'sold in this month', 'wc-frontend-manager' ); ?>
 							</div>
 						</a>
 					</div>
@@ -186,8 +189,8 @@ if( $wcfm_is_allow_analytics = apply_filters( 'wcfm_is_allow_analytics', true ) 
 						<a href="<?php echo get_wcfm_orders_url( ); ?>">
 							<span class="fa fa-cart-plus"></span>
 							<div>
-								<?php printf( _n( "<strong>%s order</strong><br />", "<strong>%s orders</strong><br />", $order_count, 'wc-frontend-manager' ), $order_count ); ?>
-								<?php _e( 'received in this month', 'wc-frontend-manager' ); ?>
+								<?php printf( _n( "<strong>%s order</strong>", "<strong>%s orders</strong>", $order_count, 'wc-frontend-manager' ), $order_count ); ?>
+								<br /><?php _e( 'received in this month', 'wc-frontend-manager' ); ?>
 							</div>
 						</a>
 					</div>
@@ -274,7 +277,7 @@ if( $wcfm_is_allow_analytics = apply_filters( 'wcfm_is_allow_analytics', true ) 
 							<ul class="wc_status_list">
 								<?php if( $wcfm_is_allow_reports = apply_filters( 'wcfm_is_allow_reports', true ) ) { ?>
 									<?php
-									if ( ( $top_seller = $this->get_top_seller() ) && $top_seller->qty ) {
+									if ( ( $top_seller = $WCFM->library->get_top_seller() ) && $top_seller->qty ) {
 										?>
 										<li class="best-seller-this-month">
 											<a href="<?php echo apply_filters( 'sales_by_product_report_url',  get_wcfm_reports_url( ), $top_seller->product_id ); ?>">

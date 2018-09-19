@@ -30,10 +30,15 @@ class WCFM_Install {
 		}
 		
 		// Intialize Page View Analytices Tables - Version 2.2.5
-		if ( !get_option( 'wcfm_updated_4_0_3' ) ) {
+		if ( !get_option( 'wcfm_table_install' ) ) {
 			$this->wcfm_create_tables();
 			update_option("wcfm_table_install", 1);
-			update_option( 'wcfm_updated_4_0_3', 1 );
+		}
+		
+		// Create Knowlwdgebase terms
+		if ( !get_option( 'wcfm_knowledgebase_category_install' ) ) {
+			$this->create_terms();
+			update_option("wcfm_knowledgebase_category_install", 1);
 		}
 		
 		// Intialize WCFM End points
@@ -94,7 +99,7 @@ class WCFM_Install {
 			global $WCFM;
 
 			// WCFM page
-			$this->wcfm_create_page(esc_sql(_x('wcfm', 'page_slug', 'wc-frontend-manager')), 'wc_frontend_manager_page_id', __('WC Frontend Manager', 'wc-frontend-manager'), '[wc_frontend_manager]');
+			$this->wcfm_create_page(esc_sql(_x('store-manager', 'page_slug', 'wc-frontend-manager')), 'wc_frontend_manager_page_id', __('Store Manager', 'wc-frontend-manager'), '[wc_frontend_manager]');
 			
 			$array_pages = array();
 			$array_pages['wc_frontend_manager_page_id'] = get_option('wc_frontend_manager_page_id');
@@ -208,6 +213,28 @@ class WCFM_Install {
 															PRIMARY KEY (`ID`)
 															) $collate;";
 															
+		$create_tables_query[] = "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "wcfm_enquiries_response` (
+															`ID` bigint(20) NOT NULL AUTO_INCREMENT,
+															`enquiry_id` bigint(20) NOT NULL default 0,
+															`product_id` bigint(20) NOT NULL default 0,
+															`vendor_id` bigint(20) NOT NULL default 0,
+															`customer_id` bigint(20) NOT NULL default 0,
+															`customer_name` VARCHAR(200) NOT NULL,
+															`customer_email` VARCHAR(200) NOT NULL,
+															`reply` longtext NOT NULL,
+															`reply_by` bigint(20) NOT NULL default 0,
+															`posted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,	
+															PRIMARY KEY (`ID`)
+															) $collate;";					
+															
+		$create_tables_query[] = "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "wcfm_enquiries_meta` (
+															`ID` bigint(20) NOT NULL AUTO_INCREMENT,
+															`enquiry_id` bigint(20) NOT NULL default 0,
+															`key` VARCHAR(200) NOT NULL,
+															`value` longtext NOT NULL,
+															PRIMARY KEY (`ID`)
+															) $collate;";													
+															
 		$create_tables_query[] = "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "wcfm_support` (
 															`ID` bigint(20) NOT NULL AUTO_INCREMENT,
 															`order_id` bigint(20) NOT NULL default 0,
@@ -238,10 +265,19 @@ class WCFM_Install {
 															`reply_by` bigint(20) NOT NULL default 0,
 															`posted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,	
 															PRIMARY KEY (`ID`)
-															) $collate;";												
+															) $collate;";	
+															
+		$create_tables_query[] = "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "wcfm_support_meta` (
+															`ID` bigint(20) NOT NULL AUTO_INCREMENT,
+															`support_id` bigint(20) NOT NULL default 0,
+															`key` VARCHAR(200) NOT NULL,
+															`value` longtext NOT NULL,
+															`type` VARCHAR(200) NOT NULL,
+															PRIMARY KEY (`ID`)
+															) $collate;";				
 		
 															
-		$create_tables_query[] = "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "wcfm_following_follower` (
+		$create_tables_query[] = "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "wcfm_following_followers` (
 															`ID` bigint(20) NOT NULL AUTO_INCREMENT,
 															`user_id` bigint(20) NOT NULL default 0,
 															`user_name` VARCHAR(200) NOT NULL,
@@ -249,12 +285,64 @@ class WCFM_Install {
 															`follower_id` bigint(20) NOT NULL default 0,
 															`follower_name` VARCHAR(200) NOT NULL,
 															`follower_email` VARCHAR(200) NOT NULL,
+															`notify` tinyint(1) NOT NULL default 1,
 															`posted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,	
 															PRIMARY KEY (`ID`)
 															) $collate;";		
 
 		foreach ($create_tables_query as $create_table_query) {
 			$wpdb->query($create_table_query);
+		}
+	}
+	
+	public function create_terms() {
+		register_taxonomy(
+			'wcfm_knowledgebase_category',
+			array( 'wcfm_knowledgebase' ),
+			apply_filters(
+				'wcfm_taxonomy_args_knowledgebase_category', array(
+					'hierarchical'      => true,
+					'show_ui'           => false,
+					'show_in_nav_menus' => false,
+					'query_var'         => is_admin(),
+					'rewrite'           => false,
+					'public'            => false,
+				)
+			)
+		);
+		
+		$taxonomies = array(
+			'wcfm_knowledgebase_category' => array(
+				__( 'Product', 'wc-frontend-manager' ),
+				__( 'Inquiry', 'wc-frontend-manager' ),
+				__( 'Order', 'wc-frontend-manager' ),
+				__( 'Report', 'wc-frontend-manager' ),
+				__( 'Shipping', 'wc-frontend-manager' ),
+				__( 'Settings', 'wc-frontend-manager' ),
+				__( 'Verification', 'wc-frontend-manager' ),
+				__( 'Support Ticket', 'wc-frontend-manager' ),
+				__( 'Article', 'wc-frontend-manager' ),
+				__( 'Customer', 'wc-frontend-manager' ),
+				__( 'Followers', 'wc-frontend-manager' ),
+				__( 'Coupon', 'wc-frontend-manager' ),
+				__( 'Noice', 'wc-frontend-manager' ),
+				__( 'Membership', 'wc-frontend-manager' ),
+				__( 'Profile', 'wc-frontend-manager' ),
+				__( 'Payment', 'wc-frontend-manager' ),
+				__( 'Withdrawal', 'wc-frontend-manager' ),
+				__( 'General', 'wc-frontend-manager' ),
+				__( 'Analytics', 'wc-frontend-manager' ),
+				__( 'Marketing', 'wc-frontend-manager' ),
+				__( 'SEO', 'wc-frontend-manager' )
+			)
+		);
+
+		foreach ( $taxonomies as $taxonomy => $terms ) {
+			foreach ( $terms as $term ) {
+				if ( ! get_term_by( 'name', $term, $taxonomy ) ) {
+					wp_insert_term( $term, $taxonomy );
+				}
+			}
 		}
 	}
 

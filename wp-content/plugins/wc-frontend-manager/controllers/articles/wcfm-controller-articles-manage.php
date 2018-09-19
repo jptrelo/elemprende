@@ -145,9 +145,9 @@ class WCFM_Articles_Manage_Controller {
 				
 				if(!$has_error) {
 					if( get_post_status( $new_article_id ) == 'publish' ) {
-						if(!$has_error) echo '{"status": true, "message": "' . apply_filters( 'article_published_message', $wcfm_articles_manage_messages['article_published'], $new_article_id ) . '", "redirect": "' . apply_filters( 'wcfm_article_save_publish_redirect', get_permalink( $new_article_id ), $new_article_id ) . '", "id": "' . $new_article_id . '", "title": "' . get_the_title( $new_article_id ) . '"}';	
+						if(!$has_error) echo '{"status": true, "message": "' . apply_filters( 'article_published_message', $wcfm_articles_manage_messages['article_published'], $new_article_id ) . '", "redirect": "' . apply_filters( 'wcfm_article_save_publish_redirect', get_wcfm_articles_manage_url( $new_article_id ), $new_article_id ) . '", "id": "' . $new_article_id . '", "title": "' . get_the_title( $new_article_id ) . '"}';	
 					} elseif( get_post_status( $new_article_id ) == 'pending' ) {
-						if(!$has_error) echo '{"status": true, "message": "' . apply_filters( 'article_pending_message', $wcfm_articles_manage_messages['article_pending'], $new_article_id ) . '", "redirect": "' . apply_filters( 'wcfm_article_save_pending_redirect', get_wcfm_articles_url( 'pending' ), $new_article_id ) . '", "id": "' . $new_article_id . '", "title": "' . get_the_title( $new_article_id ) . '"}';
+						if(!$has_error) echo '{"status": true, "message": "' . apply_filters( 'article_pending_message', $wcfm_articles_manage_messages['article_pending'], $new_article_id ) . '", "redirect": "' . apply_filters( 'wcfm_article_save_pending_redirect', get_wcfm_articles_manage_url( $new_article_id ), $new_article_id ) . '", "id": "' . $new_article_id . '", "title": "' . get_the_title( $new_article_id ) . '"}';
 					} else {
 						if(!$has_error) echo '{"status": true, "message": "' . apply_filters( 'article_saved_message', $wcfm_articles_manage_messages['article_saved'], $new_article_id ) . '", "redirect": "' . apply_filters( 'wcfm_article_save_draft_redirect', get_wcfm_articles_manage_url( $new_article_id ), $new_article_id ) . '", "id": "' . $new_article_id . '"}';
 					}

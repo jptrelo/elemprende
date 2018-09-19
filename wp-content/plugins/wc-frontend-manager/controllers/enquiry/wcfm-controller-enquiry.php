@@ -114,34 +114,40 @@ class WCFM_Enquiry_Controller {
 				$wcfm_enquirys_json_arr[$index][] =  '<a href="' . get_wcfm_enquiry_manage_url($wcfm_enquirys_single->ID) . '" class="wcfm_dashboard_item_title">' . $wcfm_enquirys_single->enquiry . '</a>';
 				
 				// Product
-				$wcfm_enquirys_json_arr[$index][] =  '<a class="wcfm-enquiry-product" target="_blank" href="' . get_permalink($wcfm_enquirys_single->product_id) . '">' . get_the_title($wcfm_enquirys_single->product_id) . '</a>';
+				if( $wcfm_enquirys_single->product_id ) {
+					$wcfm_enquirys_json_arr[$index][] =  '<a class="wcfm-enquiry-product" target="_blank" href="' . get_permalink($wcfm_enquirys_single->product_id) . '">' . get_the_title($wcfm_enquirys_single->product_id) . '</a>';
+				} else {
+					$wcfm_enquirys_json_arr[$index][] =  '&ndash;';
+				}
 				
 				// Customer
-				$wcfm_enquirys_json_arr[$index][] =  $wcfm_enquirys_single->customer_name;
+				$wcfm_enquirys_json_arr[$index][] =  apply_filters( 'wcfm_enquiry_customer_name_display', $wcfm_enquirys_single->customer_name, $wcfm_enquirys_single->customer_id, $wcfm_enquirys_single->ID );
 				
 				// Vendor
 				$vendor_name = '&ndash;';
 				if( !$WCFM->is_marketplace || wcfm_is_vendor() ) {
 					$wcfm_enquirys_json_arr[$index][] =  $vendor_name;
-				} else {
-					if( $WCFM->is_marketplace == 'wcmarketplace' ) {
-						$vendor_terms = wp_get_post_terms( $wcfm_enquirys_single->product_id, 'dc_vendor_shop' );
-						foreach( $vendor_terms as $vendor_term ) {
-							$vendor_name = $vendor_term->name;
-						}
-					} elseif( $WCFM->is_marketplace == 'wcpvendors' ) {
-						$vendor_terms = wp_get_post_terms( $wcfm_enquirys_single->product_id, 'wcpv_product_vendors' );
-						foreach( $vendor_terms as $vendor_term ) {
-							$vendor_name = $vendor_term->name;
-						}
-					} elseif( $WCFM->is_marketplace == 'wcvendors' ) {
-						$vendor_name = get_user_meta( $wcfm_enquirys_single->author_id, 'pv_shop_name', true );
-					} elseif( $WCFM->is_marketplace == 'dokan' ) {
-						$vendor_data = get_user_meta( $wcfm_enquirys_single->author_id, 'dokan_profile_settings', true );
-						$vendor_name = isset( $vendor_data['store_name'] ) ? esc_attr( $vendor_data['store_name'] ) : '&ndash';
+				} elseif( $wcfm_enquirys_single->vendor_id ) {
+					$store_name = $WCFM->wcfm_vendor_support->wcfm_get_vendor_store_by_vendor( $wcfm_enquirys_single->vendor_id );
+					if( $store_name ) {
+						$vendor_name = $store_name;
 					}
 					$wcfm_enquirys_json_arr[$index][] =  $vendor_name;
+				} else {
+					$wcfm_enquirys_json_arr[$index][] =  $vendor_name;
 				}
+				
+				// Additional Info
+				$additional_info = '';
+				$wcfm_enquiry_meta_values = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}wcfm_enquiries_meta WHERE `enquiry_id` = " . $wcfm_enquirys_single->ID);
+				if( !empty( $wcfm_enquiry_meta_values ) ) {
+					foreach( $wcfm_enquiry_meta_values as $wcfm_enquiry_meta_value ) {
+						$additional_info .= __( $wcfm_enquiry_meta_value->key, 'wc-frontend-manager' ) . ': ' . $wcfm_enquiry_meta_value->value . '<br />';
+					}
+				} else {
+					$additional_info = '&ndash;';
+				}
+				$wcfm_enquirys_json_arr[$index][] =  $additional_info;
 				
 				// Reply
 				if( $wcfm_enquirys_single->reply ) {

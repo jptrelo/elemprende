@@ -10,8 +10,8 @@ class Premium_Progressbar_Widget extends Widget_Base
     }
 
     public function get_title() {
-        return esc_html__('Premium Progress Bar', 'premium-addons-for-elementor');
-    }
+		return \PremiumAddons\Helper_Functions::get_prefix() . ' Progress Bar';
+	}
     
     public function get_icon() {
         return 'pa-progress-bar';
@@ -19,6 +19,11 @@ class Premium_Progressbar_Widget extends Widget_Base
 
     public function get_categories() {
         return [ 'premium-elements' ];
+    }
+    
+    public function get_script_depends()
+    {
+        return ['premium-addons-js', 'waypoints'];
     }
 
     // Adding the controls fields for the premium progress bar
@@ -48,6 +53,7 @@ class Premium_Progressbar_Widget extends Widget_Base
                 [
                     'label'         => esc_html__('Title', 'premium-addons-for-elementor'),
                     'type'          => Controls_Manager::TEXT,
+                    'dynamic'       => [ 'active' => true ],
                     'default'       => esc_html__('My Skill','premium-addons-for-elementor'),
                     'label_block'   => true,
                     'condition'     =>[
@@ -69,49 +75,57 @@ class Premium_Progressbar_Widget extends Widget_Base
                 ]
                 );
         
+        $repeater = new REPEATER();
+        
+        $repeater->add_control('text',
+            [
+                'label'             => esc_html__( 'Label','premium-addons-for-elementor' ),
+                'type'              => Controls_Manager::TEXT,
+                'dynamic'           => [ 'active' => true ],
+                'label_block'       => true,
+                'placeholder'       => esc_html__( 'label','premium-addons-for-elementor' ),
+                'default'           => esc_html__( 'label', 'premium-addons-for-elementor' ),
+            ]
+        );
+        
+        $repeater->add_control('number',
+            [
+                'label'             => __( 'Percentage', 'premium-addons-for-elementor' ),
+                'type'              => Controls_Manager::NUMBER,
+                'label_block'       => true,
+                'default'           => '50',
+            ]
+        );
+        
         $this->add_control('premium_progressbar_multiple_label',
                 [
                     'label'     => esc_html__('Label','premium-addons-for-elementor'),
                     'type'      => Controls_Manager::REPEATER,
                     'default'   => [
-                                        [
-					'text' => esc_html__( 'Label','premium-addons-for-elementor' ),
-					'number' => esc_html__('50','premium-addons-for-elementor')
-                                        ]
-                                ],
-                    'fields'    => [
-                                       [
-					'name' => 'text',
-					'label' => esc_html__( 'Label','premium-addons-for-elementor' ),
-					'type' => Controls_Manager::TEXT,
-					'label_block' => true,
-					'placeholder' => esc_html__( 'label','premium-addons-for-elementor' ),
-					'default' => esc_html__( 'label', 'premium-addons-for-elementor' ),
-                                        ],
-                                        [
-					'name' => 'number',
-					'label' => __( 'Percentage', 'premium-addons-for-elementor' ),
-					'type' => Controls_Manager::NUMBER,
-					'label_block' => true,
-					'default' => '50',
-                                        ]
-                                    ],
+                        [
+                            'text' => esc_html__( 'Label','premium-addons-for-elementor' ),
+                            'number' => esc_html__('50','premium-addons-for-elementor')
+                        ]
+                        ],
+                    'fields'    => array_values( $repeater->get_controls() ),
                     'condition' =>[
-                        'premium_progressbar_select_label'  =>'more_labels'
-                    ] 
-                    ]
-	);
+                    'premium_progressbar_select_label'  =>'more_labels'
+                ] 
+            ]
+        );
+        
         $this->add_control('premium_progress_bar_space_percentage_switcher',
                 [
                     'label'      => esc_html__('Enable Percentage', 'premium-addons-for-elementor'),
                     'type'       => Controls_Manager::SWITCHER,
                     'default'     => 'yes',
                     'description' => esc_html__('Enable percentage for labels','premium-addons-for-elementor'),
-                    'condition'   =>[
-                                       'premium_progressbar_select_label'=>'more_labels',
-                                    ]
+                    'condition'   => [
+                        'premium_progressbar_select_label'=>'more_labels',
+                        ]
                 ]
         );
+        
         $this->add_control('premium_progressbar_select_label_icon', 
                 [
                     'label'         => esc_html__('Labels Indicator', 'premium-addons-for-elementor'),
@@ -127,6 +141,7 @@ class Premium_Progressbar_Widget extends Widget_Base
                     ]
                 ]
         );
+        
         $this->add_control('premium_progressbar_more_labels_align',
                 [
                     'label'         => esc_html__('Labels Alignment','premuim-addons-for-elementor'),
@@ -162,9 +177,6 @@ class Premium_Progressbar_Widget extends Widget_Base
                     'size' => 50,
                     'unit' =>  '%',
                 ],
-                'selectors'         => [
-                    '{{WRAPPER}} .premium-progressbar-progress-bar' => 'width: {{SIZE}}{{UNIT}};',
-                ]
             ]
         );
         
@@ -329,7 +341,7 @@ class Premium_Progressbar_Widget extends Widget_Base
                 [
                     'name'          => 'left_label_typography',
                     'scheme'        => Scheme_Typography::TYPOGRAPHY_1,
-                    'selector'      => '{{WRAPPER}} .premium-progressbar-multiple-label',
+                    'selector'      => '{{WRAPPER}} .premium-progressbar-left-label',
                     ]
                 );
         
@@ -341,7 +353,7 @@ class Premium_Progressbar_Widget extends Widget_Base
                 'type'              => Controls_Manager::DIMENSIONS,
                 'size_units'        => [ 'px', 'em', '%' ],
                 'selectors'         => [
-                    '{{WRAPPER}} .premium-progressbar-multiple-label' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .premium-progressbar-left-label' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ]
             ]      
         );
@@ -559,9 +571,13 @@ class Premium_Progressbar_Widget extends Widget_Base
     protected function render($instance = [])
     {
         // get our input from the widget settings.
-        $settings = $this->get_settings();
+        $settings = $this->get_settings_for_display();
         $this->add_inline_editing_attributes('premium_progressbar_left_label');
         $this->add_inline_editing_attributes('premium_progressbar_right_label');
+        
+        $progressbar_settings = [
+            'progress_length'    => $settings['premium_progressbar_progress_percentage']['size']
+        ];
 ?>
 
    <div class="premium-progressbar-container">
@@ -668,37 +684,10 @@ class Premium_Progressbar_Widget extends Widget_Base
         <?php endif;?>
             <div class="clearfix"></div>
             <div class="pa-progress premium-progressbar-progress">
-                <div class=" premium-progressbar-progress-bar progress-bar <?php if( $settings['premium_progressbar_progress_style'] === 'solid' ){ echo "";} elseif( $settings['premium_progressbar_progress_style'] === 'stripped' ){ echo "progress-bar-striped";}?> <?php if( $settings['premium_progressbar_progress_animation'] === 'yes' ){ echo "active";}?>" role="progressbar" aria-valuenow="<?php echo $settings['premium_progressbar_progress_percentage']['size']; ?>" aria-valuemin="0" aria-valuemax="100">
+                <div class=" premium-progressbar-progress-bar progress-bar <?php if( $settings['premium_progressbar_progress_style'] === 'solid' ){ echo "";} elseif( $settings['premium_progressbar_progress_style'] === 'stripped' ){ echo "progress-bar-striped";}?> <?php if( $settings['premium_progressbar_progress_animation'] === 'yes' ){ echo "active";}?>" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-settings='<?php echo wp_json_encode($progressbar_settings); ?>'>
                 </div>
             </div>
         </div>
-    <script>
-            var progress_bar_interval;
-            jQuery(function($){
-                $(document).ready(function(){
-                var i = 0;  
-                if ( $(document).outerWidth() < 768 ) {
-                    progress_bar_interval = 600;
-                } else { 
-                    progress_bar_interval = 1000;
-                }
-                $(".premium-progressbar-progress-bar").css('width','0');
-                var number_of_progress_bars = $(".premium-progressbar-progress-bar").length;
-                for(;;){if(i >= number_of_progress_bars){break;}  scrollFunction(i); i = i + 1;}
-            });
-        });
-        function scrollFunction(progressBar){
-            jQuery(function($){$(document).scroll(function(){
-            if( $(this).scrollTop() >= $(".premium-progressbar-progress:eq(" + progressBar+ ")").offset().top  - 600 ){
-                $(".premium-progressbar-progress-bar:eq("+progressBar+")").animate({
-                width: $(".premium-progressbar-progress-bar:eq("+progressBar+")").attr('aria-valuenow') + '%'
-            },progress_bar_interval);
-          } 
-        });
-      });
-    };
-    </script>
-
     <?php
     }
 }

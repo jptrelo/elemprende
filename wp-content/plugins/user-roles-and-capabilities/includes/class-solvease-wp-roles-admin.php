@@ -160,7 +160,7 @@ class Solvease_Roles_Capabilities_Admin
         );
 
         wp_register_script(
-            'solvease-roles-capabilities-custom-js', plugins_url('/js/custom_script.js', dirname(__FILE__)), array('jquery')
+            'solvease-roles-capabilities-custom-js', plugins_url('/js/custom_script.js?t='.time(), dirname(__FILE__)), array('jquery')
         );
 
         wp_register_script(

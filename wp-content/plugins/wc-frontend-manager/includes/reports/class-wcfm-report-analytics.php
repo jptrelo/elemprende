@@ -245,7 +245,11 @@ class WCFM_Report_Analytics extends WC_Admin_Report {
 				var analytics_data = <?php echo $chart_data; ?>;
 				var show_legend    = <?php echo $show_legend; ?>;
 				
-				jQuery('.analytics-chart-placeholder').css( 'width', jQuery('.analytics-chart-placeholder').outerWidth() + 'px' );
+				$show_ticks = true;
+				if( jQuery(window).width() <= 640 ) { $show_ticks = false; }
+				$placeholder_width = jQuery('.analytics-chart-placeholder').outerWidth();
+				if( $placeholder_width < 340 ) { $placeholder_width = 340; }
+				jQuery('.analytics-chart-placeholder').css( 'width', $placeholder_width + 'px' );
 				
 				var ctx = document.getElementById("analytics-chart-placeholder-canvas").getContext("2d");
 				var myLineChart = new Chart(ctx, {
@@ -281,7 +285,10 @@ class WCFM_Report_Analytics extends WC_Admin_Report {
 										scaleLabel: {
 											display: false,
 											labelString: 'Date'
-										}
+										},
+										ticks:{
+											display: $show_ticks
+                    }
 									}],
 									yAxes: [{
 										scaleLabel: {

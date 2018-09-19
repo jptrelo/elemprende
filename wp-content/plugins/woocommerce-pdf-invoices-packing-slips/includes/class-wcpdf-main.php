@@ -16,7 +16,7 @@ class Main {
 	function __construct()	{
 		add_action( 'wp_ajax_generate_wpo_wcpdf', array($this, 'generate_pdf_ajax' ) );
 		add_filter( 'woocommerce_email_attachments', array( $this, 'attach_pdf_to_email' ), 99, 3 );
-		add_filter( 'wpo_wcpdf_custom_attachment_condition', array( $this, 'disable_free_attachment'), 10, 4 );
+		add_filter( 'wpo_wcpdf_custom_attachment_condition', array( $this, 'disable_free_attachment'), 1001, 4 );
 
 		if ( isset(WPO_WCPDF()->settings->debug_settings['enable_debug']) ) {
 			$this->enable_debug();
@@ -38,8 +38,14 @@ class Main {
 			add_action( 'wpo_wcpdf_before_pdf', array($this, 'use_currency_font' ), 10, 2 );
 		}
 
-		// scheduled attachments cleanup - disabled for now
-		// add_action( 'wp_scheduled_delete', array( $this, 'attachments_cleanup') );
+		// scheduled attachments cleanup (following settings on Status tab)
+		add_action( 'wp_scheduled_delete', array( $this, 'attachments_cleanup') );
+
+		// remove private data
+		add_action( 'woocommerce_privacy_remove_order_personal_data_meta', array( $this, 'remove_order_personal_data_meta' ), 10, 1 );
+		add_action( 'woocommerce_privacy_remove_order_personal_data', array( $this, 'remove_order_personal_data' ), 10, 1 );
+		// export private data
+		add_action( 'woocommerce_privacy_export_order_personal_data_meta', array( $this, 'export_order_personal_data_meta' ), 10, 1 );
 	}
 
 	/**
@@ -233,6 +239,12 @@ class Main {
 	 */
 	public function get_tmp_path ( $type = '' ) {
 		$tmp_base = $this->get_tmp_base();
+
+		// don't continue if we don't have an upload dir
+		if ($tmp_base === false) {
+			return false;
+		}
+
 		// check if tmp folder exists => if not, initialize
 		if ( !@is_dir( $tmp_base ) ) {
 			$this->init_tmp( $tmp_base );
@@ -280,8 +292,18 @@ class Main {
 		// May also be overridden by the wpo_wcpdf_tmp_path filter
 
 		$upload_dir = wp_upload_dir();
-		$upload_base = trailingslashit( $upload_dir['basedir'] );
-		$tmp_base = trailingslashit( apply_filters( 'wpo_wcpdf_tmp_path', $upload_base . 'wpo_wcpdf/' ) );
+		if (!empty($upload_dir['error'])) {
+			$tmp_base = false;
+		} else {
+			$upload_base = trailingslashit( $upload_dir['basedir'] );
+			$tmp_base = $upload_base . 'wpo_wcpdf/';
+		}
+
+		$tmp_base = apply_filters( 'wpo_wcpdf_tmp_path', $tmp_base );
+		if ($tmp_base !== false) {
+			$tmp_base = trailingslashit( $tmp_base );
+		}
+
 		return $tmp_base;
 	}
 
@@ -465,12 +487,19 @@ class Main {
 	 * Remove attachments older than 1 week (daily, hooked into wp_scheduled_delete )
 	 */
 	public function attachments_cleanup() {
-		if ( !function_exists("glob") || !function_exists('filemtime')) {
-			// glob is disabled
+		if ( !function_exists("glob") || !function_exists('filemtime') ) {
+			// glob is required
 			return;
 		}
 
-		$delete_timestamp = time() - ( DAY_IN_SECONDS * 7 );
+		
+		if ( !isset( WPO_WCPDF()->settings->debug_settings['enable_cleanup'] ) ) {
+			return;
+		}
+
+
+		$cleanup_age_days = isset(WPO_WCPDF()->settings->debug_settings['cleanup_days']) ? floatval(WPO_WCPDF()->settings->debug_settings['cleanup_days']) : 7.0;
+		$delete_timestamp = time() - ( intval ( DAY_IN_SECONDS * $cleanup_age_days ) );
 
 		$tmp_path = $this->get_tmp_path('attachments');
 
@@ -484,7 +513,45 @@ class Main {
 				}
 			}
 		}
+	}
 
+	/**
+	 * Remove all invoice data when requested
+	 */
+	public function remove_order_personal_data_meta( $meta_to_remove ) {
+		$wcpdf_private_meta = array(
+			'_wcpdf_invoice_number'			=> 'numeric_id',
+			'_wcpdf_invoice_number_data'	=> 'array',
+			'_wcpdf_invoice_date'			=> 'timestamp',
+			'_wcpdf_invoice_date_formatted'	=> 'date',
+		);
+		return $meta_to_remove + $wcpdf_private_meta;
+	}
+
+	/**
+	 * Remove references to order in number store tables when removing WC data
+	 */
+	public function remove_order_personal_data( $order ) {
+		global $wpdb;
+		// remove order ID from number stores
+		$number_stores = apply_filters( "wpo_wcpdf_privacy_number_stores", array( 'invoice_number' ) );
+		foreach ( $number_stores as $store_name ) {
+			$order_id = $order->get_id();
+			$table_name = apply_filters( "wpo_wcpdf_number_store_table_name", "{$wpdb->prefix}wcpdf_{$store_name}", $store_name, 'auto_increment' ); // i.e. wp_wcpdf_invoice_number
+			$wpdb->query( "UPDATE $table_name SET order_id = 0 WHERE order_id = $order_id" );
+		}
+	}
+
+	/**
+	 * Export all invoice data when requested
+	 */
+	public function export_order_personal_data_meta( $meta_to_export ) {
+		$private_address_meta = array(
+			// _wcpdf_invoice_number_data & _wcpdf_invoice_date are duplicates of the below and therefor not included
+			'_wcpdf_invoice_number'			=> __( 'Invoice Number', 'woocommerce-pdf-invoices-packing-slips' ),
+			'_wcpdf_invoice_date_formatted'	=> __( 'Invoice Date', 'woocommerce-pdf-invoices-packing-slips' ),
+		);
+		return $meta_to_export + $private_address_meta;
 	}
 
 	/**

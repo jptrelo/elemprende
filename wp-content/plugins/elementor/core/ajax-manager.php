@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Elementor ajax manager class.
+ * Elementor ajax manager.
  *
  * Elementor ajax manager handler class is responsible for handling Elementor
  * ajax requests, ajax responses and registering actions applied on them.
@@ -163,8 +163,10 @@ class Ajax_Manager {
 
 		foreach ( $this->requests as $id => $action_data ) {
 			$this->current_action_id = $id;
+
 			if ( ! isset( $this->ajax_actions[ $action_data['action'] ] ) ) {
 				$this->add_response_data( false, __( 'Action not found.', 'elementor' ), Exceptions::BAD_REQUEST );
+
 				continue;
 			}
 
@@ -174,6 +176,7 @@ class Ajax_Manager {
 
 			try {
 				$results = call_user_func( $this->ajax_actions[ $action_data['action'] ]['callback'], $action_data['data'], $this );
+
 				if ( false === $results ) {
 					$this->add_response_data( false );
 				} else {
@@ -194,7 +197,7 @@ class Ajax_Manager {
 	 *
 	 * Retrieve the data for the current ajax request.
 	 *
-	 * @since 2.0.0
+	 * @since 2.0.1
 	 * @access public
 	 *
 	 * @return bool|mixed Ajax request data if action exist, False otherwise.

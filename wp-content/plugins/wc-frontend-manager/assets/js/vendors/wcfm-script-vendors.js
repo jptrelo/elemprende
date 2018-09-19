@@ -7,15 +7,17 @@ jQuery(document).ready(function($) {
 	$wcfm_vendors_table = $('#wcfm-vendors').DataTable( {
 		"processing": true,
 		"serverSide": true,
+		"pageLength": dataTables_config.pageLength,
 		"bFilter"   : false,
 		"responsive": true,
 		"dom"       : 'Bfrtip',
 		"language"  : $.parseJSON(dataTables_language),
-		"buttons"   : [
-            				'print', 'pdf', 'excel', 'csv' 
-        					],
+		"buttons"   : $wcfm_datatable_button_args,
 		"columns"   : [
 										{ responsivePriority: 1 },
+										{ responsivePriority: 1 },
+										{ responsivePriority: 1 },
+										{ responsivePriority: 4 },
 										{ responsivePriority: 4 },
 										{ responsivePriority: 3 },
 										{ responsivePriority: 2 },
@@ -23,6 +25,7 @@ jQuery(document).ready(function($) {
 										{ responsivePriority: 2 },
 										{ responsivePriority: 3 },
 										{ responsivePriority: 4 },
+										{ responsivePriority: 2 },
 								],
 		"columnDefs": [ { "targets": 0, "orderable" : false }, 
 									  { "targets": 1, "orderable" : false }, 
@@ -32,6 +35,10 @@ jQuery(document).ready(function($) {
 										{ "targets": 5, "orderable" : false },
 										{ "targets": 6, "orderable" : false },
 										{ "targets": 7, "orderable" : false },
+										{ "targets": 8, "orderable" : false },
+										{ "targets": 9, "orderable" : false },
+										{ "targets": 10, "orderable" : false },
+										{ "targets": 11, "orderable" : false },
 									],
 		'ajax': {
 			"type"   : "POST",
@@ -64,6 +71,55 @@ jQuery(document).ready(function($) {
 			$wcfm_vendors_table.ajax.reload();
 		}).select2( $wcfm_vendor_select_args );
 	}
+	
+	// Action Manager
+	$( document.body ).on( 'updated_wcfm-vendors', function() {
+		$('.wcfm_vendor_enable_button').each(function() {
+			$(this).click(function( event ) {
+				event.preventDefault();
+				$('#wcfm_vendors_listing_expander').block({
+					message: null,
+					overlayCSS: {
+						background: '#fff',
+						opacity: 0.6
+					}
+				});
+				var data = {
+					action       : 'wcfm_vendor_enable',
+					memberid     : $(this).data('memberid'),
+				}	
+				$.post(wcfm_params.ajax_url, data, function(response) {
+					if(response) {
+						$wcfm_vendors_table.ajax.reload();
+						$('#wcfm_vendors_listing_expander').unblock();
+					}
+				});
+			});
+		});
+		
+		$('.wcfm_vendor_disable_button').each(function() {
+			$(this).click(function( event ) {
+				event.preventDefault();
+				$('#wcfm_vendors_listing_expander').block({
+					message: null,
+					overlayCSS: {
+						background: '#fff',
+						opacity: 0.6
+					}
+				});
+				var data = {
+					action       : 'wcfm_vendor_disable',
+					memberid     : $(this).data('memberid'),
+				}	
+				$.post(wcfm_params.ajax_url, data, function(response) {
+					if(response) {
+						$wcfm_vendors_table.ajax.reload();
+						$('#wcfm_vendors_listing_expander').unblock();
+					}
+				});
+			});
+		});
+	});
 	
 	// Screen Manager
 	$( document.body ).on( 'updated_wcfm-vendors', function() {

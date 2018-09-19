@@ -10,12 +10,14 @@ jQuery(document).ready(function($) {
 		"processing": true,
 		"serverSide": true,
 		"responsive": true,
+		"pageLength": dataTables_config.pageLength,
 		"language"  : $.parseJSON(dataTables_language),
 		"columns"   : [
 										{ responsivePriority: 1 },
 										{ responsivePriority: 2 },
 										{ responsivePriority: 3 },
 										{ responsivePriority: 5 },
+										{ responsivePriority: 1 },
 										{ responsivePriority: 1 },
 										{ responsivePriority: 4 },
 										{ responsivePriority: 2 },
@@ -27,6 +29,7 @@ jQuery(document).ready(function($) {
 										{ "targets": 4, "orderable" : false },
 										{ "targets": 5, "orderable" : false },
 										{ "targets": 5, "orderable" : false },
+										{ "targets": 6, "orderable" : false },
 									],
 		'ajax': {
 			"type"   : "POST",
@@ -80,7 +83,7 @@ jQuery(document).ready(function($) {
 		$('.wcfm_enquiry_delete').each(function() {
 			$(this).click(function(event) {
 				event.preventDefault();
-				var rconfirm = confirm("Are you sure and want to delete this 'Enqeury'?\nYou can't undo this action ...");
+				var rconfirm = confirm(wcfm_dashboard_messages.enquiry_delete_confirm);
 				if(rconfirm) deleteWCFMEnquiry($(this));
 				return false;
 			});

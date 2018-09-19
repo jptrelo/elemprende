@@ -517,11 +517,11 @@ function resetCollapsHeight(multi_input_holder) {
 			//console.log(multi_input_holder.parent().attr('id'));
 			//console.log(collapsHeight +"::"+ wrapHeight);
 			if(collapsHeight > wrapHeight) {
-				jQuery('.wcfm-tabWrap').css('height', ( collapsHeight + 100 ) );
-				jQuery(document.body).trigger('wcfm_product_tabwrap_changed', ( collapsHeight + 100 ) );
+				jQuery('.wcfm-tabWrap').css('height', ( collapsHeight + 150 ) );
+				jQuery(document.body).trigger('wcfm_product_tabwrap_changed', ( collapsHeight + 150 ) );
 			} else { 
-				jQuery('.wcfm-tabWrap').css('height', ( wrapHeight + 100 ) );
-				jQuery(document.body).trigger('wcfm_product_tabwrap_changed', ( wrapHeight + 100 ) );
+				jQuery('.wcfm-tabWrap').css('height', ( wrapHeight + 150 ) );
+				jQuery(document.body).trigger('wcfm_product_tabwrap_changed', ( wrapHeight + 150 ) );
 			}
 		}
 	}

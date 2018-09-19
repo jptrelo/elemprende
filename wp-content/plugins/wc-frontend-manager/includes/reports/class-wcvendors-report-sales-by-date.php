@@ -109,20 +109,38 @@ class WC_Vendors_Report_Sales_By_Date extends WC_Admin_Report {
 							$_variation_id = wc_get_order_item_meta( $key, '_variation_id', true );
 							if ( ( $_variation_id == $data->product_id ) || ( $_product_id == $data->product_id ) ) {
 								$gross_sales_amount += (float) sanitize_text_field( $line_item->get_total() );
+								if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+									if(WC_Vendors::$pv_options->get_option( 'give_tax' )) {
+										$gross_sales_amount += (float) sanitize_text_field( $line_item->get_total_tax() );
+									}
+									if(WC_Vendors::$pv_options->get_option( 'give_shipping' )) {
+										$gross_sales_amount += (float) $data->total_shipping;
+									}
+								} else {
+									if( get_option('wcvendors_vendor_give_taxes') ) {
+										$gross_sales_amount += (float) sanitize_text_field( $line_item->get_total_tax() );
+									}
+									if( get_option('wcvendors_vendor_give_shipping') ) {
+										$gross_sales_amount += (float) $data->total_shipping;
+									}
+								}
+							}
+						} elseif ( ( $line_item->get_variation_id() == $data->product_id ) || ( $line_item->get_product_id() == $data->product_id ) ) {
+							$gross_sales_amount += (float) sanitize_text_field( $line_item->get_total() );
+							if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
 								if(WC_Vendors::$pv_options->get_option( 'give_tax' )) {
 									$gross_sales_amount += (float) sanitize_text_field( $line_item->get_total_tax() );
 								}
 								if(WC_Vendors::$pv_options->get_option( 'give_shipping' )) {
 									$gross_sales_amount += (float) $data->total_shipping;
 								}
-							}
-						} elseif ( ( $line_item->get_variation_id() == $data->product_id ) || ( $line_item->get_product_id() == $data->product_id ) ) {
-							$gross_sales_amount += (float) sanitize_text_field( $line_item->get_total() );
-							if(WC_Vendors::$pv_options->get_option( 'give_tax' )) {
-								$gross_sales_amount += (float) sanitize_text_field( $line_item->get_total_tax() );
-							}
-							if(WC_Vendors::$pv_options->get_option( 'give_shipping' )) {
-								$gross_sales_amount += (float) $data->total_shipping;
+							} else {
+								if( get_option('wcvendors_vendor_give_taxes') ) {
+									$gross_sales_amount += (float) sanitize_text_field( $line_item->get_total_tax() );
+								}
+								if( get_option('wcvendors_vendor_give_shipping') ) {
+									$gross_sales_amount += (float) $data->total_shipping;
+								}
 							}
 						}
 					}
@@ -139,15 +157,25 @@ class WC_Vendors_Report_Sales_By_Date extends WC_Admin_Report {
 			// show only paid commissions
 			if ( 'paid' === $data->status ) {
 				$total_commission_amount   += (float) sanitize_text_field( $data->total_due );
-				if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) { $total_commission_amount += (float) sanitize_text_field( $data->tax ); } 
-				if ( WC_Vendors::$pv_options->get_option( 'give_shipping' ) ) { $total_commission_amount += (float) sanitize_text_field( $data->total_shipping ); }
+				if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+					if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) { $total_commission_amount += (float) sanitize_text_field( $data->tax ); } 
+					if ( WC_Vendors::$pv_options->get_option( 'give_shipping' ) ) { $total_commission_amount += (float) sanitize_text_field( $data->total_shipping ); }
+				} else {
+					if ( get_option('wcvendors_vendor_give_taxes') ) { $total_commission_amount += (float) sanitize_text_field( $data->tax ); } 
+					if ( get_option('wcvendors_vendor_give_shipping') ) { $total_commission_amount += (float) sanitize_text_field( $data->total_shipping ); }
+				}
 			}
 		}
 
 		$total_orders = count( array_unique( $total_orders ) );
 		$total_sales = $total_earned_commission_amount;
-		if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) { $total_sales += $total_tax_amount; } 
-		if ( WC_Vendors::$pv_options->get_option( 'give_shipping' ) ) { $total_sales += $total_shipping_amount; }
+		if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+			if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) { $total_sales += $total_tax_amount; } 
+			if ( WC_Vendors::$pv_options->get_option( 'give_shipping' ) ) { $total_sales += $total_shipping_amount; }
+		} else {
+			if ( get_option('wcvendors_vendor_give_taxes') ) { $total_sales += $total_tax_amount; } 
+			if ( get_option('wcvendors_vendor_give_shipping') ) { $total_sales += $total_shipping_amount; }
+		}
 
 		$this->report_data->average_sales         = wc_format_decimal( $total_sales / ( $this->chart_interval + 1 ), 2 );
 		$this->report_data->total_orders          = $total_orders;
@@ -178,12 +206,14 @@ class WC_Vendors_Report_Sales_By_Date extends WC_Admin_Report {
 			break;
 		}
 		
-		$legend[] = array(
-			'title'            => sprintf( __( '%s gross sales in this period', 'wc-frontend-manager' ), '<strong>' . wc_price( $data->gross_sales ) . '</strong>' ),
-			'placeholder'      => __( 'This is the sum of the order totals after any refunds and including shipping and taxes.', 'wc-frontend-manager' ),
-			'color'            => $this->chart_colors['gross_sales_amount'],
-			'highlight_series' => 3
-		);
+		if( apply_filters( 'wcfm_sales_report_is_allow_gross_sales', true ) ) {
+			$legend[] = array(
+				'title'            => sprintf( __( '%s gross sales in this period', 'wc-frontend-manager' ), '<strong>' . wc_price( $data->gross_sales ) . '</strong>' ),
+				'placeholder'      => __( 'This is the sum of the order totals after any refunds and including shipping and taxes.', 'wc-frontend-manager' ),
+				'color'            => $this->chart_colors['gross_sales_amount'],
+				'highlight_series' => 3
+			);
+		}
 		
 		$legend[] = array(
 			'title'            => sprintf( __( '%s total earnings', 'wc-frontend-manager' ), '<strong>' . wc_price( $data->total_earned ) . '</strong>' ),
@@ -220,13 +250,23 @@ class WC_Vendors_Report_Sales_By_Date extends WC_Admin_Report {
 			'color'            => $this->chart_colors['item_count'],
 			'highlight_series' => 1
 		);
-
-		if( WC_Vendors::$pv_options->get_option( 'give_shipping' ) && apply_filters( 'wcfm_sales_report_is_allow_shipping', true ) ) {
-			$legend[] = array(
-				'title'            => sprintf( __( '%s charged for shipping', 'wc-frontend-manager' ), '<strong>' . wc_price( $data->total_shipping ) . '</strong>' ),
-				'color'            => $this->chart_colors['shipping_amount'],
-				'highlight_series' => 2
-			);
+		
+		if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+			if( WC_Vendors::$pv_options->get_option( 'give_shipping' ) && apply_filters( 'wcfm_sales_report_is_allow_shipping', true ) ) {
+				$legend[] = array(
+					'title'            => sprintf( __( '%s charged for shipping', 'wc-frontend-manager' ), '<strong>' . wc_price( $data->total_shipping ) . '</strong>' ),
+					'color'            => $this->chart_colors['shipping_amount'],
+					'highlight_series' => 2
+				);
+			}
+		} else {
+			if( get_option('wcvendors_vendor_give_shipping') && apply_filters( 'wcfm_sales_report_is_allow_shipping', true ) ) {
+				$legend[] = array(
+					'title'            => sprintf( __( '%s charged for shipping', 'wc-frontend-manager' ), '<strong>' . wc_price( $data->total_shipping ) . '</strong>' ),
+					'color'            => $this->chart_colors['shipping_amount'],
+					'highlight_series' => 2
+				);
+			}
 		}
 
 		return $legend;
@@ -345,14 +385,26 @@ class WC_Vendors_Report_Sales_By_Date extends WC_Admin_Report {
 										$_variation_id = wc_get_order_item_meta( $key, '_variation_id', true );
 										if ( in_array( $_product_id, $valid_items ) || in_array( $_variation_id, $valid_items ) ) {
 											$gross_sales += (float) sanitize_text_field( $line_item->get_total() );
-											if(WC_Vendors::$pv_options->get_option( 'give_tax' )) {
-												$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
+											if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+												if(WC_Vendors::$pv_options->get_option( 'give_tax' )) {
+													$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
+												}
+											} else {
+												if( get_option('wcvendors_vendor_give_taxes') ) {
+													$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
+												}
 											}
 										}
 									} elseif ( in_array( $line_item->get_variation_id(), $valid_items) || in_array( $line_item->get_product_id(), $valid_items ) ) {
 										$gross_sales += (float) sanitize_text_field( $line_item->get_total() );
-										if(WC_Vendors::$pv_options->get_option( 'give_tax' )) {
-											$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
+										if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+											if(WC_Vendors::$pv_options->get_option( 'give_tax' )) {
+												$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
+											}
+										} else {
+											if( get_option('wcvendors_vendor_give_taxes') ) {
+												$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
+											}
 										}
 									}
 								}
@@ -362,8 +414,14 @@ class WC_Vendors_Report_Sales_By_Date extends WC_Admin_Report {
 						}
 					}
 				}
-				if(WC_Vendors::$pv_options->get_option( 'give_shipping' )) {
-					$gross_sales += (float) $result->total_shipping;
+				if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+					if(WC_Vendors::$pv_options->get_option( 'give_shipping' )) {
+						$gross_sales += (float) $result->total_shipping;
+					}
+				} else {
+					if( get_option('wcvendors_vendor_give_shipping') ) {
+						$gross_sales += (float) $result->total_shipping;
+					}
 				}
 				$result->gross_sales = $gross_sales;
 			}
@@ -385,11 +443,20 @@ class WC_Vendors_Report_Sales_By_Date extends WC_Admin_Report {
 		$total_earned = array();
 		foreach ( $total_commission as $order_amount_key => $order_amount_value ) {
 			$total_earned[ $order_amount_key ] = $order_amount_value;
-			if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) { 
-			  $total_earned[ $order_amount_key ][1] += $tax_amounts[ $order_amount_key ][1]; 
-			} 
-			if ( WC_Vendors::$pv_options->get_option( 'give_shipping' ) ) { 
-			  $total_earned[ $order_amount_key ][1] += $shipping_amounts[ $order_amount_key ][1]; 
+			if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+				if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) { 
+					$total_earned[ $order_amount_key ][1] += $tax_amounts[ $order_amount_key ][1]; 
+				} 
+				if ( WC_Vendors::$pv_options->get_option( 'give_shipping' ) ) { 
+					$total_earned[ $order_amount_key ][1] += $shipping_amounts[ $order_amount_key ][1]; 
+				}
+			} else {
+				if ( get_option('wcvendors_vendor_give_taxes') ) { 
+					$total_earned[ $order_amount_key ][1] += $tax_amounts[ $order_amount_key ][1]; 
+				} 
+				if ( get_option('wcvendors_vendor_give_shipping') ) { 
+					$total_earned[ $order_amount_key ][1] += $shipping_amounts[ $order_amount_key ][1]; 
+				}
 			}
 		}
 		
@@ -420,11 +487,20 @@ class WC_Vendors_Report_Sales_By_Date extends WC_Admin_Report {
 		$total_paid_commission = array();
 		foreach ( $total_commission as $order_amount_key => $order_amount_value ) {
 			$total_paid_commission[ $order_amount_key ] = $order_amount_value;
-			if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) { 
-				$total_paid_commission[ $order_amount_key ][1] += $tax_amounts[ $order_amount_key ][1];
-			} 
-			if ( WC_Vendors::$pv_options->get_option( 'give_shipping' ) ) { 
-				$total_paid_commission[ $order_amount_key ][1] += $shipping_amounts[ $order_amount_key ][1];
+			if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+				if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) { 
+					$total_paid_commission[ $order_amount_key ][1] += $tax_amounts[ $order_amount_key ][1];
+				} 
+				if ( WC_Vendors::$pv_options->get_option( 'give_shipping' ) ) { 
+					$total_paid_commission[ $order_amount_key ][1] += $shipping_amounts[ $order_amount_key ][1];
+				}
+			} else {
+				if ( get_option('wcvendors_vendor_give_taxes') ) { 
+					$total_paid_commission[ $order_amount_key ][1] += $tax_amounts[ $order_amount_key ][1];
+				} 
+				if ( get_option('wcvendors_vendor_give_shipping') ) { 
+					$total_paid_commission[ $order_amount_key ][1] += $shipping_amounts[ $order_amount_key ][1];
+				}
 			}
 		}
 	
@@ -447,7 +523,11 @@ class WC_Vendors_Report_Sales_By_Date extends WC_Admin_Report {
 				var sales_data = <?php echo $chart_data; ?>;
 				var show_legend    = <?php echo $show_legend; ?>;
 				
-				jQuery('.chart-placeholder').css( 'width', jQuery('.chart-placeholder').outerWidth() + 'px' );
+				$show_ticks = true;
+				if( jQuery(window).width() <= 640 ) { $show_ticks = false; }
+				$placeholder_width = jQuery('.chart-placeholder').outerWidth();
+				if( $placeholder_width < 340 ) { $placeholder_width = 340; }
+				jQuery('.chart-placeholder').css( 'width', $placeholder_width + 'px' );
 				
 				var ctx = document.getElementById("chart-placeholder-canvas").getContext("2d");
 				var mySalesReportChart = new Chart(ctx, {
@@ -455,6 +535,7 @@ class WC_Vendors_Report_Sales_By_Date extends WC_Admin_Report {
 						data: {
 							  labels: sales_data.total_earned_commission.labels,
 								datasets: [
+											<?php if( apply_filters( 'wcfm_sales_report_is_allow_gross_sales', true ) ) { ?>
 											{
 												type: 'line',
 												label: "<?php _e( 'Gross Sales', 'wc-frontend-manager' ); ?>",
@@ -463,6 +544,7 @@ class WC_Vendors_Report_Sales_By_Date extends WC_Admin_Report {
 												fill: true,
 												data: sales_data.total_gross_sales.datas,
 											},
+											<?php } ?>
 								      {
 												type: 'line',
 												label: "<?php _e( 'Earning', 'wc-frontend-manager' ); ?>",
@@ -481,15 +563,28 @@ class WC_Vendors_Report_Sales_By_Date extends WC_Admin_Report {
 												data: sales_data.total_paid_commission.datas,
 											},
 											<?php } ?>
-											<?php if( WC_Vendors::$pv_options->get_option( 'give_shipping' ) && apply_filters( 'wcfm_sales_report_is_allow_shipping', true ) ) { ?>
-											{
-												type: 'line',
-												label: "<?php _e( 'Shipping Amounts', 'wc-frontend-manager' ); ?>",
-												backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
-												borderColor: window.chartColors.red,
-												fill: true,
-												data: sales_data.shipping_amounts.datas,
-											},
+											<?php if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) { ?>
+												<?php if( WC_Vendors::$pv_options->get_option( 'give_shipping' ) && apply_filters( 'wcfm_sales_report_is_allow_shipping', true ) ) { ?>
+												{
+													type: 'line',
+													label: "<?php _e( 'Shipping Amounts', 'wc-frontend-manager' ); ?>",
+													backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
+													borderColor: window.chartColors.red,
+													fill: true,
+													data: sales_data.shipping_amounts.datas,
+												},
+												<?php } ?>
+											<?php } else { ?>
+												<?php if( get_option('wcvendors_vendor_give_shipping') && apply_filters( 'wcfm_sales_report_is_allow_shipping', true ) ) { ?>
+												{
+													type: 'line',
+													label: "<?php _e( 'Shipping Amounts', 'wc-frontend-manager' ); ?>",
+													backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
+													borderColor: window.chartColors.red,
+													fill: true,
+													data: sales_data.shipping_amounts.datas,
+												},
+												<?php } ?>
 											<?php } ?>
 								      {
 												type: 'bar',
@@ -531,7 +626,10 @@ class WC_Vendors_Report_Sales_By_Date extends WC_Admin_Report {
 										scaleLabel: {
 											display: false,
 											labelString: "<?php _e( 'Date', 'wc-frontend-manager' ); ?>"
-										}
+										},
+										ticks:{
+											display: $show_ticks
+                    }
 									}],
 									yAxes: [{
 										scaleLabel: {
@@ -550,7 +648,7 @@ class WC_Vendors_Report_Sales_By_Date extends WC_Admin_Report {
         });
 				function afterResizing() {
 					var canvasheight = document.getElementById("chart-placeholder-canvas").height;
-					if(canvasheight <= 375) {
+					if(canvasheight <= 370) {
 						mySalesReportChart.options.legend.display=false;
 					} else {
 						mySalesReportChart.options.legend.display=true;

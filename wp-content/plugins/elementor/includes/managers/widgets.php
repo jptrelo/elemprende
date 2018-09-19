@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Elementor widgets manager class.
+ * Elementor widgets manager.
  *
  * Elementor widgets manager handler class is responsible for registering and
  * initializing all the supported Elementor widgets.
@@ -36,7 +36,7 @@ class Widgets_Manager {
 	 * Initialize Elementor widgets manager. Include all the the widgets files
 	 * and register each Elementor and WordPress widget.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 * @access private
 	*/
 	private function init_widgets() {
@@ -105,7 +105,7 @@ class Widgets_Manager {
 	 * Exclude the widgets that are in Elementor widgets black list. Theme and
 	 * plugin authors can filter the black list.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 * @access private
 	*/
 	private function register_wp_widgets() {
@@ -165,7 +165,7 @@ class Widgets_Manager {
 	 *
 	 * Require Elementor widget base class.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 * @access private
 	*/
 	private function require_files() {
@@ -254,10 +254,6 @@ class Widgets_Manager {
 		$config = [];
 
 		foreach ( $this->get_widget_types() as $widget_key => $widget ) {
-			if ( ! $widget->show_in_panel() ) {
-				continue;
-			}
-
 			$config[ $widget_key ] = $widget->get_config();
 		}
 
@@ -274,9 +270,7 @@ class Widgets_Manager {
 	 * @since 1.0.0
 	 * @access public
 	 *
-	 * @throw \Exception If the request has no post id.
-	 * @throw \Exception If current user don't have permissions to edit the post.
-	 * @throw \Exception If the widget was not found or does not exist.
+	 * @throws \Exception If current user don't have permissions to edit the post.
 	 *
 	 * @param array $request Ajax request.
 	 *
@@ -285,7 +279,6 @@ class Widgets_Manager {
 	 *
 	 *     @type string $render The rendered HTML.
 	 * }
-	 * @throws \Exception
 	 */
 	public function ajax_render_widget( $request ) {
 		$document = Plugin::$instance->documents->get( $request['editor_post_id'] );

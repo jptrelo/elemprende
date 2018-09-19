@@ -15,8 +15,8 @@ class Premium_Maps_Widget extends Widget_Base
     }
 
     public function get_title() {
-        return esc_html__('Premium Maps', 'premium-addons-for-elementor');
-    }
+		return \PremiumAddons\Helper_Functions::get_prefix() . ' Maps';
+	}
     
     public function get_icon() {
         return 'pa-maps';
@@ -24,6 +24,13 @@ class Premium_Maps_Widget extends Widget_Base
 
     public function get_categories() {
         return [ 'premium-elements' ];
+    }
+    
+    public function get_script_depends() {
+        return [
+            'premium-maps-api-js' ,
+            'premium-maps-js'
+        ];
     }
 
     // Adding the controls fields for the premium maps
@@ -36,13 +43,37 @@ class Premium_Maps_Widget extends Widget_Base
                     'label'         => esc_html__('Center Location', 'premium-addons-for-elementor'),
                     ]
                 );
-
-        $this->add_control('premium_maps_api_url',
-            [
+        
+        $map_api = get_option( 'pa_maps_save_settings' )['premium-map-api'];
+        
+        if( ! isset( $map_api ) || empty( $map_api ) ){
+            $this->add_control('premium_maps_api_url',
+                [
                     'label'         => '<span style="line-height: 1.4em;">Premium Maps requires an API key. Get your API key from <a target="_blank" href="https://developers.google.com/maps/documentation/javascript/get-api-key">here</a> and add it to Premium Addons admin page. Go to Dashboard -> Premium Addons for Elementor -> Google Maps API</span>',
                     'type'          => Controls_Manager::RAW_HTML,
+                ]
+            );
+        }
+        
+        $this->add_control('premium_map_location_finder',
+            [
+                'label'         => esc_html__( 'Latitude & Longitude Finder', 'premium-addons-for-elementor' ),
+                'type'          => Controls_Manager::SWITCHER,
             ]
         );
+        
+        $this->add_control('premium_map_notice',
+		    [
+			    'label' => __( 'Find Latitude & Longitude', 'elementor' ),
+			    'type'  => Controls_Manager::RAW_HTML,
+			    'raw'   => '<form onsubmit="getAddress(this);" action="javascript:void(0);"><input type="text" id="premium-map-get-address" class="premium-map-get-address" style="margin-top:10px; margin-bottom:10px;"><input type="submit" value="Search" class="elementor-button elementor-button-default" onclick="getAddress(this)"></form><div class="premium-address-result" style="margin-top:10px; line-height: 1.3; font-size: 12px;"></div>',
+			    'label_block' => true,
+                'condition'     => [
+                    'premium_map_location_finder'   => 'yes'
+                ]
+		    ]
+	    );
+        
         
         $this->add_control('premium_maps_center_lat',
                 [
@@ -66,57 +97,98 @@ class Premium_Maps_Widget extends Widget_Base
         
         $this->end_controls_section();
         
-         $this->start_controls_section('premium_maps_map_pins_settings',
+        $this->start_controls_section('premium_maps_map_pins_settings',
+            [
+                'label'         => esc_html__('Markers', 'premium-addons-for-elementor'),
+            ]
+        );
+        
+        $this->add_control('premium_maps_markers_width',
                 [
-                    'label'         => esc_html__('Markers', 'premium-addons-for-elementor'),
+                    'label'         => esc_html__('Max Width', 'premium-addons-for-elementor'),
+                    'type'          => Controls_Manager::NUMBER,
+                    'title'         => esc_html__('Set the Maximum width for markers description box','premium-addons-for-elementor'),
                     ]
                 );
+         
+        $repeater = new REPEATER();
+        
+        $repeater->add_control('premium_map_pin_location_finder',
+            [
+                'label'         => esc_html__( 'Latitude & Longitude Finder', 'premium-addons-for-elementor' ),
+                'type'          => Controls_Manager::SWITCHER,
+            ]
+        );
+        
+        $repeater->add_control('premium_map_pin_notice',
+		    [
+			    'label' => __( 'Find Latitude & Longitude', 'elementor' ),
+			    'type'  => Controls_Manager::RAW_HTML,
+			    'raw'   => '<form onsubmit="getPinAddress(this);" action="javascript:void(0);"><input type="text" id="premium-map-get-address" class="premium-map-get-address" style="margin-top:10px; margin-bottom:10px;"><input type="submit" value="Search" class="elementor-button elementor-button-default" onclick="getPinAddress(this)"></form><div class="premium-address-result" style="margin-top:10px; line-height: 1.3; font-size: 12px;"></div>',
+			    'label_block' => true,
+                'condition' => [
+                    'premium_map_pin_location_finder'   => 'yes'
+                ]
+		    ]
+	    );
+        
+        $repeater->add_control('map_latitude',
+            [
+                'label'         => esc_html__('Latitude', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::TEXT,
+                'description'   => 'Click <a href="https://www.latlong.net/" target="_blank">here</a> to get your location coordinates',
+                'label_block'   => true,
+            ]
+        );
+        
+        $repeater->add_control('map_longitude',
+            [
+                'name'          => 'map_longitude',
+                'label'         => esc_html__('Longitude', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::TEXT,
+                'description'   => 'Click <a href="https://www.latlong.net/" target="_blank">here</a> to get your location coordinates',
+                'label_block'   => true,
+            ]
+        );
+        
+        $repeater->add_control('pin_title',
+            [
+                'label'         => esc_html__('Title', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::TEXT,
+                'dynamic'       => [ 'active' => true ],
+                'label_block'   => true,
+            ]
+        );
+        
+        $repeater->add_control('pin_desc',
+            [
+                'label'         => esc_html__('Description', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::WYSIWYG,
+                'dynamic'       => [ 'active' => true ],
+                'label_block'   => true,
+            ]
+        );
+        
+        $repeater->add_control('pin_icon',
+            [
+                'label'         => esc_html__('Custom Icon', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::MEDIA,
+            ]
+        );
 
         $this->add_control('premium_maps_map_pins',
-                [
-                    'label'         => esc_html__('Map Pins', 'premium-addons-for-elementor'),
-                    'type'          => Controls_Manager::REPEATER,
-                    'default'       => [
-                        'map_latitude'      => '18.591212',
-                        'map_longitude'     => '73.741261',
-                        'pin_title'         => esc_html__('Premium Google Maps', 'premium-addons-for-elementor'),
-                        'pin_desc'          => esc_html__('Add an optional description to your map pin', 'premium-addons-for-elementor'),
-                    ],
-                    'fields'       => [
-                        [
-                            'name'          => 'map_latitude',
-                            'label'         => esc_html__('Latitude', 'premium-addons-for-elementor'),
-                            'type'          => Controls_Manager::TEXT,
-                            'description'   => 'Click <a href="https://www.latlong.net/" target="_blank">here</a> to get your location coordinates',
-                            'label_block'   => true,
-                            ],
-                            [
-                            'name'          => 'map_longitude',
-                            'label'         => esc_html__('Longitude', 'premium-addons-for-elementor'),
-                            'type'          => Controls_Manager::TEXT,
-                            'description'   => 'Click <a href="https://www.latlong.net/" target="_blank">here</a> to get your location coordinates',
-                            'label_block'   => true,
-                            ],
-                            [
-                            'name'          => 'pin_title',
-                            'label'         => esc_html__('Title', 'premium-addons-for-elementor'),
-                            'type'          => Controls_Manager::TEXT,
-                            'label_block'   => true,
-                            ],
-                            [
-                            'name'          => 'pin_desc',
-                            'label'         => esc_html__('Description', 'premium-addons-for-elementor'),
-                            'type'          => Controls_Manager::WYSIWYG,
-                            'label_block'   => true,
-                            ],
-                            [
-                            'name'          => 'pin_icon',
-                            'label'         => esc_html__('Custom Icon', 'premium-addons-for-elementor'),
-                            'type'          => Controls_Manager::MEDIA,
-                            ],
-                        ],
-                    ]
-                );
+            [
+                'label'         => esc_html__('Map Pins', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::REPEATER,
+                'default'       => [
+                    'map_latitude'      => '18.591212',
+                    'map_longitude'     => '73.741261',
+                    'pin_title'         => esc_html__('Premium Google Maps', 'premium-addons-for-elementor'),
+                    'pin_desc'          => esc_html__('Add an optional description to your map pin', 'premium-addons-for-elementor'),
+                ],
+                'fields'       => array_values( $repeater->get_controls() ),
+            ]
+        );
         
         $this->end_controls_section();
         
@@ -233,6 +305,13 @@ class Premium_Maps_Widget extends Widget_Base
                         ]
                     ]
                 );
+
+        $this->add_control('premium_maps_map_option_cluster',
+                [
+                    'label'         => esc_html__( 'Marker Clustering', 'premium-addons-for-elementor' ),
+                    'type'          => Controls_Manager::SWITCHER,
+                ]
+                );
         
         $this->end_controls_section();
         
@@ -312,19 +391,19 @@ class Premium_Maps_Widget extends Widget_Base
         /*Pin Title ALign*/
         $this->add_responsive_control('premium_maps_pin_title_align',
                 [
-                    'label'         => esc_html__( 'Alignment', 'elementor' ),
+                    'label'         => esc_html__( 'Alignment', 'premium-addons-for-elementor' ),
                     'type'          => Controls_Manager::CHOOSE,
                     'options'       => [
                         'left'      => [
-                            'title'=> esc_html__( 'Left', 'elementor' ),
+                            'title'=> esc_html__( 'Left', 'premium-addons-for-elementor' ),
                             'icon' => 'fa fa-align-left',
                             ],
                         'center'    => [
-                            'title'=> esc_html__( 'Center', 'elementor' ),
+                            'title'=> esc_html__( 'Center', 'premium-addons-for-elementor' ),
                             'icon' => 'fa fa-align-center',
                             ],
                         'right'     => [
-                            'title'=> esc_html__( 'Right', 'elementor' ),
+                            'title'=> esc_html__( 'Right', 'premium-addons-for-elementor' ),
                             'icon' => 'fa fa-align-right',
                             ],
                         ],
@@ -394,19 +473,19 @@ class Premium_Maps_Widget extends Widget_Base
         /*Pin Title ALign*/
         $this->add_responsive_control('premium_maps_pin_description_align',
                 [
-                    'label'         => esc_html__( 'Alignment', 'elementor' ),
+                    'label'         => esc_html__( 'Alignment', 'premium-addons-for-elementor' ),
                     'type'          => Controls_Manager::CHOOSE,
                     'options'       => [
                         'left'      => [
-                            'title'=> esc_html__( 'Left', 'elementor' ),
+                            'title'=> esc_html__( 'Left', 'premium-addons-for-elementor' ),
                             'icon' => 'fa fa-align-left',
                             ],
                         'center'    => [
-                            'title'=> esc_html__( 'Center', 'elementor' ),
+                            'title'=> esc_html__( 'Center', 'premium-addons-for-elementor' ),
                             'icon' => 'fa fa-align-center',
                             ],
                         'right'     => [
-                            'title'=> esc_html__( 'Right', 'elementor' ),
+                            'title'=> esc_html__( 'Right', 'premium-addons-for-elementor' ),
                             'icon' => 'fa fa-align-right',
                             ],
                         ],
@@ -491,10 +570,14 @@ class Premium_Maps_Widget extends Widget_Base
     protected function render($instance = [])
     {
         // get our input from the widget settings.
-        $settings = $this->get_settings();
+        $settings = $this->get_settings_for_display();
+        
+        $map_pins = $settings['premium_maps_map_pins'];
 
         if( !empty( $settings['premium_maps_custom_styling'] ) ){
-            $map_custom_style = 'styles:' . $settings['premium_maps_custom_styling'] . ',';
+            $map_custom_style = $settings['premium_maps_custom_styling'];
+        } else {
+            $map_custom_style = '';
         }
         
         if ($settings['premium_maps_map_option_streeview'] == 'yes') {
@@ -525,90 +608,78 @@ class Premium_Maps_Widget extends Widget_Base
             $map_type_control = 'true';
         } else {
             $map_type_control = 'false';
-        } 
-?>
-<div id="premium-map-script-trriger-<?php echo esc_attr($this->get_id()); ?>"></div>
-    <div class="premium-maps-container" id="premium-maps-container">
-    <div id="premium-maps-map-<?php echo esc_attr($this->get_id()); ?>" class="premium_maps_map_height"></div>
-</div>
-<script>
-        
-        var premium_mapDiv = document.getElementById('premium-map-script-trriger-<?php echo esc_attr($this->get_id()); ?>');
-        google.maps.event.addDomListener(premium_mapDiv, 'click', initMap);
-        google.maps.event.addDomListener(window, 'load', initMap);
-        jQuery(document).ready(function( $ ) {
-              initMap();
-        });
-      
-      function initMap(){
-          
-        var myLatLng = {lat: <?php echo $settings['premium_maps_center_lat']; ?>, lng: <?php echo $settings['premium_maps_center_long']; ?>};
-        var locations = [<?php 
-        foreach ($settings['premium_maps_map_pins'] as $item) {echo '[' . "'" . esc_attr($item['pin_title']) . "'" . ',' . "'" . $item['pin_desc'] . "'"  . ',' . esc_attr($item['map_latitude']) . ',' . esc_attr($item['map_longitude']) . ',' ."'" . esc_attr($item['pin_icon']['url']). "'" . '],'; } ?>];
-        var map = new google.maps.Map( document.getElementById('premium-maps-map-<?php echo esc_attr($this->get_id()); ?>') ,
-        {
-            zoom: <?php echo $settings['premium_maps_map_zoom']['size']; ?>,
-            mapTypeId: '<?php echo $settings['premium_maps_map_type'];  ?>',
-            center: myLatLng,
-            scrollwheel: <?php echo $scroll_wheel; ?>,
-            streetViewControl: <?php echo $street_view; ?>,
-            fullscreenControl: <?php echo $enable_full_screen; ?>,
-            
-            zoomControl: <?php echo $enable_zoom_control; ?>,
-            mapTypeControl: <?php echo $map_type_control; ?>,
-            <?php if( !empty( $settings['premium_maps_custom_styling'] ) ){ echo $map_custom_style; }?>
-        });
-        
-        var marker, i, infowindow;
-        
-         for (i = 0; i < locations.length; i++) {
-            marker = new google.maps.Marker({
-            position: new google.maps.LatLng(locations[i][2], locations[i][3]),
-            icon: locations[i][4],
-            optimized: false,
-            map: map
-        });
-        infowindow = new google.maps.InfoWindow({
-                content: "<div class='premium-maps-info-container'><p class='premium-maps-info-title'>" + locations[i][0] + "</p><div class='premium-maps-info-desc'>" + locations[i][1] + "</div></div>"
-            });
-            <?php if( $settings['premium_maps_marker_open'] == 'yes' ) : ?> 
-            if(locations[i][0] !== '' || locations[i][1] !== '') {
-                infowindow.open(map, marker);
-            }
-            <?php endif; ?>
-            <?php if( $settings['premium_maps_marker_hover_open'] == 'yes' ) : ?>
-                google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
-                    return function() {
-                        if(locations[i][0] !== '' || locations[i][1] !== '') {
-                            infowindow.setContent("<div class='premium-maps-info-container'><p class='premium-maps-info-title'>" + locations[i][0] + "</p><div class='premium-maps-info-desc'>" + locations[i][1] + "</div></div>");
-                            infowindow.open(map, marker);
-                        }
-                    }
-                })(marker, i));
-                <?php if( $settings['premium_maps_marker_mouse_out'] == 'yes' ) : ?>
-                    google.maps.event.addListener(marker, 'mouseout', (function(marker, i) {
-                        return function() {
-                            if(locations[i][0] !== '' || locations[i][1] !== '') {
-                                infowindow.close(map, marker);
-                            }
-                        }
-                    })(marker, i));
-                <?php endif; ?>
-            <?php endif; ?>
-            google.maps.event.addListener(marker, 'click', (function(marker, i) {
-                return function() {
-                    if(locations[i][0] !== '' || locations[i][1] !== '') {
-                        infowindow.setContent("<div class='premium-maps-info-container'><p class='premium-maps-info-title'>" + locations[i][0] + "</p><div class='premium-maps-info-desc'>" + locations[i][1] + "</div></div>");
-                        infowindow.open(map, marker);
-                    }
-                }
-            })(marker, i));
         }
-    }
-</script>
+        
+        if ($settings['premium_maps_marker_open'] == 'yes') {
+            $automatic_open = 'true';
+        } else {
+            $automatic_open = 'false';
+        }
+        
+        if ($settings['premium_maps_marker_hover_open'] == 'yes') {
+            $hover_open = 'true';
+        } else {
+            $hover_open = 'false';
+        }
+        
+        if ($settings['premium_maps_marker_mouse_out'] == 'yes') {
+            $hover_close = 'true';
+        } else {
+            $hover_close = 'false';
+        }
+
+        if($settings['premium_maps_map_option_cluster'] == 'yes') {
+            $marker_cluster = 'true';
+        } else {
+            $marker_cluster = 'false';
+        }
+        
+        $centerlat = !empty($settings['premium_maps_center_lat']) ? $settings['premium_maps_center_lat'] : 18.591212;
+        $centerlong = !empty($settings['premium_maps_center_long']) ? $settings['premium_maps_center_long'] : 73.741261;
+        
+        $marker_width = !empty($settings['premium_maps_markers_width']) ? $settings['premium_maps_markers_width'] : 1000;
+        
+        $map_settings = [
+            'zoom'                  => $settings['premium_maps_map_zoom']['size'],
+            'maptype'               => $settings['premium_maps_map_type'],
+            'streetViewControl'     => $street_view,
+            'centerlat'             => $centerlat,
+            'centerlong'            => $centerlong,
+            'scrollwheel'           => $scroll_wheel,
+            'fullScreen'            => $enable_full_screen,
+            'zoomControl'           => $enable_zoom_control,
+            'typeControl'           => $map_type_control,
+            'automaticOpen'         => $automatic_open,
+            'hoverOpen'             => $hover_open,
+            'hoverClose'            => $hover_close,
+            'cluster'               => $marker_cluster
+        ];
+        
+        $this->add_render_attribute('style_wrapper', 'data-style', $settings['premium_maps_custom_styling']);
+?>
+
+<div class="premium-maps-container" id="premium-maps-container">
+    <?php if(count($map_pins)){
+        	?>
+	        <div class="premium_maps_map_height" data-settings='<?php echo wp_json_encode($map_settings); ?>' <?php echo $this->get_render_attribute_string('style_wrapper'); ?>>
+			<?php
+        	foreach($map_pins as $pin){
+				?>
+		        <div class="premium-pin" data-lng="<?php echo $pin['map_longitude']; ?>" data-lat="<?php echo $pin['map_latitude']; ?>" data-icon="<?php echo $pin['pin_icon']['url']; ?>" data-max-width="<?php echo $marker_width; ?>">
+                    <?php if(!empty($pin['pin_title'])|| !empty($pin['pin_desc'])):?>
+                    
+			        <div class='premium-maps-info-container'><p class='premium-maps-info-title'><?php echo $pin['pin_title']; ?></p><div class='premium-maps-info-desc'><?php echo $pin['pin_desc']; ?></div></div>
+                    <?php endif; ?>
+		        </div>
+		        <?php
+	        }
+	        ?>
+	        </div>
+			<?php
+        } ?>
     
-
-
+</div>
+    
     <?php
     }
 }

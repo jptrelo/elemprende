@@ -5,6 +5,7 @@
 */
 @import url("custom.css");
 @import url("quienes.css");
+@import url("ideas.css");
 
 body * {
     outline: none !important;

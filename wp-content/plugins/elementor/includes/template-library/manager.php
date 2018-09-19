@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Elementor template library manager class.
+ * Elementor template library manager.
  *
  * Elementor template library manager handler class is responsible for
  * initializing the template library.
@@ -339,7 +339,13 @@ class Manager {
 			return new \WP_Error( 'template_error', 'Template source not found.' );
 		}
 
-		return $source->get_data( $args );
+		do_action( 'elementor/template-library/before_get_source_data', $args, $source );
+
+		$data = $source->get_data( $args );
+
+		do_action( 'elementor/template-library/after_get_source_data', $args, $source );
+
+		return $data;
 	}
 
 	/**
@@ -414,7 +420,7 @@ class Manager {
 		/** @var Source_Local $source */
 		$source = $this->get_source( 'local' );
 
-		return $source->import_template();
+		return $source->import_template( $_FILES['file']['name'], $_FILES['file']['tmp_name'] );
 	}
 
 	/**

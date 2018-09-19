@@ -1,14 +1,15 @@
 <?php
 namespace Elementor\Core\Settings\Page;
 
+use Elementor\Core\Files\CSS\Base;
+use Elementor\Core\Files\CSS\Post;
+use Elementor\Core\Files\CSS\Post_Preview;
 use Elementor\Core\Utils\Exceptions;
-use Elementor\CSS_File;
-use Elementor\Core\Settings\Base\Manager as BaseManager;
 use Elementor\Core\Settings\Manager as SettingsManager;
+use Elementor\Core\Settings\Base\Manager as BaseManager;
 use Elementor\Core\Settings\Base\Model as BaseModel;
 use Elementor\DB;
 use Elementor\Plugin;
-use Elementor\Post_CSS_File;
 use Elementor\Utils;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Elementor page settings manager class.
+ * Elementor page settings manager.
  *
  * Elementor page settings manager handler class is responsible for registering
  * and managing Elementor page settings managers.
@@ -29,24 +30,6 @@ class Manager extends BaseManager {
 	 * Meta key for the page settings.
 	 */
 	const META_KEY = '_elementor_page_settings';
-
-	/**
-	 * Get page data.
-	 *
-	 * Retrieves page data for any given a page ID.
-	 *
-	 * @since 1.6.0
-	 * @deprecated 1.6.0
-	 * @access public
-	 * @static
-	 *
-	 * @param int $id Page ID.
-	 *
-	 * @return BaseModel
-	 */
-	public static function get_page( $id ) {
-		return SettingsManager::get_settings_managers( 'page' )->get_model( $id );
-	}
 
 	/**
 	 * Is CPT supports custom templates.
@@ -64,6 +47,27 @@ class Manager extends BaseManager {
 		// Todo: _deprecated_function( __METHOD__, '2.0.0', 'Utils::is_cpt_custom_templates_supported()' );
 
 		return Utils::is_cpt_custom_templates_supported();
+	}
+
+	/**
+	 * Get page data.
+	 *
+	 * Retrieves page data for any given a page ID.
+	 *
+	 * @since      1.6.0
+	 * @deprecated 1.6.0
+	 * @access     public
+	 * @static
+	 *
+	 * @param int $id Page ID.
+	 *
+	 * @return BaseModel
+	 */
+	public static function get_page( $id ) {
+		// translators: %s Elementor Document Settings API URL
+		_deprecated_file( __METHOD__, '1.6.0', 'the new settings API', sprintf( 'See <a href="%s">Elementor Document Settings</a> for more information.', 'https://developers.elementor.com/elementor-document-settings/' ) );
+
+		return SettingsManager::get_settings_managers( 'page' )->get_model( $id );
 	}
 
 	/**
@@ -91,12 +95,20 @@ class Manager extends BaseManager {
 	 * @return BaseModel The model object.
 	 */
 	public function get_model_for_config() {
-		$post_id = get_the_ID();
+		if ( ! is_singular() && ! Plugin::$instance->editor->is_edit_mode() ) {
+			return null;
+		}
 
 		if ( Plugin::$instance->editor->is_edit_mode() ) {
+			$post_id = Plugin::$instance->editor->get_post_id();
 			$document = Plugin::$instance->documents->get_doc_or_auto_save( $post_id );
 		} else {
+			$post_id = get_the_ID();
 			$document = Plugin::$instance->documents->get_doc_for_frontend( $post_id );
+		}
+
+		if ( ! $document ) {
+			return null;
 		}
 
 		$model = $this->get_model( $document->get_post()->ID );
@@ -166,10 +178,14 @@ class Manager extends BaseManager {
 		}
 
 		if ( Utils::is_cpt_custom_templates_supported() ) {
-			$template = 'default';
+			$template = get_metadata( 'post', $post->ID, '_wp_page_template', true );
 
 			if ( isset( $data['template'] ) ) {
 				$template = $data['template'];
+			}
+
+			if ( empty( $template ) ) {
+				$template = 'default';
 			}
 
 			// Use `update_metadata` in order to save also for revisions.
@@ -267,16 +283,25 @@ class Manager extends BaseManager {
 	 * @since 1.6.0
 	 * @access protected
 	 *
-	 * @param CSS_File $css_file The requested CSS file.
+	 * @param Base $css_file The requested CSS file.
 	 *
 	 * @return BaseModel The model object.
 	 */
-	protected function get_model_for_css_file( CSS_File $css_file ) {
-		if ( ! $css_file instanceof Post_CSS_File ) {
+	protected function get_model_for_css_file( Base $css_file ) {
+		if ( ! $css_file instanceof Post ) {
 			return null;
 		}
 
-		return $this->get_model( $css_file->get_post_id() );
+		$post_id = $css_file->get_post_id();
+
+		if ( $css_file instanceof Post_Preview ) {
+			$autosave = Utils::get_post_autosave( $post_id );
+			if ( $autosave ) {
+				$post_id = $autosave->ID;
+			}
+		}
+
+		return $this->get_model( $post_id );
 	}
 
 	/**
@@ -301,6 +326,13 @@ class Manager extends BaseManager {
 		];
 	}
 
+	/**
+	 * @since 2.0.0
+	 * @access public
+	 *
+	 * @param $post_id
+	 * @param $status
+	 */
 	public function save_post_status( $post_id, $status ) {
 		$parent_id = wp_is_post_revision( $post_id );
 

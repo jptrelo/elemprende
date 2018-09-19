@@ -14,7 +14,7 @@ class WCFM_Vendor_Support {
 	public function __construct() {
 		global $WCFM;
 		
-		if( wcfm_is_marketplace() ) {
+		if( $is_marketplace = wcfm_is_marketplace() ) {
 			if ( !is_admin() || defined('DOING_AJAX') ) {
 				if( !wcfm_is_vendor() ) {
 					if( $is_allow_vendors = apply_filters( 'wcfm_is_allow_vendors', true ) ) {
@@ -31,22 +31,27 @@ class WCFM_Vendor_Support {
 					}
 				}
 				
-				add_filter( 'wcfm_is_admin_fee_mode', array( &$this, 'wcfm_is_admin_fee_mode' ) );
 				
 				if( wcfm_is_vendor() ) {
 					add_filter( 'wcfm_orders_total_heading', array( &$this, 'wcfm_vendors_orders_total_heading' ) );
+					
+					add_action('pre_get_posts', array( &$this, 'wcfm_vendors_only_attachments' ) );
 				}
 				
-				if( $is_allow_commission_manage = apply_filters( 'wcfm_is_allow_commission_manage', true ) ) {
+				if( in_array( $is_marketplace, array('wcmarketplace', 'wcfmmarketplace') ) ) {
+					add_filter( 'wcfm_is_admin_fee_mode', array( &$this, 'wcfm_is_admin_fee_mode' ) );
+				}
+				
+				if( !wcfm_is_vendor() && apply_filters( 'wcfm_is_allow_commission_manage', true ) ) {
 					// Associate Vendor
 					add_action( 'end_wcfm_products_manage', array( &$this, 'wcfm_associate_vendor' ), 490 );
 					add_action( 'after_wcfm_products_manage_meta_save', array( &$this, 'wcfm_associate_vendor_save' ), 490, 2 );
 					
 					// Commmission Manage
-					if( $WCFM->is_marketplace == 'wcvendors' ) {
+					if( $is_marketplace == 'wcvendors' ) {
 						add_action( 'end_wcfm_products_manage', array( &$this, 'wcvendors_product_commission' ), 500 );
 						add_action( 'after_wcfm_products_manage_meta_save', array( &$this, 'wcvendors_product_commission_save' ), 500, 2 );
-					} else	if( $WCFM->is_marketplace == 'wcmarketplace' ) {
+					} else	if( $is_marketplace == 'wcmarketplace' ) {
 						add_action( 'end_wcfm_products_manage', array( &$this, 'wcmarketplace_product_commission' ), 500 );
 						
 						// For Variation
@@ -62,7 +67,7 @@ class WCFM_Vendor_Support {
 				}
 				
 				// Product Vendors Manage Vendor Product Permissions
-				if( $WCFM->is_marketplace == 'wcpvendors' ) {
+				if( $is_marketplace == 'wcpvendors' ) {
 					add_action( 'after_wcfm_products_manage_meta_save', array( &$this, 'wcpvendors_product_manage_vendor_association' ), 10, 2 );
 				}
 				
@@ -82,16 +87,30 @@ class WCFM_Vendor_Support {
 			// Remove WCMp Capability Tab
 			add_filter( 'wcmp_tabs', array( &$this, 'wcmp_tabs_capability_disabled_by_wcfm' ), 500 );
 			
+			// Change WCMp Stripe config URL
+			add_filter( 'settings_payment_stripe_gateway_tab_options', array( &$this, 'wcmp_change_stripe_config_by_wcfm' ), 500 );
+			
 			// WC Vendors Registration redirect
 			add_filter( 'wcvendors_signup_redirect', array( &$this, 'wcfm_wcvendors_signup_redirect' ), 500 );
 			
 			// Dokan Navigtion URL
-			add_filter( 'dokan_get_navigation_url', array( &$this, 'wcfm_dokan_get_navigation_url' ), 500 );
+			add_filter( 'dokan_get_navigation_url', array( &$this, 'wcfm_dokan_get_navigation_url' ), 500, 2 );
 		}
 		
 		// Login Redirect
-		add_filter( 'woocommerce_login_redirect', array($this, 'wcfm_wc_vendor_login_redirect'), 50, 2 );
-		add_filter( 'login_redirect', array($this, 'wcfm_vendor_login_redirect'), 50, 3 );
+		if( apply_filters( 'wcfm_is_allow_login_redirect', true ) ) {
+			add_filter( 'woocommerce_login_redirect', array($this, 'wcfm_wc_vendor_login_redirect'), 50, 2 );
+			add_filter( 'login_redirect', array($this, 'wcfm_vendor_login_redirect'), 50, 3 );
+		}
+		
+		// Display Order Item Meta Vendor
+		add_filter( 'woocommerce_order_item_display_meta_key', array( &$this, 'wcfm_vendor_id_display_label' ), 50, 2 );
+		add_filter( 'woocommerce_order_item_display_meta_value', array( &$this, 'wcfm_vendor_id_display_value' ), 50, 2 );
+		
+		// Delete Post Attachment on Post Delte
+		if( apply_filters( 'wcfm_is_allow_delete_post_media', false ) ) {
+			add_action( 'before_delete_post', array( &$this, 'wcfm_delete_post_media' ), 50 );
+		}
 	}
 	
 	/**
@@ -101,9 +120,10 @@ class WCFM_Vendor_Support {
   	$wcfm_modified_endpoints = (array) get_option( 'wcfm_endpoints' );
   	
 		$query_vendors_vars = array(
-			'wcfm-vendors'                 => ! empty( $wcfm_modified_endpoints['wcfm-vendors'] ) ? $wcfm_modified_endpoints['wcfm-vendors'] : 'wcfm-vendors',
-			'wcfm-vendors-manage'          => ! empty( $wcfm_modified_endpoints['wcfm-vendors-manage'] ) ? $wcfm_modified_endpoints['wcfm-vendors-manage'] : 'wcfm-vendors-manage',
-			'wcfm-vendors-commission'      => ! empty( $wcfm_modified_endpoints['wcfm-vendors-commission'] ) ? $wcfm_modified_endpoints['wcfm-vendors-commission'] : 'wcfm-vendors-commission',
+			'wcfm-vendors'                 => ! empty( $wcfm_modified_endpoints['wcfm-vendors'] ) ? $wcfm_modified_endpoints['wcfm-vendors'] : 'vendors',
+			'wcfm-vendors-new'             => ! empty( $wcfm_modified_endpoints['wcfm-vendors-new'] ) ? $wcfm_modified_endpoints['wcfm-vendors-new'] : 'vendors-new',
+			'wcfm-vendors-manage'          => ! empty( $wcfm_modified_endpoints['wcfm-vendors-manage'] ) ? $wcfm_modified_endpoints['wcfm-vendors-manage'] : 'vendors-manage',
+			'wcfm-vendors-commission'      => ! empty( $wcfm_modified_endpoints['wcfm-vendors-commission'] ) ? $wcfm_modified_endpoints['wcfm-vendors-commission'] : 'vendors-commission',
 		);
 		
 		$query_vars = array_merge( $query_vars, $query_vendors_vars );
@@ -119,6 +139,9 @@ class WCFM_Vendor_Support {
   	switch ( $endpoint ) {
   		case 'wcfm-vendors' :
 				$title = __( 'Vendors Dashboard', 'wc-frontend-manager' );
+			break;
+			case 'wcfm-vendors-new' :
+				$title = __( 'New Vendor', 'wc-frontend-manager' );
 			break;
 			case 'wcfm-vendors-manage' :
 				$title = __( 'Vendors Manager', 'wc-frontend-manager' );
@@ -154,9 +177,10 @@ class WCFM_Vendor_Support {
   function wcfm_vendors_endpoints_slug( $endpoints ) {
 		
 		$vendors_endpoints = array(
-													'wcfm-vendors'  		      => 'wcfm-vendors',
-													'wcfm-vendors-manage'  	  => 'wcfm-vendors-manage',
-													'wcfm-vendors-commission' => 'wcfm-vendors-commission'
+													'wcfm-vendors'  		      => 'vendors',
+													'wcfm-vendors-new'  	    => 'vendors-new',
+													'wcfm-vendors-manage'  	  => 'vendors-manage',
+													'wcfm-vendors-commission' => 'vendors-commission'
 													);
 		$endpoints = array_merge( $endpoints, $vendors_endpoints );
 		
@@ -169,13 +193,28 @@ class WCFM_Vendor_Support {
   function vendors_wcfm_menus( $menus ) {
   	global $WCFM;
   	
-		$menus = array_slice($menus, 0, 3, true) +
-												array( 'wcfm-vendors' => array(   'label'  => __( 'Vendors', 'wc-frontend-manager'),
-																										 'url'       => get_wcfm_vendors_url(),
-																										 'icon'      => 'user-o',
-																										 'priority'  => 45
-																										) )	 +
-													array_slice($menus, 3, count($menus) - 3, true) ;
+  	if( $WCFM->is_marketplace == 'wcfmmarketplace' ) {
+			$menus = array_slice($menus, 0, 3, true) +
+													array( 'wcfm-vendors' => array(   'label'  => __( 'Vendors', 'wc-frontend-manager'),
+																											 'url'       => get_wcfm_vendors_url(),
+																											 'icon'      => 'user-o',
+																											 'has_new'    => 'yes',
+																											 'new_class'  => 'wcfm_sub_menu_items_vendors_manage',
+																											 'new_url'    => get_wcfm_vendors_new_url(),
+																											 'capability' => 'wcfm_vendors_menu',
+																											 'submenu_capability' => 'wcfm_add_new_vendors_sub_menu',
+																											 'priority'  => 45
+																											) )	 +
+														array_slice($menus, 3, count($menus) - 3, true) ;
+  	} else {
+			$menus = array_slice($menus, 0, 3, true) +
+													array( 'wcfm-vendors' => array(   'label'  => __( 'Vendors', 'wc-frontend-manager'),
+																											 'url'       => get_wcfm_vendors_url(),
+																											 'icon'      => 'user-o',
+																											 'priority'  => 45
+																											) )	 +
+														array_slice($menus, 3, count($menus) - 3, true) ;
+		}
 		
   	return $menus;
   }
@@ -187,7 +226,9 @@ class WCFM_Vendor_Support {
 		if ( isset($user->roles) && is_array($user->roles) ) {
 			if ( in_array( 'vendor', $user->roles ) ) {
 				$redirect_to = get_wcfm_url();
-			} if ( in_array( 'seller', $user->roles ) ) {
+			} elseif ( in_array( 'seller', $user->roles ) ) {
+				$redirect_to = get_wcfm_url();
+			} elseif ( in_array( 'wcfm_vendor', $user->roles ) ) {
 				$redirect_to = get_wcfm_url();
 			} elseif ( in_array( 'dc_vendor', $user->roles ) ) {
 				$redirect_to = get_wcfm_url();
@@ -205,7 +246,7 @@ class WCFM_Vendor_Support {
 		if ( $user && isset($user->ID) ) {
 			$current_login = get_user_meta( $user->ID, '_current_login', true );
 			update_user_meta( $user->ID, '_previous_login', $current_login );
-			update_user_meta( $user->ID, '_current_login', time() );
+			update_user_meta( $user->ID, '_current_login', current_time( 'timestamp' ) );
 		}
 		
 		return apply_filters( 'wcfm_login_redirect', $redirect_to, $user );
@@ -220,6 +261,8 @@ class WCFM_Vendor_Support {
 				$redirect_to = get_wcfm_url();
 			} elseif ( in_array( 'seller', $user->roles ) ) {
 				$redirect_to = get_wcfm_url();
+			} elseif ( in_array( 'wcfm_vendor', $user->roles ) ) {
+				$redirect_to = get_wcfm_url();
 			} elseif ( in_array( 'dc_vendor', $user->roles ) ) {
 				$redirect_to = get_wcfm_url();
 			} elseif ( in_array( 'wc_product_vendors_admin_vendor', $user->roles ) ) {
@@ -236,10 +279,54 @@ class WCFM_Vendor_Support {
 		if ( $user && isset($user->ID) ) {
 			$current_login = get_user_meta( $user->ID, '_current_login', true );
 			update_user_meta( $user->ID, '_previous_login', $current_login );
-			update_user_meta( $user->ID, '_current_login', time() );
+			update_user_meta( $user->ID, '_current_login', current_time( 'timestamp' ) );
 		}
 		
 		return apply_filters( 'wcfm_login_redirect', $redirect_to, $user );
+	}
+	
+	function wcfm_vendor_id_display_label( $display_key, $meta = '' ) {
+		if( ($display_key == '_vendor_id') || ($display_key == 'vendor_id') || ($display_key == '_seller_id') || ($display_key == 'seller_id') ) {
+			$display_key = __( 'Store', 'wc-frontend-manager' );
+		}
+		if( $display_key == 'package_qty' ) {
+			$display_key = __( 'Package Qty', 'wc-frontend-manager' );
+		}
+		return $display_key;
+	}
+	
+	function wcfm_vendor_id_display_value( $display_value, $meta = '' ) {
+		if( $meta && is_object( $meta ) && ( ($meta->key == '_vendor_id') || ($meta->key == 'vendor_id') || ($meta->key == '_seller_id') || ($meta->key == 'seller_id') ) ) {
+			$display_value = $this->wcfm_get_vendor_store_by_vendor( absint($display_value) );
+		}
+		return $display_value;
+	}
+	
+	function wcfm_delete_post_media( $product_id ) {
+		if( $product_id ) {
+			$product = wc_get_product( $product_id );
+			if( $product && is_object( $product ) ) {
+				
+				$thumbnail_id = get_post_meta( $product_id, '_thumbnail_id', true );
+				if( $thumbnail_id ) {
+					if ( false === wp_delete_attachment( $thumbnail_id, true ) ) {
+						wcfm_log( "Attachment Delete Failed: " . $product_id . "=>" . $thumbnail_id );
+					}
+				}
+				
+				$attachments = get_post_meta( $product_id, '_product_image_gallery', true );
+				if( $attachments ) {
+					$attachments = explode( ",", $attachments );
+					if( !empty( $attachments ) ) {
+						foreach ( $attachments as $attachment ) {
+							if ( false === wp_delete_attachment( $attachment, true ) ) {
+								wcfm_log( "Attachment Delete Failed: " . $product_id . "=>" . $attachment );
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	/**
@@ -250,6 +337,29 @@ class WCFM_Vendor_Support {
 		
 		$heading = __( 'Commission', 'wc-frontend-manager');
 		return $heading;
+	}
+	
+	/**
+	 * Restrict vendors to see only their attachments
+	 */
+	function wcfm_vendors_only_attachments( $wp_query_obj ) {
+		global $current_user, $pagenow;
+
+    $is_attachment_request = ($wp_query_obj->get('post_type')=='attachment');
+
+    if( !$is_attachment_request )
+        return;
+
+    if( !is_a( $current_user, 'WP_User') )
+        return;
+
+    if( !in_array( $pagenow, array( 'upload.php', 'admin-ajax.php' ) ) )
+        return;
+
+    if( !current_user_can('delete_pages') )
+        $wp_query_obj->set('author', $current_user->ID );
+
+    return;
 	}
 	
 	// WCFM Associate Vednor to Product
@@ -335,6 +445,21 @@ class WCFM_Vendor_Support {
 						wp_update_post( $arg );
 					}
 				} elseif( $is_marketplace == 'dokan' ) {
+					if( isset( $wcfm_products_manage_form_data['wcfm_associate_vendor'] ) && !empty( $wcfm_products_manage_form_data['wcfm_associate_vendor'] ) ) {
+						$vnd_term = absint( $wcfm_products_manage_form_data['wcfm_associate_vendor'] );
+						$arg = array(
+							'ID' => $new_product_id,
+							'post_author' => $vnd_term,
+						);
+						wp_update_post( $arg );
+					} else {
+						$arg = array(
+							'ID' => $new_product_id,
+							'post_author' => get_current_user_id(),
+						);
+						wp_update_post( $arg );
+					}
+				} elseif( $is_marketplace == 'wcfmmarketplace' ) {
 					if( isset( $wcfm_products_manage_form_data['wcfm_associate_vendor'] ) && !empty( $wcfm_products_manage_form_data['wcfm_associate_vendor'] ) ) {
 						$vnd_term = absint( $wcfm_products_manage_form_data['wcfm_associate_vendor'] );
 						$arg = array(
@@ -542,6 +667,8 @@ class WCFM_Vendor_Support {
 					$vendor_role = get_role( 'wc_product_vendors_admin_vendor' );
 				} elseif( $is_marketplace == 'dokan' ) {
 					$vendor_role = get_role( 'seller' );
+				} elseif( $is_marketplace == 'wcfmmarketplace' ) {
+					$vendor_role = get_role( 'wcfm_vendor' );
 				}
 				
 				// Delete Media Capability
@@ -552,6 +679,10 @@ class WCFM_Vendor_Support {
 					$vendor_role->add_cap( 'delete_attachments' );
 					$vendor_role->add_cap( 'delete_posts' );
 				}
+				
+				// Import & Export Capability
+				$vendor_role->add_cap( 'export' );
+				$vendor_role->add_cap( 'import' );
 				
 				// Ensure Vendors Media Upload Capability
 				$vendor_role->add_cap('edit_posts');
@@ -578,9 +709,11 @@ class WCFM_Vendor_Support {
 						if( isset( $options['manage_appointment'] ) && $options[ 'manage_appointment' ] == 'yes' ) {
 							$vendor_role->remove_cap( 'manage_appointments' );
 							$vendor_role->remove_cap( 'manage_others_appointments' );
+							$vendor_role->remove_cap( 'manage_options' );
 						} else {
 							$vendor_role->add_cap( 'manage_appointments' );
 							$vendor_role->add_cap( 'manage_others_appointments' );
+							$vendor_role->add_cap( 'manage_options' );
 						}
 					}
 				}
@@ -680,17 +813,20 @@ class WCFM_Vendor_Support {
   
   function wcfm_dokan_get_dashboard_nav( $dokan_urls ) {
   	$dokan_new_urls = array();
-  	if( !empty( $dokan_urls ) ) {
-  		foreach( $dokan_urls as $dokan_nav_key => $dokan_url ) {
-  			$dokan_url['url'] = wcfm_get_navigation_url( $dokan_nav_key );
-  			$dokan_new_urls[$dokan_nav_key] = $dokan_url;
-  		}
-  	}
-  	
+  	if( apply_filters( 'wcfm_is_allow_multivendor_dashboard_redirect', true ) ) {
+			if( !empty( $dokan_urls ) ) {
+				foreach( $dokan_urls as $dokan_nav_key => $dokan_url ) {
+					$dokan_url['url'] = wcfm_get_navigation_url( $dokan_nav_key );
+					$dokan_new_urls[$dokan_nav_key] = $dokan_url;
+				}
+			}
+		} else {
+			$dokan_new_urls = $dokan_urls;
+		}
   	return $dokan_new_urls;
   }
   
-  function wcfm_get_vendor_list( $all = false, $offset = '', $number = '', $search = '' ) {
+  function wcfm_get_vendor_list( $all = false, $offset = '', $number = '', $search = '', $allow_vendors_list = '' ) {
   	global $WCFM;
   	
   	$is_marketplace = wcfm_is_marketplace();
@@ -702,7 +838,7 @@ class WCFM_Vendor_Support {
 				} else {
 					$vendor_arr = array( '' => __('Choose Vendor ...', 'wc-frontend-manager' ) );
 				}
-				$wcfm_allow_vendors_list = apply_filters( 'wcfm_allow_vendors_list', '', $is_marketplace );
+				$wcfm_allow_vendors_list = apply_filters( 'wcfm_allow_vendors_list', $allow_vendors_list, $is_marketplace );
 				if( $is_marketplace == 'wcpvendors' ) {
 					$args = array(
 						'hide_empty'   => false,
@@ -727,24 +863,67 @@ class WCFM_Vendor_Support {
 					}
 				} else {
 					$args = array(
-						'role__in'     => array( 'dc_vendor', 'vendor', 'seller' ),
+						'role__in'     => apply_filters( 'wcfm_allwoed_vendor_user_roles', array( 'dc_vendor', 'vendor', 'seller', 'wcfm_vendor', 'disable_vendor' ) ),
 						'orderby'      => 'login',
 						'order'        => 'ASC',
 						'include'      => $wcfm_allow_vendors_list,
 						'count_total'  => false,
-						'fields'       => array( 'ID', 'display_name' )
+						'fields'       => array( 'ID', 'display_name', 'user_login' )
 					 ); 
 					if( $number ) {
 						$args['offset'] = $offset;
 						$args['number'] = $number;
 					}
 					if( $search ) {
-						$args['search'] = $search;
+						//$args['search'] = $search;
+						$args['meta_query'] = array(
+																			 'relation' => 'OR',
+																				array(
+																						'key'     => 'first_name',
+																						'value'   => $search,
+																						'compare' => 'LIKE'
+																				),
+																				array(
+																						'key'     => 'last_name',
+																						'value'   => $search,
+																						'compare' => 'LIKE'
+																				),
+																				array(
+																						'key'     => 'nickname',
+																						'value'   => $search,
+																						'compare' => 'LIKE'
+																				),
+																				array(
+																						'key'     => 'pv_shop_name',
+																						'value'   => $search,
+																						'compare' => 'LIKE'
+																				),
+																				array(
+																						'key'     => '_vendor_page_title',
+																						'value'   => $search,
+																						'compare' => 'LIKE'
+																				),
+																				array(
+																						'key'     => 'dokan_store_name',
+																						'value'   => $search,
+																						'compare' => 'LIKE'
+																				),
+																				array(
+																						'key'     => 'wcfmmp_store_name',
+																						'value'   => $search,
+																						'compare' => 'LIKE'
+																				),
+																				array(
+																						'key'     => 'store_name',
+																						'value'   => $search,
+																						'compare' => 'LIKE'
+																				),
+																		);
 					}
 					$all_users = get_users( $args );
 					if( !empty( $all_users ) ) {
 						foreach( $all_users as $all_user ) {
-							$vendor_arr[$all_user->ID] = $all_user->display_name;
+							$vendor_arr[$all_user->ID] = $all_user->display_name . ' (' . $all_user->user_login . ')';
 						}
 					}
 				}
@@ -754,10 +933,58 @@ class WCFM_Vendor_Support {
 		return $vendor_arr;
 	}
 	
-	function wcfm_get_vendor_store_by_vendor( $vendor_id ) {
+	public function wcfm_get_vendor_logo_by_vendor( $vendor_id ) {
 		global $WCFM, $wpdb, $WCMp;
   	
-  	$vendor_store = '&ndash;';
+  	$store_logo = '';
+  	
+  	if( !$vendor_id ) return $store_logo;
+  	$vendor_id = absint( $vendor_id );
+  	
+  	$marketplece = wcfm_is_marketplace();
+  	if( $marketplece == 'wcvendors' ) {
+  		$logo = get_user_meta( $vendor_id, '_wcv_store_icon_id', true );
+  		$logo_image_url = wp_get_attachment_image_src( $logo, 'thumbnail' );
+  		if ( !empty( $logo_image_url ) ) {
+  			$store_logo = $logo_image_url[0];
+  		}
+		} elseif( $marketplece == 'wcmarketplace' ) {
+			$vendor = get_wcmp_vendor($vendor_id);
+			if ( $vendor && $vendor->image ) {
+				$store_logo = $vendor->image;
+			}
+		} elseif( $marketplece == 'wcpvendors' ) {
+			$vendor_data = WC_Product_Vendors_Utils::get_vendor_data_by_id( $vendor_id );
+			$logo = ! empty( $vendor_data['logo'] ) ? $vendor_data['logo'] : '';
+			$logo_image_url = wp_get_attachment_image_src( $logo, 'full' );
+			if ( !empty( $logo_image_url ) ) {
+				$store_logo = $logo_image_url[0];
+			}
+		} elseif( $marketplece == 'dokan' ) {
+			$vendor_data = get_user_meta( $vendor_id, 'dokan_profile_settings', true );
+			$gravatar       = isset( $vendor_data['gravatar'] ) ? absint( $vendor_data['gravatar'] ) : 0;
+			$gravatar_url = $gravatar ? wp_get_attachment_url( $gravatar ) : '';
+	
+			if ( !empty( $gravatar_url ) ) {
+				$store_logo = $gravatar_url;
+			}
+		} elseif( $marketplece == 'wcfmmarketplace' ) {
+			$vendor_data = get_user_meta( $vendor_id, 'wcfmmp_profile_settings', true );
+			$gravatar       = isset( $vendor_data['gravatar'] ) ? absint( $vendor_data['gravatar'] ) : 0;
+			$gravatar_url = $gravatar ? wp_get_attachment_url( $gravatar ) : '';
+	
+			if ( !empty( $gravatar_url ) ) {
+				$store_logo = $gravatar_url;
+			}
+		}
+		
+		return $store_logo;
+	}
+	
+	public function wcfm_get_vendor_store_name_by_vendor( $vendor_id ) {
+		global $WCFM, $wpdb, $WCMp;
+  	
+  	$vendor_store = '';
   	
   	if( !$vendor_id ) return $vednor_store;
   	$vendor_id = absint( $vendor_id );
@@ -766,36 +993,255 @@ class WCFM_Vendor_Support {
   	if( $marketplece == 'wcvendors' ) {
   		$shop_name = get_user_meta( $vendor_id, 'pv_shop_name', true );
 			if( $shop_name ) $vendor_store = $shop_name;
-			$shop_link       = WCV_Vendors::get_vendor_shop_page( $vendor_id );
-			if( $shop_name ) { $vendor_store = '<a target="_blank" href="' . apply_filters('wcv_vendor_shop_permalink', $shop_link) . '">' . $shop_name . '</a>'; }
-			else { $vendor_store = '<a target="_blank" href="' . apply_filters('wcv_vendor_shop_permalink', $shop_link) . '">' . __('Shop', 'wc-frontend-manager') . '</a>'; }
 		} elseif( $marketplece == 'wcmarketplace' ) {
 			$vendor = get_wcmp_vendor( $vendor_id );
 			if( $vendor ) {
 				$shop_name = get_user_meta( $vendor_id , '_vendor_page_title', true);
 				$store_name = get_user_meta( $vendor_id, 'store_name', true );
-				if( $shop_name ) { $vendor_store = '<a target="_blank" href="' . apply_filters('wcmp_vendor_shop_permalink', $vendor->permalink) . '">' . $shop_name . '</a>'; }
-				elseif( $store_name ) { $vendor_store = '<a target="_blank" href="' . apply_filters('wcmp_vendor_shop_permalink', $vendor->permalink) . '">' . $store_name . '</a>'; }
-				else { $vendor_store = '<a target="_blank" href="' . apply_filters('wcmp_vendor_shop_permalink', $vendor->permalink) . '">' . __('Shop', 'wc-frontend-manager') . '</a>'; }
+				if( $shop_name ) { $vendor_store = $shop_name; }
+			}
+		} elseif( $marketplece == 'wcpvendors' ) {
+			$vendor_data = get_term( $vendor_id, WC_PRODUCT_VENDORS_TAXONOMY );
+			$shop_name = $vendor_data->name;
+			if( $shop_name ) { $vendor_store = $shop_name; }
+		} elseif( $marketplece == 'dokan' ) {
+			$vendor_data = get_user_meta( $vendor_id, 'dokan_profile_settings', true );
+			$shop_name     = isset( $vendor_data['store_name'] ) ? esc_attr( $vendor_data['store_name'] ) : '';
+			$vendor_user   = get_user_by( 'id', $vendor_id );
+			if(  empty( $shop_name ) && $vendor_user ) {
+				$shop_name     = $vendor_user->display_name;
+			}
+			if( $shop_name ) { $vendor_store = $shop_name; }
+		} elseif( $marketplece == 'wcfmmarketplace' ) {
+			$vendor_data = get_user_meta( $vendor_id, 'wcfmmp_profile_settings', true );
+			$shop_name     = isset( $vendor_data['store_name'] ) ? esc_attr( $vendor_data['store_name'] ) : '';
+			$vendor_user   = get_user_by( 'id', $vendor_id );
+			if(  empty( $shop_name ) && $vendor_user ) {
+				$shop_name     = $vendor_user->display_name;
+			}
+			if( $shop_name ) { $vendor_store = $shop_name; }
+		}
+		
+		return $vendor_store;
+	}
+	
+	public function wcfm_get_vendor_store_by_vendor( $vendor_id ) {
+		global $WCFM, $wpdb, $WCMp;
+  	
+  	$vendor_store = '&ndash;';
+  	
+  	if( !$vendor_id ) return $vendor_store;
+  	$vendor_id = absint( $vendor_id );
+  	
+  	$store_open_by = apply_filters( 'wcfm_shop_permalink_open_by', 'target="_blank"', $vendor_id );
+  	
+  	$marketplece = wcfm_is_marketplace();
+  	if( $marketplece == 'wcvendors' ) {
+  		$shop_name = get_user_meta( $vendor_id, 'pv_shop_name', true );
+			if( $shop_name ) $vendor_store = $shop_name;
+			$shop_link       = WCV_Vendors::get_vendor_shop_page( $vendor_id );
+			if( $shop_name ) { $vendor_store = '<a ' . $store_open_by . ' href="' . apply_filters('wcv_vendor_shop_permalink', $shop_link) . '">' . $shop_name . '</a>'; }
+			else { $vendor_store = '<a ' . $store_open_by . ' href="' . apply_filters('wcv_vendor_shop_permalink', $shop_link) . '">' . __('Shop', 'wc-frontend-manager') . '</a>'; }
+		} elseif( $marketplece == 'wcmarketplace' ) {
+			$vendor = get_wcmp_vendor( $vendor_id );
+			if( $vendor ) {
+				$shop_name = get_user_meta( $vendor_id , '_vendor_page_title', true);
+				$store_name = get_user_meta( $vendor_id, 'store_name', true );
+				if( $shop_name ) { $vendor_store = '<a ' . $store_open_by . ' href="' . apply_filters('wcmp_vendor_shop_permalink', $vendor->permalink) . '">' . $shop_name . '</a>'; }
+				elseif( $store_name ) { $vendor_store = '<a ' . $store_open_by . ' href="' . apply_filters('wcmp_vendor_shop_permalink', $vendor->permalink) . '">' . $store_name . '</a>'; }
+				else { $vendor_store = '<a ' . $store_open_by . ' href="' . apply_filters('wcmp_vendor_shop_permalink', $vendor->permalink) . '">' . __('Shop', 'wc-frontend-manager') . '</a>'; }
 			}
 		} elseif( $marketplece == 'wcpvendors' ) {
 			$vendor_data = get_term( $vendor_id, WC_PRODUCT_VENDORS_TAXONOMY );
 			$shop_name = $vendor_data->name;
 			$shop_link = get_term_link( $vendor_id, WC_PRODUCT_VENDORS_TAXONOMY );
 			if( !is_wp_error( $shop_link ) ) {
-				if( $shop_name ) { $vendor_store = '<a target="_blank" href="' . apply_filters('wcpv_vendor_shop_permalink', $shop_link) . '">' . $shop_name . '</a>'; }
-				else { $vendor_store = '<a target="_blank" href="' . apply_filters('wcpv_vendor_shop_permalink', $shop_link) . '">' . __('Shop', 'wc-frontend-manager') . '</a>'; }
+				if( $shop_name ) { $vendor_store = '<a ' . $store_open_by . ' href="' . apply_filters('wcpv_vendor_shop_permalink', $shop_link) . '">' . $shop_name . '</a>'; }
+				else { $vendor_store = '<a ' . $store_open_by . ' href="' . apply_filters('wcpv_vendor_shop_permalink', $shop_link) . '">' . __('Shop', 'wc-frontend-manager') . '</a>'; }
 			}
 		} elseif( $marketplece == 'dokan' ) {
 			$vendor_data = get_user_meta( $vendor_id, 'dokan_profile_settings', true );
 			$shop_name     = isset( $vendor_data['store_name'] ) ? esc_attr( $vendor_data['store_name'] ) : '';
-			$shop_name     = empty( $shop_name ) ? get_user_by( 'id', $vendor_id )->display_name : $shop_name;
-			$shop_link       = dokan_get_store_url( $vendor_id );
-			if( $shop_name ) { $vendor_store = '<a target="_blank" href="' . apply_filters('dokan_vendor_shop_permalink', $shop_link) . '">' . $shop_name . '</a>'; }
-			else { $vendor_store = '<a target="_blank" href="' . apply_filters('dokan_vendor_shop_permalink', $shop_link) . '">' . __('Shop', 'wc-frontend-manager') . '</a>'; }
+			$vendor_user   = get_user_by( 'id', $vendor_id );
+			if(  empty( $shop_name ) && $vendor_user ) {
+				$shop_name     = $vendor_user->display_name;
+			}
+			$shop_link     = dokan_get_store_url( $vendor_id );
+			if( $shop_name ) { $vendor_store = '<a ' . $store_open_by . ' href="' . apply_filters('dokan_vendor_shop_permalink', $shop_link) . '">' . $shop_name . '</a>'; }
+			else { $vendor_store = '<a ' . $store_open_by . ' href="' . apply_filters('dokan_vendor_shop_permalink', $shop_link) . '">' . __('Shop', 'wc-frontend-manager') . '</a>'; }
+		} elseif( $marketplece == 'wcfmmarketplace' ) {
+			$vendor_data = get_user_meta( $vendor_id, 'wcfmmp_profile_settings', true );
+			$shop_name     = isset( $vendor_data['store_name'] ) ? esc_attr( $vendor_data['store_name'] ) : '';
+			$vendor_user   = get_user_by( 'id', $vendor_id );
+			if(  empty( $shop_name ) && $vendor_user ) {
+				$shop_name     = $vendor_user->display_name;
+			}
+			$shop_link     = wcfmmp_get_store_url( $vendor_id );
+			if( $shop_name ) { $vendor_store = '<a class="wcfm_dashboard_item_title" ' . $store_open_by . ' href="' . apply_filters('wcfmmp_vendor_shop_permalink', $shop_link) . '">' . $shop_name . '</a>'; }
+			else { $vendor_store = '<a class="wcfm_dashboard_item_title" ' . $store_open_by . ' href="' . apply_filters('wcfmmp_vendor_shop_permalink', $shop_link) . '">' . __('Shop', 'wc-frontend-manager') . '</a>'; }
 		}
 		
 		return $vendor_store;
+	}
+	
+	public function wcfm_get_vendor_address_by_vendor( $vendor_id ) {
+		global $WCFM, $wpdb, $WCMp;
+  	
+  	$vendor_address = '';
+  	$addr_1 = '';
+		$addr_2 = '';
+		$country = '';
+		$city  = '';
+		$state = '';
+		$zip  = '';
+  	
+  	if( !$vendor_id ) return $vendor_address;
+  	$vendor_id = absint( $vendor_id );
+  	
+  	$marketplece = wcfm_is_marketplace();
+  	if( $marketplece == 'wcvendors' ) {
+  		$addr_1  = get_user_meta( $vendor_id, '_wcv_store_address1', true );
+			$addr_2  = get_user_meta( $vendor_id, '_wcv_store_address2', true );
+			$country  = get_user_meta( $vendor_id, '_wcv_store_country', true );
+			$city  = get_user_meta( $vendor_id, '_wcv_store_city', true );
+			$state  = get_user_meta( $vendor_id, '_wcv_store_state', true );
+			$zip  = get_user_meta( $vendor_id, '_wcv_store_postcode', true );
+		} elseif( $marketplece == 'wcmarketplace' ) {
+			$addr_1  = get_user_meta( $vendor_id, '_vendor_address_1', true );
+			$addr_2  = get_user_meta( $vendor_id, '_vendor_address_2', true );
+			$country  = get_user_meta( $vendor_id, '_vendor_country', true );
+			$city  = get_user_meta( $vendor_id, '_vendor_city', true );
+			$state  = get_user_meta( $vendor_id, '_vendor_state', true );
+			$zip  = get_user_meta( $vendor_id, '_vendor_postcode', true );
+		} elseif( $marketplece == 'wcpvendors' ) {
+			
+		} elseif( $marketplece == 'dokan' ) {
+			$vendor_data = get_user_meta( $vendor_id, 'dokan_profile_settings', true );
+			$address         = isset( $vendor_data['address'] ) ? $vendor_data['address'] : '';
+			$addr_1 = isset( $vendor_data['address']['street_1'] ) ? $vendor_data['address']['street_1'] : '';
+			$addr_2 = isset( $vendor_data['address']['street_2'] ) ? $vendor_data['address']['street_2'] : '';
+			$city    = isset( $vendor_data['address']['city'] ) ? $vendor_data['address']['city'] : '';
+			$zip     = isset( $vendor_data['address']['zip'] ) ? $vendor_data['address']['zip'] : '';
+			$country = isset( $vendor_data['address']['country'] ) ? $vendor_data['address']['country'] : '';
+			$state   = isset( $vendor_data['address']['state'] ) ? $vendor_data['address']['state'] : '';
+		} elseif( $marketplece == 'wcfmmarketplace' ) {
+			$vendor_data = get_user_meta( $vendor_id, 'wcfmmp_profile_settings', true );
+			$address         = isset( $vendor_data['address'] ) ? $vendor_data['address'] : '';
+			$addr_1 = isset( $vendor_data['address']['street_1'] ) ? $vendor_data['address']['street_1'] : '';
+			$addr_2 = isset( $vendor_data['address']['street_2'] ) ? $vendor_data['address']['street_2'] : '';
+			$city    = isset( $vendor_data['address']['city'] ) ? $vendor_data['address']['city'] : '';
+			$zip     = isset( $vendor_data['address']['zip'] ) ? $vendor_data['address']['zip'] : '';
+			$country = isset( $vendor_data['address']['country'] ) ? $vendor_data['address']['country'] : '';
+			$state   = isset( $vendor_data['address']['state'] ) ? $vendor_data['address']['state'] : '';
+		}
+		
+		// Country -> States
+		$country_obj   = new WC_Countries();
+		$countries     = $country_obj->countries;
+		$states        = $country_obj->states;
+		$country_name = '';
+		$state_name = '';
+		if( $country ) $country_name = $country;
+		if( $state ) $state_name = $state;
+		if( $country && isset( $countries[$country] ) ) {
+			$country_name = $countries[$country];
+		}
+		if( $state && isset( $states[$country] ) && is_array( $states[$country] ) ) {
+			$state_name = isset($states[$country][$state]) ? $states[$country][$state] : '';
+		}
+		
+		if( $addr_1 ) $vendor_address .= $addr_1;
+		if( $addr_2 ) $vendor_address .= "<br />" . $addr_2;
+		if( $city ) $vendor_address .= "<br />" . $city;
+		if( $state_name ) $vendor_address .= ", " . $state_name;
+		if( $country_name ) $vendor_address .= "<br />" . $country_name;
+		if( $zip ) $vendor_address .= " - " . $zip;
+		
+		return $vendor_address;
+	}
+	
+	public function wcfm_get_vendor_email_by_vendor( $vendor_id ) {
+		global $WCFM, $wpdb;
+		
+		$vendor_email = '';
+  	if ( $vendor_id ) {
+			if( $WCFM->is_marketplace ) {
+				if( $WCFM->is_marketplace == 'wcmarketplace' ) {
+					$vendor_data = get_userdata( $vendor_id );
+					if ( ! empty( $vendor_data ) ) {
+						$vendor_email = $vendor_data->user_email;
+					}
+				} elseif( $WCFM->is_marketplace == 'wcvendors' ) {
+					if( WCV_Vendors::is_vendor( $vendor_id ) ) {
+						$vendor_data = get_userdata( $vendor_id );
+						if ( ! empty( $vendor_data ) ) {
+							$vendor_email = $vendor_data->user_email;
+						}
+					}
+				} elseif( $WCFM->is_marketplace == 'wcpvendors' ) {
+					$vendor_data = WC_Product_Vendors_Utils::get_vendor_data_by_id( $vendor_id );
+					if ( ! empty( $vendor_id ) && ! empty( $vendor_data ) ) {
+						$vendor_email = $vendor_data['email'];
+					}
+				} elseif( $WCFM->is_marketplace == 'dokan' ) {
+					if( dokan_is_user_seller( $vendor_id ) ) {
+						$vendor_data = get_userdata( $vendor_id );
+						if ( ! empty( $vendor_data ) ) {
+							$vendor_email = $vendor_data->user_email;
+						}
+					}
+				} elseif( $WCFM->is_marketplace == 'wcfmmarketplace' ) {
+					if( wcfm_is_vendor( $vendor_id ) ) {
+						$vendor_data = get_userdata( $vendor_id );
+						if ( ! empty( $vendor_data ) ) {
+							$vendor_email = $vendor_data->user_email;
+						}
+					}
+				}
+			}
+		}
+		
+		if( !$vendor_email || empty( $vendor_email ) ) $vendor_email = '';
+		
+		return $vendor_email;
+		
+	}
+	
+	public function wcfm_get_vendor_phone_by_vendor( $vendor_id ) {
+		global $WCFM, $wpdb;
+		
+		$vendor_phone = '';
+  	if ( $vendor_id ) {
+			if( $WCFM->is_marketplace ) {
+				if( $WCFM->is_marketplace == 'wcmarketplace' ) {
+					$vendor_phone = get_user_meta( $vendor_id, '_vendor_phone', true );
+				} elseif( $WCFM->is_marketplace == 'wcvendors' ) {
+					if( WCV_Vendors::is_vendor( $vendor_id ) ) {
+						$vendor_phone = get_user_meta( $vendor_id, '_wcv_store_phone', true );
+					}
+				} elseif( $WCFM->is_marketplace == 'wcpvendors' ) {
+					// No store phone setting
+				} elseif( $WCFM->is_marketplace == 'dokan' ) {
+					if( dokan_is_user_seller( $vendor_id ) ) {
+						$vendor_data = get_user_meta( $vendor_id, 'dokan_profile_settings', true );
+						if ( ! empty( $vendor_data ) ) {
+							$vendor_phone = isset( $vendor_data['phone'] ) ? esc_attr( $vendor_data['phone'] ) : '';
+						}
+					}
+				} elseif( $WCFM->is_marketplace == 'wcfmmarketplace' ) {
+					if( wcfm_is_vendor( $vendor_id ) ) {
+						$vendor_data = get_user_meta( $vendor_id, 'wcfmmp_profile_settings', true );
+						if ( ! empty( $vendor_data ) ) {
+							$vendor_phone = isset( $vendor_data['phone'] ) ? esc_attr( $vendor_data['phone'] ) : '';
+						}
+					}
+				}
+			}
+		}
+		
+		if( !$vendor_phone || empty( $vendor_phone ) ) $vendor_phone = '';
+		
+		return $vendor_phone;
 	}
 	
 	/**
@@ -811,6 +1257,10 @@ class WCFM_Vendor_Support {
 					$is_admin_fee = true;
 				}
 			}
+		} elseif( $marketplece == 'wcfmmarketplace' ) {
+			$wcfm_commission_options = get_option( 'wcfm_commission_options', array() );
+			$vendor_commission_for = isset( $wcfm_commission_options['commission_for'] ) ? $wcfm_commission_options['commission_for'] : 'vendor';
+			if( $vendor_commission_for == 'admin' ) $is_admin_fee = true;
 		}
   	return $is_admin_fee;
   }
@@ -819,7 +1269,9 @@ class WCFM_Vendor_Support {
    * Gross sales by Vendor
    */
   function wcfm_get_gross_sales_by_vendor( $vendor_id = '', $interval = '7day', $is_paid = false, $order_id = 0 ) {
-  	global $WCFM, $wpdb, $WCMp;
+  	global $WCFM, $wpdb, $WCMp, $WCFMmp;
+  	
+  	if( $vendor_id ) $vendor_id = absint($vendor_id);
   	
   	$gross_sales = 0;
   	
@@ -855,14 +1307,26 @@ class WCFM_Vendor_Support {
 									$_variation_id = wc_get_order_item_meta( $key, '_variation_id', true );
 									if ( in_array( $_product_id, $valid_items ) || in_array( $_variation_id, $valid_items ) ) {
 										$gross_sales += (float) sanitize_text_field( $line_item->get_total() );
-										if(WC_Vendors::$pv_options->get_option( 'give_tax' )) {
-											$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
+										if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+											if(WC_Vendors::$pv_options->get_option( 'give_tax' )) {
+												$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
+											}
+										} else {
+											if( get_option('wcvendors_vendor_give_taxes') ) {
+												$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
+											}
 										}
 									}
 								} elseif ( in_array( $line_item->get_variation_id(), $valid_items ) || in_array( $line_item->get_product_id(), $valid_items ) ) {
 									$gross_sales += (float) sanitize_text_field( $line_item->get_total() );
-									if(WC_Vendors::$pv_options->get_option( 'give_tax' )) {
-										$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
+									if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+										if(WC_Vendors::$pv_options->get_option( 'give_tax' )) {
+											$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
+										}
+									} else {
+										if( get_option('wcvendors_vendor_give_taxes') ) {
+											$gross_sales += (float) sanitize_text_field( $line_item->get_total_tax() );
+										}
 									}
 								}
 							}
@@ -870,8 +1334,14 @@ class WCFM_Vendor_Support {
 							continue;
 						}
 					}
-					if(WC_Vendors::$pv_options->get_option( 'give_shipping' )) {
-						$gross_sales += (float) $net_sale_whole_week->total_shipping;
+					if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+						if(WC_Vendors::$pv_options->get_option( 'give_shipping' )) {
+							$gross_sales += (float) $net_sale_whole_week->total_shipping;
+						}
+					} else {
+						if( get_option('wcvendors_vendor_give_shipping') ) {
+							$gross_sales += (float) $net_sale_whole_week->total_shipping;
+						}
 					}
 				}
 			}
@@ -950,6 +1420,52 @@ class WCFM_Vendor_Support {
 					$gross_sales = $total_sale->total_order_amount;
 				}
 			}
+		} elseif( $marketplece == 'wcfmmarketplace' ) {
+			$sql = "SELECT item_id, item_total, item_sub_total,  refunded_amount, shipping, tax, shipping_tax_amount FROM {$wpdb->prefix}wcfm_marketplace_orders AS commission";
+			$sql .= " WHERE 1=1";
+			if( $vendor_id ) $sql .= " AND `vendor_id` = {$vendor_id}";
+			if( $order_id ) {
+				$sql .= " AND `order_id` = {$order_id}";
+				//$sql .= " AND `is_refunded` != 1";
+			} else {
+				$status = get_wcfm_marketplace_active_withdrwal_order_status_in_comma();
+				$sql .= " AND commission.order_status IN ({$status})";
+				$sql .= " AND `is_trashed` != 1";
+				if( $is_paid ) {
+					$sql .= " AND commission.withdraw_status = 'completed'";
+					$sql = wcfm_query_time_range_filter( $sql, 'commission_paid_date', $interval );
+				} else {
+					$sql = wcfm_query_time_range_filter( $sql, 'created', $interval );
+				}
+			}
+			
+			$gross_sales_whole_week = $wpdb->get_results( $sql );
+			if( !empty( $gross_sales_whole_week ) ) {
+				foreach( $gross_sales_whole_week as $net_sale_whole_week ) {
+					try {
+						if( $WCFMmp->wcfmmp_vendor->is_vendor_deduct_discount( $vendor_id ) ) {
+							$gross_sales += (float) sanitize_text_field( $net_sale_whole_week->item_total );
+						} else {
+							$gross_sales += (float) sanitize_text_field( $net_sale_whole_week->item_sub_total );
+						}
+						if( $is_vendor_get_tax = $WCFMmp->wcfmmp_vendor->is_vendor_get_tax( $vendor_id ) ) {
+							$gross_sales += (float) $net_sale_whole_week->tax;
+						}
+						if( $WCFMmp->wcfmmp_vendor->is_vendor_get_shipping( $vendor_id ) ) {
+							$gross_sales += (float) $net_sale_whole_week->shipping;
+							if( $is_vendor_get_tax ) {
+								$gross_sales += (float) $net_sale_whole_week->shipping_tax_amount;
+							}
+						}
+						
+						
+						// Deduct Refunded Amount
+						$gross_sales -= (float) sanitize_text_field( $net_sale_whole_week->refunded_amount );
+					} catch (Exception $e) {
+						continue;
+					}
+				}
+			}
 		}
 
 		if( !$gross_sales ) $gross_sales = 0;
@@ -962,6 +1478,8 @@ class WCFM_Vendor_Support {
    */
   function wcfm_get_commission_by_vendor( $vendor_id = '', $interval = '7day', $is_paid = false ) {
   	global $WCFM, $wpdb, $WCMp;
+  	
+  	if( $vendor_id ) $vendor_id = absint($vendor_id);
   	
   	$commission = 0;
   	
@@ -1025,6 +1543,19 @@ class WCFM_Vendor_Support {
 				if( !$commission ) $commission = 0;
 				return $commission;
   		}
+		} elseif( $marketplece == 'wcfmmarketplace' ) {
+			$commission_table = 'wcfm_marketplace_orders'; 
+  		$total_due = 'total_commission';
+  		$total_shipping = 'shipping';
+  		$tax = 'tax';
+  		$shipping_tax = 'shipping_tax_amount';
+  		$status = 'withdraw_status';
+  		$vendor_handler = 'vendor_id';
+  		$table_handler = 'commission';
+  		if( $is_paid )
+  			$time = 'commission_paid_date';
+  		else
+  			$time = 'created';
 		}
   	
 		if( $marketplece == 'dokan' ) {
@@ -1036,11 +1567,16 @@ class WCFM_Vendor_Support {
 		
 		$sql .= " WHERE 1=1";
 		if( $vendor_id ) $sql .= " AND commission.{$vendor_handler} = {$vendor_id}";
-		if( $is_paid ) $sql .= " AND commission.{$status} = 'paid'";
+		if( $is_paid ) $sql .= " AND (commission.{$status} = 'paid' OR commission.{$status} = 'completed')";
 		if( $marketplece == 'wcmarketplace' ) { $sql .= " AND commission.commission_id != 0 AND commission.commission_id != '' AND `is_trashed` != 1"; }
 		if( $marketplece == 'dokan' ) {
 			$status = dokan_withdraw_get_active_order_status_in_comma();
 			$sql .= " AND commission.order_status IN ({$status})";
+		}
+		if( $marketplece == 'wcfmmarketplace' ) { 
+			$status = get_wcfm_marketplace_active_withdrwal_order_status_in_comma();
+			$sql .= " AND commission.order_status IN ({$status})";
+			$sql .= " AND `is_refunded` != 1 AND `is_trashed` != 1";
 		}
 		$sql = wcfm_query_time_range_filter( $sql, $time, $interval, '', '', $table_handler );
 		
@@ -1050,13 +1586,18 @@ class WCFM_Vendor_Support {
 			foreach( $total_commissions as $total_commission ) {
 				$commission += $total_commission->total_due;
 				if( $marketplece == 'wcvendors' ) {
-					if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) { $commission += $total_commission->total_shipping; } 
-					if ( WC_Vendors::$pv_options->get_option( 'give_shipping' ) ) { $commission += $total_commission->tax; }
+					if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+						if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) { $commission += $total_commission->total_shipping; } 
+						if ( WC_Vendors::$pv_options->get_option( 'give_shipping' ) ) { $commission += $total_commission->tax; }
+					} else {
+						if ( get_option('wcvendors_vendor_give_taxes') ) { $commission += $total_commission->total_shipping; } 
+						if ( get_option('wcvendors_vendor_give_shipping') ) { $commission += $total_commission->tax; }
+					}
 				} elseif( $marketplece == 'wcmarketplace' ) {
 					if($WCMp->vendor_caps->vendor_payment_settings('give_shipping')) { $commission += ( $total_commission->total_shipping == 'NAN' ) ? 0 : $total_commission->total_shipping; } 
 					if($WCMp->vendor_caps->vendor_payment_settings('give_tax')) { 
-					  $commission += ( $total_commission->tax == 'NAN' ) ? 0 : $total_commission->tax;
-					  $commission += ( $total_commission->shipping_tax == 'NAN' ) ? 0 : $total_commission->shipping_tax;
+						$commission += ( $total_commission->tax == 'NAN' ) ? 0 : $total_commission->tax;
+						$commission += ( $total_commission->shipping_tax == 'NAN' ) ? 0 : $total_commission->shipping_tax;
 					}
 				}
 			}
@@ -1067,10 +1608,32 @@ class WCFM_Vendor_Support {
   }
   
   /**
+   * Total withdrawal by Vendor
+   */
+  function wcfm_get_withdrawal_by_vendor( $vendor_id = '', $interval = '7day' ) {
+  	if( !$vendor_id ) return 0;
+  	$withdrawal = $this->wcfm_get_commission_by_vendor( $vendor_id, $interval, true );
+  	return apply_filters( 'wcfm_vendor_withdrawal', $withdrawal, $vendor_id );
+  }
+  
+  /**
+   * Total pending amount for Vendor
+   */
+  function wcfm_get_pending_withdrawal_by_vendor( $vendor_id = '', $interval = '7day' ) {
+  	if( !$vendor_id ) return 0;
+  	$earned = $this->wcfm_get_commission_by_vendor( $vendor_id, $interval );
+  	$withdrawal = $this->wcfm_get_withdrawal_by_vendor( $vendor_id, $interval );
+  	$pending_withdrawal = (float)$earned - (float)$withdrawal;
+  	return apply_filters( 'wcfm_vendor_pending_withdrawal', $pending_withdrawal, $vendor_id );
+  }
+  
+  /**
    * Total sales by vendor items
    */
   function wcfm_get_total_sell_by_vendor( $vendor_id = '', $interval = '7day' ) {
   	global $WCFM, $wpdb, $WCMp;
+  	
+  	if( $vendor_id ) $vendor_id = absint($vendor_id);
   	
   	$total_sell = 0;
   	
@@ -1102,12 +1665,24 @@ class WCFM_Vendor_Support {
 			$wcfm_report_sales_by_date->calculate_current_range( $interval );
 			$report_data   = $wcfm_report_sales_by_date->get_report_data();
 			return $report_data->total_items;
+		} elseif( $marketplece == 'wcfmmarketplace' ) {
+			$commission_table = 'wcfm_marketplace_orders'; 
+  		$qty = 'quantity';
+  		$time = 'created';
+  		$vendor_handler = 'vendor_id';
+  		$table_handler = 'commission';
+  		$func = 'SUM';
 		}
   	
   	$sql = "SELECT {$func}( commission.{$qty} ) AS qty FROM {$wpdb->prefix}{$commission_table} AS commission";
 		$sql .= " WHERE 1=1";
 		if( $vendor_id ) $sql .= " AND commission.{$vendor_handler} = {$vendor_id}";
 		if( $marketplece == 'wcmarketplace' ) { $sql .= " AND commission.commission_id != 0 AND commission.commission_id != '' AND `is_trashed` != 1"; }
+		if( $marketplece == 'wcfmmarketplace' ) { 
+			$status = get_wcfm_marketplace_active_withdrwal_order_status_in_comma();
+			$sql .= " AND commission.order_status IN ({$status})";
+			$sql .= " AND `is_refunded` != 1 AND `is_trashed` != 1";
+		}
 		$sql = wcfm_query_time_range_filter( $sql, $time, $interval, '', '', $table_handler );
 		
 		$total_sell = $wpdb->get_var( $sql );
@@ -1121,6 +1696,8 @@ class WCFM_Vendor_Support {
    */
   function wcfm_get_commission_by_order( $order_id = '', $is_paid = false ) {
   	global $WCFM, $wpdb, $WCMp;
+  	
+  	$order_id = absint($order_id);
   	
   	$commission = 0;
   	
@@ -1165,6 +1742,18 @@ class WCFM_Vendor_Support {
   		$table_handler = 'p';
   		if( $is_paid )
   			$is_paid = '';
+		} elseif( $marketplece == 'wcfmmarketplace' ) {
+			$commission_table = 'wcfm_marketplace_orders'; 
+  		$total_due = 'total_commission';
+  		$total_shipping = 'shipping';
+  		$tax = 'tax';
+  		$shipping_tax = 'shipping_tax_amount';
+  		$status = 'withdraw_status';
+  		$table_handler = 'commission';
+  		if( $is_paid )
+  			$time = 'commission_paid_date';
+  		else
+  			$time = 'created';
 		}
   	
 		if( $marketplece == 'dokan' ) {
@@ -1174,16 +1763,26 @@ class WCFM_Vendor_Support {
   	}
 		$sql .= " WHERE 1=1";
 		if( $order_id ) $sql .= " AND commission.order_id = {$order_id}";
-		if( $is_paid ) $sql .= " AND commission.{$status} = 'paid'";
+		if( $is_paid ) $sql .= " AND (commission.{$status} = 'paid' OR commission.{$status} = 'completed')";
 		if( $marketplece == 'wcmarketplace' ) { $sql .= " AND commission.commission_id != 0 AND commission.commission_id != '' AND `is_trashed` != 1"; }
+		if( $marketplece == 'wcfmmarketplace' ) { 
+			//$status = get_wcfm_marketplace_active_withdrwal_order_status_in_comma();
+			//$sql .= " AND commission.order_status IN ({$status})";
+			$sql .= " AND `is_refunded` != 1 AND `is_trashed` != 1";
+		}
 		
 		$total_commissions = $wpdb->get_results( $sql );
 		if( !empty($total_commissions) ) {
 			foreach( $total_commissions as $total_commission ) {
 				$commission = $total_commission->total_due;
 				if( $marketplece == 'wcvendors' ) {
-					if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) { $commission += $total_commission->total_shipping; } 
-					if ( WC_Vendors::$pv_options->get_option( 'give_shipping' ) ) { $commission += $total_commission->tax; }
+					if( version_compare( WCV_VERSION, '2.0.0', '<' ) ) {
+						if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) { $commission += $total_commission->total_shipping; } 
+						if ( WC_Vendors::$pv_options->get_option( 'give_shipping' ) ) { $commission += $total_commission->tax; }
+					} else {
+						if ( get_option('wcvendors_vendor_give_taxes') ) { $commission += $total_commission->total_shipping; } 
+						if ( get_option('wcvendors_vendor_give_shipping') ) { $commission += $total_commission->tax; }
+					}
 				} elseif( $marketplece == 'wcmarketplace' ) {
 					if($WCMp->vendor_caps->vendor_payment_settings('give_shipping')) { $commission += ( $total_commission->total_shipping == 'NAN' ) ? 0 : $total_commission->total_shipping; } 
 					if($WCMp->vendor_caps->vendor_payment_settings('give_tax')) { 
@@ -1198,52 +1797,125 @@ class WCFM_Vendor_Support {
 		return $commission;
   }
   
-  function wcfm_get_products_by_vendor( $vendor_id = 0 ) {
+  function wcfm_get_products_by_vendor( $vendor_id = 0, $post_status = 'any', $custom_args = array() ) {
 		global $WCFM;
 		
 		$vendor_product_list = array();
 		
 		if( !$vendor_id ) return $vendor_product_list;
+		$vendor_id = absint( $vendor_id );
 		
-		$args = array(
-							'posts_per_page'   => -1,
-							'offset'           => 0,
-							'orderby'          => 'date',
-							'order'            => 'DESC',
-							'post_type'        => 'product',
-							//'author'	   => get_current_user_id(),
-							'post_status'      => array('draft', 'pending', 'publish'),
-							'suppress_filters' => 0 
-						);
-		$is_marketplace = wcfm_is_marketplace();
-		if( $is_marketplace ) {
-			if( $is_marketplace == 'wcpvendors' ) {
-				$args['tax_query'][] = array(
-																			'taxonomy' => WC_PRODUCT_VENDORS_TAXONOMY,
-																			'field' => 'term_id',
-																			'terms' => $vendor_id,
-																		);
-			} elseif( $is_marketplace == 'wcvendors' ) {
-				$args['author'] = $vendor_id;
-			} elseif( $is_marketplace == 'wcmarketplace' ) {
-				$vendor_term = absint( get_user_meta( $vendor_id, '_vendor_term_id', true ) );
-				$args['tax_query'][] = array(
-																			'taxonomy' => 'dc_vendor_shop',
-																			'field' => 'term_id',
-																			'terms' => $vendor_term,
-																		);
-			} elseif( $is_marketplace == 'dokan' ) {
-				$args['author'] = $vendor_id;
+		if( $post_status == 'any' ) { $post_status = array('draft', 'pending', 'publish', 'private'); }
+		
+		$post_count = 9999;
+  	$post_loop_offset = 0;
+  	$products_arr = array(0);
+  	while( $post_loop_offset < $post_count ) {
+			$args = array(
+								'posts_per_page'   => 10,
+								'offset'           => $post_loop_offset,
+								'orderby'          => 'date',
+								'order'            => 'DESC',
+								'post_type'        => 'product',
+								//'author'	   => get_current_user_id(),
+								'post_status'      => $post_status,
+								'suppress_filters' => 0,
+								'fields'           => 'ids'
+							);
+			$args = array_merge( $args, $custom_args );
+			$is_marketplace = wcfm_is_marketplace();
+			if( $is_marketplace ) {
+				if( $is_marketplace == 'wcpvendors' ) {
+					$args['tax_query'][] = array(
+																				'taxonomy' => WC_PRODUCT_VENDORS_TAXONOMY,
+																				'field' => 'term_id',
+																				'terms' => $vendor_id,
+																			);
+				} elseif( $is_marketplace == 'wcvendors' ) {
+					$args['author'] = $vendor_id;
+				} elseif( $is_marketplace == 'wcmarketplace' ) {
+					$vendor_term = absint( get_user_meta( $vendor_id, '_vendor_term_id', true ) );
+					$args['tax_query'][] = array(
+																				'taxonomy' => 'dc_vendor_shop',
+																				'field' => 'term_id',
+																				'terms' => $vendor_term,
+																			);
+				} elseif( $is_marketplace == 'dokan' ) {
+					$args['author'] = $vendor_id;
+				} elseif( $is_marketplace == 'wcfmmarketplace' ) {
+					$args['author'] = $vendor_id;
+				}
 			}
-		}
-		$vendor_products = get_posts($args);
-		if( !empty( $vendor_products ) ) {
-			foreach( $vendor_products as $vendor_product ) {
-				$vendor_product_list[$vendor_product->ID] = $vendor_product;
+			$vendor_products = get_posts($args);
+			if( !empty( $vendor_products ) ) {
+				foreach( $vendor_products as $vendor_product ) {
+					$vendor_product_list[$vendor_product] = get_post( $vendor_product );
+				}
+				$post_loop_offset += 10;
+			} else {
+				break;
 			}
 		}
 		
 		return $vendor_product_list;
+	}
+	
+	/**
+	 * Reset Vendor Product Status
+	 */
+	public function reset_vendor_product_status( $vendor_id, $product_status = 'draft' ) {
+		global $WCFM, $WCFMvm, $wpdb;
+		
+		$vendor_product_list = $this->wcfm_get_products_by_vendor( $vendor_id, 'publish' );
+		if( !empty( $vendor_product_list ) ) {
+			foreach( $vendor_product_list as $vendor_product_id => $vendor_product ) {
+				$update_product = array(
+																'ID'           => $vendor_product_id,
+																'post_status'  => $product_status,
+																'post_type'    => 'product'
+															);
+				wp_update_post( $update_product, true );
+			}
+		}
+	}
+	
+	function wcfm_get_orders_by_vendor( $vendor_id = 0 ) {
+  	global $WCFM, $wpdb;
+  	
+  	$vendor_order_list = array();
+		
+		if( !$vendor_id ) return $vendor_order_list;
+		$vendor_id = absint($vendor_id);
+  	
+  	if( $WCFM->is_marketplace == 'wcvendors' ) {
+  		$commission_table = 'pv_commission'; 
+  		$vendor_handler = 'vendor_id';
+		} elseif( $WCFM->is_marketplace == 'wcmarketplace' ) {
+			$commission_table = 'wcmp_vendor_orders'; 
+  		$vendor_handler = 'vendor_id';
+		} elseif( $WCFM->is_marketplace == 'wcpvendors' ) {
+			$commission_table = 'wcpv_commissions'; 
+  		$vendor_handler = 'vendor_id';
+		} elseif( $WCFM->is_marketplace == 'dokan' ) {
+			$commission_table = 'dokan_orders'; 
+  		$vendor_handler = 'seller_id';
+		} elseif( $WCFM->is_marketplace == 'wcfmmarketplace' ) {
+			$commission_table = 'wcfm_marketplace_orders'; 
+  		$vendor_handler = 'vendor_id';
+		}
+  	
+		$sql = "SELECT order_id FROM {$wpdb->prefix}{$commission_table}";
+		$sql .= " WHERE 1=1";
+		$sql .= " AND {$vendor_handler} = {$vendor_id}";
+		$vendor_orders = $wpdb->get_results( $sql );
+		
+		if( !empty( $vendor_orders ) ) {
+			foreach( $vendor_orders as $vendor_order ) {
+				$vendor_order_list[] = $vendor_order->order_id;
+			}
+		}
+		
+		return $vendor_order_list;
 	}
 	
 	function wcfm_is_article_from_vendor( $article_id, $current_vendor = '' ) {
@@ -1277,6 +1949,10 @@ class WCFM_Vendor_Support {
 			$product = get_post( $product_id );
 			$author = $product->post_author;
 			if ( dokan_is_user_seller( $author ) ) $vendor_id = $author;
+		} elseif( $WCFM->is_marketplace == 'wcfmmarketplace' ) {
+			$product = get_post( $product_id );
+			$author = $product->post_author;
+			if ( wcfm_is_vendor( $author ) ) $vendor_id = $author;
 		}
 		
 		if( !$vendor_id || empty( $vendor_id ) ) $vendor_id = 0;
@@ -1318,6 +1994,14 @@ class WCFM_Vendor_Support {
 				$current_vendor   = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
 				if( $current_vendor == $vendor_id ) $is_product_from_vendor = true;
 			}
+		} elseif( $WCFM->is_marketplace == 'wcfmmarketplace' ) {
+			$product = get_post( $product_id );
+			$author = $product->post_author;
+			if ( wcfm_is_vendor( $author ) ) $vendor_id = $author;
+			if( $vendor_id && !$current_vendor ) {
+				$current_vendor   = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
+				if( $current_vendor == $vendor_id ) $is_product_from_vendor = true;
+			}
 		}
 		
 		return $is_product_from_vendor;
@@ -1353,6 +2037,12 @@ class WCFM_Vendor_Support {
 		} elseif( $WCFM->is_marketplace == 'dokan' ) {
 			$commission_table = 'dokan_orders'; 
   		$vendor_handler = 'seller_id';
+  		if( !$current_vendor ) {
+				$current_vendor   = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
+			}
+		} elseif( $WCFM->is_marketplace == 'wcfmmarketplace' ) {
+			$commission_table = 'wcfm_marketplace_orders'; 
+  		$vendor_handler = 'vendor_id';
   		if( !$current_vendor ) {
 				$current_vendor   = apply_filters( 'wcfm_current_vendor_id', get_current_user_id() );
 			}
@@ -1406,6 +2096,15 @@ class WCFM_Vendor_Support {
 							$vendor_email = $vendor_data->user_email;
 						}
 					}
+				} elseif( $WCFM->is_marketplace == 'wcfmmarketplace' ) {
+					$product = get_post( $product_id );
+					$vendor_id = $product->post_author;
+					if( wcfm_is_vendor( $vendor_id ) ) {
+						$vendor_data = get_userdata( $vendor_id );
+						if ( ! empty( $vendor_data ) ) {
+							$vendor_email = $vendor_data->user_email;
+						}
+					}
 				}
 			}
 		}
@@ -1415,72 +2114,142 @@ class WCFM_Vendor_Support {
 		return $vendor_email;
   }
   
-  function wcfm_admin_notification_new_product( $vendor_id, $product_id ) {
+  public function wcfm_vendor_has_capability( $vendor_id, $capability = '' ) {
+  	if( !$capability ) return true;
+  	$vendor_capability_options = (array) apply_filters( 'wcfmgs_user_capability', get_option( 'wcfm_capability_options' ), $vendor_id );
+  	$has_capability = ( isset( $vendor_capability_options[$capability] ) ) ? $vendor_capability_options[$capability] : 'no';
+		if ( $has_capability == 'yes' ) return false;
+		return true;
+  }
+  
+  public function wcfm_vendor_product_limit( $vendor_id ) {
+  	if( !$vendor_id ) return -1;
+  	$vendor_capability_options = (array) apply_filters( 'wcfmgs_user_capability', get_option( 'wcfm_capability_options' ), $vendor_id );
+  	$productlimit = ( isset( $vendor_capability_options['productlimit'] ) ) ? $vendor_capability_options['productlimit'] : '';
+  	if( ( $productlimit == -1 ) || ( $productlimit == '-1' ) ) $productlimit = -1;
+  	elseif( $productlimit ) $productlimit = absint($productlimit);
+  	$productlimit = apply_filters( 'wcfm_vendor_verification_product_limit', $productlimit, $vendor_id );
+  	$productlimit = apply_filters( 'wcfm_vendor_product_limit', $productlimit, $vendor_id );
+  	
+  	if( ( $productlimit == -1 ) || ( $productlimit == '-1' ) ) {
+			return 0;
+		} else {
+			if( $productlimit ) $productlimit = absint($productlimit);
+			if( $productlimit && ( $productlimit >= 0 ) ) {
+				if( $productlimit == 1989 ) {
+					return 0;
+				}
+			} else {
+				return '';
+			}
+		}
+		return $productlimit;
+  }
+  
+  public function wcfm_vendor_product_limit_stat( $vendor_id ) {
   	global $WCFM;
   	
-		// Send mail to admin
-		if( apply_filters( 'wcfm_is_allow_new_product_email', false ) ) {
-			define( 'DOING_WCFM_EMAIL', true );
-			
-			$mail_to = get_bloginfo( 'admin_email' );
-			$review_mail_subject = "{site_name}: " . __( "New product added", "wc-frontend-manager" ) . " - {product_title}";
-			$review_mail_body    = __( 'Hi', 'wc-frontend-manager' ) .
-															 ',<br/><br/>' . 
-															 sprintf( __( 'A new product <b>%s</b> added by <b>%s</b>', 'wc-frontend-manager' ), '<a class="wcfm_dashboard_item_title" href="' . get_permalink( $product_id ) . '">' . get_the_title( $product_id ) . '</a>', $this->wcfm_get_vendor_store_by_vendor( $vendor_id ) ) .
-															 '<br /><br/>' . __( 'Thank You', 'wc-frontend-manager' );
-			
-			$subject = str_replace( '{site_name}', get_bloginfo( 'name' ), $review_mail_subject );
-			$subject = str_replace( '{product_title}', get_the_title( $product_id ), $subject );
-			$message = str_replace( '{product_title}', get_the_title( $product_id ), $review_mail_body );
-			$message = apply_filters( 'wcfm_email_content_wrapper', $message, __( 'New Product', 'wc-frontend-manager' ) );
-			
-			wp_mail( $mail_to, $subject, $message );
+  	if( wcfm_is_marketplace() == 'wcpvendors' ) {
+  		$vendor_id = apply_filters( 'wcfm_current_vendor_id', WC_Product_Vendors_Utils::get_logged_in_vendor() );
+  	}
+  	
+  	$products_list  = $this->wcfm_get_products_by_vendor( $vendor_id, apply_filters( 'wcfm_limit_check_status', 'any' ), array( 'suppress_filters' => 1 ) ); // wcfm_get_user_posts_count( $vendor_id, 'product', 'any' );
+		$total_products = count( $products_list );
+		$product_limit = $this->wcfm_vendor_product_limit( $vendor_id );
+		if( !$product_limit ) $product_limit = '&#8734;';
+		$product_limit_stat = '<span class="wcfm_user_usage_stat">' . apply_filters( 'wcfm_vednors_total_products_data', $total_products, $vendor_id ) . '</span> / <span class="wcfm_user_usage_stat_limit">' . $product_limit . '</span>';
+		return $product_limit_stat;
+  }
+  
+  function wcfm_get_used_space_by_vendor( $vendor_id = 0 ) {
+		global $WCFM;
+		
+		$vendor_attachment_size = 0;
+		
+		if( !$vendor_id ) return 0;
+		$vendor_id = absint( $vendor_id );
+		
+		$post_count = 9999;
+  	$post_loop_offset = 0;
+  	while( $post_loop_offset < $post_count ) {
+			$args = array(
+								'posts_per_page'   => 10,
+								'offset'           => $post_loop_offset,
+								'orderby'          => 'date',
+								'order'            => 'DESC',
+								'post_type'        => 'attachment',
+								'post_status'      => 'any',
+								'suppress_filters' => 0,
+								'author'           => $vendor_id,
+								'fields'           => 'ids'
+							);
+			$vendor_attachments = get_posts($args);
+			if( !empty( $vendor_attachments ) ) {
+				foreach( $vendor_attachments as $vendor_attachment ) {
+					if( !class_exists( 'Amazon_Web_Services' ) && !function_exists( 'ud_get_stateless_media' ) ) {
+						$vendor_attachment_size += filesize( get_attached_file( $vendor_attachment ) );
+					} else {
+						$vendor_attachment_size += 24; // Consider avarage file size 24KB
+					}
+				}
+				$post_loop_offset += 10;
+			} else {
+				break;
+			}
 		}
 		
-		$author_id = $vendor_id;
-		$author_is_admin = 0;
-		$author_is_vendor = 1;
-		$message_to = 0;
-		$wcfm_messages = sprintf( __( 'A new product <b>%s</b> added by <b>%s</b>', 'wc-frontend-manager' ), '<a class="wcfm_dashboard_item_title" href="' . get_permalink( $product_id ) . '">' . get_the_title( $product_id ) . '</a>', $this->wcfm_get_vendor_store_by_vendor( $vendor_id ) );
-		$WCFM->frontend->wcfm_send_direct_message( $author_id, $message_to, $author_is_admin, $author_is_vendor, $wcfm_messages, 'new_product' );
-			
+		if( $vendor_attachment_size ) {
+			$vendor_attachment_size = round( ($vendor_attachment_size/1024)/1024, 2 );
+		}
+		
+		return $vendor_attachment_size;
 	}
   
-  function wcfm_admin_notification_product_review( $vendor_id, $product_id ) {
-  	global $WCFM;
+  public function wcfm_vendor_space_limit( $vendor_id ) {
+  	if( !$vendor_id ) return -1;
   	
-		// Send mail to admin
-		if( apply_filters( 'wcfm_is_allow_product_review_email', false ) ) {
-			define( 'DOING_WCFM_EMAIL', true );
-			
-			$mail_to = get_bloginfo( 'admin_email' );
-			$review_mail_subject = "{site_name}: " . __( "New product review", "wc-frontend-manager" ) . " - {product_title}";
-			$review_mail_body    = __( 'Hi', 'wc-frontend-manager' ) .
-															 ',<br/><br/>' . 
-															 sprintf( __( 'Product awaiting <b>%s</b> for review', 'wc-frontend-manager' ), '<a class="wcfm_dashboard_item_title" href="' . get_wcfm_edit_product_url( $product_id ) . '">' . get_the_title( $product_id ) . '</a>' ) .
-															 '<br /><br/>' . __( 'Thank You', 'wc-frontend-manager' );
-			
-			$subject = str_replace( '{site_name}', get_bloginfo( 'name' ), $review_mail_subject );
-			$subject = str_replace( '{product_title}', get_the_title( $product_id ), $subject );
-			$message = str_replace( '{product_title}', get_the_title( $product_id ), $review_mail_body );
-			$message = apply_filters( 'wcfm_email_content_wrapper', $message, __( 'Product Review', 'wc-frontend-manager' ) );
-			
-			wp_mail( $mail_to, $subject, $message );
+  	if( wcfm_is_marketplace() == 'wcpvendors' ) {
+  		$vendor_id = apply_filters( 'wcfm_current_vendor_id', WC_Product_Vendors_Utils::get_logged_in_vendor() );
+  	}
+  	
+  	$vendor_capability_options = (array) apply_filters( 'wcfmgs_user_capability', get_option( 'wcfm_capability_options' ), $vendor_id );
+  	$spacelimit = ( isset( $vendor_capability_options['spacelimit'] ) ) ? $vendor_capability_options['spacelimit'] : '';
+  	if( ( $spacelimit == -1 ) || ( $spacelimit == '-1' ) ) $spacelimit = -1;
+  	elseif( $spacelimit ) $spacelimit = absint($spacelimit);
+  	$spacelimit = apply_filters( 'wcfm_vendor_verification_space_limit', $spacelimit, $vendor_id );
+  	$spacelimit = apply_filters( 'wcfm_vendor_space_limit', $spacelimit, $vendor_id );
+  	
+  	if( ( $spacelimit == -1 ) || ( $spacelimit == '-1' ) ) {
+			return 0;
+		} else {
+			if( $spacelimit ) $spacelimit = absint($spacelimit);
+			if( $spacelimit && ( $spacelimit >= 0 ) ) {
+				if( $spacelimit == 1989 ) {
+					return 0;
+				}
+			} else {
+				return '';
+			}
 		}
-		
-		$author_id = $vendor_id;
-		$author_is_admin = 0;
-		$author_is_vendor = 1;
-		$message_to = 0;
-		$wcfm_messages = sprintf( __( 'Product awaiting <b>%s</b> for review', 'wc-frontend-manager' ), '<a class="wcfm_dashboard_item_title" href="' . get_wcfm_edit_product_url( $product_id ) . '">' . get_the_title( $product_id ) . '</a>' );
-		$WCFM->frontend->wcfm_send_direct_message( $author_id, $message_to, $author_is_admin, $author_is_vendor, $wcfm_messages, 'product_review' );
-			
-	}
+		return $spacelimit;
+  }
+  
+  public function wcfm_vendor_space_limit_stat( $vendor_id ) {
+  	global $WCFM;
+  	$used_space  = $this->wcfm_get_used_space_by_vendor( $vendor_id );
+		$spacelimit = $this->wcfm_vendor_space_limit( $vendor_id );
+		if( !$spacelimit ) $spacelimit = '&#8734;';
+		else {
+			if( $used_space > $spacelimit ) $used_space = $spacelimit;
+			$spacelimit .= ' MB';
+		}
+		$space_limit_stat = '<span class="wcfm_user_usage_stat">' .apply_filters( 'wcfm_vednors_used_space_data', $used_space, $vendor_id ) . ' MB</span> / <span class="wcfm_user_usage_stat_limit">' . $spacelimit . '</span>';
+		return $space_limit_stat;
+  }
   
   function wcfm_store_message_types( $message_types ) {
-  	
-  	$message_types['product_review']   = __( 'Review Product', 'wc-frontend-manager' );
-  	$message_types['new_product'] = __( 'New Product', 'wc-frontend-manager' );
+  	$message_types['product_review']    = __( 'Review Product', 'wc-frontend-manager' );
+  	$message_types['new_product']       = __( 'New Product', 'wc-frontend-manager' );
   	$message_types['new_taxonomy_term'] = __( 'New Category', 'wc-frontend-manager' );
   	
   	return $message_types;
@@ -1488,7 +2257,7 @@ class WCFM_Vendor_Support {
   
   function is_wcmp_backend_disabled_by_wcfm( $backend_disable_field ) {
   	//$backend_disable_field['text'] = 'wcfm_custom_hide';
-  	$backend_disable_field['text'] = __( 'You may handle this using WCfM Capability Controller.', 'wc-frontend-manager' );
+  	$backend_disable_field['text'] = __( 'You may manage this using WCfM Capability Controller.', 'wc-frontend-manager' );
   	$backend_disable_field['text'] = sprintf( __('Manage vendor backend access from <a href="%s">WCfM Capability Controller</a>.', 'wc-frontend-manager'), get_wcfm_capability_url() );
   	return $backend_disable_field;
   }
@@ -1500,11 +2269,27 @@ class WCFM_Vendor_Support {
   	return $wcmp_tabs;
   }
   
-  function wcfm_wcvendors_signup_redirect( $vendor_dashboard_page ) {
-  	return get_wcfm_url();
+  function wcmp_change_stripe_config_by_wcfm( $settings_tab_options ) {
+  	if( isset( $settings_tab_options['sections'] ) && isset( $settings_tab_options['sections']['default_settings_section'] ) && isset( $settings_tab_options['sections']['default_settings_section']['fields'] ) && isset( $settings_tab_options['sections']['default_settings_section']['fields']['config_redirect_uri'] ) ) {
+  		$settings_tab_options['sections']['default_settings_section']['fields']['config_redirect_uri']['value'] = get_wcfm_settings_url();
+  	}
+  	
+  	return $settings_tab_options;
   }
   
-  function wcfm_dokan_get_navigation_url( $url ) {
-  	return get_wcfm_url();
+  function wcfm_wcvendors_signup_redirect( $vendor_dashboard_page ) {
+  	if( apply_filters( 'wcfm_is_allow_multivendor_dashboard_redirect', true ) ) {
+  		return get_wcfm_url();
+  	} else {
+  		return $vendor_dashboard_page;
+  	}
+  }
+  
+  function wcfm_dokan_get_navigation_url( $url, $name ) {
+  	if( apply_filters( 'wcfm_is_allow_multivendor_dashboard_redirect', true ) ) {
+  		return wcfm_get_navigation_url( $name );
+  	} else {
+  		return $url;
+  	}
   }
 }

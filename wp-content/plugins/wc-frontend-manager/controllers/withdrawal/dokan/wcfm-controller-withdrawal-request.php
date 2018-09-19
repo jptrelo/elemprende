@@ -42,8 +42,8 @@ class WCFM_Withdrawal_Request_Controller {
 	  		
 				$withdraw_amount = (float) $wcfm_withdrawal_manage_form_data['withdraw_amount'];
 				$withdraw_method = $wcfm_withdrawal_manage_form_data['withdraw_method'];
-				if ( $withdraw_amount < $balance ) {
-					if ( $withdraw_amount > $withdraw_limit ) {
+				if ( $withdraw_amount <= $balance ) {
+					if ( $withdraw_amount >= $withdraw_limit ) {
 							$wpdb->dokan_withdraw = $wpdb->prefix . 'dokan_withdraw';
 							$data = array(
 									'user_id' => $vendor_id,

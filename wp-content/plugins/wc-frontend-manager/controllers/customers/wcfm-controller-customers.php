@@ -141,7 +141,7 @@ class WCFM_Customers_Controller {
 				
 				// Action
 				$actions = '<a class="wcfm-action-icon" href="' . get_wcfm_customers_details_url( $wcfm_customers_single->ID ) . '"><span class="fa fa-eye text_tip" data-tip="' . esc_attr__( 'Manage Customer', 'wc-frontend-manager-ultimate' ) . '"></span></a>';
-				if( apply_filters( 'wcfm_is_allow_edit_customer', true ) ) {
+				if( apply_filters( 'wcfm_is_allow_edit_customer', true ) && apply_filters( 'wcfm_is_vendor_customer', true, $wcfm_customers_single->ID ) ) {
 					$actions .= '<a class="wcfm-action-icon" href="' . get_wcfm_customers_manage_url( $wcfm_customers_single->ID ) . '"><span class="fa fa-edit text_tip" data-tip="' . esc_attr__( 'Edit Customer', 'wc-frontend-manager-ultimate' ) . '"></span></a>';
 				}
 				//$actions .= '<a class="wcfm_customer_delete wcfm-action-icon" href="#" data-customerid="' . $wcfm_customers_single->ID . '"><span class="fa fa-trash-o text_tip" data-tip="' . esc_attr__( 'Delete', 'wc-frontend-manager' ) . '"></span></a>';
