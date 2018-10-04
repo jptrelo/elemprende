@@ -75,6 +75,16 @@ $alternate_blog = isset( $ares_options['blog_layout_style'] ) && $ares_options['
                                             </h2>
 
                                             <div class="post-content">
+                                                <h6 class="post-category">
+                                                    <?php $categories = get_the_category(); ?>
+                                                    <?php if ( ! empty( $categories ) ) : ?>
+
+                                                        <a href="<?php echo esc_url( get_category_link( $categories[0]->term_id ) ); ?>">
+                                                            <?php echo esc_html( $categories[0]->name ); ?>
+                                                        </a>
+
+                                                    <?php endif; ?>
+                                                </h6>
                                                 <!-- <?php   $excerpt = the_excerpt();
                                                         echo substr($excerpt, 1, 50); 
                                                     ?> -->
