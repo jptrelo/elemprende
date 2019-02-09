@@ -1,9 +1,15 @@
+section.elementor-element-70ac5d0{
+    display: none;
+}
+
 section.elementor-element-d8ca0de{
     text-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
-    background-position: 0px -100px;
+    background-position: 9px -275px;
     background-size: cover;
     background-image: url('/elemprende/wp-content/uploads/images/1652341.jpg');
     background-repeat: no-repeat;
+    background-color: #000008;
+    padding: 30px;
 }
 
 @media screen and (max-width: 1190px) {
@@ -13,11 +19,7 @@ section.elementor-element-d8ca0de{
 }
 
 section.elementor-element-d8ca0de h2{
-    text-shadow: none;
-}
-
-section.elementor-element-d8ca0de{
-    padding-bottom: 30px;
+    text-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
 }
 
 section.elementor-element-d8ca0de .elementor-text-editor p{

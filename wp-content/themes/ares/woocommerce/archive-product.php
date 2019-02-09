@@ -39,11 +39,11 @@ get_header( 'shop' ); ?>
 
     <header class="woocommerce-products-header page-header">
 
-        <div class="col-md-12">
+        <div class="col-md-12" style="padding: 0px;">
         
             <?php if ( apply_filters( 'woocommerce_show_page_title', true ) ) : ?>
 
-                <h1 class="woocommerce-products-header__title page-title"><?php echo woocommerce_page_title( false ) ? woocommerce_page_title( false ) : __( 'Shop', 'ares' ); ?></h1>
+                <!-- <h1 class="woocommerce-products-header__title page-title"><?php echo woocommerce_page_title( false ) ? woocommerce_page_title( false ) : __( 'Shop', 'ares' ); ?></h1> -->
 
                 <?php woocommerce_breadcrumb(); ?>
 
@@ -63,7 +63,25 @@ get_header( 'shop' ); ?>
         
     </header>
 
-    <div class="col-md-<?php echo is_active_sidebar( 'sidebar-shop' ) && isset( $ares_options['shop_sidebar_on_archive'] ) && $ares_options['shop_sidebar_on_archive'] == 'on' ? '8' : '12'; ?>">
+    <?php if ( is_active_sidebar( 'sidebar-shop' ) && isset( $ares_options['shop_sidebar_on_archive'] ) && $ares_options['shop_sidebar_on_archive'] == 'on' ) : ?>
+
+    <div class="col-md-3 col-sm-3 avenue-sidebar woocommerce_sidebar">
+
+        <?php
+            /**
+             * woocommerce_sidebar hook.
+             *
+             * @hooked woocommerce_get_sidebar - 10
+             */
+            do_action( 'woocommerce_sidebar' );
+        ?>
+
+    </div>
+
+    <?php endif; ?>
+
+    <!-- <div class="col-md-<?php echo is_active_sidebar( 'sidebar-shop' ) && isset( $ares_options['shop_sidebar_on_archive'] ) && $ares_options['shop_sidebar_on_archive'] == 'on' ? '8' : '12'; ?>"> -->
+    <div class="col-sm-9 col-md-<?php echo is_active_sidebar( 'sidebar-shop' ) && isset( $ares_options['shop_sidebar_on_archive'] ) && $ares_options['shop_sidebar_on_archive'] == 'on' ? '9' : '12'; ?>">
 
         <div id="ares-shop-wrap">
 
@@ -126,23 +144,6 @@ get_header( 'shop' ); ?>
             </div>
         
         </div>
-
-        <?php if ( is_active_sidebar( 'sidebar-shop' ) && isset( $ares_options['shop_sidebar_on_archive'] ) && $ares_options['shop_sidebar_on_archive'] == 'on' ) : ?>
-
-            <div class="col-md-4 avenue-sidebar">
-
-                <?php
-                    /**
-                     * woocommerce_sidebar hook.
-                     *
-                     * @hooked woocommerce_get_sidebar - 10
-                     */
-                    do_action( 'woocommerce_sidebar' );
-                ?>
-
-            </div>
-
-        <?php endif; ?>
 
         <?php
             /**

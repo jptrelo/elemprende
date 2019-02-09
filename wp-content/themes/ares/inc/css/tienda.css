@@ -1,0 +1,19 @@
+.woocommerce_sidebar{
+    -webkit-box-shadow: 2px 3px 28px -10px rgba(0,0,0,0.75);
+    -moz-box-shadow: 2px 3px 28px -10px rgba(0,0,0,0.75);
+    box-shadow: 2px 3px 28px -10px rgba(0,0,0,0.75)
+}
+
+.woocommerce_sidebar aside{
+    border-width: 0px 0px 2px 0px !important;
+}
+
+#ares-shop-wrap{
+    border: none !important;
+}
+
+header.woocommerce-products-header.page-header nav.woocommerce-breadcrumb { 
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+}
+
